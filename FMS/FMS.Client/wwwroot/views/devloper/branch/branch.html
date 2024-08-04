@@ -1,0 +1,177 @@
+﻿<div id="layout-wrapper" ng-controller="BranchCtrl as vm">
+    <div class="main-content">
+        <navbar-menu></navbar-menu>
+        <sidebar-menu></sidebar-menu>
+
+        <div class="page-content">
+            <div class="spinner-container" ng-if="vm.loading">
+                <div class="spinner-grow text-primary m-2" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-secondary m-2" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-success m-2" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="container-fluid ">
+                <div class="page-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-flex align-items-center justify-content-between">
+                                <h4 class="mb-0 font-size-18">Branch</h4>
+
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                        <li class="breadcrumb-item active">Branch</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-12 pb-1">
+                            <a type="button" href="recoverBranch" class="btn btn-primary waves-effect waves-light float-left">
+                                <i class="fa-solid fa-rotate-right"></i> Recover
+                            </a>
+                            <button type="button" class="btn btn-primary waves-effect waves-light float-right" ng-click="vm.add()">
+                                <i class="fa-solid fa-plus"></i> Add New
+                            </button>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm float-left mb-1" ng-model="vm.limit" ng-change="vm.changeLimit()">
+                                    <option value=5>5</option>
+                                    <option value=10>10</option>
+                                    <option value=20>20</option>
+                                    <option value=50>50</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-8"></div>
+                        <div class="col-2">
+                            <input class="form-control form-control-sm" type="text" ng-model="vm.searchQuery" placeholder="Search...">
+                        </div>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-container" style="overflow-x: auto;">
+                                        <table id="myTable" datatable="ng" class="table dt-responsive nowrap" style="width:100%">
+                                            <thead>
+                                                <tr style="text-align:center">
+                                                    <th ng-click="vm.order('branchName')">Branch</th>
+                                                    <th ng-click="vm.order('branchCode')">Code</th>
+                                                    <th ng-click="vm.order('contactNumber')">Contact No</th>
+                                                    <th ng-click="vm.order('branchAddress')">Address</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="text-align:center" ng-if="vm.Branches.length > 0">
+                                                <tr ng-repeat="item in vm.pagingBranches()| orderBy:vm.predicate:vm.reverse" data-id="{{ item.branchId }}">
+                                                    <td>{{item.branchName}}</td>
+                                                    <td>{{item.branchCode}}</td>
+                                                    <td>{{item.contactNumber}}</td>
+                                                    <td>{{item.branchAddress}}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary waves-effect waves-light" ng-click="vm.edit(item)"><i class="fa-solid fa-pen-to-square"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger waves-effect waves-light" ng-click="vm.remove(item.branchId)"><i class="fa-solid fa-trash"></i></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody ng-if="vm.Branches.length === 0">
+                                                <tr>
+                                                    <td colspan="6" style="text-align:center"> No Record Exist</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <nav aria-label="Page navigation" class="float-right">
+                                            <ul class="pagination">
+                                                <li class="page-item" ng-class="{disabled: vm.currentPage == 1}">
+                                                    <a class="page-link" href="#" ng-click="vm.currentPage = vm.currentPage - 1">Previous</a>
+                                                </li>
+                                                <li class="page-item" ng-repeat="pageNumber in vm.pageNumbers" ng-class="{active: vm.currentPage == pageNumber}">
+                                                    <a class="page-link" href="#" ng-click="vm.currentPage = pageNumber">{{pageNumber}}</a>
+                                                </li>
+                                                <li class="page-item" ng-class="{disabled: vm.currentPage == vm.totalPages}">
+                                                    <a class="page-link" href="#" ng-click="vm.currentPage = vm.currentPage + 1">Next</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="text-center text-lg-left">
+                            2019 © Xacton.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right d-none d-lg-block">
+                            Design & Develop by Myra
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalCenterTitle">{{ vm.isUpdate ? 'Update Branch' : 'New Branch' }}</h5>
+                    <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close" ng-click="vm.cancel()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" ng-model="vm.branchId" />
+                        <div div class="col-6">
+                            <div class="form-group">
+                                <label for="txtBranchName">Branch Name</label>
+                                <input type="text" id="txtBranchName" class="form-control" placeholder="Enter your text" ng-model="vm.branchName">
+                            </div>
+                        </div>
+                        <div div class="col-6">
+                            <div class="form-group">
+                                <label for="txtBranchCode">Branch Code</label>
+                                <input type="text" id="txtBranchCode" class="form-control" placeholder="Enter your text" ng-model="vm.branchCode">
+                            </div>
+                        </div>
+                        <div div class="col-6">
+                            <div class="form-group">
+                                <label for="txtContactNumber">Contact No</label>
+                                <input type="text" id="txtContactNumber" class="form-control" placeholder="Enter your text" ng-model="vm.contactNumber">
+                            </div>
+                        </div>
+                        <div div class="col-6">
+                            <div class="form-group">
+                                <label for="txtAddress">Address</label>
+                                <input type="text" id="txtAddress" class="form-control" placeholder="Enter your text" ng-model="vm.branchAddress">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal" ng-click="vm.cancel()">Close</button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light" ng-click="vm.branchId ?vm.update():vm.create()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
