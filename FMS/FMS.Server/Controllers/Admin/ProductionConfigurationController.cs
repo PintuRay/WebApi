@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model.Admin;
 using FMS.Model.Devloper;
-using FMS.Svcs.Admin;
+using FMS.Svcs.AdminSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -11,10 +11,10 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class ProductionConfigurationController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class ProductionConfigurationController(IAdminSettingSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSvcs _adminSvcs = adminSvcs;
+        private readonly IAdminSettingSvcs _adminSvcs = adminSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud

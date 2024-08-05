@@ -2,9 +2,9 @@
 using FMS.Model;
 using FMS.Model.User;
 
-namespace FMS.Repo.User
+namespace FMS.Repo.UserSetting
 {
-    public interface IUserRepo
+    public interface IUserSettingRepo
     {
         #region Stock 
         #region Crud

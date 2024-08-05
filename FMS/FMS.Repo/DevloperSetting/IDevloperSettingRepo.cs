@@ -2,9 +2,9 @@
 using FMS.Model;
 using FMS.Model.Devloper;
 
-namespace FMS.Repo.Devloper
+namespace FMS.Repo.DevloperSetting
 {
-    public interface IDevloperRepo
+    public interface IDevloperSettingRepo
     {
         #region Branch
         #region Crud

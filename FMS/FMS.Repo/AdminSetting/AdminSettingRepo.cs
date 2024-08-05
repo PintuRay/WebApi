@@ -5,9 +5,9 @@ using FMS.Model;
 using FMS.Model.Admin;
 using Microsoft.EntityFrameworkCore;
 
-namespace FMS.Repo.Admin
+namespace FMS.Repo.AdminSetting
 {
-    public class AdminRepo(Context ctx, IMapper mapper) : IAdminRepo
+    public class AdminSettingRepo(Context ctx, IMapper mapper) : IAdminSettingRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;

@@ -2,7 +2,7 @@
 using FMS.Model.Transaction;
 using FMS.Model.User;
 using FMS.Svcs.Transaction;
-using FMS.Svcs.User;
+using FMS.Svcs.UserSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

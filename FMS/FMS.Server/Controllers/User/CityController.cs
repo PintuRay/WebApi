@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model.Devloper;
 using FMS.Model.User;
-using FMS.Svcs.User;
+using FMS.Svcs.UserSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +10,10 @@ namespace FMS.Server.Controllers.User
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
-    public class CityController(IUserSvcs userSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class CityController(IUserSettingSvcs userSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IUserSvcs _userSvcs = userSvcs;
+        private readonly IUserSettingSvcs _userSvcs = userSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud

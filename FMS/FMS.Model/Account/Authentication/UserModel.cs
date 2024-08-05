@@ -17,6 +17,7 @@ namespace FMS.Model.Account.Authentication
         public string ConformPassword { get; set; }
         [Required(ErrorMessage = "Phone Number is required")]
         public string PhoneNumber { get; set; }
+        public string RouteUls { get; set; }
     }
     public class UserDbModel : UserModel
     {

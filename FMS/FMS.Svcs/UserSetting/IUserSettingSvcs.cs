@@ -2,9 +2,9 @@
 using FMS.Model;
 using FMS.Model.User;
 
-namespace FMS.Svcs.User
+namespace FMS.Svcs.UserSetting
 {
-    public interface IUserSvcs
+    public interface IUserSettingSvcs
     {
         #region Stock 
         #region Crud

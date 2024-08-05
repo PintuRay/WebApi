@@ -2,9 +2,9 @@
 using FMS.Model;
 using FMS.Model.Admin;
 
-namespace FMS.Repo.Admin
+namespace FMS.Repo.AdminSetting
 {
-    public interface IAdminRepo
+    public interface IAdminSettingRepo
     {
         #region Generate SignUp Token
         Task<BaseDb> CreateToken(RegisterTokenModel model);

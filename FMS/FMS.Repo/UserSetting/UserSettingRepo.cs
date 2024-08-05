@@ -4,9 +4,9 @@ using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Model.User;
 
-namespace FMS.Repo.User
+namespace FMS.Repo.UserSetting
 {
-    public  class UserRepo(Context ctx, IMapper mapper) : IUserRepo
+    public  class UserSettingRepo(Context ctx, IMapper mapper) : IUserSettingRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;

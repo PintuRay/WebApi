@@ -1,6 +1,6 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model.Devloper;
-using FMS.Svcs.Devloper;
+using FMS.Svcs.DevloperSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace FMS.Server.Controllers.Devloper
 {
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper")]
-    public class BranchFinancialYearController(IDevloperSvcs devloperSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class BranchFinancialYearController(IDevloperSettingSvcs devloperSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IDevloperSvcs _devloperSvcs = devloperSvcs;
+        private readonly IDevloperSettingSvcs _devloperSvcs = devloperSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud

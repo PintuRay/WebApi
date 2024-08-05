@@ -44,20 +44,28 @@ namespace FMS.Svcs.Email
         {
             try
             {
-                SmtpClient smtpClient = new(_smtpConfig.Host)
-                {
-                    Port = _smtpConfig.Port,
-                    EnableSsl = _smtpConfig.EnableSSL,
-                    Credentials = new NetworkCredential(_smtpConfig.UserName, _smtpConfig.Password)
-                };
                 using var message = new MailMessage();
                 message.From = new MailAddress(_smtpConfig.SenderAddress, _smtpConfig.SenderDisplayName);
                 message.To.Add(userEmailOptions.ToEmail);
                 message.Subject = userEmailOptions.Subject;
                 message.Body = userEmailOptions.Body;
                 message.IsBodyHtml = _smtpConfig.IsBodyHTML;
-                await smtpClient.SendMailAsync(message);
+                using (SmtpClient smtpClient = new())
+                {
+                    smtpClient.Host = _smtpConfig.Host;
+                    smtpClient.Port = _smtpConfig.Port;
+                    smtpClient.EnableSsl = _smtpConfig.EnableSSL;
+                    smtpClient.UseDefaultCredentials = false;
+                    smtpClient.Credentials = new NetworkCredential(_smtpConfig.UserName, _smtpConfig.Password);
+                    await smtpClient.SendMailAsync(message);
+                };
                 return true;
+            }
+            catch (SmtpException ex)
+            {
+                Console.WriteLine($"SMTP Exception: {ex.Message}");
+                Console.WriteLine($"SMTP Server Response: {ex.StatusCode}");
+                return false;
             }
             catch (Exception ex)
             {

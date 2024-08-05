@@ -1,15 +1,15 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Model.Admin;
-using FMS.Repo.Admin;
+using FMS.Repo.AdminSetting;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace FMS.Svcs.Admin
+namespace FMS.Svcs.AdminSetting
 {
-    public class AdminSvcs(IAdminRepo adminRepo) : IAdminSvcs
+    public class AdminSettingSvcs(IAdminSettingRepo adminRepo) : IAdminSettingSvcs
     {
         #region Dependancy
-        private readonly IAdminRepo _adminRepo = adminRepo;
+        private readonly IAdminSettingRepo _adminRepo = adminRepo;
         #endregion
         #region Generate SignUp Token
         public async Task<Base> CreateToken(RegisterTokenModel Token)

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -108,8 +109,8 @@ namespace FMS.Svcs.Account.Authentication
                     var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     if (!string.IsNullOrEmpty(regToken))
                     {
-                        string apiDomain = _configuration.GetSection("Application:AppDomain").Value;
-                        string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
+                        //string appDomin = _configuration.GetSection("Application:AppDomain").Value;
+                        //string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
                         UserEmailOptions options = new()
                         {
                             ToEmail = data.Email,
@@ -117,14 +118,13 @@ namespace FMS.Svcs.Account.Authentication
                                 {
                                     new KeyValuePair<string, string>("{{UserName}}", data.Name),
                                     new KeyValuePair<string, string>("{{Link}}",
-                                        string.Format(apiDomain + confirmationLink, user.Id, regToken))
+                                        string.Format(/*appDomin + confirmationLink*/ data.RouteUls , user.Id, regToken))
                                 }
                         };
                         isMailSend = await _emailSvcs.SendConfirmationEmail(options);
                         if (isMailSend)
                         {
                             #region Assign Default Role : Devloper to first registrar; rest is user
-
                             var checkDevloper = await _roleManager.FindByNameAsync("Devloper");
                             if (checkDevloper is null)
                             {
@@ -155,7 +155,7 @@ namespace FMS.Svcs.Account.Authentication
                             Obj = new()
                             {
                                 Data = new { Id = user.Id },
-                                Message = $"Registraion Successful, But Failed To Send ConfirmMail To Your Provided Mail {data.Email} ",
+                                Message = $"Failed To Send ConfirmMail To Your Provided Mail {data.Email} ",
                                 ResponseCode = (int)ResponseCode.Status.Created,
                             };
                         }
@@ -226,12 +226,13 @@ namespace FMS.Svcs.Account.Authentication
                                 #endregion
                                 if (Result)
                                 {
-                                    int lengthToMask = user.PhoneNumber.Length - 4;
-                                    string maskedPart = new string('*', lengthToMask);
-                                    string lastFourDigits = user.PhoneNumber.Substring(lengthToMask);
+                                    //int lengthToMask = user.PhoneNumber.Length - 4;
+                                    //string maskedPart = new string('*', lengthToMask);
+                                    //string lastFourDigits = user.PhoneNumber.Substring(lengthToMask);
                                     Obj = new()
                                     {
-                                        Message = $"We Send An OTP To your Mobile no ends With {lastFourDigits} ",
+                                        //Message = $"We Send An OTP To your Mobile no ends With {lastFourDigits} ",
+                                        Message = $"We Send An OTP To your registered mail",
                                         ResponseCode = (int)ResponseCode.Status.Ok,
                                         Data = new { twoFactorEnable = true, userId = user.Id }
                                     };
@@ -321,7 +322,7 @@ namespace FMS.Svcs.Account.Authentication
                 var token = new JwtSecurityToken(
                     issuer: _configuration.GetSection("Jwt:Issuer").Value,
                     audience: _configuration.GetSection("Jwt:Audience").Value,
-                    claims: userClaims,
+                    claims: userClaims, 
                     expires: DateTime.Now.AddDays(1),
                     signingCredentials: credentials
                     );
@@ -542,7 +543,6 @@ namespace FMS.Svcs.Account.Authentication
             Base Obj;
             try
             {
-                var Message = user.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA";
                 #region sms
                 //var TwoFactorToken = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider);
                 // var Result = await _smsSvcs.SendSmsAsync(user.PhoneNumber, $"Your Token To {Message} Is {TwoFactorToken}");
@@ -566,7 +566,7 @@ namespace FMS.Svcs.Account.Authentication
                 {
                     Obj = new()
                     {
-                        Message = $"We Send A Conformation Token To Your Registerd Phone Number {user.PhoneNumber}",
+                        Message = $"We Send A Conformation Token To Your Registerd email {user.Email}",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                 }
@@ -597,26 +597,25 @@ namespace FMS.Svcs.Account.Authentication
                 var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, Token);
                 if (result)
                 {
-                    if (user.TwoFactorEnabled)
-                    {
-                        user.TwoFactorEnabled = false;
-                        await _userManager.UpdateAsync(user);
+                    var Message = user.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA";
+                    bool newTwoFactorEnabledState = !user.TwoFactorEnabled;
+                    user.TwoFactorEnabled = newTwoFactorEnabledState;
+                    var respose = await _userManager.UpdateAsync(user);
+                    if (respose.Succeeded) {
                         Obj = new()
                         {
-                            Message = "You Have Successfully Disabled Two Factor Authentication",
+                            Message = $"You have successfully {Message}",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         };
                     }
                     else
                     {
-                        user.TwoFactorEnabled = true;
-                        await _userManager.UpdateAsync(user);
                         Obj = new()
                         {
-                            Message = "You Have Successfully Enabled Two Factor Authentication",
-                            ResponseCode = (int)ResponseCode.Status.Ok,
+                            Message = $"Falied to {Message}",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
                         };
-                    }
+                    }  
                 }
                 else
                 {

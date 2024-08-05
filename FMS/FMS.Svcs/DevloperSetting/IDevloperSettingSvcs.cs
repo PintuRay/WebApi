@@ -3,9 +3,9 @@ using FMS.Model;
 using FMS.Model.Devloper;
 using FMS.Repo;
 
-namespace FMS.Svcs.Devloper
+namespace FMS.Svcs.DevloperSetting
 {
-    public interface IDevloperSvcs
+    public interface IDevloperSettingSvcs
     {
         #region Branch
         #region Crud

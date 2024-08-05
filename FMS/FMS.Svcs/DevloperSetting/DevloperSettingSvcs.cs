@@ -2,15 +2,15 @@
 using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Model.Devloper;
-using FMS.Repo.Devloper;
+using FMS.Repo.DevloperSetting;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace FMS.Svcs.Devloper
+namespace FMS.Svcs.DevloperSetting
 {
-    public class DevloperSvcs(IDevloperRepo devloperRepo) : IDevloperSvcs
+    public class DevloperSettingSvcs(IDevloperSettingRepo devloperRepo) : IDevloperSettingSvcs
     {
         #region Dependancy
-        private readonly IDevloperRepo _devloperRepo = devloperRepo;
+        private readonly IDevloperSettingRepo _devloperRepo = devloperRepo;
         #endregion
         #region Branch
         #region Crud

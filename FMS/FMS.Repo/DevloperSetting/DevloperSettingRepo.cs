@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
-namespace FMS.Repo.Devloper
+namespace FMS.Repo.DevloperSetting
 {
-    public class DevloperRepo(Context ctx, IMapper mapper) : IDevloperRepo
+    public class DevloperSettingRepo(Context ctx, IMapper mapper) : IDevloperSettingRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;

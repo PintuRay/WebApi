@@ -1,11 +1,11 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Model.Admin;
-using FMS.Repo.Devloper;
+using FMS.Repo.DevloperSetting;
 
-namespace FMS.Svcs.Admin
+namespace FMS.Svcs.AdminSetting
 {
-    public interface IAdminSvcs
+    public interface IAdminSettingSvcs
     {
        
         #region Generate SignUp Token

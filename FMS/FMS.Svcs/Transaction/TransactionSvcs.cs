@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model.Transaction;
 using FMS.Model;
-using FMS.Repo.User;
+using FMS.Repo.UserSetting;
 using FMS.Repo.Transaction;
 
 namespace FMS.Svcs.Transaction

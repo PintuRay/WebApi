@@ -1,21 +1,14 @@
-﻿using FMS.Model.Admin;
-using FMS.Model.User;
+﻿using FMS.Db.Entity;
 using FMS.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FMS.Db.Entity;
-using FMS.Repo.Admin;
-using FMS.Repo.User;
+using FMS.Model.User;
+using FMS.Repo.UserSetting;
 
-namespace FMS.Svcs.User
+namespace FMS.Svcs.UserSetting
 {
-    public  class UserSvcs(IUserRepo userRepo) : IUserSvcs
+    public  class UserSettingSvcs(IUserSettingRepo userRepo) : IUserSettingSvcs
     {
         #region Dependancy
-        private readonly IUserRepo _userRepo = userRepo;
+        private readonly IUserSettingRepo _userRepo = userRepo;
         #endregion
         #region Stock 
         #region Crud
