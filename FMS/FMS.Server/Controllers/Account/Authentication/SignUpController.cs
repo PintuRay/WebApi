@@ -41,7 +41,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             }
         }
         [HttpGet, AllowAnonymous]
-        public async Task<IActionResult> IsEmailInUse(string email)
+        public async Task<IActionResult> IsEmailInUse([FromQuery]string email)
         {
             if (!string.IsNullOrEmpty(email))
             {
@@ -62,11 +62,11 @@ namespace FMS.Server.Controllers.Account.Authentication
         }
 
         [HttpGet, AllowAnonymous]
-        public async Task<IActionResult> ResendConfirmEmail([FromQuery] string mail)
+        public async Task<IActionResult> ResendConfirmEmail([FromQuery] string email , [FromQuery] string routeUrl)
         {
-            if (!string.IsNullOrEmpty(mail))
+            if (!string.IsNullOrEmpty(email))
             {
-                var result = await _authenticationSvcs.ResendConfirmEmail(mail);
+                var result = await _authenticationSvcs.ResendConfirmEmail(email, routeUrl);
                 return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
             }
             return BadRequest();

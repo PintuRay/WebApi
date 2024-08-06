@@ -111,17 +111,17 @@ namespace FMS.Svcs.Account.Authentication
                     {
                         //string appDomin = _configuration.GetSection("Application:AppDomain").Value;
                         //string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
+                        
                         UserEmailOptions options = new()
                         {
                             ToEmail = data.Email,
                             PlaceHolders = new List<KeyValuePair<string, string>>()
                                 {
                                     new KeyValuePair<string, string>("{{UserName}}", data.Name),
-                                    new KeyValuePair<string, string>("{{Link}}",
-                                        string.Format(/*appDomin + confirmationLink*/ data.RouteUls , user.Id, regToken))
+                                    new KeyValuePair<string, string>("{{Link}}", data.RouteUls.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(regToken)))
                                 }
                         };
-                        isMailSend = await _emailSvcs.SendConfirmationEmail(options);
+                            isMailSend = await _emailSvcs.SendConfirmationEmail(options);
                         if (isMailSend)
                         {
                             #region Assign Default Role : Devloper to first registrar; rest is user
@@ -155,7 +155,7 @@ namespace FMS.Svcs.Account.Authentication
                             Obj = new()
                             {
                                 Data = new { Id = user.Id },
-                                Message = $"Failed To Send ConfirmMail To Your Provided Mail {data.Email} ",
+                                Message = $"Account Created But Failed To Send ConfirmMail To Your Provided Mail {data.Email} ",
                                 ResponseCode = (int)ResponseCode.Status.Created,
                             };
                         }
@@ -342,8 +342,7 @@ namespace FMS.Svcs.Account.Authentication
             try
             {
                 var user = await _userManager.FindByIdAsync(uid);
-                var orignalToken = token.Replace(' ', '+');
-                var result = await _userManager.ConfirmEmailAsync(user, orignalToken);            
+                var result = await _userManager.ConfirmEmailAsync(user, Uri.UnescapeDataString(token));            
                 if (result.Succeeded)
                 {
                     Obj = new()
@@ -371,7 +370,7 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> ResendConfirmEmail(string mail)
+        public async Task<Base> ResendConfirmEmail(string mail, string RouteUrl)
         {
             bool isEmailSend = false;
             Base Obj;
@@ -383,16 +382,16 @@ namespace FMS.Svcs.Account.Authentication
                     var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     if (!string.IsNullOrEmpty(regToken))
                     {
-                        string apiDomain = _configuration.GetSection("Application:ApiDomain").Value;
-                        string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
+                        //string apiDomain = _configuration.GetSection("Application:ApiDomain").Value;
+                        //string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
                         UserEmailOptions options = new()
                         {
                             ToEmail = mail,
                             PlaceHolders =
                             [
                                     new("{{UserName}}", user.Name),
-                                new("{{Link}}", string.Format(apiDomain + confirmationLink, user.Id, regToken))
-                                ]
+                                    new("{{Link}}", string.Format(RouteUrl.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(regToken))))
+                            ]
                         };
                         isEmailSend = await _emailSvcs.SendConfirmationEmail(options);
                         if (isEmailSend)
@@ -818,7 +817,7 @@ namespace FMS.Svcs.Account.Authentication
                 var repoResult = await _userManager.Users.ToListAsync();
                 if (repoResult.Count > 0)
                 {
-                    var Users = _mapper.Map<List<UserDbModel>>(repoResult);
+                    var Users = _mapper.Map<List<UserViewModel>>(repoResult);
                     Obj = new()
                     {
                         Data = Users,
@@ -854,7 +853,7 @@ namespace FMS.Svcs.Account.Authentication
                 var repoResult = await _userManager.FindByEmailAsync(email);
                 if (repoResult != null)
                 {
-                    var User = _mapper.Map<UserDbModel>(repoResult);
+                    var User = _mapper.Map<UserViewModel>(repoResult);
                     Obj = new()
                     {
                         Data = User,
@@ -889,7 +888,7 @@ namespace FMS.Svcs.Account.Authentication
                 var repoResult = await _userManager.FindByIdAsync(Id);
                 if (repoResult != null)
                 {
-                    var User = _mapper.Map<UserDbModel>(repoResult);
+                    var User = _mapper.Map<UserViewModel>(repoResult);
                     Obj = new()
                     {
                         Data = User,

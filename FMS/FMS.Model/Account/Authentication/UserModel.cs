@@ -1,10 +1,9 @@
-﻿using FMS.Model.Account.Autherization;
-using FMS.Model.Devloper;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 namespace FMS.Model.Account.Authentication
 {
     public class UserModel
     {
+        public string Token { get; set; }
         [Required]
         public Guid FkTokenId { get; set; }
         [Required(ErrorMessage = "User Name is required")]
@@ -19,7 +18,7 @@ namespace FMS.Model.Account.Authentication
         public string PhoneNumber { get; set; }
         public string RouteUls { get; set; }
     }
-    public class UserDbModel : UserModel
+    public class UserViewModel : UserModel
     {
         public string Id { get; set; }
         public string EmailConfirmationToken { get; set; } = null;

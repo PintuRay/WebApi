@@ -12,7 +12,7 @@ namespace FMS.Model
         public MappingProfile()
         {
             CreateMap<AppUser, UserModel>().ReverseMap();
-            CreateMap<AppUser, UserDbModel>().ReverseMap();
+            CreateMap<AppUser, UserViewModel>().ReverseMap();
             CreateMap<AppRole, RoleDbModel>().ReverseMap();
             CreateMap<AppRole, RoleModel>().ReverseMap();
             CreateMap<Branch, BranchModel>().ReverseMap();

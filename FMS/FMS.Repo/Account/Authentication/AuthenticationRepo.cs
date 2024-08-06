@@ -1,12 +1,6 @@
-﻿using AutoMapper;
-using FMS.Db;
-using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Account.Autherization;
+﻿using FMS.Db;
 using FMS.Model.Admin;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 namespace FMS.Repo.Account.Authentication
 {
     public class AuthenticationRepo(

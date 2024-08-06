@@ -55,7 +55,7 @@ namespace FMS.Svcs.Email
                     smtpClient.Host = _smtpConfig.Host;
                     smtpClient.Port = _smtpConfig.Port;
                     smtpClient.EnableSsl = _smtpConfig.EnableSSL;
-                    smtpClient.UseDefaultCredentials = false;
+                    //smtpClient.UseDefaultCredentials = false;
                     smtpClient.Credentials = new NetworkCredential(_smtpConfig.UserName, _smtpConfig.Password);
                     await smtpClient.SendMailAsync(message);
                 };

@@ -18,7 +18,7 @@ namespace FMS.Svcs.Account.Authentication
         #endregion
         #region Email 
         Task<Base> VerifyConfirmEmail(string uid, string token);
-        Task<Base> ResendConfirmEmail(string mail);
+        Task<Base> ResendConfirmEmail(string mail, string RouteUrl); 
         #endregion
         #region SMS
         Task<Base> SendConformationSms(AppUser User, string PhoneNo);
