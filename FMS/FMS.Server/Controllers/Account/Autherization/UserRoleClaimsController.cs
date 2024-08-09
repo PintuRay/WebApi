@@ -12,12 +12,18 @@ namespace FMS.Server.Controllers.Account.Autherization
         private readonly IAutherizationSvcs _autherizationSvcs = autherizationSvcs;
         #endregion
         #region User-Role && User-Claims
-        [HttpGet, Route("{RoleId}")]
-        public async Task<IActionResult> GetUserInRoleWithClaims([FromRoute] string RoleId)
+        [HttpGet]
+        public async Task<IActionResult> GetAllUserWithRolesAndClaims()
         {
-            if (RoleId != null)
+            var result = await _autherizationSvcs.GetAllUserWithRolesAndClaims();
+            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+        }
+        [HttpGet, Route("{UserId}")]
+        public async Task<IActionResult> GetUserWithRolesAndClaims([FromRoute] string UserId)
+        {
+            if (UserId != null)
             {
-                var result = await _autherizationSvcs.GetUserInRoleWithClaims(RoleId);
+                var result = await _autherizationSvcs.GetUserWithRolesAndClaims(UserId);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else

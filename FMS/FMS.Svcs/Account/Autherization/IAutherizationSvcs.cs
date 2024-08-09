@@ -2,6 +2,7 @@
 using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
 using FMS.Repo;
+using System.Threading.Tasks;
 
 namespace FMS.Svcs.Account.Autherization
 {
@@ -15,7 +16,8 @@ namespace FMS.Svcs.Account.Autherization
         Task<Base> DeleteRole(string Id);
         #endregion
         #region User-Role && Claims
-        Task<Base> GetUserInRoleWithClaims(string RoleId);
+        Task<Base> GetAllUserWithRolesAndClaims();
+        Task<Base> GetUserWithRolesAndClaims(string RoleId);
         Task<Base> UpdateUserRoleAndClaims(UserRoleClaimModel model);
         #endregion
     }

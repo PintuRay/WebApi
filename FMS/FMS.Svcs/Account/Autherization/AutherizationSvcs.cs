@@ -7,6 +7,7 @@ using FMS.Repo;
 using FMS.Repo.Account.AutherIzation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -27,7 +28,8 @@ namespace FMS.Svcs.Account.Autherization
         public async Task<Base> CreateRole(RoleModel model)
         {
             Base Obj;
-            try {
+            try
+            {
                 bool ChkRoleExist = await _roleManager.RoleExistsAsync(model.Name);
                 if (!ChkRoleExist)
                 {
@@ -39,7 +41,7 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         Obj = new()
                         {
-                           Data=new { Id = Role.Id },
+                            Data = new { Id = Role.Id },
                             Message = "Role Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         };
@@ -63,14 +65,15 @@ namespace FMS.Svcs.Account.Autherization
                     };
                 }
             }
-            catch(Exception _Exception) {
+            catch (Exception _Exception)
+            {
                 Obj = new()
                 {
                     Exception = _Exception,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
             }
-         
+
             return Obj;
         }
         public async Task<Base> GetRoles()
@@ -86,7 +89,7 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         Data = roles,
                         Count = roles.Count.ToString(),
-                        ResponseCode = (int)ResponseCode.Status.Ok,                       
+                        ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                 }
                 else
@@ -106,7 +109,7 @@ namespace FMS.Svcs.Account.Autherization
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
             }
-          
+
             return Obj;
         }
         public async Task<Base> GetRoleById(string Id)
@@ -143,7 +146,7 @@ namespace FMS.Svcs.Account.Autherization
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
             }
-          
+
 
             return Obj;
         }
@@ -163,7 +166,7 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         Obj = new()
                         {
-                           Data=new { Id = Id },
+                            Data = new { Id = Id },
                             Message = "Role Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         };
@@ -181,7 +184,7 @@ namespace FMS.Svcs.Account.Autherization
                 {
                     Obj = new()
                     {
-                       Data=new { Id = Id },
+                        Data = new { Id = Id },
                         Message = $"RoleId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     };
@@ -195,7 +198,7 @@ namespace FMS.Svcs.Account.Autherization
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
             }
-          
+
             return Obj;
         }
         public async Task<Base> DeleteRole(string Id)
@@ -211,7 +214,7 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         Obj = new()
                         {
-                           Data=new { Id = Id },
+                            Data = new { Id = Id },
                             Message = "Role Deleted Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         };
@@ -246,52 +249,111 @@ namespace FMS.Svcs.Account.Autherization
         }
         #endregion
         #region User-Role && Claims
-        public async Task<Base> GetUserInRoleWithClaims(string RoleId)
+        public async Task<Base> GetAllUserWithRolesAndClaims()
+        {
+            Base Obj;
+            var users = new List<UserRoleClaimViewModel>();
+            try
+            {
+                foreach (var user in _userManager.Users)
+                {
+                    #region User Role
+                    var userRoles = new List<UserRoleModel>();
+                    foreach (var role in _roleManager.Roles)
+                    {
+                        var userRole = new UserRoleModel()
+                        {
+                            RoleId = role.Id,
+                            RoleName = role.Name,
+                            IsRoleSelected = await _userManager.IsInRoleAsync(user, role.Name),
+                        };
+                        userRoles.Add(userRole);
+                    }
+                    #endregion
+                    #region User Claims
+                    var userClaims = new List<UserClaimModel>();
+                    var ExistingUserClaims = await _userManager.GetClaimsAsync(user);
+                    foreach (Claim claim in ClaimsStoreModel.AllClaims)
+                    {
+                        var userClaim = new UserClaimModel()
+                        {
+                            ClaimType = claim.Type,
+                            IsClaimSelected = ExistingUserClaims.Any(c => c.Type == claim.Type && c.Value == claim.Value)
+                        };
+                        userClaims.Add(userClaim);
+                    }
+                    #endregion
+                    var data = new UserRoleClaimViewModel()
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        UserRoles = userRoles,
+                        UserClaims = userClaims,
+                    };
+                    users.Add(data);
+                }
+                Obj = new()
+                {
+                    Data = users,
+                    Count = users.Count.ToString(),
+                    ResponseCode = (int)ResponseCode.Status.Ok,
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Exception = _Exception,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+            }
+            return Obj;
+        }
+        public async Task<Base> GetUserWithRolesAndClaims(string UserId)
         {
             Base Obj;
             try
             {
-                var Role = await _roleManager.FindByIdAsync(RoleId);
-                if (Role != null)
+                var isUserExist = await _userManager.FindByIdAsync(UserId);
+                if (isUserExist != null)
                 {
-                    var users = new List<UserRoleClaimModel>();
-                    foreach (var item in _userManager.Users)
+                    #region User Claims
+                    var userClaims = new List<UserClaimModel>();
+                    var ExistingUserClaims = await _userManager.GetClaimsAsync(isUserExist);
+                    foreach (Claim claim in ClaimsStoreModel.AllClaims)
                     {
-                        #region User Claims
-                        var userClaims = new List<UserClaimModel>();
-                        var ExistingUserClaims = await _userManager.GetClaimsAsync(item);
-                        foreach (Claim claim in ClaimsStoreModel.AllClaims)
+                        var userClaim = new UserClaimModel()
                         {
-                            var userClaim = new UserClaimModel()
-                            {
-                                UserId = item.Id,
-                                ClaimType = claim.Type,
-                                IsClaimSelected = ExistingUserClaims.Any(c => c.Type == claim.Type && c.Value == claim.Value)
-                            };
-                            userClaims.Add(userClaim);
-                        }
-                        #endregion
-                        #region User Role
+                            UserId = isUserExist.Id,
+                            ClaimType = claim.Type,
+                            IsClaimSelected = ExistingUserClaims.Any(c => c.Type == claim.Type && c.Value == claim.Value)
+                        };
+                        userClaims.Add(userClaim);
+                    }
+                    #endregion
+                    #region User Role
+                    var userRoles = new List<UserRoleModel>();
+                    foreach (var role in _roleManager.Roles)
+                    {
                         var userRole = new UserRoleModel()
                         {
-                            RoleId = Role.Id,
-                            RoleName = Role.Name,
-                            IsRoleSelected = await _userManager.IsInRoleAsync(item, Role.Name),
+                            RoleId = role.Id,
+                            RoleName = role.Name,
+                            IsRoleSelected = await _userManager.IsInRoleAsync(isUserExist, role.Name),
                         };
-                        #endregion
-                        var user = new UserRoleClaimModel()
-                        {
-                            Id = item.Id,
-                            Name = item.Name,
-                            UserRole = userRole,
-                            UserClaims = userClaims,
-                        };
-                        users.Add(user);
+                        userRoles.Add(userRole);
                     }
+                    #endregion
+                    var user = new UserRoleClaimViewModel()
+                    {
+                        Id = isUserExist.Id,
+                        Name = isUserExist.Name,
+                        UserRoles = userRoles,
+                        UserClaims = userClaims,
+                    };
                     Obj = new()
                     {
-                        Data = users,
-                        Count = users.Count.ToString(),
+                        Data = user,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                 }
@@ -299,7 +361,7 @@ namespace FMS.Svcs.Account.Autherization
                 {
                     Obj = new()
                     {
-                        Message = "Role Not Exist",
+                        Message = "User Not Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     };
                 }
@@ -312,7 +374,7 @@ namespace FMS.Svcs.Account.Autherization
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
             }
-         
+
             return Obj;
         }
         public async Task<Base> UpdateUserRoleAndClaims(UserRoleClaimModel model)
@@ -361,7 +423,7 @@ namespace FMS.Svcs.Account.Autherization
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
             }
-           
+
             return Obj;
         }
         #endregion
