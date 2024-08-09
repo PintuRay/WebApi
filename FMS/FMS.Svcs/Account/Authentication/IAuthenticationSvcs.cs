@@ -32,7 +32,7 @@ namespace FMS.Svcs.Account.Authentication
         #region ThiredParty SignIn
         #endregion
         #region Forgot, Reset && Change Password
-        Task<Base> ForgotPassword(string mail);
+        Task<Base> ForgotPassword(string mail, string routeUrl);
         Task<Base> ResetPassword(string uid, string token, ResetPasswordModel model);
         Task<Base> ChangePassword(AppUser user, ChangePasswordModel model);
         #endregion

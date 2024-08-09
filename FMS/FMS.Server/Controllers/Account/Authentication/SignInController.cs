@@ -1,15 +1,10 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model.Account.Authentication;
-using FMS.Repo;
 using FMS.Svcs.Account.Authentication;
 using FMS.Svcs.SMS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using Twilio.Jwt.AccessToken;
-using Twilio.Types;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Server.Controllers.Account.Authentication
 {
@@ -74,15 +69,11 @@ namespace FMS.Server.Controllers.Account.Authentication
         public async Task<IActionResult> SendTwoFactorToken()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (!user.PhoneNumberConfirmed)
-            {
-                var result = await _authenticationSvcs.SendTwoFactorToken(user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-            }
-            return BadRequest("Phone Number Not Conformed Yet");
+            var result = await _authenticationSvcs.SendTwoFactorToken(user);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPost, Authorize]
-        public async Task<IActionResult> VerifyTwoFactorToken(string Token)
+        [HttpGet, Authorize]
+        public async Task<IActionResult> VerifyTwoFactorToken([FromQuery] string Token)
         {
             if (!string.IsNullOrEmpty(Token))
             {
@@ -95,22 +86,23 @@ namespace FMS.Server.Controllers.Account.Authentication
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> SignInWithOTP([FromBody] SignIn2faModel model)
         {
-            if(ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
                 var result = await _authenticationSvcs.SignInWithOTP(model);
                 return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
-           return BadRequest();
+            return BadRequest();
         }
         #endregion
         #region ThiredParty SignIn
         #endregion
         #region Forgot, Reset && Change Password
-        [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword([FromQuery] string mail)
+        [HttpGet, AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([FromQuery] string mail, [FromQuery] string routeUrl)
         {
-            if (!string.IsNullOrEmpty(mail))
+            if (!string.IsNullOrEmpty(mail) && !string.IsNullOrEmpty(routeUrl))
             {
-                var result = await _authenticationSvcs.ForgotPassword(mail);
+                var result = await _authenticationSvcs.ForgotPassword(mail, routeUrl);
                 return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
             }
             return BadRequest();

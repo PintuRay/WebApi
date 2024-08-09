@@ -4,6 +4,7 @@ using FMS.Model;
 using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
 using FMS.Model.Email;
+using FMS.Repo;
 using FMS.Repo.Account.Authentication;
 using FMS.Svcs.Email;
 using FMS.Svcs.SMS;
@@ -12,10 +13,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Twilio.Jwt.AccessToken;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Svcs.Account.Authentication
 {
@@ -109,9 +112,6 @@ namespace FMS.Svcs.Account.Authentication
                     var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     if (!string.IsNullOrEmpty(regToken))
                     {
-                        //string appDomin = _configuration.GetSection("Application:AppDomain").Value;
-                        //string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
-                        
                         UserEmailOptions options = new()
                         {
                             ToEmail = data.Email,
@@ -121,7 +121,7 @@ namespace FMS.Svcs.Account.Authentication
                                     new KeyValuePair<string, string>("{{Link}}", data.RouteUls.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(regToken)))
                                 }
                         };
-                            isMailSend = await _emailSvcs.SendConfirmationEmail(options);
+                        isMailSend = await _emailSvcs.SendConfirmationEmail(options);
                         if (isMailSend)
                         {
                             #region Assign Default Role : Devloper to first registrar; rest is user
@@ -322,7 +322,7 @@ namespace FMS.Svcs.Account.Authentication
                 var token = new JwtSecurityToken(
                     issuer: _configuration.GetSection("Jwt:Issuer").Value,
                     audience: _configuration.GetSection("Jwt:Audience").Value,
-                    claims: userClaims, 
+                    claims: userClaims,
                     expires: DateTime.Now.AddDays(1),
                     signingCredentials: credentials
                     );
@@ -342,7 +342,7 @@ namespace FMS.Svcs.Account.Authentication
             try
             {
                 var user = await _userManager.FindByIdAsync(uid);
-                var result = await _userManager.ConfirmEmailAsync(user, Uri.UnescapeDataString(token));            
+                var result = await _userManager.ConfirmEmailAsync(user, Uri.UnescapeDataString(token));
                 if (result.Succeeded)
                 {
                     Obj = new()
@@ -540,34 +540,43 @@ namespace FMS.Svcs.Account.Authentication
         public async Task<Base> SendTwoFactorToken(AppUser user)
         {
             Base Obj;
+            bool Result = false;
             try
             {
-                #region sms
-                //var TwoFactorToken = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider);
-                // var Result = await _smsSvcs.SendSmsAsync(user.PhoneNumber, $"Your Token To {Message} Is {TwoFactorToken}");
-                #endregion
-                #region mail
-                var TwoFactorToken = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
-                user.OTP = TwoFactorToken;
-                await _userManager.UpdateAsync(user);
-                UserEmailOptions options = new()
+                
+                string Message = user.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA";
+                if (user.PhoneNumberConfirmed)
                 {
-                    ToEmail = user.Email,
-                    PlaceHolders =
-                        [
+                    #region sms
+                    var TwoFactorToken = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider);
+                    Result = await _smsSvcs.SendSmsAsync(user.PhoneNumber, $"Your Token To {Message} Is {TwoFactorToken}");
+                    Obj = new()
+                    {
+                        Message = $"We Send A Conformation Token To Your Registerd Phone Number to {Message}",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    };
+                    #endregion
+                }
+               else if (user.EmailConfirmed)
+                {
+                    #region mail
+                    var TwoFactorToken = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
+                    UserEmailOptions options = new()
+                    {
+                        ToEmail = user.Email,
+                        PlaceHolders =
+                            [
                             new("{{UserName}}", user.Name),
                             new("{{OTP}}", TwoFactorToken)
                             ]
-                };
-                var Result = await _emailSvcs.SendTwoFactorToken(options);
-                #endregion
-                if (Result)
-                {
+                    };
+                    Result = await _emailSvcs.SendTwoFactorToken(options);
                     Obj = new()
                     {
-                        Message = $"We Send A Conformation Token To Your Registerd email {user.Email}",
+                        Message = $"We Send A Conformation Token To Your Registerd Mail to {Message}",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
+                    #endregion
                 }
                 else
                 {
@@ -593,14 +602,16 @@ namespace FMS.Svcs.Account.Authentication
             Base Obj;
             try
             {
-                var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, Token);
+                var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, Token) || 
+                             await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, Token);
                 if (result)
                 {
                     var Message = user.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA";
                     bool newTwoFactorEnabledState = !user.TwoFactorEnabled;
                     user.TwoFactorEnabled = newTwoFactorEnabledState;
                     var respose = await _userManager.UpdateAsync(user);
-                    if (respose.Succeeded) {
+                    if (respose.Succeeded)
+                    {
                         Obj = new()
                         {
                             Message = $"You have successfully {Message}",
@@ -614,7 +625,7 @@ namespace FMS.Svcs.Account.Authentication
                             Message = $"Falied to {Message}",
                             ResponseCode = (int)ResponseCode.Status.BadRequest,
                         };
-                    }  
+                    }
                 }
                 else
                 {
@@ -640,10 +651,13 @@ namespace FMS.Svcs.Account.Authentication
             Base Obj;
             try
             {
+                
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-                    if (user.OTP == model.OTP)
+                    var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
+                             await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
+                    if (result)
                     {
                         var JwtToken = await GenerateJwtToken(user);
                         Obj = new()
@@ -683,7 +697,7 @@ namespace FMS.Svcs.Account.Authentication
         }
         #endregion
         #region Forgot, Reset && Change Password
-        public async Task<Base> ForgotPassword(string mail)
+        public async Task<Base> ForgotPassword(string mail, string routeUrl)
         {
             Base Obj;
             try
@@ -691,16 +705,14 @@ namespace FMS.Svcs.Account.Authentication
                 var user = await _userManager.FindByEmailAsync(mail);
                 if (user != null)
                 {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    string appDomain = _configuration.GetSection("Application:AppDomain").Value;
-                    string confirmationLink = _configuration.GetSection("Application:ResetPassword").Value;
+                    var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                     UserEmailOptions options = new()
                     {
-                        ToEmail = user.Email,
+                        ToEmail = mail,
                         PlaceHolders = new List<KeyValuePair<string, string>>()
-                                {
+                        {
                                     new KeyValuePair<string, string>("{{UserName}}", user.Name),
-                                    new KeyValuePair<string, string>("{{Link}}", string.Format(appDomain + confirmationLink, user.Id,token))
+                                    new KeyValuePair<string, string>("{{Link}}", routeUrl.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(resetPasswordToken)))
                                 }
                     };
                     var IsMailSend = await _emailSvcs.SendResetPasswordEmail(options);
@@ -709,7 +721,7 @@ namespace FMS.Svcs.Account.Authentication
                         Obj = new()
                         {
                             ResponseCode = (int)ResponseCode.Status.Ok,
-                            Message = "We Send Conformation Mail To your Account Plz Conform It"
+                            Message = "We send a conformation link  To your Mail Plese Click that link to Reset Your Password"
                         };
                     }
                     else
@@ -717,7 +729,7 @@ namespace FMS.Svcs.Account.Authentication
                         Obj = new()
                         {
                             ResponseCode = (int)ResponseCode.Status.BadRequest,
-                            Message = "Failed to Send Conformation Mail"
+                            Message = $"Failed to Send Conformation link to mail {mail}"
                         };
                     }
                 }
@@ -745,8 +757,7 @@ namespace FMS.Svcs.Account.Authentication
             Base Obj;
             try
             {
-                var Token = token.Replace(' ', '+');
-                var result = await _userManager.ResetPasswordAsync(await _userManager.FindByIdAsync(uid), Token, model.NewPassword);
+                var result = await _userManager.ResetPasswordAsync(await _userManager.FindByIdAsync(uid), Uri.UnescapeDataString(token), model.NewPassword);
                 if (result.Succeeded)
                 {
                     Obj = new()
