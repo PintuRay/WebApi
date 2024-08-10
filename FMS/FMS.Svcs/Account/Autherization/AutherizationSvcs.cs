@@ -24,6 +24,211 @@ namespace FMS.Svcs.Account.Autherization
         private readonly RoleManager<AppRole> _roleManager = roleManager;
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
+        #region User
+        public async Task<Base> GetUsers()
+        {
+            Base Obj;
+            try
+            {
+                var repoResult = await _userManager.Users.ToListAsync();
+                if (repoResult.Count > 0)
+                {
+                    var Users = _mapper.Map<List<UserViewModel>>(repoResult);
+                    Obj = new()
+                    {
+                        Data = Users,
+                        Count = Users.Count.ToString(),
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    };
+                    return Obj;
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Message = "No Record Exist",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Exception = _Exception,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+            }
+            return Obj;
+        }
+        public async Task<Base> GetUserByMail(string email)
+        {
+            Base Obj;
+            try
+            {
+                var repoResult = await _userManager.FindByEmailAsync(email);
+                if (repoResult != null)
+                {
+                    var User = _mapper.Map<UserViewModel>(repoResult);
+                    Obj = new()
+                    {
+                        Data = User,
+                        Message = "User Found",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    };
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Message = "User Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Exception = _Exception,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+            }
+            return Obj;
+        }
+        public async Task<Base> GetUserById(string Id)
+        {
+            Base Obj;
+            try
+            {
+                var repoResult = await _userManager.FindByIdAsync(Id);
+                if (repoResult != null)
+                {
+                    var User = _mapper.Map<UserViewModel>(repoResult);
+                    Obj = new()
+                    {
+                        Data = User,
+                        Message = "User Found",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    };
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Message = "User Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Exception = _Exception,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+            }
+            return Obj;
+        }
+        public async Task<Base> UpdateUser(string Id, UserModel User)
+        {
+            Base Obj;
+            try
+            {
+                var chkUser = await _userManager.FindByIdAsync(Id);
+                if (chkUser != null)
+                {
+                    var updateUser = _mapper.Map(User, chkUser);
+                    chkUser.ModifyDate = DateTime.UtcNow;
+                    chkUser.ModifyBy = "N/A";
+                    var repoResult = await _userManager.UpdateAsync(updateUser);
+                    if (repoResult.Succeeded)
+                    {
+                        Obj = new()
+                        {
+                            Data = new { Id = Id },
+                            Message = "User Updated Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Data = new { Id = Id },
+                            Message = $"Failed To Update User",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        };
+                    }
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Data = new { Id = Id },
+                        Message = $"UserId '{Id}' Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Exception = _Exception,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+            }
+            return Obj;
+        }
+        public async Task<Base> DeletUser(string Id)
+        {
+            Base Obj;
+            try
+            {
+                var chkUser = await _userManager.FindByIdAsync(Id);
+                if (chkUser != null)
+                {
+                    var repoResult = await _userManager.DeleteAsync(chkUser);
+                    if (repoResult.Succeeded)
+                    {
+                        Obj = new()
+                        {
+                            Data = new { Id = Id },
+                            Message = "User Deleted Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Message = "Falied To Delete User",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        };
+                    }
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Message = $"UserId '{Id}' Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Exception = _Exception,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+            }
+            return Obj;
+        }
+        #endregion
         #region Role
         public async Task<Base> CreateRole(RoleModel model)
         {
@@ -252,7 +457,7 @@ namespace FMS.Svcs.Account.Autherization
         public async Task<Base> GetAllUserWithRolesAndClaims()
         {
             Base Obj;
-            var users = new List<UserRoleClaimViewModel>();
+            var users = new List<UserRoleClaimModel>();
             try
             {
                 foreach (var user in _userManager.Users)
@@ -277,13 +482,14 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         var userClaim = new UserClaimModel()
                         {
+                            ClaimValue = claim.Value,
                             ClaimType = claim.Type,
                             IsClaimSelected = ExistingUserClaims.Any(c => c.Type == claim.Type && c.Value == claim.Value)
                         };
                         userClaims.Add(userClaim);
                     }
                     #endregion
-                    var data = new UserRoleClaimViewModel()
+                    var data = new UserRoleClaimModel()
                     {
                         Id = user.Id,
                         Name = user.Name,
@@ -324,8 +530,8 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         var userClaim = new UserClaimModel()
                         {
-                            UserId = isUserExist.Id,
                             ClaimType = claim.Type,
+                            ClaimValue= claim.Value,
                             IsClaimSelected = ExistingUserClaims.Any(c => c.Type == claim.Type && c.Value == claim.Value)
                         };
                         userClaims.Add(userClaim);
@@ -344,7 +550,7 @@ namespace FMS.Svcs.Account.Autherization
                         userRoles.Add(userRole);
                     }
                     #endregion
-                    var user = new UserRoleClaimViewModel()
+                    var user = new UserRoleClaimModel()
                     {
                         Id = isUserExist.Id,
                         Name = isUserExist.Name,
@@ -382,24 +588,32 @@ namespace FMS.Svcs.Account.Autherization
             Base Obj;
             try
             {
+               
                 var FindUser = await _userManager.FindByIdAsync(model.Id);
                 if (FindUser != null)
                 {
-                    var OldRole = _userManager.GetRolesAsync(FindUser).Result.First();
-                    var NewRole = _roleManager.FindByIdAsync(model.UserRole.RoleId).Result.Name;
-                    if (!await _userManager.IsInRoleAsync(FindUser, NewRole))
+                    #region Roles
+                    foreach (var updateRole in model.UserRoles)
                     {
-                        await _userManager.RemoveFromRoleAsync(FindUser, OldRole);
-                        await _userManager.AddToRoleAsync(FindUser, NewRole);
+                        if (updateRole.IsRoleSelected)
+                        {
+                            await _userManager.AddToRoleAsync(FindUser, updateRole.RoleName);
+                        }
+                        else
+                        {
+                            await _userManager.RemoveFromRoleAsync(FindUser, updateRole.RoleName);
+                        }
                     }
-                    //claims
+                    #endregion
+                    #region claims
                     var claims = await _userManager.GetClaimsAsync(FindUser);
                     if (claims != null)
                     {
                         await _userManager.RemoveClaimsAsync(FindUser, claims);
+                        await _userManager.AddClaimsAsync(FindUser, model.UserClaims.Select(c => new Claim(c.ClaimType, c.IsClaimSelected ? c.ClaimType : "")));
                     }
-
-                    await _userManager.AddClaimsAsync(FindUser, model.UserClaims.Select(c => new Claim(c.ClaimType, c.IsClaimSelected ? c.ClaimType : "")));
+                   
+                    #endregion
                     Obj = new()
                     {
                         Message = "Successfully Update User Role and Claims",

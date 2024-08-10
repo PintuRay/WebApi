@@ -16,6 +16,13 @@ namespace FMS.Svcs.Account.Authentication
         #region SignIn 
         Task<Base> SignIn(SignInModel data);
         #endregion
+        #region ThiredParty SignIn
+        #endregion
+        #region Forgot, Reset && Change Password
+        Task<Base> ForgotPassword(string mail, string routeUrl);
+        Task<Base> ResetPassword(string uid, string token, ResetPasswordModel model);
+        Task<Base> ChangePassword(AppUser user, ChangePasswordModel model);
+        #endregion
         #region Email 
         Task<Base> VerifyConfirmEmail(string uid, string token);
         Task<Base> ResendConfirmEmail(string mail, string RouteUrl); 
@@ -28,20 +35,6 @@ namespace FMS.Svcs.Account.Authentication
          Task<Base> SendTwoFactorToken(AppUser user);
         Task<Base> VerifyTwoFactorToken(string Token, AppUser user);
         Task<Base> SignInWithOTP(SignIn2faModel model);
-        #endregion
-        #region ThiredParty SignIn
-        #endregion
-        #region Forgot, Reset && Change Password
-        Task<Base> ForgotPassword(string mail, string routeUrl);
-        Task<Base> ResetPassword(string uid, string token, ResetPasswordModel model);
-        Task<Base> ChangePassword(AppUser user, ChangePasswordModel model);
-        #endregion
-        #region User
-        Task<Base> GetUsers();
-        Task<Base> GetUserByMail(string email);
-        Task<Base> GetUserById(string Id);
-        Task<Base> UpdateUser(string Id, UserModel User);
-        Task<Base> DeletUser(string UserId);
-        #endregion
+        #endregion  
     }
 }

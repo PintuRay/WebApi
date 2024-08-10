@@ -8,6 +8,13 @@ namespace FMS.Svcs.Account.Autherization
 {
     public interface IAutherizationSvcs
     {
+        #region User
+        Task<Base> GetUsers();
+        Task<Base> GetUserByMail(string email);
+        Task<Base> GetUserById(string Id);
+        Task<Base> UpdateUser(string Id, UserModel User);
+        Task<Base> DeletUser(string UserId);
+        #endregion
         #region Role
         Task<Base> CreateRole(RoleModel model);
         Task<Base> GetRoles();
@@ -20,5 +27,6 @@ namespace FMS.Svcs.Account.Autherization
         Task<Base> GetUserWithRolesAndClaims(string RoleId);
         Task<Base> UpdateUserRoleAndClaims(UserRoleClaimModel model);
         #endregion
+        
     }
 }

@@ -11,13 +11,6 @@ namespace FMS.Model.Account.Autherization
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public UserRoleModel UserRole { get; set; }
-        public List<UserClaimModel> UserClaims { get; set; }
-    }
-    public class UserRoleClaimViewModel
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
         public List<UserRoleModel> UserRoles { get; set; }
         public List<UserClaimModel> UserClaims { get; set; }
     }
