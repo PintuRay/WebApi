@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace FMS.Model.Account.Authentication
 {
     public class UserModel
     {
-        public string Token { get; set; }
         [Required]
         public Guid FkTokenId { get; set; }
         [Required(ErrorMessage = "User Name is required")]
@@ -16,6 +16,7 @@ namespace FMS.Model.Account.Authentication
         public string ConformPassword { get; set; }
         [Required(ErrorMessage = "Phone Number is required")]
         public string PhoneNumber { get; set; }
+        [NotMapped]
         public string RouteUls { get; set; }
     }
     public class UserViewModel : UserModel

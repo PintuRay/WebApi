@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FMS.Db.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240417052016_Mg-Initial")]
-    partial class MgInitial
+    [Migration("20240811041958_Mg-001")]
+    partial class Mg001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +65,38 @@ namespace FMS.Db.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", "dbo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "438df919-342f-4ddf-87c4-6d7a16e64651",
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9324),
+                            ModifyBy = "System",
+                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9326),
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "5c3a5755-95c7-4f51-84c7-6d7a16e64651",
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9335),
+                            ModifyBy = "System",
+                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9336),
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9341),
+                            ModifyBy = "System",
+                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9342),
+                            Name = "Developer",
+                            NormalizedName = "DEVELOPER"
+                        });
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.AppUser", b =>
@@ -89,9 +121,6 @@ namespace FMS.Db.Migrations
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("EmailConfirmationToken")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -130,9 +159,6 @@ namespace FMS.Db.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("OTP")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -166,6 +192,32 @@ namespace FMS.Db.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", "dbo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "65a37859-d054-4a68-a817-1669d83c598a",
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(8182),
+                            Email = "raypintu959@gmail.com",
+                            EmailConfirmed = true,
+                            FkTokenId = new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
+                            IsActive = true,
+                            LockoutEnabled = true,
+                            ModifyBy = "System",
+                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(8185),
+                            Name = "Pintu Ray",
+                            NormalizedEmail = "RAYPINTU959@GMAIL.COM",
+                            NormalizedUserName = "RAYPINTU959@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGCZJkRuuaN5s6jesxs7zm4NBR99KorCbeWBm6yVLgn2JCBVFEKr5ui4hLYFkhQWCA==",
+                            PhoneNumber = "8249486590",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "ZCKN4FWVQMFYYU3JWBLJN7UUN2CBOZMF",
+                            TwoFactorEnabled = true,
+                            UserName = "raypintu959@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Branch", b =>
@@ -334,6 +386,18 @@ namespace FMS.Db.Migrations
                     b.HasKey("TokenId");
 
                     b.ToTable("RegisterTokens", "dbo");
+
+                    b.HasData(
+                        new
+                        {
+                            TokenId = new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 775, DateTimeKind.Utc).AddTicks(4927),
+                            IsActive = true,
+                            ModifyBy = "System",
+                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 775, DateTimeKind.Utc).AddTicks(4936),
+                            TokenValue = "123-123-1234"
+                        });
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.UserBranch", b =>
@@ -417,6 +481,11 @@ namespace FMS.Db.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(34)
+                        .HasColumnType("nvarchar(34)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -426,6 +495,10 @@ namespace FMS.Db.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", "dbo");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserClaim<string>");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -493,6 +566,36 @@ namespace FMS.Db.Migrations
                     b.ToTable("AspNetUserTokens", "dbo");
                 });
 
+            modelBuilder.Entity("FMS.Db.Entity.AppUserClaim", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>");
+
+                    b.HasDiscriminator().HasValue("AppUserClaim");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "Create",
+                            ClaimValue = "Create",
+                            UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "Update",
+                            ClaimValue = "Update",
+                            UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "Delete",
+                            ClaimValue = "Delete",
+                            UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58"
+                        });
+                });
+
             modelBuilder.Entity("FMS.Db.Entity.AppUserRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<string>");
@@ -512,6 +615,17 @@ namespace FMS.Db.Migrations
                         .HasColumnType("datetime");
 
                     b.HasDiscriminator().HasValue("AppUserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
+                            RoleId = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 777, DateTimeKind.Utc).AddTicks(459),
+                            ModifyBy = "System",
+                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 777, DateTimeKind.Utc).AddTicks(464)
+                        });
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.AppUser", b =>

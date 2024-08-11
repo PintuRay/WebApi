@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace FMS.Db.Migrations
 {
     /// <inheritdoc />
-    public partial class MgInitial : Migration
+    public partial class Mg001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -156,8 +158,6 @@ namespace FMS.Db.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FkTokenId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    EmailConfirmationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OTP = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "((1))"),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     ModifyDate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -199,7 +199,8 @@ namespace FMS.Db.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -321,6 +322,46 @@ namespace FMS.Db.Migrations
                         principalColumn: "BranchId",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "ModifyBy", "ModifyDate", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "438df919-342f-4ddf-87c4-6d7a16e64651", null, "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9324), "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9326), "User", "USER" },
+                    { "5c3a5755-95c7-4f51-84c7-6d7a16e64651", null, "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9335), "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9336), "Admin", "ADMIN" },
+                    { "71f97dea-8c5f-4f51-84c7-6d7a16e64651", null, "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9341), "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9342), "Developer", "DEVELOPER" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "RegisterTokens",
+                columns: new[] { "TokenId", "CreatedBy", "CreatedDate", "IsActive", "ModifyBy", "ModifyDate", "TokenValue" },
+                values: new object[] { new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"), "System", new DateTime(2024, 8, 11, 4, 19, 57, 775, DateTimeKind.Utc).AddTicks(4927), true, "System", new DateTime(2024, 8, 11, 4, 19, 57, 775, DateTimeKind.Utc).AddTicks(4936), "123-123-1234" });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedBy", "CreatedDate", "Email", "EmailConfirmed", "FkTokenId", "IsActive", "LockoutEnabled", "LockoutEnd", "ModifyBy", "ModifyDate", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "4431f16a-6bc7-4e9b-bada-c491fcc81a58", 0, "65a37859-d054-4a68-a817-1669d83c598a", "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(8182), "raypintu959@gmail.com", true, new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"), true, true, null, "System", new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(8185), "Pintu Ray", "RAYPINTU959@GMAIL.COM", "RAYPINTU959@GMAIL.COM", "AQAAAAIAAYagAAAAEGCZJkRuuaN5s6jesxs7zm4NBR99KorCbeWBm6yVLgn2JCBVFEKr5ui4hLYFkhQWCA==", "8249486590", true, "ZCKN4FWVQMFYYU3JWBLJN7UUN2CBOZMF", true, "raypintu959@gmail.com" });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "AspNetUserClaims",
+                columns: new[] { "Id", "ClaimType", "ClaimValue", "Discriminator", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "Create", "Create", "AppUserClaim", "4431f16a-6bc7-4e9b-bada-c491fcc81a58" },
+                    { 2, "Update", "Update", "AppUserClaim", "4431f16a-6bc7-4e9b-bada-c491fcc81a58" },
+                    { 3, "Delete", "Delete", "AppUserClaim", "4431f16a-6bc7-4e9b-bada-c491fcc81a58" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId", "CreatedBy", "CreatedDate", "Discriminator", "ModifyBy", "ModifyDate" },
+                values: new object[] { "71f97dea-8c5f-4f51-84c7-6d7a16e64651", "4431f16a-6bc7-4e9b-bada-c491fcc81a58", "System", new DateTime(2024, 8, 11, 4, 19, 57, 777, DateTimeKind.Utc).AddTicks(459), "AppUserRole", "System", new DateTime(2024, 8, 11, 4, 19, 57, 777, DateTimeKind.Utc).AddTicks(464) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

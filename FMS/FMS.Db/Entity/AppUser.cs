@@ -6,8 +6,6 @@ namespace FMS.Db.Entity
     {
         public Guid FkTokenId { get; set; }
         public string Name { get; set; }
-        public string EmailConfirmationToken { get; set; } = null;
-        public string OTP { get; set; } = null;
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }

@@ -18,6 +18,7 @@ namespace FMS.Db
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<AppUserRole> AppUserRoles { get; set; }
+        public DbSet<AppUserClaim> AppUserClaims { get; set; }
         public DbSet<RegisterToken> RegisterTokens { get; set; }
         public DbSet<FinancialYear> FinancialYears { get; set; }
         public DbSet<Branch> Branches { get; set; }
@@ -32,6 +33,7 @@ namespace FMS.Db
             new AppUserConfig().Configure(modelBuilder.Entity<AppUser>());
             new AppRoleConfig().Configure(modelBuilder.Entity<AppRole>());
             new AppUserRoleConfig().Configure(modelBuilder.Entity<AppUserRole>());
+            new AppUserClaimConfig().Configure(modelBuilder.Entity<AppUserClaim>());
             new FinancialYearConfig().Configure(modelBuilder.Entity<FinancialYear>());
             new BranchConfig().Configure(modelBuilder.Entity<Branch>());
             new BranchFinancialYearConfig().Configure(modelBuilder.Entity<BranchFinancialYear>());

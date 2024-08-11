@@ -22,6 +22,18 @@ namespace FMS.Db.EntityConfig
             builder.Property(e => e.CreatedDate).HasColumnType("datetime");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("datetime");
+            builder.HasData(
+                new RegisterToken
+                {
+                    TokenId = Guid.Parse("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
+                    TokenValue = "123-123-1234",
+                    IsActive = true,
+                    CreatedBy = "System",
+                    CreatedDate = DateTime.UtcNow,
+                    ModifyBy = "System",
+                    ModifyDate = DateTime.UtcNow
+                }
+             );
         }
     }
 }

@@ -107,6 +107,7 @@ namespace FMS.Svcs.Account.Authentication
                 user.UserName = data.Email;
                 user.CreatedDate = DateTime.UtcNow;
                 var identity = await _userManager.CreateAsync(user, data.Password);
+
                 if (identity.Succeeded)
                 {
                     var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -125,10 +126,13 @@ namespace FMS.Svcs.Account.Authentication
                         if (isMailSend)
                         {
                             #region Assign Default Role : Devloper to first registrar; rest is user
-                            var checkDevloper = await _roleManager.FindByNameAsync("Devloper");
-                            if (checkDevloper is null)
+                            if (_userManager.Users.Count() == 1)
                             {
-                                await _roleManager.CreateAsync(new AppRole() { Name = "Devloper" });
+                                var checkDevloper = await _roleManager.FindByNameAsync("Devloper");
+                                if(checkDevloper is null)
+                                {
+                                    await _roleManager.CreateAsync(new AppRole() { Name = "Devloper" });
+                                }
                                 await _userManager.AddToRoleAsync(user, "Devloper");
                                 await _userManager.AddClaimsAsync(user, ClaimsStoreModel.AllClaims);
                             }
@@ -207,7 +211,6 @@ namespace FMS.Svcs.Account.Authentication
                             {
                                 #region mail
                                 var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
-                                user.OTP = code;
                                 await _userManager.UpdateAsync(user);
                                 UserEmailOptions options = new()
                                 {
@@ -543,7 +546,7 @@ namespace FMS.Svcs.Account.Authentication
             bool Result = false;
             try
             {
-                
+
                 string Message = user.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA";
                 if (user.PhoneNumberConfirmed)
                 {
@@ -557,7 +560,7 @@ namespace FMS.Svcs.Account.Authentication
                     };
                     #endregion
                 }
-               else if (user.EmailConfirmed)
+                else if (user.EmailConfirmed)
                 {
                     #region mail
                     var TwoFactorToken = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
@@ -602,7 +605,7 @@ namespace FMS.Svcs.Account.Authentication
             Base Obj;
             try
             {
-                var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, Token) || 
+                var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, Token) ||
                              await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, Token);
                 if (result)
                 {
@@ -651,7 +654,7 @@ namespace FMS.Svcs.Account.Authentication
             Base Obj;
             try
             {
-                
+
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
@@ -819,6 +822,6 @@ namespace FMS.Svcs.Account.Authentication
             return Obj;
         }
         #endregion
-        
+
     }
 }

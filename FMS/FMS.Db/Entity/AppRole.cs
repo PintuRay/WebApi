@@ -14,4 +14,5 @@ namespace FMS.Db.Entity
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
     }
+
 }
