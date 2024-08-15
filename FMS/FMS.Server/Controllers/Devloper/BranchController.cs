@@ -59,7 +59,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Branchid/{id}"), Authorize(policy: "Delete")]
+        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> RemoveBranch([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -103,7 +103,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPatch, Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverAllBranch([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
