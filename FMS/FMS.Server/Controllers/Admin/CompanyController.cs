@@ -10,7 +10,7 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class CompanyDetailController(IAdminSettingSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class CompanyController(IAdminSettingSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
         private readonly IAdminSettingSvcs _adminSvcs = adminSvcs;
@@ -33,9 +33,9 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetCompany()
+        public async Task<IActionResult> GetCompany([FromQuery]string BranchId)
         {
-            var result = await _adminSvcs.GetCompany();
+            var result = await _adminSvcs.GetCompany(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
@@ -77,9 +77,9 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedCompanies()
+        public async Task<IActionResult> GetRemovedCompanies([FromQuery] string BranchId)
         {
-            var result = await _adminSvcs.GetRemovedCompanies();
+            var result = await _adminSvcs.GetRemovedCompanies(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]

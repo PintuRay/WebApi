@@ -48,12 +48,12 @@ namespace FMS.Svcs.AdminSetting
         #endregion
         #region Company Details
         #region Crud
-        public async Task<Base> GetCompany()
+        public async Task<Base> GetCompany(string BranchId)
         {
             Base Obj;
             try
             {
-                var repoResult = await _adminRepo.GetCompany();
+                var repoResult = await _adminRepo.GetCompany(BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -177,12 +177,12 @@ namespace FMS.Svcs.AdminSetting
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedCompanies()
+        public async Task<Base> GetRemovedCompanies(string BranchId)
         {
             Base Obj;
             try
             {
-                var repoResult = await _adminRepo.GetRemovedCompanies();
+                var repoResult = await _adminRepo.GetRemovedCompanies(BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()

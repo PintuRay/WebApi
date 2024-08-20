@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FMS.Db.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240811041958_Mg-001")]
+    [Migration("20240820021108_Mg-001")]
     partial class Mg001
     {
         /// <inheritdoc />
@@ -71,9 +71,9 @@ namespace FMS.Db.Migrations
                         {
                             Id = "438df919-342f-4ddf-87c4-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9324),
+                            CreatedDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(7599),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9326),
+                            ModifyDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(7601),
                             Name = "User",
                             NormalizedName = "USER"
                         },
@@ -81,9 +81,9 @@ namespace FMS.Db.Migrations
                         {
                             Id = "5c3a5755-95c7-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9335),
+                            CreatedDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(7606),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9336),
+                            ModifyDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(7607),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
@@ -91,11 +91,11 @@ namespace FMS.Db.Migrations
                         {
                             Id = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9341),
+                            CreatedDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(7611),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(9342),
-                            Name = "Developer",
-                            NormalizedName = "DEVELOPER"
+                            ModifyDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(7612),
+                            Name = "Devloper",
+                            NormalizedName = "DEVLOPER"
                         });
                 });
 
@@ -200,14 +200,14 @@ namespace FMS.Db.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "65a37859-d054-4a68-a817-1669d83c598a",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(8182),
+                            CreatedDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(6614),
                             Email = "raypintu959@gmail.com",
                             EmailConfirmed = true,
                             FkTokenId = new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
                             IsActive = true,
                             LockoutEnabled = true,
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 776, DateTimeKind.Utc).AddTicks(8185),
+                            ModifyDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(6616),
                             Name = "Pintu Ray",
                             NormalizedEmail = "RAYPINTU959@GMAIL.COM",
                             NormalizedUserName = "RAYPINTU959@GMAIL.COM",
@@ -392,10 +392,10 @@ namespace FMS.Db.Migrations
                         {
                             TokenId = new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 775, DateTimeKind.Utc).AddTicks(4927),
+                            CreatedDate = new DateTime(2024, 8, 20, 2, 11, 7, 454, DateTimeKind.Utc).AddTicks(4770),
                             IsActive = true,
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 775, DateTimeKind.Utc).AddTicks(4936),
+                            ModifyDate = new DateTime(2024, 8, 20, 2, 11, 7, 454, DateTimeKind.Utc).AddTicks(4776),
                             TokenValue = "123-123-1234"
                         });
                 });
@@ -622,9 +622,9 @@ namespace FMS.Db.Migrations
                             UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                             RoleId = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 19, 57, 777, DateTimeKind.Utc).AddTicks(459),
+                            CreatedDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(8208),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 19, 57, 777, DateTimeKind.Utc).AddTicks(464)
+                            ModifyDate = new DateTime(2024, 8, 20, 2, 11, 7, 455, DateTimeKind.Utc).AddTicks(8211)
                         });
                 });
 

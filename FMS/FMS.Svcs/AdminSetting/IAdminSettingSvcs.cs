@@ -13,13 +13,13 @@ namespace FMS.Svcs.AdminSetting
         #endregion
         #region Company Details
         #region Crud
-        Task<Base> GetCompany();
+        Task<Base> GetCompany(string BranchId);
         Task<Base> CreateCompany(CompanyModel data, AppUser user);
         Task<Base> UpdateCompany(Guid Id, CompanyModel model, AppUser user);
         Task<Base> RemoveCompany(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedCompanies();
+        Task<Base> GetRemovedCompanies(string BranchId);
         Task<Base> RecoverCompany(Guid Id, AppUser user);
         Task<Base> DeleteCompany(Guid Id, AppUser user);
         Task<Base> RecoverAllCompany(List<string> Ids, AppUser user);

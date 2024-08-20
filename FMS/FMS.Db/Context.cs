@@ -24,6 +24,7 @@ namespace FMS.Db
         public DbSet<Branch> Branches { get; set; }
         public DbSet<BranchFinancialYear> BranchFinancialYears { get; set; }
         public DbSet<UserBranch> UserBranches { get; set; }
+        public DbSet<Company> Companies { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +39,7 @@ namespace FMS.Db
             new BranchConfig().Configure(modelBuilder.Entity<Branch>());
             new BranchFinancialYearConfig().Configure(modelBuilder.Entity<BranchFinancialYear>());
             new UserBranchConfig().Configure(modelBuilder.Entity<UserBranch>());
+            new CompanyConfig().Configure(modelBuilder.Entity<Company>());
             #endregion
             base.OnModelCreating(modelBuilder);
         }

@@ -23,6 +23,8 @@ namespace FMS.Model
             CreateMap<BranchFinancialYear, BranchFinancialYearViewModel>().ReverseMap();
             CreateMap<RegisterToken, RegisterTokenModel>().ReverseMap();
             CreateMap<RegisterToken, RegisterTokenViewModel>().ReverseMap();
+            CreateMap<Company, CompanyModel>().ReverseMap();
+            CreateMap<Company, CompanyViewModel>().ReverseMap();
         }
     }
 }

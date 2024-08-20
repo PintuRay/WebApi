@@ -12,12 +12,12 @@ namespace FMS.Repo.AdminSetting
         #region Company Details
         #region Crud
         Task<BaseDb> CreateCompany(CompanyModel data, AppUser user);
-        Task<Result<CompanyModel>> GetCompany();
+        Task<Result<CompanyViewModel>> GetCompany(string BranchId);
         Task<BaseDb> UpdateCompany(Guid Id, CompanyModel model, AppUser user);
         Task<BaseDb> RemoveCompany(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<CompanyModel>> GetRemovedCompanies();
+        Task<Result<CompanyViewModel>> GetRemovedCompanies(string BranchId);
         Task<BaseDb> RecoverCompany(Guid Id, AppUser user);
         Task<BaseDb> DeleteCompany(Guid Id, AppUser user);
         Task<BaseDb> RecoverAllCompany(List<string> Ids, AppUser user);

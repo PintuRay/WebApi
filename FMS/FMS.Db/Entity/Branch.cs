@@ -15,5 +15,7 @@
         //Collection Navigation Property
         public ICollection<UserBranch> UserBranch { get; set; } = [];
         public ICollection<BranchFinancialYear> BranchFinancialYears { get; set; } = [];
+        public ICollection<Company> Companies { get; set; } = [];
+
     }
 }

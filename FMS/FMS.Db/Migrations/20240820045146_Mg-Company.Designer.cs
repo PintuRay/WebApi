@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FMS.Db.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240811043352_Mg-002")]
-    partial class Mg002
+    [Migration("20240820045146_Mg-Company")]
+    partial class MgCompany
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,9 +71,9 @@ namespace FMS.Db.Migrations
                         {
                             Id = "438df919-342f-4ddf-87c4-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(1106),
+                            CreatedDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(4236),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(1110),
+                            ModifyDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(4240),
                             Name = "User",
                             NormalizedName = "USER"
                         },
@@ -81,9 +81,9 @@ namespace FMS.Db.Migrations
                         {
                             Id = "5c3a5755-95c7-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(1118),
+                            CreatedDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(4248),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(1120),
+                            ModifyDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(4250),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
@@ -91,9 +91,9 @@ namespace FMS.Db.Migrations
                         {
                             Id = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(1127),
+                            CreatedDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(4274),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(1128),
+                            ModifyDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(4276),
                             Name = "Devloper",
                             NormalizedName = "DEVLOPER"
                         });
@@ -200,14 +200,14 @@ namespace FMS.Db.Migrations
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "65a37859-d054-4a68-a817-1669d83c598a",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 33, 50, 841, DateTimeKind.Utc).AddTicks(9494),
+                            CreatedDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(2489),
                             Email = "raypintu959@gmail.com",
                             EmailConfirmed = true,
                             FkTokenId = new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
                             IsActive = true,
                             LockoutEnabled = true,
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 33, 50, 841, DateTimeKind.Utc).AddTicks(9497),
+                            ModifyDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(2494),
                             Name = "Pintu Ray",
                             NormalizedEmail = "RAYPINTU959@GMAIL.COM",
                             NormalizedUserName = "RAYPINTU959@GMAIL.COM",
@@ -312,6 +312,72 @@ namespace FMS.Db.Migrations
                     b.ToTable("BranchFinancialYears", "dbo");
                 });
 
+            modelBuilder.Entity("FMS.Db.Entity.Company", b =>
+                {
+                    b.Property<Guid>("CompanyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newid())");
+
+                    b.Property<string>("Adress")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Fk_BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("GSTIN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((1))");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifyBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("PhoneNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CompanyId");
+
+                    b.HasIndex("Fk_BranchId");
+
+                    b.ToTable("Company", "dbo");
+                });
+
             modelBuilder.Entity("FMS.Db.Entity.FinancialYear", b =>
                 {
                     b.Property<Guid>("FinancialYearId")
@@ -392,10 +458,10 @@ namespace FMS.Db.Migrations
                         {
                             TokenId = new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 33, 50, 840, DateTimeKind.Utc).AddTicks(4327),
+                            CreatedDate = new DateTime(2024, 8, 20, 4, 51, 45, 169, DateTimeKind.Utc).AddTicks(4817),
                             IsActive = true,
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 33, 50, 840, DateTimeKind.Utc).AddTicks(4334),
+                            ModifyDate = new DateTime(2024, 8, 20, 4, 51, 45, 169, DateTimeKind.Utc).AddTicks(4830),
                             TokenValue = "123-123-1234"
                         });
                 });
@@ -622,9 +688,9 @@ namespace FMS.Db.Migrations
                             UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                             RoleId = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(2117),
+                            CreatedDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(5302),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 8, 11, 4, 33, 50, 842, DateTimeKind.Utc).AddTicks(2120)
+                            ModifyDate = new DateTime(2024, 8, 20, 4, 51, 45, 171, DateTimeKind.Utc).AddTicks(5305)
                         });
                 });
 
@@ -656,6 +722,17 @@ namespace FMS.Db.Migrations
                     b.Navigation("Branch");
 
                     b.Navigation("FinancialYear");
+                });
+
+            modelBuilder.Entity("FMS.Db.Entity.Company", b =>
+                {
+                    b.HasOne("FMS.Db.Entity.Branch", "Branch")
+                        .WithMany("Companies")
+                        .HasForeignKey("Fk_BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.UserBranch", b =>
@@ -736,6 +813,8 @@ namespace FMS.Db.Migrations
             modelBuilder.Entity("FMS.Db.Entity.Branch", b =>
                 {
                     b.Navigation("BranchFinancialYears");
+
+                    b.Navigation("Companies");
 
                     b.Navigation("UserBranch");
                 });

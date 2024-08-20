@@ -3,7 +3,9 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Model.Admin;
+using FMS.Model.Devloper;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Repo.AdminSetting
 {
@@ -43,43 +45,260 @@ namespace FMS.Repo.AdminSetting
         #endregion
         #region Company Details
         #region Crud
+        public async Task<Result<CompanyViewModel>> GetCompany(string BranchId)
+        {
+            Result<CompanyViewModel> _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                if (BranchId != "All")
+                {
+                    var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == true).SingleOrDefaultAsync();
+                    if (Query != null)
+                    {
+                        var Company = _mapper.Map<CompanyViewModel>(Query);
+                        _Result.SingleObjData = Company;
+                        _Result.IsSucess = true;
+                    }
+                }
+                else
+                {
+                    var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == true).ToListAsync();
+                    if (Query != null)
+                    {
+                        var Companies = _mapper.Map<List<CompanyViewModel>>(Query);
+                        _Result.CollectionObjData = Companies;
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
+        }
         public async Task<BaseDb> CreateCompany(CompanyModel data, AppUser user)
         {
-            throw new NotImplementedException();
-        }
-        public async Task<Result<CompanyModel>> GetCompany()
-        {
-            throw new NotImplementedException();
+            BaseDb _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await (from s in _ctx.Companies where s.CompanyName == data.CompanyName && s.IsActive == true select s).SingleOrDefaultAsync();
+                if (Query == null)
+                {
+                    var newCompany = _mapper.Map<Company>(data);
+                    newCompany.CreatedDate = DateTime.UtcNow;
+                    newCompany.CreatedBy = user.Name;
+                    await _ctx.Companies.AddAsync(newCompany);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Id = newCompany.CompanyId.ToString();
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<BaseDb> UpdateCompany(Guid Id, CompanyModel model, AppUser user)
         {
-            throw new NotImplementedException();
+            BaseDb _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await (from s in _ctx.Companies where s.CompanyId == Id && s.IsActive == true select s).SingleOrDefaultAsync();
+                if (Query != null)
+                {
+                    var updateCompany = _mapper.Map(model, Query);
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    int Count = await _ctx.SaveChangesAsync();
+                    _Result.Count = Count.ToString();
+                    if (Count > 0)
+                    {
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<BaseDb> RemoveCompany(Guid Id, AppUser user)
         {
-            throw new NotImplementedException();
+            BaseDb _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.Companies.SingleOrDefaultAsync(x => x.CompanyId == Id && x.IsActive == true);
+                if (Query != null)
+                {
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    Query.IsActive = false;
+                    int Count = await _ctx.SaveChangesAsync();
+                    _Result.Count = Count.ToString();
+                    if (Count > 0)
+                    {
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         #endregion
         #region Recover
-        public async Task<Result<CompanyModel>> GetRemovedCompanies()
+        public async Task<Result<CompanyViewModel>> GetRemovedCompanies(string BranchId)
         {
-            throw new NotImplementedException();
+            Result<CompanyViewModel> _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                if (BranchId != "All")
+                {
+                    var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == false).SingleOrDefaultAsync();
+                    if (Query != null)
+                    {
+                        var Company = _mapper.Map<CompanyViewModel>(Query);
+                        _Result.SingleObjData = Company;
+                        _Result.IsSucess = true;
+                    }
+                }
+                else
+                {
+                    var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == false).ToListAsync();
+                    if (Query != null)
+                    {
+                        var Companies = _mapper.Map<List<CompanyViewModel>>(Query);
+                        _Result.CollectionObjData = Companies;
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<BaseDb> RecoverCompany(Guid Id, AppUser user)
         {
-            throw new NotImplementedException();
+            BaseDb _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.Companies.SingleOrDefaultAsync(x => x.CompanyId == Id && x.IsActive == false);
+                if (Query != null)
+                {
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    Query.IsActive = true;
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<BaseDb> DeleteCompany(Guid Id, AppUser user)
         {
-            throw new NotImplementedException();
+            BaseDb _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.Companies.SingleOrDefaultAsync(x => x.CompanyId == Id && x.IsActive == false);
+                if (Query != null)
+                {
+                    _ctx.Companies.Remove(Query);
+                    int Count = await _ctx.SaveChangesAsync();
+                    _Result.Count = Count.ToString();
+                    if (Count > 0)
+                    {
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<BaseDb> RecoverAllCompany(List<string> Ids, AppUser user)
         {
-            throw new NotImplementedException();
+            BaseDb _Result = new();
+            try
+            {
+                int Count = 0;
+                _Result.IsSucess = false;
+                foreach (var item in Ids)
+                {
+                    var Query = await _ctx.Companies.SingleOrDefaultAsync(x => x.CompanyId == Guid.Parse(item) && x.IsActive == false);
+                    if (Query != null)
+                    {
+                        Query.ModifyDate = DateTime.UtcNow;
+                        Query.ModifyBy = user.Name;
+                        Query.IsActive = true;
+                        Count = await _ctx.SaveChangesAsync();
+                    }
+                    Count++;
+                }
+                if (Count > 0)
+                {
+                    _Result.IsSucess = true;
+                    _Result.Count = Count.ToString();
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<BaseDb> DeleteAllCompany(List<string> Ids, AppUser user)
         {
-            throw new NotImplementedException();
+            BaseDb _Result = new();
+            try
+            {
+                int Count = 0;
+                _Result.IsSucess = false;
+                foreach (var item in Ids)
+                {
+                    var Query = await _ctx.Companies.SingleOrDefaultAsync(x => x.CompanyId == Guid.Parse(item) && x.IsActive == false);
+                    if (Query != null)
+                    {
+                        _ctx.Companies.Remove(Query);
+                        Count = await _ctx.SaveChangesAsync();
+                    }
+                }
+                if (Count > 0)
+                {
+                    _Result.IsSucess = true;
+                    _Result.Count = Count.ToString();
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         #endregion
         #endregion
@@ -211,7 +430,7 @@ namespace FMS.Repo.AdminSetting
         #endregion
         #region Product Group
         #region Crud
-        public async Task<BaseDb> CreateProductGroup(ProductGroupModel data,AppUser user)
+        public async Task<BaseDb> CreateProductGroup(ProductGroupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -219,7 +438,7 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateProductGroup(Guid Id,ProductGroupModel data, AppUser user)
+        public async Task<BaseDb> UpdateProductGroup(Guid Id, ProductGroupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -257,11 +476,11 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> CreateProductSubGroup(ProductSubGroupModel data,AppUser user)
+        public async Task<BaseDb> CreateProductSubGroup(ProductSubGroupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateProductSubGroup(Guid Id,ProductSubGroupModel data, AppUser user)
+        public async Task<BaseDb> UpdateProductSubGroup(Guid Id, ProductSubGroupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -303,15 +522,15 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> CreateProduct(ProductModel data,AppUser user)
+        public async Task<BaseDb> CreateProduct(ProductModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateProduct(Guid Id,ProductModel data,AppUser  user)
+        public async Task<BaseDb> UpdateProduct(Guid Id, ProductModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> RemoveProduct(Guid Id,AppUser user)
+        public async Task<BaseDb> RemoveProduct(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -345,15 +564,15 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> CreateProductionConfig(ProductConfigDataRequest requestData,AppUser user)
+        public async Task<BaseDb> CreateProductionConfig(ProductConfigDataRequest requestData, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateProductionConfig(Guid Id,ProductionModel data,AppUser user)
+        public async Task<BaseDb> UpdateProductionConfig(Guid Id, ProductionModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> RemoveProductionConfig(Guid Id,AppUser user)
+        public async Task<BaseDb> RemoveProductionConfig(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -387,15 +606,15 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> CreateSalesConfig(ProductConfigDataRequest requestData,AppUser user)
+        public async Task<BaseDb> CreateSalesConfig(ProductConfigDataRequest requestData, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateSalesConfig(Guid Id,SalesConfigModel data,AppUser user)
+        public async Task<BaseDb> UpdateSalesConfig(Guid Id, SalesConfigModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> RemoveSalesConfig(Guid Id,AppUser user)
+        public async Task<BaseDb> RemoveSalesConfig(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -429,15 +648,15 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> CreateLabourRate(LabourRateModel data,AppUser user)
+        public async Task<BaseDb> CreateLabourRate(LabourRateModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateLabourRate(Guid Id,LabourRateModel data,AppUser user)
+        public async Task<BaseDb> UpdateLabourRate(Guid Id, LabourRateModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> RemoveLabourRate(Guid Id,AppUser user)
+        public async Task<BaseDb> RemoveLabourRate(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -478,15 +697,15 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> CreateSubGroup(LedgerSubGroupModel data,AppUser user)
+        public async Task<BaseDb> CreateSubGroup(LedgerSubGroupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateSubGroup(Guid Id,LedgerSubGroupModel data, AppUser user)
+        public async Task<BaseDb> UpdateSubGroup(Guid Id, LedgerSubGroupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> RemoveSubGroup(Guid Id,AppUser user)
+        public async Task<BaseDb> RemoveSubGroup(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -520,15 +739,15 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> CreateLedger(LedgerViewModel listData,AppUser user)
+        public async Task<BaseDb> CreateLedger(LedgerViewModel listData, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> UpdateLedger(Guid Id,LedgerModel data,AppUser user)
+        public async Task<BaseDb> UpdateLedger(Guid Id, LedgerModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<BaseDb> RemoveLedger(Guid Id,AppUser user)
+        public async Task<BaseDb> RemoveLedger(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
