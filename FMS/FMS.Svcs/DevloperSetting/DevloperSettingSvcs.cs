@@ -14,9 +14,9 @@ namespace FMS.Svcs.DevloperSetting
         #endregion
         #region Branch
         #region Crud
-        public async Task<Base> GetAllBranch()
+        public async Task<SvcsBase> GetAllBranch()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.GetAllBranch();
@@ -45,9 +45,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> CreateBranch(BranchModel data, AppUser user)
+        public async Task<SvcsBase> CreateBranch(BranchModel data, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.CreateBranch(data, user);
@@ -77,9 +77,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> UpdateBranch(Guid Id, BranchModel data, AppUser user)
+        public async Task<SvcsBase> UpdateBranch(Guid Id, BranchModel data, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.UpdateBranch(Id, data, user);
@@ -109,9 +109,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RemoveBranch(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveBranch(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RemoveBranch(Id, user);
@@ -143,9 +143,9 @@ namespace FMS.Svcs.DevloperSetting
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedBranches()
+        public async Task<SvcsBase> GetRemovedBranches()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.GetRemovedBranches();
@@ -174,9 +174,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RecoverBranch(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverBranch(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RecoverBranch(Id, user);
@@ -206,9 +206,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> DeleteBranch(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteBranch(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.DeleteBranch(Id, user);
@@ -238,9 +238,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RecoverAllBranch(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllBranch(List<string> Ids, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RecoverAllBranch(Ids, user);
@@ -269,9 +269,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> DeleteAllBranch(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllBranch(List<string> Ids, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.DeleteAllBranch(Ids, user);
@@ -304,9 +304,9 @@ namespace FMS.Svcs.DevloperSetting
         #endregion
         #region Financial Year
         #region Crud
-        public async Task<Base> GetFinancialYears()
+        public async Task<SvcsBase> GetFinancialYears()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.GetFinancialYears();
@@ -335,9 +335,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> CreateFinancialYear(FinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> CreateFinancialYear(FinancialYearModel data, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.CreateFinancialYear(data, user);
@@ -367,9 +367,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.UpdateFinancialYear(Id, data, user);
@@ -399,9 +399,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RemoveFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveFinancialYear(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RemoveFinancialYear(Id, user);
@@ -433,9 +433,9 @@ namespace FMS.Svcs.DevloperSetting
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedFinancialYears()
+        public async Task<SvcsBase> GetRemovedFinancialYears()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.GetRemovedFinancialYears();
@@ -464,9 +464,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RecoverFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverFinancialYear(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RecoverFinancialYear(Id, user);
@@ -496,9 +496,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> DeleteFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteFinancialYear(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.DeleteFinancialYear(Id, user);
@@ -527,9 +527,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RecoverAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllFinancialYear(List<string> Ids, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RecoverAllFinancialYear(Ids, user);
@@ -558,9 +558,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> DeleteAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllFinancialYear(List<string> Ids, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.DeleteAllFinancialYear(Ids, user);
@@ -593,9 +593,9 @@ namespace FMS.Svcs.DevloperSetting
         #endregion
         #region Branch Financial Year
         #region Crud
-        public async Task<Base> GetBranchFinancialYears()
+        public async Task<SvcsBase> GetBranchFinancialYears()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.GetBranchFinancialYears();
@@ -624,9 +624,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> GetBranchFinancialYears(Guid BranchId)
+        public async Task<SvcsBase> GetBranchFinancialYears(Guid BranchId)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.GetBranchFinancialYears(BranchId);
@@ -655,9 +655,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> CreateBranchFinancialYear(BranchFinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> CreateBranchFinancialYear(BranchFinancialYearModel data, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.CreateBranchFinancialYear(data, user);
@@ -687,9 +687,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> UpdateBranchFinancialYear(Guid Id, BranchFinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> UpdateBranchFinancialYear(Guid Id, BranchFinancialYearModel data, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.UpdateBranchFinancialYear(Id, data, user);
@@ -719,9 +719,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RemoveBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveBranchFinancialYear(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RemoveBranchFinancialYear(Id, user);
@@ -753,9 +753,9 @@ namespace FMS.Svcs.DevloperSetting
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedBranchFinancialYears()
+        public async Task<SvcsBase> GetRemovedBranchFinancialYears()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.GetRemovedBranchFinancialYears();
@@ -784,9 +784,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RecoverBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverBranchFinancialYear(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RecoverBranchFinancialYear(Id, user);
@@ -816,9 +816,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> DeleteBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteBranchFinancialYear(Guid Id, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.DeleteBranchFinancialYear(Id, user);
@@ -848,9 +848,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.RecoverAllBranchFinancialYear(Ids, user);
@@ -879,9 +879,9 @@ namespace FMS.Svcs.DevloperSetting
             }
             return Obj;
         }
-        public async Task<Base> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _devloperRepo.DeleteAllBranchFinancialYear(Ids, user);

@@ -22,6 +22,7 @@ namespace FMS.Db.Entity
         public string VehicleNo { get; set; } = null;
         public string Narration { get; set; } = null;
         public string ReceivingPerson { get; set; } = null;
+        public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
     }
     public class PurchaseOrder: PurchaseOrderModel
     {
@@ -35,7 +36,7 @@ namespace FMS.Db.Entity
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
         public ProductType ProductType { get; set; }
-        public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
+
     }
     internal class PurchaseOrderConfig : IEntityTypeConfiguration<PurchaseOrder>
     {

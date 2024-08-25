@@ -13,6 +13,7 @@ namespace FMS.Db.Entity
         public Guid Fk_FinancialYearId { get; set; }
         public decimal TotalAmount { get; set; }
         public string Reason { get; set; } = null;
+        public ICollection<DamageTransaction> DamageTransactions { get; set; }
     }
     public class DamageOrder: DamageOrderModel
     {
@@ -26,7 +27,6 @@ namespace FMS.Db.Entity
         public FinancialYear FinancialYear { get; set; }
         public ProductType ProductType { get; set; }
         public Labour Labour { get; set; }
-        public ICollection<DamageTransaction> DamageTransactions { get; set; }
     }
     internal class DamageOrderConfig : IEntityTypeConfiguration<DamageOrder>
     {

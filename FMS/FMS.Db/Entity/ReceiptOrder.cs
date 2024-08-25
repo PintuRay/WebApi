@@ -16,6 +16,7 @@ namespace FMS.Db.Entity
         public string DrCr { get; set; }
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
+        public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
     public class ReceiptOrder : ReceiptOrderModel
     {
@@ -27,7 +28,6 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
-        public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
     internal class ReceiptOrderConfig : IEntityTypeConfiguration<ReceiptOrder>
     {

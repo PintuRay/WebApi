@@ -43,9 +43,9 @@ namespace FMS.Svcs.Account.Authentication
         private readonly RoleManager<AppRole> _roleManager = roleManager;
         #endregion
         #region  SignUp 
-        public async Task<Base> ValidateToken(string Token)
+        public async Task<SvcsBase> ValidateToken(string Token)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _authenticationRepo.ValidateToken(Token);
@@ -74,9 +74,9 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> IsEmailInUse(string email)
+        public async Task<SvcsBase> IsEmailInUse(string email)
         {
-            Base Obj;
+            SvcsBase Obj;
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
@@ -97,10 +97,10 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> SignUp(UserModel data)
+        public async Task<SvcsBase> SignUp(UserModel data)
         {
             bool isMailSend = false;
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var user = _mapper.Map<AppUser>(data);
@@ -194,9 +194,9 @@ namespace FMS.Svcs.Account.Authentication
         }
         #endregion
         #region SignIn
-        public async Task<Base> SignIn(SignInModel data)
+        public async Task<SvcsBase> SignIn(SignInModel data)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var user = await _userManager.FindByEmailAsync(data.Email);
@@ -339,9 +339,9 @@ namespace FMS.Svcs.Account.Authentication
         }
         #endregion
         #region Email
-        public async Task<Base> VerifyConfirmEmail(string uid, string token)
+        public async Task<SvcsBase> VerifyConfirmEmail(string uid, string token)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var user = await _userManager.FindByIdAsync(uid);
@@ -373,10 +373,10 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> ResendConfirmEmail(string mail, string RouteUrl)
+        public async Task<SvcsBase> ResendConfirmEmail(string mail, string RouteUrl)
         {
             bool isEmailSend = false;
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var user = await _userManager.FindByEmailAsync(mail); ;
@@ -444,9 +444,9 @@ namespace FMS.Svcs.Account.Authentication
         }
         #endregion
         #region SMS
-        public async Task<Base> SendConformationSms(AppUser User, string PhoneNo)
+        public async Task<SvcsBase> SendConformationSms(AppUser User, string PhoneNo)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var token = await _userManager.GenerateChangePhoneNumberTokenAsync(User, PhoneNo);
@@ -491,9 +491,9 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> VerifyPhoneNumber(AppUser User, string Token, string PhoneNumber)
+        public async Task<SvcsBase> VerifyPhoneNumber(AppUser User, string Token, string PhoneNumber)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var result = await _userManager.VerifyChangePhoneNumberTokenAsync(User, Token, PhoneNumber);
@@ -540,9 +540,9 @@ namespace FMS.Svcs.Account.Authentication
         }
         #endregion
         #region 2FA
-        public async Task<Base> SendTwoFactorToken(AppUser user)
+        public async Task<SvcsBase> SendTwoFactorToken(AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             bool Result = false;
             try
             {
@@ -600,9 +600,9 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> VerifyTwoFactorToken(string Token, AppUser user)
+        public async Task<SvcsBase> VerifyTwoFactorToken(string Token, AppUser user)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, Token) ||
@@ -649,9 +649,9 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> SignInWithOTP(SignIn2faModel model)
+        public async Task<SvcsBase> SignInWithOTP(SignIn2faModel model)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
 
@@ -700,9 +700,9 @@ namespace FMS.Svcs.Account.Authentication
         }
         #endregion
         #region Forgot, Reset && Change Password
-        public async Task<Base> ForgotPassword(string mail, string routeUrl)
+        public async Task<SvcsBase> ForgotPassword(string mail, string routeUrl)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var user = await _userManager.FindByEmailAsync(mail);
@@ -755,9 +755,9 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> ResetPassword(string uid, string token, ResetPasswordModel model)
+        public async Task<SvcsBase> ResetPassword(string uid, string token, ResetPasswordModel model)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var result = await _userManager.ResetPasswordAsync(await _userManager.FindByIdAsync(uid), Uri.UnescapeDataString(token), model.NewPassword);
@@ -788,9 +788,9 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<Base> ChangePassword(AppUser user, ChangePasswordModel model)
+        public async Task<SvcsBase> ChangePassword(AppUser user, ChangePasswordModel model)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);

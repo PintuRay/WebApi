@@ -9,154 +9,154 @@ namespace FMS.Svcs.Transaction
     public interface ITransactionSvcs
     {
         #region Purchase
-        Task<Base> GetLastPurchaseTransactionNo();
+        Task<SvcsBase> GetLastPurchaseTransactionNo();
         #region Crud
-        Task<Base> GetPurchases();
-        Task<Base> GetPurchaseById(Guid Id);
-        Task<Base> CreatePurchase(PurchaseDataRequest data, AppUser user);
-        Task<Base> UpdatePurchase(Guid Id, PurchaseDataRequest data, AppUser user);
-        Task<Base> RemovePurchase(Guid Id, AppUser user);
+        Task<SvcsBase> GetPurchases();
+        Task<SvcsBase> GetPurchaseById(Guid Id);
+        Task<SvcsBase> CreatePurchase(PurchaseDataRequest data, AppUser user);
+        Task<SvcsBase> UpdatePurchase(Guid Id, PurchaseDataRequest data, AppUser user);
+        Task<SvcsBase> RemovePurchase(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedPurchase();
-        Task<Base> RecoverPurchase(Guid Id, AppUser user);
-        Task<Base> DeletePurchase(Guid Id, AppUser user);
-       Task<Base> RecoverAllPurchase(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllPurchase(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedPurchase();
+        Task<SvcsBase> RecoverPurchase(Guid Id, AppUser user);
+        Task<SvcsBase> DeletePurchase(Guid Id, AppUser user);
+       Task<SvcsBase> RecoverAllPurchase(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllPurchase(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Purchase Return
-        Task<Base> GetLastPurchaseReturnTransactionNo();
+        Task<SvcsBase> GetLastPurchaseReturnTransactionNo();
         #region Crud
-        Task<Base> GetPurchaseReturns();
-        Task<Base> GetPurchaseReturnById(Guid Id);
-        Task<Base> CreatetPurchaseReturn(PurchaseDataRequest data, AppUser user);
-        Task<Base> UpdatetPurchaseReturn(Guid Id, PurchaseDataRequest data, AppUser user);
-        Task<Base> RemovePurchaseReturn(Guid Id, AppUser user);
+        Task<SvcsBase> GetPurchaseReturns();
+        Task<SvcsBase> GetPurchaseReturnById(Guid Id);
+        Task<SvcsBase> CreatetPurchaseReturn(PurchaseDataRequest data, AppUser user);
+        Task<SvcsBase> UpdatetPurchaseReturn(Guid Id, PurchaseDataRequest data, AppUser user);
+        Task<SvcsBase> RemovePurchaseReturn(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedPurchaseReturn();
-        Task<Base> RecoverPurchaseReturn(Guid Id, AppUser user);
-        Task<Base> DeletePurchaseReturn(Guid Id, AppUser user);
-        Task<Base> RecoverAllPurchaseReturn(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllPurchaseReturn(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedPurchaseReturn();
+        Task<SvcsBase> RecoverPurchaseReturn(Guid Id, AppUser user);
+        Task<SvcsBase> DeletePurchaseReturn(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllPurchaseReturn(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllPurchaseReturn(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Production
-        Task<Base> GetLastProductionNo();
+        Task<SvcsBase> GetLastProductionNo();
         #region Crud
-        Task<Base> GetProduction();
-        Task<Base> CreateProduction(ProductionEntryRequest data, AppUser user);
-        Task<Base> UpdateProduction(Guid Id, LabourOrderModel data, AppUser user);
-        Task<Base> RemoveProduction(Guid Id, AppUser user);
+        Task<SvcsBase> GetProduction();
+        Task<SvcsBase> CreateProduction(ProductionEntryRequest data, AppUser user);
+        Task<SvcsBase> UpdateProduction(Guid Id, LabourOrderModel data, AppUser user);
+        Task<SvcsBase> RemoveProduction(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedProduction();
-        Task<Base> RecoverProduction(Guid Id, AppUser user);
-        Task<Base> DeleteProduction(Guid Id, AppUser user);
-        Task<Base> RecoverAllProduction(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllProduction(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedProduction();
+        Task<SvcsBase> RecoverProduction(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteProduction(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllProduction(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllProduction(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Service
-        Task<Base> GetLastServiceNo();
+        Task<SvcsBase> GetLastServiceNo();
         #region Crud
-        Task<Base> GetService();
-        Task<Base> CreateService(ProductionEntryRequest data, AppUser user);
-        Task<Base> UpdateService(Guid Id, LabourOrderModel data, AppUser user);
-        Task<Base> RemoveService(Guid Id, AppUser user);
+        Task<SvcsBase> GetService();
+        Task<SvcsBase> CreateService(ProductionEntryRequest data, AppUser user);
+        Task<SvcsBase> UpdateService(Guid Id, LabourOrderModel data, AppUser user);
+        Task<SvcsBase> RemoveService(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedService();
-        Task<Base> RecoverService(Guid Id, AppUser user);
-        Task<Base> DeleteService(Guid Id, AppUser user);
-        Task<Base> RecoverAllService(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllService(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedService();
+        Task<SvcsBase> RecoverService(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteService(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllService(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllService(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Sales
-        Task<Base> GetLastSalesTransactionNo();
+        Task<SvcsBase> GetLastSalesTransactionNo();
         #region Crud
-        Task<Base> CreateSale(SalesDataRequest data, AppUser user);
-        Task<Base> GetSales();
-        Task<Base> GetSalesById(Guid Id);
-        Task<Base> UpdatSales(Guid Id, SalesDataRequest data, AppUser user);
-        Task<Base> RemoveSales(Guid Id, AppUser user);
+        Task<SvcsBase> CreateSale(SalesDataRequest data, AppUser user);
+        Task<SvcsBase> GetSales();
+        Task<SvcsBase> GetSalesById(Guid Id);
+        Task<SvcsBase> UpdatSales(Guid Id, SalesDataRequest data, AppUser user);
+        Task<SvcsBase> RemoveSales(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedSale();
-        Task<Base> RecoverSale(Guid Id, AppUser user);
-        Task<Base> DeleteSale(Guid Id, AppUser user);
-        Task<Base> RecoverAllSale(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllSale(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedSale();
+        Task<SvcsBase> RecoverSale(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteSale(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllSale(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllSale(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Sales Return
-        Task<Base> GetLastSalesReturnTransactionNo();
+        Task<SvcsBase> GetLastSalesReturnTransactionNo();
         #region Crud
-        Task<Base> CreateSalesReturn(SalesReturnDataRequest data, AppUser user);
-        Task<Base> GetSalesReturns();
-        Task<Base> GetSalesReturnById(Guid Id);
-        Task<Base> UpdateSalesReturn(Guid Id, SalesReturnDataRequest data, AppUser user);
-        Task<Base> RemoveSalesReturn(Guid Id, AppUser user);
+        Task<SvcsBase> CreateSalesReturn(SalesReturnDataRequest data, AppUser user);
+        Task<SvcsBase> GetSalesReturns();
+        Task<SvcsBase> GetSalesReturnById(Guid Id);
+        Task<SvcsBase> UpdateSalesReturn(Guid Id, SalesReturnDataRequest data, AppUser user);
+        Task<SvcsBase> RemoveSalesReturn(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedSalesReturn();
-        Task<Base> RecoverSalesReturn(Guid Id, AppUser user);
-        Task<Base> DeleteSalesReturn(Guid Id, AppUser user);
-        Task<Base> RecoverAllSalesReturn(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllSalesReturn(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedSalesReturn();
+        Task<SvcsBase> RecoverSalesReturn(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteSalesReturn(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllSalesReturn(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllSalesReturn(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Inward Supply    
-        Task<Base> GetLastInwardSupplyNo();
+        Task<SvcsBase> GetLastInwardSupplyNo();
         #region Crud
-        Task<Base> GetInwardSupply();
-        Task<Base> GetInwardSupplyById(Guid Id);
-        Task<Base> CreateInwardSupply(SupplyDataRequest data, AppUser user);
-        Task<Base> UpdateInwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
-        Task<Base> RemoveInwardSupply(Guid Id, AppUser user);
+        Task<SvcsBase> GetInwardSupply();
+        Task<SvcsBase> GetInwardSupplyById(Guid Id);
+        Task<SvcsBase> CreateInwardSupply(SupplyDataRequest data, AppUser user);
+        Task<SvcsBase> UpdateInwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
+        Task<SvcsBase> RemoveInwardSupply(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedInwardSupply();
-        Task<Base> RecoverInwardSupply(Guid Id, AppUser user);
-        Task<Base> DeleteInwardSupply(Guid Id, AppUser user);
-        Task<Base> RecoverAllInwardSupply(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllInwardSupply(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedInwardSupply();
+        Task<SvcsBase> RecoverInwardSupply(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteInwardSupply(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllInwardSupply(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllInwardSupply(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Outward Supply
-        Task<Base> GetLastOutwardSupplyNo();
+        Task<SvcsBase> GetLastOutwardSupplyNo();
         #region Crud
-        Task<Base> GetOutwardSupply();
-        Task<Base> GetOutwardSupplyById(Guid Id);
-        Task<Base> CreateOutwardSupply(SupplyDataRequest data, AppUser user);
-        Task<Base> UpdateOutwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
-        Task<Base> RemoveOutwardSupply(Guid Id, AppUser user);
+        Task<SvcsBase> GetOutwardSupply();
+        Task<SvcsBase> GetOutwardSupplyById(Guid Id);
+        Task<SvcsBase> CreateOutwardSupply(SupplyDataRequest data, AppUser user);
+        Task<SvcsBase> UpdateOutwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
+        Task<SvcsBase> RemoveOutwardSupply(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedOutwardSupply();
-        Task<Base> RecoverOutwardSupply(Guid Id, AppUser user);
-        Task<Base> DeleteOutwardSupply(Guid Id, AppUser user);
-        Task<Base> RecoverAllOutwardSupply(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllOutwardSupply(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedOutwardSupply();
+        Task<SvcsBase> RecoverOutwardSupply(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteOutwardSupply(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllOutwardSupply(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllOutwardSupply(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Damage
-        Task<Base> GetLastDamageEntryNo();
+        Task<SvcsBase> GetLastDamageEntryNo();
         #region Crud
-        Task<Base> GetDamages();
-        Task<Base> GetDamageById(Guid Id);
-        Task<Base> CreateDamage(DamageRequestData data, AppUser user);
-        Task<Base> UpdateDamage(Guid Id, DamageRequestData data, AppUser user);
-        Task<Base> RemoveDamage(Guid Id, AppUser user);
+        Task<SvcsBase> GetDamages();
+        Task<SvcsBase> GetDamageById(Guid Id);
+        Task<SvcsBase> CreateDamage(DamageRequestData data, AppUser user);
+        Task<SvcsBase> UpdateDamage(Guid Id, DamageRequestData data, AppUser user);
+        Task<SvcsBase> RemoveDamage(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedDamage();
-        Task<Base> RecoverDamage(Guid Id, AppUser user);
-        Task<Base> DeleteDamage(Guid Id, AppUser user);
-        Task<Base> RecoverAllDamage(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllDamage(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedDamage();
+        Task<SvcsBase> RecoverDamage(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteDamage(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllDamage(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllDamage(List<string> Ids, AppUser user);
         #endregion
         #endregion
     }

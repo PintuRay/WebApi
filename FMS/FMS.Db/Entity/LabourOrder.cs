@@ -17,7 +17,7 @@ namespace FMS.Db.Entity
         public decimal Amount { get; set; }
         public decimal OTAmount { get; set; }
         public string Narration { get; set; }
-       
+        public ICollection<LabourTransaction> LabourTransactions { get; set; }
     }
     public class LabourOrder: LabourOrderModel
     {
@@ -32,7 +32,7 @@ namespace FMS.Db.Entity
         public FinancialYear FinancialYear { get; set; }
         public Branch Branch { get; set; }
         public LabourType LabourType { get; set; }
-        public ICollection<LabourTransaction> LabourTransactions { get; set; }
+
     }
     internal class LabourOrderConfig : IEntityTypeConfiguration<LabourOrder>
     {

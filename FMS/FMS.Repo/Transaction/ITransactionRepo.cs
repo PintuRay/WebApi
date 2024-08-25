@@ -1,161 +1,159 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Model.Admin;
-using FMS.Model.Transaction;
 
 namespace FMS.Repo.Transaction
 {
     public interface ITransactionRepo
     {
         #region Purchase
-        Task<BaseDb> GetLastPurchaseTransactionNo();
+        Task<RepoBase> GetLastPurchaseTransactionNo();
         #region Crud
-        Task<Result<PurchaseOrderModel>> GetPurchases();
-        Task<Result<PurchaseOrderModel>> GetPurchaseById(Guid Id);
-        Task<BaseDb> CreatePurchase(PurchaseDataRequest data, AppUser user);
-        Task<BaseDb> UpdatePurchase(Guid Id, PurchaseDataRequest data, AppUser user);
-        Task<BaseDb> RemovePurchase(Guid Id, AppUser user);
+        Task<Result<PurchaseOrder>> GetPurchases();
+        Task<Result<PurchaseOrder>> GetPurchaseById(Guid Id);
+        Task<RepoBase> CreatePurchase(PurchaseOrderModel data, AppUser user);
+        Task<RepoBase> UpdatePurchase(Guid Id, PurchaseOrderModel data, AppUser user);
+        Task<RepoBase> RemovePurchase(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<PurchaseOrderModel>> GetRemovedPurchase();
-        Task<BaseDb> RecoverPurchase(Guid Id, AppUser user);
-        Task<BaseDb> DeletePurchase(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllPurchase(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllPurchase(List<string> Ids, AppUser user);
+        Task<Result<PurchaseOrder>> GetRemovedPurchase();
+        Task<RepoBase> RecoverPurchase(Guid Id, AppUser user);
+        Task<RepoBase> DeletePurchase(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllPurchase(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllPurchase(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Purchase Return
-        Task<BaseDb> GetLastPurchaseReturnTransactionNo();
+        Task<RepoBase> GetLastPurchaseReturnTransactionNo();
         #region Crud
-        Task<Result<PurchaseReturnOrderModel>> GetPurchaseReturns();
-        Task<Result<PurchaseReturnOrderModel>> GetPurchaseReturnById(Guid Id);
-        Task<BaseDb> CreatetPurchaseReturn(PurchaseDataRequest data, AppUser user);
-        Task<BaseDb> UpdatetPurchaseReturn(Guid Id, PurchaseDataRequest data, AppUser user);
-        Task<BaseDb> RemovePurchaseReturn(Guid Id, AppUser user);
+        Task<Result<PurchaseReturnOrder>> GetPurchaseReturns();
+        Task<Result<PurchaseReturnOrder>> GetPurchaseReturnById(Guid Id);
+        Task<RepoBase> CreatetPurchaseReturn(PurchaseReturnOrderModel data, AppUser user);
+        Task<RepoBase> UpdatetPurchaseReturn(Guid Id, PurchaseReturnOrderModel data, AppUser user);
+        Task<RepoBase> RemovePurchaseReturn(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<PurchaseReturnOrderModel>> GetRemovedPurchaseReturn();
-        Task<BaseDb> RecoverPurchaseReturn(Guid Id, AppUser user);
-        Task<BaseDb> DeletePurchaseReturn(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllPurchaseReturn(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllPurchaseReturn(List<string> Ids, AppUser user);
+        Task<Result<PurchaseReturnOrder>> GetRemovedPurchaseReturn();
+        Task<RepoBase> RecoverPurchaseReturn(Guid Id, AppUser user);
+        Task<RepoBase> DeletePurchaseReturn(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllPurchaseReturn(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllPurchaseReturn(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Production
-        Task<BaseDb> GetLastProductionNo();
+        Task<RepoBase> GetLastProductionNo();
         #region Crud
-        Task<Result<ProductionModel>> GetProduction();
-        Task<BaseDb> CreateProduction(ProductionEntryRequest data, AppUser user);
-        Task<BaseDb> UpdateProduction(Guid Id, LabourOrderModel data, AppUser user);
-        Task<BaseDb> RemoveProduction(Guid Id, AppUser user);
+        Task<Result<LabourOrder>> GetProduction();
+        Task<RepoBase> CreateProduction(LabourOrderModel data, AppUser user);
+        Task<RepoBase> UpdateProduction(Guid Id, LabourOrderModel data, AppUser user);
+        Task<RepoBase> RemoveProduction(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<ProductionModel>> GetRemovedProduction();
-        Task<BaseDb> RecoverProduction(Guid Id, AppUser user);
-        Task<BaseDb> DeleteProduction(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllProduction(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllProduction(List<string> Ids, AppUser user);
+        Task<Result<LabourOrder>> GetRemovedProduction();
+        Task<RepoBase> RecoverProduction(Guid Id, AppUser user);
+        Task<RepoBase> DeleteProduction(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllProduction(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllProduction(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Service
-        Task<BaseDb> GetLastServiceNo();
+        Task<RepoBase> GetLastServiceNo();
         #region Crud
-        Task<Result<LabourOrderModel>> GetService();
-        Task<BaseDb> CreateService(ProductionEntryRequest data, AppUser user);
-        Task<BaseDb> UpdateService(Guid Id, LabourOrderModel data, AppUser user);
-        Task<BaseDb> RemoveService(Guid Id, AppUser user);
+        Task<Result<LabourOrder>> GetService();
+        Task<RepoBase> CreateService(LabourOrderModel data, AppUser user);
+        Task<RepoBase> UpdateService(Guid Id, LabourOrderModel data, AppUser user);
+        Task<RepoBase> RemoveService(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<LabourOrderModel>> GetRemovedService();
-        Task<BaseDb> RecoverService(Guid Id, AppUser user);
-        Task<BaseDb> DeleteService(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllService(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllService(List<string> Ids, AppUser user);
+        Task<Result<LabourOrder>> GetRemovedService();
+        Task<RepoBase> RecoverService(Guid Id, AppUser user);
+        Task<RepoBase> DeleteService(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllService(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllService(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Sales
-        Task<BaseDb> GetLastSalesTransactionNo();
+        Task<RepoBase> GetLastSalesTransactionNo();
         #region Crud
-        Task<BaseDb> CreateSale(SalesDataRequest data, AppUser user);
-        Task<Result<SalesOrderModel>> GetSales();
-        Task<Result<SalesOrderModel>> GetSalesById(Guid Id);
-        Task<BaseDb> UpdatSales(Guid Id, SalesDataRequest data, AppUser user);
-        Task<BaseDb> RemoveSales(Guid Id, AppUser user);
+        Task<RepoBase> CreateSale(SalesOrderModel data, AppUser user);
+        Task<Result<SalesOrder>> GetSales();
+        Task<Result<SalesOrder>> GetSalesById(Guid Id);
+        Task<RepoBase> UpdatSales(Guid Id, SalesOrderModel data, AppUser user);
+        Task<RepoBase> RemoveSales(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<SalesOrderModel>> GetRemovedSale();
-        Task<BaseDb> RecoverSale(Guid Id, AppUser user);
-        Task<BaseDb> DeleteSale(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllSale(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllSale(List<string> Ids, AppUser user);
+        Task<Result<SalesOrder>> GetRemovedSale();
+        Task<RepoBase> RecoverSale(Guid Id, AppUser user);
+        Task<RepoBase> DeleteSale(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllSale(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllSale(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Sales Return
-        Task<BaseDb> GetLastSalesReturnTransactionNo();
+        Task<RepoBase> GetLastSalesReturnTransactionNo();
         #region Crud
-        Task<BaseDb> CreateSalesReturn(SalesReturnDataRequest data, AppUser user);
-        Task<Result<SalesReturnOrderModel>> GetSalesReturns();
-        Task<Result<SalesReturnOrderModel>> GetSalesReturnById(Guid Id);
-        Task<BaseDb> UpdateSalesReturn(Guid Id, SalesReturnDataRequest data, AppUser user);
-        Task<BaseDb> RemoveSalesReturn(Guid Id, AppUser user);
+        Task<Result<SalesReturnOrder>> GetSalesReturns();
+        Task<Result<SalesReturnOrder>> GetSalesReturnById(Guid Id);
+        Task<RepoBase> CreateSalesReturn(SalesReturnOrderModel data, AppUser user);
+        Task<RepoBase> UpdateSalesReturn(Guid Id, SalesReturnOrderModel data, AppUser user);
+        Task<RepoBase> RemoveSalesReturn(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<SalesReturnOrderModel>> GetRemovedSalesReturn();
-        Task<BaseDb> RecoverSalesReturn(Guid Id, AppUser user);
-        Task<BaseDb> DeleteSalesReturn(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllSalesReturn(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllSalesReturn(List<string> Ids, AppUser user);
+        Task<Result<SalesReturnOrder>> GetRemovedSalesReturn();
+        Task<RepoBase> RecoverSalesReturn(Guid Id, AppUser user);
+        Task<RepoBase> DeleteSalesReturn(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllSalesReturn(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllSalesReturn(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Inward Supply    
-        Task<BaseDb> GetLastInwardSupplyNo();
+        Task<RepoBase> GetLastInwardSupplyNo();
         #region Crud
-        Task<Result<InwardSupplyOrderModel>> GetInwardSupply();
-        Task<Result<InwardSupplyOrderModel>> GetInwardSupplyById(Guid Id);
-        Task<BaseDb> CreateInwardSupply(SupplyDataRequest data, AppUser user);
-        Task<BaseDb> UpdateInwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
-        Task<BaseDb> RemoveInwardSupply(Guid Id, AppUser user);
+        Task<Result<InwardSupplyOrder>> GetInwardSupply();
+        Task<Result<InwardSupplyOrder>> GetInwardSupplyById(Guid Id);
+        Task<RepoBase> CreateInwardSupply(InwardSupplyOrderModel data, AppUser user);
+        Task<RepoBase> UpdateInwardSupply(Guid Id, InwardSupplyOrderModel data, AppUser user);
+        Task<RepoBase> RemoveInwardSupply(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<InwardSupplyOrderModel>> GetRemovedInwardSupply();
-        Task<BaseDb> RecoverInwardSupply(Guid Id, AppUser user);
-        Task<BaseDb> DeleteInwardSupply(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllInwardSupply(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllInwardSupply(List<string> Ids, AppUser user);
+        Task<Result<InwardSupplyOrder>> GetRemovedInwardSupply();
+        Task<RepoBase> RecoverInwardSupply(Guid Id, AppUser user);
+        Task<RepoBase> DeleteInwardSupply(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllInwardSupply(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllInwardSupply(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Outward Supply
-        Task<BaseDb> GetLastOutwardSupplyNo();
+        Task<RepoBase> GetLastOutwardSupplyNo();
         #region Crud
-        Task<Result<OutwardSupplyOrderModel>> GetOutwardSupply();
-        Task<Result<OutwardSupplyOrderModel>> GetOutwardSupplyById(Guid Id);
-        Task<BaseDb> CreateOutwardSupply(SupplyDataRequest data, AppUser user);
-        Task<BaseDb> UpdateOutwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
-        Task<BaseDb> RemoveOutwardSupply(Guid Id, AppUser user);
+        Task<Result<OutwardSupplyOrder>> GetOutwardSupply();
+        Task<Result<OutwardSupplyOrder>> GetOutwardSupplyById(Guid Id);
+        Task<RepoBase> CreateOutwardSupply(OutwardSupplyOrderModel data, AppUser user);
+        Task<RepoBase> UpdateOutwardSupply(Guid Id, OutwardSupplyOrderModel data, AppUser user);
+        Task<RepoBase> RemoveOutwardSupply(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<OutwardSupplyOrderModel>> GetRemovedOutwardSupply();
-        Task<BaseDb> RecoverOutwardSupply(Guid Id, AppUser user);
-        Task<BaseDb> DeleteOutwardSupply(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllOutwardSupply(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllOutwardSupply(List<string> Ids, AppUser user);
+        Task<Result<OutwardSupplyOrder>> GetRemovedOutwardSupply();
+        Task<RepoBase> RecoverOutwardSupply(Guid Id, AppUser user);
+        Task<RepoBase> DeleteOutwardSupply(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllOutwardSupply(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllOutwardSupply(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Damage
-        Task<BaseDb> GetLastDamageEntryNo();
+        Task<RepoBase> GetLastDamageEntryNo();
         #region Crud
-        Task<Result<DamageOrderModel>> GetDamages();
-        Task<Result<DamageOrderModel>> GetDamageById(Guid Id);
-        Task<BaseDb> CreateDamage(DamageRequestData data, AppUser user);
-        Task<BaseDb> UpdateDamage(Guid Id, DamageRequestData data, AppUser user);
-        Task<BaseDb> RemoveDamage(Guid Id, AppUser user);
+        Task<Result<DamageOrder>> GetDamages();
+        Task<Result<DamageOrder>> GetDamageById(Guid Id);
+        Task<RepoBase> CreateDamage(DamageOrderModel data, AppUser user);
+        Task<RepoBase> UpdateDamage(Guid Id, DamageOrderModel data, AppUser user);
+        Task<RepoBase> RemoveDamage(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<DamageOrderModel>> GetRemovedDamage();
-        Task<BaseDb> RecoverDamage(Guid Id, AppUser user);
-        Task<BaseDb> DeleteDamage(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllDamage(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllDamage(List<string> Ids, AppUser user);
+        Task<Result<DamageOrder>> GetRemovedDamage();
+        Task<RepoBase> RecoverDamage(Guid Id, AppUser user);
+        Task<RepoBase> DeleteDamage(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllDamage(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllDamage(List<string> Ids, AppUser user);
         #endregion
         #endregion
     }

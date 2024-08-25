@@ -23,6 +23,7 @@ namespace FMS.Db.Entity
         public string VehicleNo { get; set; } = null;
         public string ReceivingPerson { get; set; } = null;
         public string Narration { get; set; } = null;
+        public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
     }
     public class SalesReturnOrder : SalesReturnOrderModel
     {
@@ -35,7 +36,6 @@ namespace FMS.Db.Entity
         public SubLedger SubLedger { get; set; }
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
-        public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
     }
     internal class SalesReturnOrderConfig : IEntityTypeConfiguration<SalesReturnOrder>
     {

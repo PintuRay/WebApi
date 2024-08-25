@@ -1,6 +1,7 @@
 ﻿using FMS.Db.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 namespace FMS.Db
 {
     public partial class Context : IdentityDbContext<AppUser, AppRole, string>
@@ -30,7 +31,8 @@ namespace FMS.Db
         public DbSet<AlternateUnit> AlternateUnits { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Production> Productions { get; set; }
+        public DbSet<ProductionOrder> ProductionOrders { get; set; }
+        public DbSet<ProductionTransaction> ProductionTransactions { get; set; }
         public DbSet<LabourOrder> LabourOrders { get; set; }
         public DbSet<LabourTransaction> LabourTransactions { get; set; }
         public DbSet<Stock> Stocks { get; set; }
@@ -68,7 +70,8 @@ namespace FMS.Db
         public DbSet<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
         public DbSet<DamageOrder> DamageOrders { get; set; }
         public DbSet<DamageTransaction> DamageTransactions { get; set; }
-        public DbSet<SalesConfig> SalesConfigs { get; set; }
+        public DbSet<SalesOrderSetup> SalesOrderSetups { get; set; }
+        public DbSet<SalesTransactionSetup> SalesTransactionSetups { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -102,7 +105,8 @@ namespace FMS.Db
             new OutwardSupplyOrderConfig().Configure(modelBuilder.Entity<OutwardSupplyOrder>());
             new OutwardSupplyTransactionConfig().Configure(modelBuilder.Entity<OutwardSupplyTransaction>());
             /*------------------------------production---------------------------*/
-            new ProductionConfig().Configure(modelBuilder.Entity<Production>());
+            new ProductionOrderConfig().Configure(modelBuilder.Entity<ProductionOrder>());
+            new ProductionTransactionConfig().Configure(modelBuilder.Entity<ProductionTransaction>());
             /*--------------------------------Labour-----------------------------*/
             new LabourRateConfig().Configure(modelBuilder.Entity<LabourRate>());
             new LabourTypeConfig().Configure(modelBuilder.Entity<LabourType>());
@@ -135,7 +139,8 @@ namespace FMS.Db
             new PurchaseReturnOrderConfig().Configure(modelBuilder.Entity<PurchaseReturnOrder>());
             new PurchaseReturnTransactionConfig().Configure(modelBuilder.Entity<PurchaseReturnTransaction>());
             //Sales & Sales Return
-            new SalesConfigConfig().Configure(modelBuilder.Entity<SalesConfig>());
+            new SalesOrderSetupConfig().Configure(modelBuilder.Entity<SalesOrderSetup>());
+            new SalesTransactionSetupConfig().Configure(modelBuilder.Entity<SalesTransactionSetup>());
             new SalesOrderConfig().Configure(modelBuilder.Entity<SalesOrder>());
             new SalesTransactionConfig().Configure(modelBuilder.Entity<SalesTransaction>());
             new SalesReturnOrderConfig().Configure(modelBuilder.Entity<SalesReturnOrder>());

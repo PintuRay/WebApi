@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FMS.Db.Entity;
 using FMS.Model.Account.Autherization;
-namespace FMS.Model
+namespace FMS.Repo
 {
     public class MappingProfile : Profile
     {

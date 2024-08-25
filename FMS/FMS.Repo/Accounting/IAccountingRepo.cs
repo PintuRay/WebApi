@@ -1,62 +1,56 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Accounting;
 using FMS.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FMS.Repo.Accounting
 {
     public interface IAccountingRepo
     {
         #region Journal
-        Task<BaseDb> GetJournalVoucherNo();
+        Task<RepoBase> GetJournalVoucherNo();
         #region Crud
-        Task<BaseDb> CreateJournal(JournalDataRequest requestData);
-        Task<Result<JournalTransactionModel>> GetJournals();
-        Task<BaseDb> GetJournalById(string Id);
-        Task<BaseDb> RemoveJournal(string Id);
+        Task<Result<JournalOrder>> GetJournals();
+        Task<RepoBase> CreateJournal(JournalOrderModel data);
+        Task<RepoBase> GetJournalById(string Id);
+        Task<RepoBase> RemoveJournal(string Id);
         #endregion
         #region Recover      
-        Task<Result<JournalTransactionModel>> GetRemovedJournal();
-        Task<BaseDb> RecoverJournal(Guid Id, AppUser user);
-        Task<BaseDb> DeleteJournal(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllJournal(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllJournal(List<string> Ids, AppUser user);
+        Task<Result<JournalOrder>> GetRemovedJournal();
+        Task<RepoBase> RecoverJournal(Guid Id, AppUser user);
+        Task<RepoBase> DeleteJournal(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllJournal(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllJournal(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Payment
-        Task<BaseDb> GetPaymentVoucherNo(string CashBank);
+        Task<RepoBase> GetPaymentVoucherNo(string CashBank);
         #region Crud
-        Task<BaseDb> CreatePayment(PaymentDataRequest requestData);
-        Task<Result<PaymentTransactionModel>> GetPayments();
-        Task<BaseDb> GetPaymentById(string Id);
-        Task<BaseDb> RemovePayment(string Id);
+        Task<RepoBase> CreatePayment(PaymentOrderModel requestData);
+        Task<Result<PaymentOrder>> GetPayments();
+        Task<RepoBase> GetPaymentById(string Id);
+        Task<RepoBase> RemovePayment(string Id);
         #endregion
         #region Recover
-        Task<Result<PaymentTransactionModel>> GetRemovedPayment();
-        Task<BaseDb> RecoverPayment(Guid Id, AppUser user);
-        Task<BaseDb> DeletePayment(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllPayment(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllPayment(List<string> Ids, AppUser user);
+        Task<Result<PaymentOrder>> GetRemovedPayment();
+        Task<RepoBase> RecoverPayment(Guid Id, AppUser user);
+        Task<RepoBase> DeletePayment(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllPayment(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllPayment(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Receipt
-        Task<BaseDb> GetReceiptVoucherNo(string CashBank);
+        Task<RepoBase> GetReceiptVoucherNo(string CashBank);
         #region Crud
-        Task<BaseDb> CreateRecipt(ReciptsDataRequest requestData);
-        Task<Result<ReceptModel>> GetReceipts();
-        Task<BaseDb> GetReceiptById(string Id);
-        Task<BaseDb> RemoveReceipt(string Id);
+        Task<RepoBase> CreateRecipt(ReceiptOrderModel requestData);
+        Task<Result<ReceiptOrder>> GetReceipts();
+        Task<RepoBase> GetReceiptById(string Id);
+        Task<RepoBase> RemoveReceipt(string Id);
         #endregion
         #region Recover
-        Task<Result<ReceptModel>> GetRemovedReceipt();
-        Task<BaseDb> RecoverReceipt(Guid Id, AppUser user);
-        Task<BaseDb> DeleteReceipt(Guid Id, AppUser user);
-        Task<BaseDb> RecoverAllReceipt(List<string> Ids, AppUser user);
-        Task<BaseDb> DeleteAllReceipt(List<string> Ids, AppUser user);
+        Task<Result<ReceiptOrder>> GetRemovedReceipt();
+        Task<RepoBase> RecoverReceipt(Guid Id, AppUser user);
+        Task<RepoBase> DeleteReceipt(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllReceipt(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllReceipt(List<string> Ids, AppUser user);
         #endregion
         #endregion
     }

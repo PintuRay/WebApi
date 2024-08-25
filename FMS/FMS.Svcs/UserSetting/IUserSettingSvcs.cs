@@ -8,123 +8,123 @@ namespace FMS.Svcs.UserSetting
     {
         #region Stock 
         #region Crud
-        Task<Base> GetStocks();
-        Task<Base> CreateStock(StockModel data, AppUser user);
-        Task<Base> UpdateStock(Guid Id, StockModel data, AppUser user);
-        Task<Base> RemoveStock(Guid Id, AppUser user);
+        Task<SvcsBase> GetStocks();
+        Task<SvcsBase> CreateStock(StockModel data, AppUser user);
+        Task<SvcsBase> UpdateStock(Guid Id, StockModel data, AppUser user);
+        Task<SvcsBase> RemoveStock(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedStock();
-        Task<Base> RecoverStock(Guid Id, AppUser user);
-        Task<Base> DeleteStock(Guid Id, AppUser user);
-        Task<Base> RecoverAllStock(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllStock(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedStock();
+        Task<SvcsBase> RecoverStock(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteStock(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllStock(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllStock(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region labour Details    
         #region Crud
-        Task<Base> GetAllLabourTypes();
-        Task<Base> GetAllLabourDetails();
-        Task<Base> CreateLabourDetail(LabourModel data,AppUser user);
-        Task<Base> UpdateLabourDetail(Guid Id,LabourModel data, AppUser user);
-        Task<Base> RemoveLabourDetail(Guid Id, AppUser user);
+        Task<SvcsBase> GetAllLabourTypes();
+        Task<SvcsBase> GetAllLabourDetails();
+        Task<SvcsBase> CreateLabourDetail(LabourModel data,AppUser user);
+        Task<SvcsBase> UpdateLabourDetail(Guid Id,LabourModel data, AppUser user);
+        Task<SvcsBase> RemoveLabourDetail(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedLabourDetails();
-        Task<Base> RecoverLabourDetails(Guid Id, AppUser user);
-        Task<Base> DeleteLabourDetails(Guid Id, AppUser user);
-        Task<Base> RecoverAllLabourDetails(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllLabourDetails(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedLabourDetails();
+        Task<SvcsBase> RecoverLabourDetails(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteLabourDetails(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllLabourDetails(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllLabourDetails(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region State
         #region Crud
-        Task<Base> GetStates();
-        Task<Base> CreateState(StateModel data, AppUser user);
-        Task<Base> UpdateState(Guid Id, StateModel data, AppUser user);
-        Task<Base> RemoveState(Guid Id, AppUser user);
+        Task<SvcsBase> GetStates();
+        Task<SvcsBase> CreateState(StateModel data, AppUser user);
+        Task<SvcsBase> UpdateState(Guid Id, StateModel data, AppUser user);
+        Task<SvcsBase> RemoveState(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedStates();
-        Task<Base> RecoverState(Guid Id, AppUser user);
-        Task<Base> DeleteState(Guid Id, AppUser user);
-        Task<Base> RecoverAllStates(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllStates(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedStates();
+        Task<SvcsBase> RecoverState(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteState(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllStates(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllStates(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region City
         #region Crud
-        Task<Base> GetCities(Guid Id);
-        Task<Base> CreateCity(CityModel data, AppUser user);
-        Task<Base> UpdateCity(Guid Id, CityModel data, AppUser user);
-        Task<Base> RemoveCity(Guid Id, AppUser user);
+        Task<SvcsBase> GetCities(Guid Id);
+        Task<SvcsBase> CreateCity(CityModel data, AppUser user);
+        Task<SvcsBase> UpdateCity(Guid Id, CityModel data, AppUser user);
+        Task<SvcsBase> RemoveCity(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedCity();
-        Task<Base> RecoverCity(Guid Id, AppUser user);
-        Task<Base> DeleteCity(Guid Id, AppUser user);
-        Task<Base> RecoverAllCity(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllCity(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedCity();
+        Task<SvcsBase> RecoverCity(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteCity(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllCity(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllCity(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Party Details
         #region Crud
-        Task<Base> GetParties();
-        Task<Base> CreateParty(PartyModel data, AppUser user);
-        Task<Base> UpdateParty(Guid Id, PartyModel data, AppUser user);
-        Task<Base> RemoveParty(Guid Id, AppUser user);
+        Task<SvcsBase> GetParties();
+        Task<SvcsBase> CreateParty(PartyModel data, AppUser user);
+        Task<SvcsBase> UpdateParty(Guid Id, PartyModel data, AppUser user);
+        Task<SvcsBase> RemoveParty(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedParty();
-        Task<Base> RecoverParty(Guid Id, AppUser user);
-        Task<Base> DeleteParty(Guid Id, AppUser user);
-        Task<Base> RecoverAllParty(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllParty(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedParty();
+        Task<SvcsBase> RecoverParty(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteParty(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllParty(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllParty(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region LedgerBalance
         #region Crud
-        Task<Base> GetLedgerBalances();
-        Task<Base> CreateLedgerBalance(LedgerBalanceRequest data, AppUser user);
-        Task<Base> UpdateLedgerBalance(Guid Id, LedgerBalanceModel data, AppUser user);
-        Task<Base> RemoveLedgerBalance(Guid Id, AppUser user);
+        Task<SvcsBase> GetLedgerBalances();
+        Task<SvcsBase> CreateLedgerBalance(LedgerBalanceRequest data, AppUser user);
+        Task<SvcsBase> UpdateLedgerBalance(Guid Id, LedgerBalanceModel data, AppUser user);
+        Task<SvcsBase> RemoveLedgerBalance(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedLedgerBalance();
-        Task<Base> RecoverLedgerBalance(Guid Id, AppUser user);
-        Task<Base> DeleteLedgerBalance(Guid Id, AppUser user);
-        Task<Base> RecoverAllLedgerBalance(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllLedgerBalance(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedLedgerBalance();
+        Task<SvcsBase> RecoverLedgerBalance(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteLedgerBalance(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllLedgerBalance(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllLedgerBalance(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region Subledger
         #region Crud
-        Task<Base> GetSubLedgers();
-        Task<Base> CreateSubLedger(SubLedgerDataRequest Data, AppUser user);
-        Task<Base> UpdateSubLedger(Guid Id, SubLedgerModel data, AppUser user);
-        Task<Base> RemoveSubLedger(Guid Id, AppUser user);
+        Task<SvcsBase> GetSubLedgers();
+        Task<SvcsBase> CreateSubLedger(SubLedgerDataRequest Data, AppUser user);
+        Task<SvcsBase> UpdateSubLedger(Guid Id, SubLedgerModel data, AppUser user);
+        Task<SvcsBase> RemoveSubLedger(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedSubLedger();
-        Task<Base> RecoverSubLedger(Guid Id, AppUser user);
-        Task<Base> DeleteSubLedger(Guid Id, AppUser user);
-        Task<Base> RecoverAllSubLedger(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllSubLedger(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedSubLedger();
+        Task<SvcsBase> RecoverSubLedger(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteSubLedger(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllSubLedger(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllSubLedger(List<string> Ids, AppUser user);
         #endregion
         #endregion
         #region SubLedger Balance
         #region Crud
-        Task<Base> GetSubLedgerBalances();
-        Task<Base> CreateSubLedgerBalance(SubLedgerBalanceModel data, AppUser user);
-        Task<Base> UpdateSubLedgerBalance(Guid Id, SubLedgerBalanceModel data, AppUser user);
-        Task<Base> RemoveSubLedgerBalance(Guid Id, AppUser user);
+        Task<SvcsBase> GetSubLedgerBalances();
+        Task<SvcsBase> CreateSubLedgerBalance(SubLedgerBalanceModel data, AppUser user);
+        Task<SvcsBase> UpdateSubLedgerBalance(Guid Id, SubLedgerBalanceModel data, AppUser user);
+        Task<SvcsBase> RemoveSubLedgerBalance(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Base> GetRemovedSubLedgerBalance();
-        Task<Base> RecoverSubLedgerBalance(Guid Id, AppUser user);
-        Task<Base> DeleteSubLedgerBalance(Guid Id, AppUser user);
-        Task<Base> RecoverAllSubLedgerBalance(List<string> Ids, AppUser user);
-        Task<Base> DeleteAllSubLedgerBalance(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedSubLedgerBalance();
+        Task<SvcsBase> RecoverSubLedgerBalance(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteSubLedgerBalance(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllSubLedgerBalance(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllSubLedgerBalance(List<string> Ids, AppUser user);
         #endregion
         #endregion
     }

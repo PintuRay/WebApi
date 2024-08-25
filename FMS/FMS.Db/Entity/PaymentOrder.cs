@@ -21,6 +21,7 @@ namespace FMS.Db.Entity
         public decimal TotalAmount { get; set; }
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
+        public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
     }
     public  class PaymentOrder: PaymentOrderModel
     {
@@ -32,7 +33,6 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
-        public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
     }
     internal class PaymentOrderConfig : IEntityTypeConfiguration<PaymentOrder>
     {

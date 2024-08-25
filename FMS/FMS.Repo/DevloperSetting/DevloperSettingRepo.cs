@@ -2,11 +2,7 @@
 using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Model.Devloper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 namespace FMS.Repo.DevloperSetting
 {
@@ -18,17 +14,16 @@ namespace FMS.Repo.DevloperSetting
         #endregion
         #region Branch
         #region Crud
-        public async Task<Result<BranchViewModel>> GetAllBranch()
+        public async Task<Result<Branch>> GetAllBranch()
         {
-            Result<BranchViewModel> _Result = new();
+            Result<Branch> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var Query = await (from s in _ctx.Branches where s.IsActive == true select s).ToListAsync();
                 if (Query.Count > 0)
                 {
-                    var BranchList = _mapper.Map<List<BranchViewModel>>(Query);
-                    _Result.CollectionObjData = BranchList;
+                    _Result.CollectionObjData = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -38,9 +33,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> CreateBranch(BranchModel data, AppUser user)
+        public async Task<RepoBase> CreateBranch(BranchModel data, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
 
@@ -66,9 +61,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> UpdateBranch(Guid Id, BranchModel data, AppUser user)
+        public async Task<RepoBase> UpdateBranch(Guid Id, BranchModel data, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -92,9 +87,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RemoveBranch(Guid Id, AppUser user)
+        public async Task<RepoBase> RemoveBranch(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -120,17 +115,16 @@ namespace FMS.Repo.DevloperSetting
         }
         #endregion
         #region Recover
-        public async Task<Result<BranchViewModel>> GetRemovedBranches()
+        public async Task<Result<Branch>> GetRemovedBranches()
         {
-            Result<BranchViewModel> _Result = new();
+            Result<Branch> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var Query = await (from s in _ctx.Branches where s.IsActive == false select s).ToListAsync();
                 if (Query.Count > 0)
                 {
-                    var BranchList = _mapper.Map<List<BranchViewModel>>(Query);
-                    _Result.CollectionObjData = BranchList;
+                    _Result.CollectionObjData = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -140,9 +134,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RecoverBranch(Guid Id, AppUser user)
+        public async Task<RepoBase> RecoverBranch(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -165,9 +159,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> DeleteBranch(Guid Id, AppUser user)
+        public async Task<RepoBase> DeleteBranch(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -189,9 +183,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RecoverAllBranch(List<string> Ids, AppUser user)
+        public async Task<RepoBase> RecoverAllBranch(List<string> Ids, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 int Count = 0;
@@ -220,9 +214,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> DeleteAllBranch(List<string> Ids, AppUser user)
+        public async Task<RepoBase> DeleteAllBranch(List<string> Ids, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 int Count = 0;
@@ -252,25 +246,24 @@ namespace FMS.Repo.DevloperSetting
         #endregion
         #region Financial Year
         #region Crud
-        public async Task<Result<FinancialYearViewModel>> GetFinancialYears()
+        public async Task<Result<FinancialYear>> GetFinancialYears()
         {
-            Result<FinancialYearViewModel> _Result = new();
+            Result<FinancialYear> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var Query = await (from s in _ctx.FinancialYears
                                    orderby s.StartDate descending
-                                   select new
+                                   select new FinancialYear
                                    {
-                                       s.FinancialYearId,
-                                       s.Financial_Year,
-                                       s.StartDate,
-                                       s.EndDate,
+                                     FinancialYearId =  s.FinancialYearId,
+                                     Financial_Year =  s.Financial_Year,
+                                     StartDate =  s.StartDate,
+                                      EndDate = s.EndDate,
                                    }).ToListAsync();
                 if (Query.Count > 0)
                 {
-                    var FinancialYears = _mapper.Map<List<FinancialYearViewModel>>(Query);
-                    _Result.CollectionObjData = FinancialYears;
+                    _Result.CollectionObjData = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -280,9 +273,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> CreateFinancialYear(FinancialYearModel data, AppUser user)
+        public async Task<RepoBase> CreateFinancialYear(FinancialYearModel data, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -308,9 +301,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
+        public async Task<RepoBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -333,9 +326,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RemoveFinancialYear(Guid Id, AppUser user)
+        public async Task<RepoBase> RemoveFinancialYear(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -360,17 +353,16 @@ namespace FMS.Repo.DevloperSetting
         }
         #endregion
         #region Recover
-        public async Task<Result<FinancialYearViewModel>> GetRemovedFinancialYears()
+        public async Task<Result<FinancialYear>> GetRemovedFinancialYears()
         {
-            Result<FinancialYearViewModel> _Result = new();
+            Result<FinancialYear> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var Query = await (from s in _ctx.FinancialYears where s.IsActive == false select s).ToListAsync();
                 if (Query.Count > 0)
                 {
-                    var FinancialYearList = _mapper.Map<List<FinancialYearViewModel>>(Query);
-                    _Result.CollectionObjData = FinancialYearList;
+                    _Result.CollectionObjData = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -380,9 +372,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RecoverFinancialYear(Guid Id, AppUser user)
+        public async Task<RepoBase> RecoverFinancialYear(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -405,9 +397,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> DeleteFinancialYear(Guid Id, AppUser user)
+        public async Task<RepoBase> DeleteFinancialYear(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -429,9 +421,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RecoverAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<RepoBase> RecoverAllFinancialYear(List<string> Ids, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 int Count = 0;
@@ -460,9 +452,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> DeleteAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<RepoBase> DeleteAllFinancialYear(List<string> Ids, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 int Count = 0;
@@ -493,9 +485,9 @@ namespace FMS.Repo.DevloperSetting
         #endregion
         #region Branch Financial Year
         #region Crud
-        public async Task<Result<BranchFinancialYearViewModel>> GetBranchFinancialYears()
+        public async Task<Result<BranchFinancialYear>> GetBranchFinancialYears()
         {
-            Result<BranchFinancialYearViewModel> _Result = new();
+            Result<BranchFinancialYear> _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -505,8 +497,7 @@ namespace FMS.Repo.DevloperSetting
                                  .OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
                 if (Query.Count > 0)
                 {
-                    var BranchFinancialYearList = _mapper.Map<List<BranchFinancialYearViewModel>>(Query);
-                    _Result.CollectionObjData = BranchFinancialYearList;
+                    _Result.CollectionObjData = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -516,9 +507,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<Result<BranchFinancialYearViewModel>> GetBranchFinancialYears(Guid BranchId)
+        public async Task<Result<BranchFinancialYear>> GetBranchFinancialYears(Guid BranchId)
         {
-            Result<BranchFinancialYearViewModel> _Result = new();
+            Result<BranchFinancialYear> _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -529,8 +520,7 @@ namespace FMS.Repo.DevloperSetting
 
                 if (Query.Count > 0)
                 {
-                    var BranchFinancialYearList = _mapper.Map<List<BranchFinancialYearViewModel>>(Query);
-                    _Result.CollectionObjData = BranchFinancialYearList;
+                    _Result.CollectionObjData = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -540,9 +530,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> CreateBranchFinancialYear(BranchFinancialYearModel data, AppUser user)
+        public async Task<RepoBase> CreateBranchFinancialYear(BranchFinancialYearModel data, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -567,9 +557,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> UpdateBranchFinancialYear(Guid Id, BranchFinancialYearModel data, AppUser user)
+        public async Task<RepoBase> UpdateBranchFinancialYear(Guid Id, BranchFinancialYearModel data, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -592,9 +582,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RemoveBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<RepoBase> RemoveBranchFinancialYear(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -620,9 +610,9 @@ namespace FMS.Repo.DevloperSetting
         }
         #endregion
         #region Recover
-        public async Task<Result<BranchFinancialYearViewModel>> GetRemovedBranchFinancialYears()
+        public async Task<Result<BranchFinancialYear>> GetRemovedBranchFinancialYears()
         {
-            Result<BranchFinancialYearViewModel> _Result = new();
+            Result<BranchFinancialYear> _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -632,8 +622,7 @@ namespace FMS.Repo.DevloperSetting
                                  .OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
                 if (Query.Count > 0)
                 {
-                    var BranchFinancialYearList = _mapper.Map<List<BranchFinancialYearViewModel>>(Query);
-                    _Result.CollectionObjData = BranchFinancialYearList;
+                    _Result.CollectionObjData = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -643,9 +632,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RecoverBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<RepoBase> RecoverBranchFinancialYear(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -669,9 +658,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> DeleteBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<RepoBase> DeleteBranchFinancialYear(Guid Id, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -693,9 +682,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<RepoBase> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 int Count = 0;
@@ -725,9 +714,9 @@ namespace FMS.Repo.DevloperSetting
             }
             return _Result;
         }
-        public async Task<BaseDb> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<RepoBase> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
-            BaseDb _Result = new();
+            RepoBase _Result = new();
             try
             {
                 int Count = 0;

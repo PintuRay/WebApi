@@ -11,7 +11,8 @@ namespace FMS.Db.Entity
         public decimal OpeningBalance { get; set; }
         public string OpeningBalanceType { get; set; }
         public decimal RunningBalance { get; set; }
-        public string RunningBalanceType { get; set; }     
+        public string RunningBalanceType { get; set; }
+        public ICollection<SubLedgerBalance> SubLedgerBalances { get; set; }
     }
     public class LedgerBalance:LedgerBalanceModel
     {
@@ -25,7 +26,7 @@ namespace FMS.Db.Entity
         public LedgerDev LedgerDev { get; set; }
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
-        public ICollection<SubLedgerBalance> SubLedgerBalances { get; set; }
+
     }
     internal class LedgerBalanceConfig : IEntityTypeConfiguration<LedgerBalance>
     {

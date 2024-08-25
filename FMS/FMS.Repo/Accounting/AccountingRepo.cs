@@ -1,57 +1,57 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Model.Accounting;
+
 
 namespace FMS.Repo.Accounting
 {
     public class AccountingRepo: IAccountingRepo
     {
         #region Journal
-        public async Task<BaseDb> GetJournalVoucherNo(){ throw new NotImplementedException(); }
+        public async Task<RepoBase> GetJournalVoucherNo(){ throw new NotImplementedException(); }
         #region Crud
-        public async Task<BaseDb> CreateJournal(JournalDataRequest requestData){ throw new NotImplementedException(); }
-        public async Task<Result<JournalTransactionModel>> GetJournals(){ throw new NotImplementedException(); }
-        public async Task<BaseDb> GetJournalById(string Id){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RemoveJournal(string Id){ throw new NotImplementedException(); }
+        public async Task<RepoBase> CreateJournal(JournalOrderModel requestData){ throw new NotImplementedException(); }
+        public async Task<Result<JournalOrder>> GetJournals(){ throw new NotImplementedException(); }
+        public async Task<RepoBase> GetJournalById(string Id){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RemoveJournal(string Id){ throw new NotImplementedException(); }
         #endregion
         #region Recover      
-        public async Task<Result<JournalTransactionModel>> GetRemovedJournal(){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RecoverJournal(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> DeleteJournal(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RecoverAllJournal(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> DeleteAllJournal(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
+        public async Task<Result<JournalOrder>> GetRemovedJournal(){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RecoverJournal(Guid Id, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> DeleteJournal(Guid Id, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RecoverAllJournal(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> DeleteAllJournal(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
         #endregion
         #endregion
         #region Payment
-        public async Task<BaseDb> GetPaymentVoucherNo(string CashBank){ throw new NotImplementedException(); }
+        public async Task<RepoBase> GetPaymentVoucherNo(string CashBank){ throw new NotImplementedException(); }
         #region Crud
-        public async Task<BaseDb> CreatePayment(PaymentDataRequest requestData){ throw new NotImplementedException(); }
-        public async Task<Result<PaymentTransactionModel>> GetPayments(){ throw new NotImplementedException(); }
-        public async Task<BaseDb> GetPaymentById(string Id){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RemovePayment(string Id){ throw new NotImplementedException(); }
+        public async Task<RepoBase> CreatePayment(PaymentOrderModel data){ throw new NotImplementedException(); }
+        public async Task<Result<PaymentOrder>> GetPayments(){ throw new NotImplementedException(); }
+        public async Task<RepoBase> GetPaymentById(string Id){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RemovePayment(string Id){ throw new NotImplementedException(); }
         #endregion
         #region Recover
-        public async Task<Result<PaymentTransactionModel>> GetRemovedPayment(){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RecoverPayment(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> DeletePayment(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RecoverAllPayment(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> DeleteAllPayment(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
+        public async Task<Result<PaymentOrder>> GetRemovedPayment(){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RecoverPayment(Guid Id, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> DeletePayment(Guid Id, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RecoverAllPayment(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> DeleteAllPayment(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
         #endregion
         #endregion
         #region Receipt
-        public async Task<BaseDb> GetReceiptVoucherNo(string CashBank){ throw new NotImplementedException(); }
+        public async Task<RepoBase> GetReceiptVoucherNo(string CashBank){ throw new NotImplementedException(); }
         #region Crud
-        public async Task<BaseDb> CreateRecipt(ReciptsDataRequest requestData){ throw new NotImplementedException(); }
-        public async Task<Result<ReceptModel>> GetReceipts(){ throw new NotImplementedException(); }
-        public async Task<BaseDb> GetReceiptById(string Id){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RemoveReceipt(string Id){ throw new NotImplementedException(); }
+        public async Task<RepoBase> CreateRecipt(ReceiptOrderModel data){ throw new NotImplementedException(); }
+        public async Task<Result<ReceiptOrder>> GetReceipts(){ throw new NotImplementedException(); }
+        public async Task<RepoBase> GetReceiptById(string Id){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RemoveReceipt(string Id){ throw new NotImplementedException(); }
         #endregion
         #region Recover
-        public async Task<Result<ReceptModel>> GetRemovedReceipt(){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RecoverReceipt(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> DeleteReceipt(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> RecoverAllReceipt(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
-        public async Task<BaseDb> DeleteAllReceipt(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
+        public async Task<Result<ReceiptOrder>> GetRemovedReceipt(){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RecoverReceipt(Guid Id, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> DeleteReceipt(Guid Id, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> RecoverAllReceipt(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
+        public async Task<RepoBase> DeleteAllReceipt(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
         #endregion
         #endregion
     }

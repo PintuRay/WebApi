@@ -40,7 +40,7 @@ namespace FMS.Server.Controllers.Admin
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateProductionConfig([FromRoute] Guid id, [FromBody] ProductionModel model)
+        public async Task<IActionResult> UpdateProductionConfig([FromRoute] Guid id, [FromBody] ProductionOrderModel model)
         {
             if (id != Guid.Empty)
             {

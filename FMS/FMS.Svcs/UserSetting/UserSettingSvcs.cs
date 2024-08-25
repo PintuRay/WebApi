@@ -12,41 +12,41 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region Stock 
         #region Crud
-        public async Task<Base> GetStocks()
+        public async Task<SvcsBase> GetStocks()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateStock(StockModel data, AppUser user)
+        public async Task<SvcsBase> CreateStock(StockModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateStock(Guid Id, StockModel data, AppUser user)
+        public async Task<SvcsBase> UpdateStock(Guid Id, StockModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveStock(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveStock(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedStock()
+        public async Task<SvcsBase> GetRemovedStock()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverStock(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverStock(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllStock(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllStock(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteStock(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteStock(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllStock(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllStock(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -54,45 +54,45 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region Labour Details
         #region Crud
-        public async Task<Base> GetAllLabourTypes()
+        public async Task<SvcsBase> GetAllLabourTypes()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> GetAllLabourDetails()
+        public async Task<SvcsBase> GetAllLabourDetails()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateLabourDetail(LabourModel data, AppUser user)
+        public async Task<SvcsBase> CreateLabourDetail(LabourModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateLabourDetail(Guid Id, LabourModel data, AppUser user)
+        public async Task<SvcsBase> UpdateLabourDetail(Guid Id, LabourModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveLabourDetail(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveLabourDetail(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedLabourDetails()
+        public async Task<SvcsBase> GetRemovedLabourDetails()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverLabourDetails(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverLabourDetails(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteLabourDetails(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteLabourDetails(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllLabourDetails(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllLabourDetails(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllLabourDetails(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllLabourDetails(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -100,41 +100,41 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region State
         #region Crud
-        public async Task<Base> GetStates()
+        public async Task<SvcsBase> GetStates()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateState(StateModel data, AppUser user)
+        public async Task<SvcsBase> CreateState(StateModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateState(Guid Id, StateModel data, AppUser user)
+        public async Task<SvcsBase> UpdateState(Guid Id, StateModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveState(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveState(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedStates()
+        public async Task<SvcsBase> GetRemovedStates()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverState(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverState(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteState(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteState(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllStates(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllStates(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllStates(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllStates(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -142,41 +142,41 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region City
         #region Crud
-        public async Task<Base> GetCities(Guid Id)
+        public async Task<SvcsBase> GetCities(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateCity(CityModel data, AppUser user)
+        public async Task<SvcsBase> CreateCity(CityModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateCity(Guid Id, CityModel data, AppUser user)
+        public async Task<SvcsBase> UpdateCity(Guid Id, CityModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveCity(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveCity(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedCity()
+        public async Task<SvcsBase> GetRemovedCity()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverCity(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverCity(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteCity(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteCity(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllCity(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllCity(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllCity(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllCity(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -184,41 +184,41 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region Party Details
         #region Crud
-        public async Task<Base> GetParties()
+        public async Task<SvcsBase> GetParties()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateParty(PartyModel data, AppUser user)
+        public async Task<SvcsBase> CreateParty(PartyModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateParty(Guid Id, PartyModel data, AppUser user)
+        public async Task<SvcsBase> UpdateParty(Guid Id, PartyModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveParty(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveParty(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedParty()
+        public async Task<SvcsBase> GetRemovedParty()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverParty(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverParty(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteParty(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteParty(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllParty(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllParty(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllParty(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllParty(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -226,41 +226,41 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region LedgerBalance
         #region Crud
-        public async Task<Base> GetLedgerBalances()
+        public async Task<SvcsBase> GetLedgerBalances()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateLedgerBalance(LedgerBalanceRequest data, AppUser user)
+        public async Task<SvcsBase> CreateLedgerBalance(LedgerBalanceRequest data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateLedgerBalance(Guid Id, LedgerBalanceModel data, AppUser user)
+        public async Task<SvcsBase> UpdateLedgerBalance(Guid Id, LedgerBalanceModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveLedgerBalance(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveLedgerBalance(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedLedgerBalance()
+        public async Task<SvcsBase> GetRemovedLedgerBalance()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverLedgerBalance(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverLedgerBalance(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteLedgerBalance(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteLedgerBalance(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllLedgerBalance(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllLedgerBalance(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllLedgerBalance(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllLedgerBalance(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -268,41 +268,41 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region Subledger
         #region Crud
-        public async Task<Base> GetSubLedgers()
+        public async Task<SvcsBase> GetSubLedgers()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateSubLedger(SubLedgerDataRequest Data, AppUser user)
+        public async Task<SvcsBase> CreateSubLedger(SubLedgerDataRequest Data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateSubLedger(Guid Id, SubLedgerModel data, AppUser user)
+        public async Task<SvcsBase> UpdateSubLedger(Guid Id, SubLedgerModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveSubLedger(Guid Id,AppUser user)
+        public async Task<SvcsBase> RemoveSubLedger(Guid Id,AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedSubLedger()
+        public async Task<SvcsBase> GetRemovedSubLedger()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverSubLedger(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverSubLedger(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteSubLedger(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteSubLedger(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllSubLedger(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllSubLedger(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllSubLedger(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllSubLedger(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -310,41 +310,41 @@ namespace FMS.Svcs.UserSetting
         #endregion
         #region SubLedger Balance
         #region Crud
-        public async Task<Base> GetSubLedgerBalances()
+        public async Task<SvcsBase> GetSubLedgerBalances()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> CreateSubLedgerBalance(SubLedgerBalanceModel data, AppUser user)
+        public async Task<SvcsBase> CreateSubLedgerBalance(SubLedgerBalanceModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> UpdateSubLedgerBalance(Guid Id, SubLedgerBalanceModel data, AppUser user)
+        public async Task<SvcsBase> UpdateSubLedgerBalance(Guid Id, SubLedgerBalanceModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RemoveSubLedgerBalance(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveSubLedgerBalance(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Base> GetRemovedSubLedgerBalance()
+        public async Task<SvcsBase> GetRemovedSubLedgerBalance()
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverSubLedgerBalance(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverSubLedgerBalance(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteSubLedgerBalance(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteSubLedgerBalance(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> RecoverAllSubLedgerBalance(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllSubLedgerBalance(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<Base> DeleteAllSubLedgerBalance(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllSubLedgerBalance(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }

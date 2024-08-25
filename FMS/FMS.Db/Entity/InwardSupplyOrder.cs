@@ -11,6 +11,7 @@ namespace FMS.Db.Entity
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
         public decimal TotalAmount { get; set; }
+        public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
     }
     public class InwardSupplyOrder : InwardSupplyOrderModel
     {
@@ -23,7 +24,6 @@ namespace FMS.Db.Entity
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
         public ProductType ProductType { get; set; }
-        public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
     }
     internal class InwardSupplyOrderConfig : IEntityTypeConfiguration<InwardSupplyOrder>
     {

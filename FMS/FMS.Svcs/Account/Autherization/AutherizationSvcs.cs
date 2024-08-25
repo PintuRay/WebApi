@@ -25,9 +25,9 @@ namespace FMS.Svcs.Account.Autherization
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
         #region User
-        public async Task<Base> GetUsers()
+        public async Task<SvcsBase> GetUsers()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _userManager.Users.ToListAsync();
@@ -61,9 +61,9 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<Base> GetUserByMail(string email)
+        public async Task<SvcsBase> GetUserByMail(string email)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _userManager.FindByEmailAsync(email);
@@ -96,9 +96,9 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<Base> GetUserById(string Id)
+        public async Task<SvcsBase> GetUserById(string Id)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _userManager.FindByIdAsync(Id);
@@ -131,9 +131,9 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<Base> UpdateUser(string Id, UserModel User)
+        public async Task<SvcsBase> UpdateUser(string Id, UserModel User)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var chkUser = await _userManager.FindByIdAsync(Id);
@@ -182,9 +182,9 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<Base> DeletUser(string Id)
+        public async Task<SvcsBase> DeletUser(string Id)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var chkUser = await _userManager.FindByIdAsync(Id);
@@ -230,9 +230,9 @@ namespace FMS.Svcs.Account.Autherization
         }
         #endregion
         #region Role
-        public async Task<Base> CreateRole(RoleModel model)
+        public async Task<SvcsBase> CreateRole(RoleModel model)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 bool ChkRoleExist = await _roleManager.RoleExistsAsync(model.Name);
@@ -281,9 +281,9 @@ namespace FMS.Svcs.Account.Autherization
 
             return Obj;
         }
-        public async Task<Base> GetRoles()
+        public async Task<SvcsBase> GetRoles()
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _roleManager.Roles.ToListAsync();
@@ -317,9 +317,9 @@ namespace FMS.Svcs.Account.Autherization
 
             return Obj;
         }
-        public async Task<Base> GetRoleById(string Id)
+        public async Task<SvcsBase> GetRoleById(string Id)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _roleManager.FindByIdAsync(Id);
@@ -355,9 +355,9 @@ namespace FMS.Svcs.Account.Autherization
 
             return Obj;
         }
-        public async Task<Base> UpdateRole(string Id, RoleModel model)
+        public async Task<SvcsBase> UpdateRole(string Id, RoleModel model)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _roleManager.FindByIdAsync(Id);
@@ -406,9 +406,9 @@ namespace FMS.Svcs.Account.Autherization
 
             return Obj;
         }
-        public async Task<Base> DeleteRole(string Id)
+        public async Task<SvcsBase> DeleteRole(string Id)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var repoResult = await _roleManager.FindByIdAsync(Id);
@@ -454,9 +454,9 @@ namespace FMS.Svcs.Account.Autherization
         }
         #endregion
         #region User-Role && Claims
-        public async Task<Base> GetAllUserWithRolesAndClaims()
+        public async Task<SvcsBase> GetAllUserWithRolesAndClaims()
         {
-            Base Obj;
+            SvcsBase Obj;
             var users = new List<UserRoleClaimModel>();
             try
             {
@@ -515,9 +515,9 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<Base> GetUserWithRolesAndClaims(string UserId)
+        public async Task<SvcsBase> GetUserWithRolesAndClaims(string UserId)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                 var isUserExist = await _userManager.FindByIdAsync(UserId);
@@ -583,9 +583,9 @@ namespace FMS.Svcs.Account.Autherization
 
             return Obj;
         }
-        public async Task<Base> UpdateUserRoleAndClaims(UserRoleClaimModel model)
+        public async Task<SvcsBase> UpdateUserRoleAndClaims(UserRoleClaimModel model)
         {
-            Base Obj;
+            SvcsBase Obj;
             try
             {
                

@@ -12,6 +12,7 @@ namespace FMS.Db.Entity
         public string DrCr {  get; set; }
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
+        public ICollection<JournalTransaction> JournalTransactions { get; set; }
     }
     public class JournalOrder: JournalOrderModel
     {
@@ -23,7 +24,6 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
-        public ICollection<JournalTransaction> JournalTransactions { get; set; }
     }
     internal class JournalOrderConfig : IEntityTypeConfiguration<JournalOrder>
     {
