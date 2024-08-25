@@ -343,7 +343,7 @@ namespace FMS.Svcs.AdminSetting
             Base Obj;
             try
             {
-                var repoResult = await _adminRepo.GetAllUserAndBranch();
+                var repoResult = await _adminRepo.GetBranchAlloctions();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()

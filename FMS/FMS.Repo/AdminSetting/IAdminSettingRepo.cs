@@ -1,6 +1,5 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Model.Admin;
 
 namespace FMS.Repo.AdminSetting
 {
@@ -12,12 +11,12 @@ namespace FMS.Repo.AdminSetting
         #region Company Details
         #region Crud
         Task<BaseDb> CreateCompany(CompanyModel data, AppUser user);
-        Task<Result<CompanyViewModel>> GetCompany(string BranchId);
+        Task<Result<Company>> GetCompany(string BranchId);
         Task<BaseDb> UpdateCompany(Guid Id, CompanyModel model, AppUser user);
         Task<BaseDb> RemoveCompany(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<CompanyViewModel>> GetRemovedCompanies(string BranchId);
+        Task<Result<Company>> GetRemovedCompanies(string BranchId);
         Task<BaseDb> RecoverCompany(Guid Id, AppUser user);
         Task<BaseDb> DeleteCompany(Guid Id, AppUser user);
         Task<BaseDb> RecoverAllCompany(List<string> Ids, AppUser user);
@@ -26,13 +25,13 @@ namespace FMS.Repo.AdminSetting
         #endregion
         #region Branch Allocation
         #region Crud
-        Task<Result<BranchAllocationModel>> GetAllUserAndBranch();
+        Task<Result<UserBranch>> GetBranchAlloctions();
         Task<BaseDb> CreateBranchAlloction(UserBranchModel data, AppUser user);
         Task<BaseDb> UpdateBranchAlloction(Guid Id, UserBranchModel model, AppUser user);
         Task<BaseDb> RemoveBranchAlloction(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<BranchAllocationModel>> GetRemovedBranchAlloction();
+        Task<Result<UserBranch>> GetRemovedBranchAlloction();
         Task<BaseDb> RecoverBranchAlloction(Guid Id, AppUser user);
         Task<BaseDb> DeleteBranchAlloction(Guid Id, AppUser user);
         Task<BaseDb> RecoverAllBranchAlloction(List<string> Ids, AppUser user);

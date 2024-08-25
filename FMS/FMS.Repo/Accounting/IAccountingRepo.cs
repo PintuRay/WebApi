@@ -15,12 +15,12 @@ namespace FMS.Repo.Accounting
         Task<BaseDb> GetJournalVoucherNo();
         #region Crud
         Task<BaseDb> CreateJournal(JournalDataRequest requestData);
-        Task<Result<JournalModel>> GetJournals();
+        Task<Result<JournalTransactionModel>> GetJournals();
         Task<BaseDb> GetJournalById(string Id);
         Task<BaseDb> RemoveJournal(string Id);
         #endregion
         #region Recover      
-        Task<Result<JournalModel>> GetRemovedJournal();
+        Task<Result<JournalTransactionModel>> GetRemovedJournal();
         Task<BaseDb> RecoverJournal(Guid Id, AppUser user);
         Task<BaseDb> DeleteJournal(Guid Id, AppUser user);
         Task<BaseDb> RecoverAllJournal(List<string> Ids, AppUser user);
@@ -31,12 +31,12 @@ namespace FMS.Repo.Accounting
         Task<BaseDb> GetPaymentVoucherNo(string CashBank);
         #region Crud
         Task<BaseDb> CreatePayment(PaymentDataRequest requestData);
-        Task<Result<PaymentModel>> GetPayments();
+        Task<Result<PaymentTransactionModel>> GetPayments();
         Task<BaseDb> GetPaymentById(string Id);
         Task<BaseDb> RemovePayment(string Id);
         #endregion
         #region Recover
-        Task<Result<PaymentModel>> GetRemovedPayment();
+        Task<Result<PaymentTransactionModel>> GetRemovedPayment();
         Task<BaseDb> RecoverPayment(Guid Id, AppUser user);
         Task<BaseDb> DeletePayment(Guid Id, AppUser user);
         Task<BaseDb> RecoverAllPayment(List<string> Ids, AppUser user);

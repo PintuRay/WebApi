@@ -2,10 +2,7 @@
 using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Model.Admin;
-using FMS.Model.Devloper;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Repo.AdminSetting
 {
@@ -45,9 +42,9 @@ namespace FMS.Repo.AdminSetting
         #endregion
         #region Company Details
         #region Crud
-        public async Task<Result<CompanyViewModel>> GetCompany(string BranchId)
+        public async Task<Result<Company>> GetCompany(string BranchId)
         {
-            Result<CompanyViewModel> _Result = new();
+            Result<Company> _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -56,7 +53,7 @@ namespace FMS.Repo.AdminSetting
                     var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == true).SingleOrDefaultAsync();
                     if (Query != null)
                     {
-                        var Company = _mapper.Map<CompanyViewModel>(Query);
+                        var Company = _mapper.Map<Company>(Query);
                         _Result.SingleObjData = Company;
                         _Result.IsSucess = true;
                     }
@@ -66,7 +63,7 @@ namespace FMS.Repo.AdminSetting
                     var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == true).ToListAsync();
                     if (Query != null)
                     {
-                        var Companies = _mapper.Map<List<CompanyViewModel>>(Query);
+                        var Companies = _mapper.Map<List<Company>>(Query);
                         _Result.CollectionObjData = Companies;
                         _Result.IsSucess = true;
                     }
@@ -159,9 +156,9 @@ namespace FMS.Repo.AdminSetting
         }
         #endregion
         #region Recover
-        public async Task<Result<CompanyViewModel>> GetRemovedCompanies(string BranchId)
+        public async Task<Result<Company>> GetRemovedCompanies(string BranchId)
         {
-            Result<CompanyViewModel> _Result = new();
+            Result<Company> _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -170,7 +167,7 @@ namespace FMS.Repo.AdminSetting
                     var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == false).SingleOrDefaultAsync();
                     if (Query != null)
                     {
-                        var Company = _mapper.Map<CompanyViewModel>(Query);
+                        var Company = _mapper.Map<Company>(Query);
                         _Result.SingleObjData = Company;
                         _Result.IsSucess = true;
                     }
@@ -180,7 +177,7 @@ namespace FMS.Repo.AdminSetting
                     var Query = await _ctx.Companies.Where(s => s.Fk_BranchId == Guid.Parse(BranchId) && s.IsActive == false).ToListAsync();
                     if (Query != null)
                     {
-                        var Companies = _mapper.Map<List<CompanyViewModel>>(Query);
+                        var Companies = _mapper.Map<List<Company>>(Query);
                         _Result.CollectionObjData = Companies;
                         _Result.IsSucess = true;
                     }
@@ -304,11 +301,33 @@ namespace FMS.Repo.AdminSetting
         #endregion
         #region User Branch Allocation
         #region Crud
-        public async Task<BaseDb> CreateBranchAlloction(UserBranchModel data, AppUser user)
+        public async Task<Result<UserBranch>> GetBranchAlloctions()
         {
-            throw new NotImplementedException();
+            Result<UserBranch> _Result = new();
+            try
+            {
+                _Result.IsSucess = false;     
+                var AllUserAllocatedBranch = await (from s in _ctx.UserBranches
+                                                    select new UserBranch
+                                                    {
+                                                        Id = s.Id,
+                                                        Branch = s.Branch != null ? new Branch { BranchName = s.Branch.BranchName } : null,
+                                                        User = s.User != null ? new AppUser { UserName = s.User.Name} : null
+                                                    }).ToListAsync();
+                if (AllUserAllocatedBranch.Count > 0)
+                {
+
+                    _Result.IsSucess = true;
+                }
+                
+            }
+            catch 
+            {
+                throw;
+            }
+            return _Result;
         }
-        public async Task<Result<BranchAllocationModel>> GetAllUserAndBranch()
+        public async Task<BaseDb> CreateBranchAlloction(UserBranchModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -322,7 +341,7 @@ namespace FMS.Repo.AdminSetting
         }
         #endregion
         #region Recover
-        public async Task<Result<BranchAllocationModel>> GetRemovedBranchAlloction()
+        public async Task<Result<UserBranch>> GetRemovedBranchAlloction()
         {
             throw new NotImplementedException();
         }

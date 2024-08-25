@@ -1,23 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
 {
-    public class UserBranch
+    public class UserBranchModel
     {
-        public Guid Id { get; set; }
         public string Fk_UserId { get; set; }
         public Guid Fk_BranchId { get; set; }
+    }
+    public class UserBranch: UserBranchModel
+    {
+        public Guid Id { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
         //Navigation Property
-        public AppUser User { get; set; }       
+        public AppUser User { get; set; }
         public Branch Branch { get; set; }
+    }
+    internal class UserBranchConfig : IEntityTypeConfiguration<UserBranch>
+    {
+        public void Configure(EntityTypeBuilder<UserBranch> builder)
+        {
+            builder.ToTable("UserBranches", "dbo");
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.Fk_BranchId).IsRequired(true);
+            builder.Property(e => e.Fk_UserId).IsRequired(true);
+            builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            builder.Property(e => e.CreatedBy).HasMaxLength(100);
+            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.ModifyBy).HasMaxLength(100);
+            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
+            //One-To-Many Relationship
+            builder.HasOne(ub => ub.User).WithMany(u => u.UserBranch).HasForeignKey(ub => ub.Fk_UserId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(ub => ub.Branch).WithMany(b => b.UserBranch).HasForeignKey(ub => ub.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

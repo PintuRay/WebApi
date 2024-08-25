@@ -1,5 +1,4 @@
-﻿using FMS.Model.Devloper;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 namespace FMS.Model.Account.Autherization
 {
     public class RoleModel
