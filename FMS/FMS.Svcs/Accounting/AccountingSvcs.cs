@@ -1,6 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Accounting;
 
 namespace FMS.Svcs.Accounting
 {
@@ -12,7 +10,7 @@ namespace FMS.Svcs.Accounting
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> CreateJournal(JournalDataRequest requestData, AppUser user) { throw new NotImplementedException(); }
+        public async Task<SvcsBase> CreateJournal(JournalOrderModel requestData, AppUser user) { throw new NotImplementedException(); }
         public async Task<SvcsBase> GetJournals() { throw new NotImplementedException(); }
         public async Task<SvcsBase> GetJournalById(Guid Id) { throw new NotImplementedException(); }
         public async Task<SvcsBase> RemoveJournal(Guid Id, AppUser user) { throw new NotImplementedException(); }
@@ -28,7 +26,7 @@ namespace FMS.Svcs.Accounting
         #region Payment
         public async Task<SvcsBase> GetPaymentVoucherNo(string CashBank) { throw new NotImplementedException(); }
         #region Crud
-        public async Task<SvcsBase> CreatePayment(PaymentDataRequest requestData, AppUser user) { throw new NotImplementedException(); }
+        public async Task<SvcsBase> CreatePayment(PaymentOrderModel data, AppUser user) { throw new NotImplementedException(); }
         public async Task<SvcsBase> GetPayments() { throw new NotImplementedException(); }
         public async Task<SvcsBase> GetPaymentById(Guid Id) { throw new NotImplementedException(); }
         public async Task<SvcsBase> RemovePayment(Guid Id, AppUser user) { throw new NotImplementedException(); }
@@ -44,7 +42,7 @@ namespace FMS.Svcs.Accounting
         #region Receipt
         public async Task<SvcsBase> GetReceiptVoucherNo(string CashBank) { throw new NotImplementedException(); }
         #region Crud
-        public async Task<SvcsBase> CreateRecipt(ReciptsDataRequest requestData, AppUser user) { throw new NotImplementedException(); }
+        public async Task<SvcsBase> CreateRecipt(ReceiptOrderModel data, AppUser user) { throw new NotImplementedException(); }
         public async Task<SvcsBase> GetReceipts() { throw new NotImplementedException(); }
         public async Task<SvcsBase> GetReceiptById(Guid Id) { throw new NotImplementedException(); }
         public async Task<SvcsBase> RemoveReceipt(Guid Id, AppUser user) { throw new NotImplementedException(); }

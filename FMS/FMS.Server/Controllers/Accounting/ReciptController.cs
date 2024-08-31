@@ -1,5 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Accounting;
 using FMS.Svcs.Accounting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +22,7 @@ namespace FMS.Server.Controllers.Accounting
         }
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateRecipt([FromBody] ReciptsDataRequest model)
+        public async Task<IActionResult> CreateRecipt([FromBody] ReceiptOrderModel model)
         {
             if (ModelState.IsValid)
             {

@@ -1,5 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Transaction;
 using FMS.Svcs.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +16,7 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreatetPurchaseReturn([FromBody] PurchaseDataRequest model)
+        public async Task<IActionResult> CreatetPurchaseReturn([FromBody] PurchaseReturnOrderModel model)
         {
             if (ModelState.IsValid)
             {
@@ -44,7 +43,7 @@ namespace FMS.Server.Controllers.Transaction
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdatetPurchaseReturn([FromRoute] Guid id, [FromBody] PurchaseDataRequest model)
+        public async Task<IActionResult> UpdatetPurchaseReturn([FromRoute] Guid id, [FromBody] PurchaseReturnOrderModel model)
         {
             if (id != Guid.Empty)
             {

@@ -1,6 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Admin;
-using FMS.Model.Devloper;
 using FMS.Svcs.AdminSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

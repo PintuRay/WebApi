@@ -24,7 +24,7 @@ namespace FMS.Repo.Accounting
         #region Payment
         Task<RepoBase> GetPaymentVoucherNo(string CashBank);
         #region Crud
-        Task<RepoBase> CreatePayment(PaymentOrderModel requestData);
+        Task<RepoBase> CreatePayment(PaymentOrderModel data);
         Task<Result<PaymentOrder>> GetPayments();
         Task<RepoBase> GetPaymentById(string Id);
         Task<RepoBase> RemovePayment(string Id);
@@ -40,7 +40,7 @@ namespace FMS.Repo.Accounting
         #region Receipt
         Task<RepoBase> GetReceiptVoucherNo(string CashBank);
         #region Crud
-        Task<RepoBase> CreateRecipt(ReceiptOrderModel requestData);
+        Task<RepoBase> CreateRecipt(ReceiptOrderModel data);
         Task<Result<ReceiptOrder>> GetReceipts();
         Task<RepoBase> GetReceiptById(string Id);
         Task<RepoBase> RemoveReceipt(string Id);

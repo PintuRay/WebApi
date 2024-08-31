@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
 using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
-using FMS.Repo;
 using FMS.Repo.Account.AutherIzation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FMS.Svcs.Account.Autherization
 {
@@ -33,11 +29,10 @@ namespace FMS.Svcs.Account.Autherization
                 var repoResult = await _userManager.Users.ToListAsync();
                 if (repoResult.Count > 0)
                 {
-                    var Users = _mapper.Map<List<UserViewModel>>(repoResult);
                     Obj = new()
                     {
-                        Data = Users,
-                        Count = Users.Count.ToString(),
+                        Data = repoResult,
+                        Count = repoResult.Count.ToString(),
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                     return Obj;
@@ -69,10 +64,10 @@ namespace FMS.Svcs.Account.Autherization
                 var repoResult = await _userManager.FindByEmailAsync(email);
                 if (repoResult != null)
                 {
-                    var User = _mapper.Map<UserViewModel>(repoResult);
+                   
                     Obj = new()
                     {
-                        Data = User,
+                        Data = repoResult,
                         Message = "User Found",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
@@ -104,10 +99,9 @@ namespace FMS.Svcs.Account.Autherization
                 var repoResult = await _userManager.FindByIdAsync(Id);
                 if (repoResult != null)
                 {
-                    var User = _mapper.Map<UserViewModel>(repoResult);
                     Obj = new()
                     {
-                        Data = User,
+                        Data = repoResult,
                         Message = "User Found",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
@@ -131,7 +125,7 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateUser(string Id, UserModel User)
+        public async Task<SvcsBase> UpdateUser(string Id, AppUser User)
         {
             SvcsBase Obj;
             try
@@ -140,8 +134,6 @@ namespace FMS.Svcs.Account.Autherization
                 if (chkUser != null)
                 {
                     var updateUser = _mapper.Map(User, chkUser);
-                    chkUser.ModifyDate = DateTime.UtcNow;
-                    chkUser.ModifyBy = "N/A";
                     var repoResult = await _userManager.UpdateAsync(updateUser);
                     if (repoResult.Succeeded)
                     {
@@ -230,7 +222,7 @@ namespace FMS.Svcs.Account.Autherization
         }
         #endregion
         #region Role
-        public async Task<SvcsBase> CreateRole(RoleModel model)
+        public async Task<SvcsBase> CreateRole(AppRole model)
         {
             SvcsBase Obj;
             try
@@ -238,15 +230,12 @@ namespace FMS.Svcs.Account.Autherization
                 bool ChkRoleExist = await _roleManager.RoleExistsAsync(model.Name);
                 if (!ChkRoleExist)
                 {
-                    var Role = _mapper.Map<AppRole>(model);
-                    Role.CreatedDate = DateTime.UtcNow;
-                    Role.CreatedBy = "N/A";
-                    var identityRole = await _roleManager.CreateAsync(Role);
+                    var identityRole = await _roleManager.CreateAsync(model);
                     if (identityRole.Succeeded)
                     {
                         Obj = new()
                         {
-                            Data = new { Id = Role.Id },
+                            Data = new { Id = model.Id },
                             Message = "Role Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         };
@@ -289,11 +278,10 @@ namespace FMS.Svcs.Account.Autherization
                 var repoResult = await _roleManager.Roles.ToListAsync();
                 if (repoResult.Count > 0)
                 {
-                    var roles = _mapper.Map<List<RoleDbModel>>(repoResult);
                     Obj = new()
                     {
-                        Data = roles,
-                        Count = roles.Count.ToString(),
+                        Data = repoResult,
+                        Count = repoResult.Count.ToString(),
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                 }
@@ -325,10 +313,9 @@ namespace FMS.Svcs.Account.Autherization
                 var repoResult = await _roleManager.FindByIdAsync(Id);
                 if (repoResult != null)
                 {
-                    var role = _mapper.Map<RoleDbModel>(repoResult);
                     Obj = new()
                     {
-                        Data = role,
+                        Data = repoResult,
                         Message = "Record Found",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
@@ -355,7 +342,7 @@ namespace FMS.Svcs.Account.Autherization
 
             return Obj;
         }
-        public async Task<SvcsBase> UpdateRole(string Id, RoleModel model)
+        public async Task<SvcsBase> UpdateRole(string Id, AppRole model)
         {
             SvcsBase Obj;
             try
@@ -363,10 +350,7 @@ namespace FMS.Svcs.Account.Autherization
                 var repoResult = await _roleManager.FindByIdAsync(Id);
                 if (repoResult != null)
                 {
-                    var updateRole = _mapper.Map(model, repoResult);
-                    repoResult.ModifyDate = DateTime.UtcNow;
-                    repoResult.ModifyBy = "N/A";
-                    var identityRole = await _roleManager.UpdateAsync(updateRole);
+                    var identityRole = await _roleManager.UpdateAsync(model);
                     if (identityRole.Succeeded)
                     {
                         Obj = new()

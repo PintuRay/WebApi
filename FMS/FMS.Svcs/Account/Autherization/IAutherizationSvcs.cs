@@ -1,4 +1,5 @@
-﻿using FMS.Model;
+﻿using FMS.Db.Entity;
+using FMS.Model;
 using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
 using FMS.Repo;
@@ -12,14 +13,14 @@ namespace FMS.Svcs.Account.Autherization
         Task<SvcsBase> GetUsers();
         Task<SvcsBase> GetUserByMail(string email);
         Task<SvcsBase> GetUserById(string Id);
-        Task<SvcsBase> UpdateUser(string Id, UserModel User);
+        Task<SvcsBase> UpdateUser(string Id, AppUser User);
         Task<SvcsBase> DeletUser(string UserId);
         #endregion
         #region Role
-        Task<SvcsBase> CreateRole(RoleModel model);
+        Task<SvcsBase> CreateRole(AppRole model);
         Task<SvcsBase> GetRoles();
         Task<SvcsBase> GetRoleById(string Id);
-        Task<SvcsBase> UpdateRole(string Id, RoleModel model);
+        Task<SvcsBase> UpdateRole(string Id, AppRole model);
         Task<SvcsBase> DeleteRole(string Id);
         #endregion
         #region User-Role && Claims

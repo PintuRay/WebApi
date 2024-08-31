@@ -4,6 +4,7 @@ using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Model.Email;
 using FMS.Model.SMS;
+using FMS.Repo;
 using FMS.Repo.Account.Authentication;
 using FMS.Repo.Account.AutherIzation;
 using FMS.Repo.AdminSetting;

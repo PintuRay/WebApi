@@ -1,24 +1,17 @@
 ﻿using AutoMapper;
 using FMS.Db.Entity;
-using FMS.Model;
 using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
 using FMS.Model.Email;
-using FMS.Repo;
 using FMS.Repo.Account.Authentication;
 using FMS.Svcs.Email;
 using FMS.Svcs.SMS;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Twilio.Jwt.AccessToken;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Svcs.Account.Authentication
 {
@@ -97,7 +90,7 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<SvcsBase> SignUp(UserModel data)
+        public async Task<SvcsBase> SignUp(AppUser data)
         {
             bool isMailSend = false;
             SvcsBase Obj;
@@ -105,9 +98,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 var user = _mapper.Map<AppUser>(data);
                 user.UserName = data.Email;
-                user.CreatedDate = DateTime.UtcNow;
                 var identity = await _userManager.CreateAsync(user, data.Password);
-
                 if (identity.Succeeded)
                 {
                     var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);

@@ -1,8 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Accounting;
 using FMS.Svcs.Accounting;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +22,7 @@ namespace FMS.Server.Controllers.Accounting
         }
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreatePayment([FromBody] PaymentDataRequest model)
+        public async Task<IActionResult> CreatePayment([FromBody] PaymentOrderModel model)
         {
             if (ModelState.IsValid)
             {

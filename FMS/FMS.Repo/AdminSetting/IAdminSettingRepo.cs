@@ -117,7 +117,7 @@ namespace FMS.Repo.AdminSetting
         #region Production Configuration
         #region Crud
         Task<Result<ProductionOrder>> GetProductionConfig();
-        Task<RepoBase> CreateProductionConfig( ProductionOrderModel data, AppUser user);
+        Task<RepoBase> CreateProductionConfig(ProductionOrderModel data, AppUser user);
         Task<RepoBase> UpdateProductionConfig(Guid Id, ProductionOrderModel data, AppUser user);
         Task<RepoBase> RemoveProductionConfig(Guid Id, AppUser user);
         #endregion
@@ -181,7 +181,7 @@ namespace FMS.Repo.AdminSetting
         #region Ledger
         #region Crud
         Task<Result<Ledger>> GetLedgers();
-        Task<RepoBase> CreateLedger(LedgerModel listData, AppUser user);
+        Task<RepoBase> CreateLedger(LedgerModel data, AppUser user);
         Task<RepoBase> UpdateLedger(Guid Id, LedgerModel data, AppUser user);
         Task<RepoBase> RemoveLedger(Guid Id, AppUser user);
         #endregion

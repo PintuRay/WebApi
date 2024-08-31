@@ -1,6 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.User;
 using FMS.Repo.UserSetting;
 
 namespace FMS.Svcs.UserSetting
@@ -230,7 +228,7 @@ namespace FMS.Svcs.UserSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateLedgerBalance(LedgerBalanceRequest data, AppUser user)
+        public async Task<SvcsBase> CreateLedgerBalance(LedgerBalanceModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -272,7 +270,7 @@ namespace FMS.Svcs.UserSetting
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateSubLedger(SubLedgerDataRequest Data, AppUser user)
+        public async Task<SvcsBase> CreateSubLedger(SubLedgerModel Data, AppUser user)
         {
             throw new NotImplementedException();
         }

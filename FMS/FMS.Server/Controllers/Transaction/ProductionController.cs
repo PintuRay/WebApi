@@ -1,8 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Transaction;
 using FMS.Svcs.Transaction;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +16,7 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateProduction([FromBody] ProductionEntryRequest model)
+        public async Task<IActionResult> CreateProduction([FromBody] LabourOrderModel model)
         {
             if (ModelState.IsValid)
             {

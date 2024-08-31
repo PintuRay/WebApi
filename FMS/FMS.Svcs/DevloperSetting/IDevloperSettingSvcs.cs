@@ -1,7 +1,4 @@
 using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Devloper;
-using FMS.Repo;
 
 namespace FMS.Svcs.DevloperSetting
 {

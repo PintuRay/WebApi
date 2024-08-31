@@ -11,7 +11,7 @@ namespace FMS.Svcs.Account.Authentication
         #region SignUp 
         Task<SvcsBase> ValidateToken(string Token);
         Task<SvcsBase> IsEmailInUse(string email);
-        Task<SvcsBase> SignUp(UserModel data);
+        Task<SvcsBase> SignUp(AppUser data);
         #endregion
         #region SignIn 
         Task<SvcsBase> SignIn(SignInModel data);

@@ -1,6 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Accounting;
 
 namespace FMS.Svcs.Accounting
 {
@@ -9,7 +7,7 @@ namespace FMS.Svcs.Accounting
         #region Journal
         Task<SvcsBase> GetJournalVoucherNo();
         #region Crud
-        Task<SvcsBase> CreateJournal(JournalDataRequest requestData,AppUser user);
+        Task<SvcsBase> CreateJournal(JournalOrderModel data, AppUser user);
         Task<SvcsBase> GetJournals();
         Task<SvcsBase> GetJournalById(Guid Id);
         Task<SvcsBase> RemoveJournal(Guid Id, AppUser user);
@@ -25,7 +23,7 @@ namespace FMS.Svcs.Accounting
         #region Payment
         Task<SvcsBase> GetPaymentVoucherNo(string CashBank);
         #region Crud
-        Task<SvcsBase> CreatePayment(PaymentDataRequest requestData, AppUser user);
+        Task<SvcsBase> CreatePayment(PaymentOrderModel data, AppUser user);
         Task<SvcsBase> GetPayments();
         Task<SvcsBase> GetPaymentById(Guid Id);
         Task<SvcsBase> RemovePayment(Guid Id, AppUser user);
@@ -41,7 +39,7 @@ namespace FMS.Svcs.Accounting
         #region Receipt
         Task<SvcsBase> GetReceiptVoucherNo(string CashBank);
         #region Crud
-        Task<SvcsBase> CreateRecipt(ReciptsDataRequest requestData, AppUser user);
+        Task<SvcsBase> CreateRecipt(ReceiptOrderModel data, AppUser user);
         Task<SvcsBase> GetReceipts();
         Task<SvcsBase> GetReceiptById(Guid Id);
         Task<SvcsBase> RemoveReceipt(Guid Id, AppUser user);

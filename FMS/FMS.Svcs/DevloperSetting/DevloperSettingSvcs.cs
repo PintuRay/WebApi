@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Devloper;
+﻿using FMS.Db.Entity;
 using FMS.Repo.DevloperSetting;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FMS.Svcs.DevloperSetting
 {

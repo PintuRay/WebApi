@@ -1,8 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Transaction;
 using FMS.Svcs.Transaction;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +16,7 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateSale([FromBody] SalesDataRequest model)
+        public async Task<IActionResult> CreateSale([FromBody] SalesOrderModel model)
         {
             if (ModelState.IsValid)
             {
@@ -39,7 +37,7 @@ namespace FMS.Server.Controllers.Transaction
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdatSales([FromRoute] Guid id, [FromBody] SalesDataRequest model)
+        public async Task<IActionResult> UpdatSales([FromRoute] Guid id, [FromBody] SalesOrderModel model)
         {
             if (id != Guid.Empty)
             {

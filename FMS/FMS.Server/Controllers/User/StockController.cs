@@ -1,9 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Devloper;
-using FMS.Model.User;
 using FMS.Svcs.UserSetting;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

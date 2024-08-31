@@ -1,11 +1,8 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Account;
-using FMS.Model.Admin;
 using FMS.Svcs.AdminSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Policy;
 
 namespace FMS.Server.Controllers.Admin
 {

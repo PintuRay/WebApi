@@ -1,8 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Admin;
-using FMS.Model.Transaction;
-using FMS.Model.User;
 
 namespace FMS.Svcs.Transaction
 {
@@ -13,8 +9,8 @@ namespace FMS.Svcs.Transaction
         #region Crud
         Task<SvcsBase> GetPurchases();
         Task<SvcsBase> GetPurchaseById(Guid Id);
-        Task<SvcsBase> CreatePurchase(PurchaseDataRequest data, AppUser user);
-        Task<SvcsBase> UpdatePurchase(Guid Id, PurchaseDataRequest data, AppUser user);
+        Task<SvcsBase> CreatePurchase(PurchaseOrderModel data, AppUser user);
+        Task<SvcsBase> UpdatePurchase(Guid Id, PurchaseOrderModel data, AppUser user);
         Task<SvcsBase> RemovePurchase(Guid Id, AppUser user);
         #endregion
         #region Recover
@@ -30,8 +26,8 @@ namespace FMS.Svcs.Transaction
         #region Crud
         Task<SvcsBase> GetPurchaseReturns();
         Task<SvcsBase> GetPurchaseReturnById(Guid Id);
-        Task<SvcsBase> CreatetPurchaseReturn(PurchaseDataRequest data, AppUser user);
-        Task<SvcsBase> UpdatetPurchaseReturn(Guid Id, PurchaseDataRequest data, AppUser user);
+        Task<SvcsBase> CreatetPurchaseReturn(PurchaseReturnOrderModel data, AppUser user);
+        Task<SvcsBase> UpdatetPurchaseReturn(Guid Id, PurchaseReturnOrderModel data, AppUser user);
         Task<SvcsBase> RemovePurchaseReturn(Guid Id, AppUser user);
         #endregion
         #region Recover
@@ -46,7 +42,7 @@ namespace FMS.Svcs.Transaction
         Task<SvcsBase> GetLastProductionNo();
         #region Crud
         Task<SvcsBase> GetProduction();
-        Task<SvcsBase> CreateProduction(ProductionEntryRequest data, AppUser user);
+        Task<SvcsBase> CreateProduction(LabourOrderModel data, AppUser user);
         Task<SvcsBase> UpdateProduction(Guid Id, LabourOrderModel data, AppUser user);
         Task<SvcsBase> RemoveProduction(Guid Id, AppUser user);
         #endregion
@@ -62,7 +58,7 @@ namespace FMS.Svcs.Transaction
         Task<SvcsBase> GetLastServiceNo();
         #region Crud
         Task<SvcsBase> GetService();
-        Task<SvcsBase> CreateService(ProductionEntryRequest data, AppUser user);
+        Task<SvcsBase> CreateService(LabourOrderModel data, AppUser user);
         Task<SvcsBase> UpdateService(Guid Id, LabourOrderModel data, AppUser user);
         Task<SvcsBase> RemoveService(Guid Id, AppUser user);
         #endregion
@@ -77,10 +73,10 @@ namespace FMS.Svcs.Transaction
         #region Sales
         Task<SvcsBase> GetLastSalesTransactionNo();
         #region Crud
-        Task<SvcsBase> CreateSale(SalesDataRequest data, AppUser user);
+        Task<SvcsBase> CreateSale(SalesOrderModel data, AppUser user);
         Task<SvcsBase> GetSales();
         Task<SvcsBase> GetSalesById(Guid Id);
-        Task<SvcsBase> UpdatSales(Guid Id, SalesDataRequest data, AppUser user);
+        Task<SvcsBase> UpdatSales(Guid Id, SalesOrderModel data, AppUser user);
         Task<SvcsBase> RemoveSales(Guid Id, AppUser user);
         #endregion
         #region Recover
@@ -94,10 +90,10 @@ namespace FMS.Svcs.Transaction
         #region Sales Return
         Task<SvcsBase> GetLastSalesReturnTransactionNo();
         #region Crud
-        Task<SvcsBase> CreateSalesReturn(SalesReturnDataRequest data, AppUser user);
+        Task<SvcsBase> CreateSalesReturn(SalesReturnOrderModel data, AppUser user);
         Task<SvcsBase> GetSalesReturns();
         Task<SvcsBase> GetSalesReturnById(Guid Id);
-        Task<SvcsBase> UpdateSalesReturn(Guid Id, SalesReturnDataRequest data, AppUser user);
+        Task<SvcsBase> UpdateSalesReturn(Guid Id, SalesReturnOrderModel data, AppUser user);
         Task<SvcsBase> RemoveSalesReturn(Guid Id, AppUser user);
         #endregion
         #region Recover
@@ -113,8 +109,8 @@ namespace FMS.Svcs.Transaction
         #region Crud
         Task<SvcsBase> GetInwardSupply();
         Task<SvcsBase> GetInwardSupplyById(Guid Id);
-        Task<SvcsBase> CreateInwardSupply(SupplyDataRequest data, AppUser user);
-        Task<SvcsBase> UpdateInwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
+        Task<SvcsBase> CreateInwardSupply(InwardSupplyOrderModel data, AppUser user);
+        Task<SvcsBase> UpdateInwardSupply(Guid Id, InwardSupplyOrderModel data, AppUser user);
         Task<SvcsBase> RemoveInwardSupply(Guid Id, AppUser user);
         #endregion
         #region Recover
@@ -130,8 +126,8 @@ namespace FMS.Svcs.Transaction
         #region Crud
         Task<SvcsBase> GetOutwardSupply();
         Task<SvcsBase> GetOutwardSupplyById(Guid Id);
-        Task<SvcsBase> CreateOutwardSupply(SupplyDataRequest data, AppUser user);
-        Task<SvcsBase> UpdateOutwardSupply(Guid Id, SupplyDataRequest data, AppUser user);
+        Task<SvcsBase> CreateOutwardSupply(OutwardSupplyOrderModel data, AppUser user);
+        Task<SvcsBase> UpdateOutwardSupply(Guid Id, OutwardSupplyOrderModel data, AppUser user);
         Task<SvcsBase> RemoveOutwardSupply(Guid Id, AppUser user);
         #endregion
         #region Recover
@@ -147,8 +143,8 @@ namespace FMS.Svcs.Transaction
         #region Crud
         Task<SvcsBase> GetDamages();
         Task<SvcsBase> GetDamageById(Guid Id);
-        Task<SvcsBase> CreateDamage(DamageRequestData data, AppUser user);
-        Task<SvcsBase> UpdateDamage(Guid Id, DamageRequestData data, AppUser user);
+        Task<SvcsBase> CreateDamage(DamageOrderModel data, AppUser user);
+        Task<SvcsBase> UpdateDamage(Guid Id, DamageOrderModel data, AppUser user);
         Task<SvcsBase> RemoveDamage(Guid Id, AppUser user);
         #endregion
         #region Recover

@@ -1,5 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Admin;
 using FMS.Svcs.AdminSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +17,7 @@ namespace FMS.Server.Controllers.Admin
         #region Ledgers
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateLedger([FromBody] LedgerViewModel model)
+        public async Task<IActionResult> CreateLedger([FromBody] LedgerModel model)
         {
             if (ModelState.IsValid)
             {

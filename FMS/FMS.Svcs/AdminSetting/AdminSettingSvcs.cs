@@ -1,8 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Admin;
 using FMS.Repo.AdminSetting;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Svcs.AdminSetting
 {
@@ -2140,12 +2137,12 @@ namespace FMS.Svcs.AdminSetting
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateProductionConfig(ProductConfigDataRequest requestData, AppUser user)
+        public async Task<SvcsBase> CreateProductionConfig(ProductionOrderModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.CreateProductionConfig(requestData, user);
+                var repoResult = await _adminRepo.CreateProductionConfig(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2430,7 +2427,7 @@ namespace FMS.Svcs.AdminSetting
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateSalesConfig(ProductConfigDataRequest requestData, AppUser user)
+        public async Task<SvcsBase> CreateSalesConfig(SalesOrderSetupModel requestData, AppUser user)
         {
             SvcsBase Obj;
             try
@@ -2462,7 +2459,7 @@ namespace FMS.Svcs.AdminSetting
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateSalesConfig(Guid Id, SalesConfigModel data, AppUser user)
+        public async Task<SvcsBase> UpdateSalesConfig(Guid Id, SalesOrderSetupModel data, AppUser user)
         {
             SvcsBase Obj;
             try
@@ -3334,12 +3331,12 @@ namespace FMS.Svcs.AdminSetting
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateLedger(LedgerViewModel listData, AppUser user)
+        public async Task<SvcsBase> CreateLedger(LedgerModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.CreateLedger(listData, user);
+                var repoResult = await _adminRepo.CreateLedger(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()

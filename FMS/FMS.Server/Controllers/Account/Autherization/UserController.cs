@@ -1,4 +1,5 @@
-﻿using FMS.Model.Account.Authentication;
+﻿using FMS.Db.Entity;
+using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
 using FMS.Svcs.Account.Autherization;
 using Microsoft.AspNetCore.Authorization;
@@ -46,7 +47,7 @@ namespace FMS.Server.Controllers.Account.Autherization
             }
         }
         [HttpPatch, Route("{Id}"), Authorize(Policy = "Update")]
-        public async Task<IActionResult> UpdateUser([FromRoute] string Id, [FromBody] UserModel User)
+        public async Task<IActionResult> UpdateUser([FromRoute] string Id, [FromBody] AppUser User)
         {
             if (Id != null)
             {
@@ -82,7 +83,7 @@ namespace FMS.Server.Controllers.Account.Autherization
         #endregion
         #region Role
         [HttpPost, Authorize(Policy = "Create")]
-        public async Task<IActionResult> CreateRole([FromBody] RoleModel model)
+        public async Task<IActionResult> CreateRole([FromBody] AppRole model)
         {
             if (ModelState.IsValid)
             {
@@ -115,7 +116,7 @@ namespace FMS.Server.Controllers.Account.Autherization
             }
         }
         [HttpPatch, Route("{Id}"), Authorize(Policy = "Update")]
-        public async Task<IActionResult> UpdateRole([FromRoute] string Id, [FromBody] RoleModel model)
+        public async Task<IActionResult> UpdateRole([FromRoute] string Id, [FromBody] AppRole model)
         {
             if (Id != null)
             {

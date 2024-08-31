@@ -1,5 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Devloper;
 using FMS.Svcs.DevloperSetting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

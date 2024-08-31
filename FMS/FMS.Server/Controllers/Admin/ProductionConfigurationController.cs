@@ -1,9 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Admin;
-using FMS.Model.Devloper;
 using FMS.Svcs.AdminSetting;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +16,7 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateProductionConfig([FromBody] ProductConfigDataRequest model)
+        public async Task<IActionResult> CreateProductionConfig([FromBody] ProductionOrderModel model)
         {
             if (ModelState.IsValid)
             {

@@ -1,8 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Admin;
 using FMS.Svcs.AdminSetting;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +17,7 @@ namespace FMS.Server.Controllers.Admin
         #region Crud
  
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateSalesConfig([FromBody] ProductConfigDataRequest model)
+        public async Task<IActionResult> CreateSalesConfig([FromBody] SalesOrderSetupModel model)
         {
             if (ModelState.IsValid)
             {
@@ -40,7 +38,7 @@ namespace FMS.Server.Controllers.Admin
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateSalesConfig([FromRoute] Guid id, [FromBody] SalesConfigModel model)
+        public async Task<IActionResult> UpdateSalesConfig([FromRoute] Guid id, [FromBody] SalesOrderSetupModel model)
         {
             if (id != Guid.Empty)
             {

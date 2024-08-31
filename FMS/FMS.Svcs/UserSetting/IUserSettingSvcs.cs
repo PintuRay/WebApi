@@ -1,6 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.User;
 
 namespace FMS.Svcs.UserSetting
 {
@@ -85,7 +83,7 @@ namespace FMS.Svcs.UserSetting
         #region LedgerBalance
         #region Crud
         Task<SvcsBase> GetLedgerBalances();
-        Task<SvcsBase> CreateLedgerBalance(LedgerBalanceRequest data, AppUser user);
+        Task<SvcsBase> CreateLedgerBalance(LedgerBalanceModel data, AppUser user);
         Task<SvcsBase> UpdateLedgerBalance(Guid Id, LedgerBalanceModel data, AppUser user);
         Task<SvcsBase> RemoveLedgerBalance(Guid Id, AppUser user);
         #endregion
@@ -100,7 +98,7 @@ namespace FMS.Svcs.UserSetting
         #region Subledger
         #region Crud
         Task<SvcsBase> GetSubLedgers();
-        Task<SvcsBase> CreateSubLedger(SubLedgerDataRequest Data, AppUser user);
+        Task<SvcsBase> CreateSubLedger(SubLedgerModel Data, AppUser user);
         Task<SvcsBase> UpdateSubLedger(Guid Id, SubLedgerModel data, AppUser user);
         Task<SvcsBase> RemoveSubLedger(Guid Id, AppUser user);
         #endregion

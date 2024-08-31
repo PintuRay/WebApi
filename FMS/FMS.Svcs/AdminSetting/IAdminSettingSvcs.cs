@@ -1,7 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model;
-using FMS.Model.Admin;
-using FMS.Repo.DevloperSetting;
 
 namespace FMS.Svcs.AdminSetting
 {
@@ -120,7 +117,7 @@ namespace FMS.Svcs.AdminSetting
         #region Production Configuration
         #region Crud
         Task<SvcsBase> GetProductionConfig();
-        Task<SvcsBase> CreateProductionConfig(ProductConfigDataRequest requestData, AppUser user);
+        Task<SvcsBase> CreateProductionConfig(ProductionOrderModel requestData, AppUser user);
         Task<SvcsBase> UpdateProductionConfig(Guid Id, ProductionOrderModel data, AppUser user);
         Task<SvcsBase> RemoveProductionConfig(Guid Id, AppUser user);
         #endregion
@@ -135,8 +132,8 @@ namespace FMS.Svcs.AdminSetting
         #region Sales Configuration  
         #region Crud
         Task<SvcsBase> GetSalesConfig();
-        Task<SvcsBase> CreateSalesConfig(ProductConfigDataRequest requestData, AppUser user);
-        Task<SvcsBase> UpdateSalesConfig(Guid Id, SalesConfigModel data, AppUser user);
+        Task<SvcsBase> CreateSalesConfig(SalesOrderSetupModel data, AppUser user);
+        Task<SvcsBase> UpdateSalesConfig(Guid Id, SalesOrderSetupModel data, AppUser user);
         Task<SvcsBase> RemoveSalesConfig(Guid Id, AppUser user);
         #endregion
         #region Recover
@@ -184,7 +181,7 @@ namespace FMS.Svcs.AdminSetting
         #region Ledger
         #region Crud
         Task<SvcsBase> GetLedgers();
-        Task<SvcsBase> CreateLedger(LedgerViewModel listData, AppUser user);
+        Task<SvcsBase> CreateLedger(LedgerModel data, AppUser user);
         Task<SvcsBase> UpdateLedger(Guid Id, LedgerModel data, AppUser user);
         Task<SvcsBase> RemoveLedger(Guid Id,AppUser user);
         #endregion

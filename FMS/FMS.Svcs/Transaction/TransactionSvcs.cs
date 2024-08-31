@@ -1,7 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Transaction;
-using FMS.Model;
-using FMS.Repo.UserSetting;
 using FMS.Repo.Transaction;
 
 namespace FMS.Svcs.Transaction
@@ -25,11 +22,11 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreatePurchase(PurchaseDataRequest data, AppUser user)
+        public async Task<SvcsBase> CreatePurchase(PurchaseOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdatePurchase(Guid Id, PurchaseDataRequest data, AppUser user)
+        public async Task<SvcsBase> UpdatePurchase(Guid Id, PurchaseOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -75,11 +72,11 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreatetPurchaseReturn(PurchaseDataRequest data, AppUser user)
+        public async Task<SvcsBase> CreatetPurchaseReturn(PurchaseReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdatetPurchaseReturn(Guid Id, PurchaseDataRequest data, AppUser user)
+        public async Task<SvcsBase> UpdatetPurchaseReturn(Guid Id, PurchaseReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -121,7 +118,7 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateProduction(ProductionEntryRequest data, AppUser user)
+        public async Task<SvcsBase> CreateProduction(LabourOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -167,7 +164,7 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateService(ProductionEntryRequest data, AppUser user)
+        public async Task<SvcsBase> CreateService(LabourOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -209,7 +206,7 @@ namespace FMS.Svcs.Transaction
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> CreateSale(SalesDataRequest data, AppUser user)
+        public async Task<SvcsBase> CreateSale(SalesOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -221,7 +218,7 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdatSales(Guid Id, SalesDataRequest data, AppUser user)
+        public async Task<SvcsBase> UpdatSales(Guid Id, SalesOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -259,7 +256,7 @@ namespace FMS.Svcs.Transaction
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> CreateSalesReturn(SalesReturnDataRequest data, AppUser user)
+        public async Task<SvcsBase> CreateSalesReturn(SalesReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -271,7 +268,7 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateSalesReturn(Guid Id, SalesReturnDataRequest data, AppUser user)
+        public async Task<SvcsBase> UpdateSalesReturn(Guid Id, SalesReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -317,11 +314,11 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateInwardSupply(SupplyDataRequest data, AppUser user)
+        public async Task<SvcsBase> CreateInwardSupply(InwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateInwardSupply(Guid Id, SupplyDataRequest data, AppUser user)
+        public async Task<SvcsBase> UpdateInwardSupply(Guid Id, InwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -367,11 +364,11 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateOutwardSupply(SupplyDataRequest data, AppUser user)
+        public async Task<SvcsBase> CreateOutwardSupply(OutwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateOutwardSupply(Guid Id, SupplyDataRequest data, AppUser user)
+        public async Task<SvcsBase> UpdateOutwardSupply(Guid Id, OutwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -417,11 +414,11 @@ namespace FMS.Svcs.Transaction
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateDamage(DamageRequestData data, AppUser user)
+        public async Task<SvcsBase> CreateDamage(DamageOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateDamage(Guid Id, DamageRequestData data, AppUser user)
+        public async Task<SvcsBase> UpdateDamage(Guid Id, DamageOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }

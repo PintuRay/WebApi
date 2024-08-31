@@ -1,7 +1,6 @@
 ﻿using FMS.Db.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 namespace FMS.Db
 {
     public partial class Context : IdentityDbContext<AppUser, AppRole, string>

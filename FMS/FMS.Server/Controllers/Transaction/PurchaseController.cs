@@ -1,8 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Transaction;
 using FMS.Svcs.Transaction;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +16,7 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreatePurchase([FromBody] PurchaseDataRequest model)
+        public async Task<IActionResult> CreatePurchase([FromBody] PurchaseOrderModel model)
         {
             if (ModelState.IsValid)
             {
@@ -52,7 +50,7 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdatePurchase([FromRoute] Guid id, [FromBody] PurchaseDataRequest model)
+        public async Task<IActionResult> UpdatePurchase([FromRoute] Guid id, [FromBody] PurchaseOrderModel model)
         {
             if (id != Guid.Empty)
             {

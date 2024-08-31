@@ -1,9 +1,6 @@
 ﻿using FMS.Db.Entity;
-using FMS.Model.Devloper;
-using FMS.Model.User;
 using FMS.Svcs.UserSetting;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +16,7 @@ namespace FMS.Server.Controllers.User
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateLedgerBalance([FromBody] LedgerBalanceRequest model)
+        public async Task<IActionResult> CreateLedgerBalance([FromBody] LedgerBalanceModel model)
         {
             if (ModelState.IsValid)
             {
