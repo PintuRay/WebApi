@@ -7,11 +7,11 @@ namespace FMS.Repo
     {
         public MappingProfile()
         {
-            CreateMap<AppRole, RoleDbModel>().ReverseMap();
-            CreateMap<AppRole, RoleModel>().ReverseMap();
+            //Devloper
             CreateMap<Branch, BranchModel>().ReverseMap();
             CreateMap<FinancialYear, FinancialYearModel>().ReverseMap();
             CreateMap<BranchFinancialYear, BranchFinancialYearModel>().ReverseMap();
+            //admin
             CreateMap<RegisterToken, RegisterTokenModel>().ReverseMap();
             CreateMap<Company, CompanyModel>().ReverseMap();
             CreateMap<UserBranch, UserBranchModel>().ReverseMap();

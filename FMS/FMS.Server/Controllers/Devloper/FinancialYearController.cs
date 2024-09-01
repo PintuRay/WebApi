@@ -33,7 +33,7 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetFinancialYears()
         {
             var result = await _devloperSvcs.GetFinancialYears();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode ==204? NoContent() :BadRequest(result);
         }
         [HttpPut, Route("{Id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> UpdateFinancialYear([FromRoute] Guid Id, [FromBody] FinancialYearModel model)

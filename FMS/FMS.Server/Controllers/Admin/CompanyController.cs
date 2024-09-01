@@ -16,7 +16,7 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateCompany([FromBody]CompanyModel data)
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyModel data)
         {
             if (ModelState.IsValid)
             {
@@ -31,10 +31,10 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetCompany([FromQuery]string BranchId)
+        public async Task<IActionResult> GetCompany([FromQuery] string BranchId)
         {
             var result = await _adminSvcs.GetCompany(BranchId);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> UpdateBranch([FromRoute] Guid id, [FromBody] CompanyModel model)
@@ -78,7 +78,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> GetRemovedCompanies([FromQuery] string BranchId)
         {
             var result = await _adminSvcs.GetRemovedCompanies(BranchId);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverCompany([FromRoute] Guid id)

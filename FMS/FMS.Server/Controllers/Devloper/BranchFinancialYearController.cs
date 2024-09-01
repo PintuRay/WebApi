@@ -32,8 +32,8 @@ namespace FMS.Server.Controllers.Devloper
         [HttpGet]
         public async Task<IActionResult> GetBranchFinancialYears()
         {
-            var result = await _devloperSvcs.GetFinancialYears();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            var result = await _devloperSvcs.GetBranchFinancialYears();
+            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
 
         [HttpPut, Route("{Id}"), Authorize(policy: "Update")]
@@ -75,13 +75,13 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedBranchFinancialYears() 
+        public async Task<IActionResult> GetRemovedBranchFinancialYears()
         {
             var result = await _devloperSvcs.GetRemovedBranchFinancialYears();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
         [HttpPatch, Route("{Id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverBranchFinancialYear(Guid Id) 
+        public async Task<IActionResult> RecoverBranchFinancialYear(Guid Id)
         {
             if (Id != Guid.Empty)
             {
@@ -103,7 +103,7 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpDelete, Route("{Id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteBranchFinancialYear(Guid Id) 
+        public async Task<IActionResult> DeleteBranchFinancialYear(Guid Id)
         {
             if (Id != Guid.Empty)
             {
@@ -117,14 +117,14 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllBranchFinancialYear(List<string> Ids) 
+        public async Task<IActionResult> RecoverAllBranchFinancialYear(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _devloperSvcs.RecoverAllBranchFinancialYear(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllBranchFinancialYear(List<string> Ids) 
+        public async Task<IActionResult> DeleteAllBranchFinancialYear(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _devloperSvcs.DeleteAllBranchFinancialYear(Ids, user);

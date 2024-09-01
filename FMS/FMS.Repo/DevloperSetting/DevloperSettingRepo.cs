@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FMS.Db;
 using FMS.Db.Entity;
-using FMS.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.DevloperSetting

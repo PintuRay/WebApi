@@ -200,9 +200,12 @@ namespace FMS.Svcs.Account.Authentication
                         {
                             if (await _userManager.GetTwoFactorEnabledAsync(user))
                             {
+                                #region sms
+                                //var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider);
+                                // var Result = await _smsSvcs.SendSmsAsync(user.PhoneNumber, $"Your authentication code is: {code}");
+                                #endregion
                                 #region mail
                                 var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
-                                await _userManager.UpdateAsync(user);
                                 UserEmailOptions options = new()
                                 {
                                     ToEmail = user.Email,
@@ -214,10 +217,7 @@ namespace FMS.Svcs.Account.Authentication
                                 };
                                 var Result = await _emailSvcs.SendTwoFactorToken(options);
                                 #endregion
-                                #region sms
-                                //var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider);
-                                // var Result = await _smsSvcs.SendSmsAsync(user.PhoneNumber, $"Your authentication code is: {code}");
-                                #endregion
+                            
                                 if (Result)
                                 {
                                     //int lengthToMask = user.PhoneNumber.Length - 4;
