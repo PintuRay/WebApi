@@ -255,10 +255,10 @@ namespace FMS.Repo.DevloperSetting
                                    orderby s.StartDate descending
                                    select new FinancialYear
                                    {
-                                     FinancialYearId =  s.FinancialYearId,
-                                     Financial_Year =  s.Financial_Year,
-                                     StartDate =  s.StartDate,
-                                      EndDate = s.EndDate,
+                                       FinancialYearId = s.FinancialYearId,
+                                       Financial_Year = s.Financial_Year,
+                                       StartDate = s.StartDate,
+                                       EndDate = s.EndDate,
                                    }).ToListAsync();
                 if (Query.Count > 0)
                 {
@@ -278,7 +278,7 @@ namespace FMS.Repo.DevloperSetting
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.FinancialYears where s.Financial_Year == data.Financial_Year && s.IsActive == true select s).FirstOrDefaultAsync();
+                var Query = await (from s in _ctx.FinancialYears where s.Financial_Year == data.Financial_Year && s.IsActive == true select s).SingleOrDefaultAsync();
                 if (Query == null)
                 {
                     FinancialYear newFinancialYear = _mapper.Map<FinancialYear>(data);
@@ -492,8 +492,14 @@ namespace FMS.Repo.DevloperSetting
                 _Result.IsSucess = false;
                 var Query = await (from s in _ctx.BranchFinancialYears
                                    where s.IsActive == true
-                                   select s)
-                                 .OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
+                                   select new BranchFinancialYear
+                                   {
+                                       BranchFinancialYearId = s.BranchFinancialYearId,
+                                       Fk_BranchId = s.Fk_BranchId,
+                                       Branch = s.Branch != null ? new Branch { BranchName = s.Branch.BranchName } : null,
+                                       Fk_FinancialYearId = s.Fk_FinancialYearId,
+                                       FinancialYear = s.FinancialYear != null ? new FinancialYear { Financial_Year = s.FinancialYear.Financial_Year } : null,
+                                   }).OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
                 if (Query.Count > 0)
                 {
                     _Result.CollectionObjData = Query;
@@ -690,7 +696,7 @@ namespace FMS.Repo.DevloperSetting
                 _Result.IsSucess = false;
                 foreach (var item in Ids)
                 {
-                    var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(x => x.BranchFinancialYearId ==Guid.Parse(item)  && x.IsActive == false);
+                    var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(x => x.BranchFinancialYearId == Guid.Parse(item) && x.IsActive == false);
                     if (Query != null)
                     {
                         Query.ModifyDate = DateTime.UtcNow;
@@ -700,7 +706,7 @@ namespace FMS.Repo.DevloperSetting
                     }
                     Count++;
                 }
-                 
+
                 if (Count > 0)
                 {
                     _Result.IsSucess = true;

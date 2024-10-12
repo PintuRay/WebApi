@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FMS.Db;
 using FMS.Db.Entity;
-using FMS.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.AdminSetting
@@ -225,9 +224,9 @@ namespace FMS.Repo.AdminSetting
                 {
                     _ctx.Companies.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
                     if (Count > 0)
                     {
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                     }
                 }
@@ -241,30 +240,31 @@ namespace FMS.Repo.AdminSetting
         public async Task<RepoBase> RecoverAllCompany(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var companiesToRecover = await _ctx.Companies.Where(x => Ids.Contains(x.CompanyId.ToString()) && x.IsActive == false).ToListAsync();
+                if (companiesToRecover.Count > 0)
                 {
-                    var Query = await _ctx.Companies.SingleOrDefaultAsync(x => x.CompanyId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    foreach (var company in companiesToRecover)
                     {
-                        Query.ModifyDate = DateTime.UtcNow;
-                        Query.ModifyBy = user.Name;
-                        Query.IsActive = true;
-                        Count = await _ctx.SaveChangesAsync();
+                        company.ModifyDate = DateTime.UtcNow;
+                        company.ModifyBy = user.Name;
+                        company.IsActive = true;
                     }
-                    Count++;
-                }
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.IsSucess = true;
+                        _Result.Count = Count.ToString();
+                        transaction.Commit();
+                    }
                 }
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;
@@ -272,27 +272,26 @@ namespace FMS.Repo.AdminSetting
         public async Task<RepoBase> DeleteAllCompany(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var Query = await _ctx.Companies.Where(x => Ids.Contains(x.CompanyId.ToString()) && x.IsActive == false).ToListAsync();
+                if (Query.Count > 0)
                 {
-                    var Query = await _ctx.Companies.SingleOrDefaultAsync(x => x.CompanyId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    _ctx.Companies.RemoveRange(Query);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
                     {
-                        _ctx.Companies.Remove(Query);
-                        Count = await _ctx.SaveChangesAsync();
+                        _Result.IsSucess = true;
+                        _Result.Count = Count.ToString();
+                        transaction.Commit();
                     }
-                }
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
                 }
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;
@@ -306,22 +305,16 @@ namespace FMS.Repo.AdminSetting
             Result<UserBranch> _Result = new();
             try
             {
-                _Result.IsSucess = false;     
-                var AllUserAllocatedBranch = await (from s in _ctx.UserBranches
-                                                    select new UserBranch
-                                                    {
-                                                        Id = s.Id,
-                                                        Branch = s.Branch != null ? new Branch { BranchName = s.Branch.BranchName } : null,
-                                                        User = s.User != null ? new AppUser { UserName = s.User.Name} : null
-                                                    }).ToListAsync();
-                if (AllUserAllocatedBranch.Count > 0)
+                _Result.IsSucess = false;
+                var Query = await _ctx.UserBranches.Where(s => s.IsActive == true).ToListAsync();
+                if (Query.Count > 0)
                 {
-
+                    var UserBranchs = _mapper.Map<List<UserBranch>>(Query);
+                    _Result.CollectionObjData = UserBranchs;
                     _Result.IsSucess = true;
                 }
-                
             }
-            catch 
+            catch
             {
                 throw;
             }
@@ -329,35 +322,302 @@ namespace FMS.Repo.AdminSetting
         }
         public async Task<RepoBase> CreateBranchAlloction(UserBranchModel data, AppUser user)
         {
-            throw new NotImplementedException();
+            RepoBase _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.UserBranches.Where(s => s.Fk_UserId == data.Fk_UserId && s.IsActive == true).FirstOrDefaultAsync();
+                if (Query == null)
+                {
+                    var newUserBranch = _mapper.Map<UserBranch>(data);
+                    newUserBranch.CreatedDate = DateTime.UtcNow;
+                    newUserBranch.CreatedBy = user.Name;
+                    await _ctx.UserBranches.AddAsync(newUserBranch);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Id = newUserBranch.Id.ToString();
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<RepoBase> UpdateBranchAlloction(Guid Id, UserBranchModel model, AppUser user)
         {
-            throw new NotImplementedException();
+            RepoBase _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.UserBranches.Where(s => s.Id == Id && s.IsActive == true).SingleOrDefaultAsync();
+                if (Query != null)
+                {
+                    var updateUserBranch = _mapper.Map(model, Query);
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    int Count = await _ctx.SaveChangesAsync();
+                    _Result.Count = Count.ToString();
+                    if (Count > 0)
+                    {
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<RepoBase> RemoveBranchAlloction(Guid Id, AppUser user)
         {
-            throw new NotImplementedException();
+            RepoBase _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.UserBranches.Where(s => s.Id == Id && s.IsActive == true).SingleOrDefaultAsync();
+                if (Query != null)
+                {
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    Query.IsActive = false;
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         #endregion
         #region Recover
         public async Task<Result<UserBranch>> GetRemovedBranchAlloction()
         {
-            throw new NotImplementedException();
+            Result<UserBranch> _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.UserBranches.Where(s => s.IsActive == false).ToListAsync();
+                if (Query.Count > 0)
+                {
+                    var UserBranchs = _mapper.Map<List<UserBranch>>(Query);
+                    _Result.CollectionObjData = UserBranchs;
+                    _Result.IsSucess = true;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<RepoBase> RecoverBranchAlloction(Guid Id, AppUser user)
         {
-            throw new NotImplementedException();
+            RepoBase _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.UserBranches.Where(s => s.Id == Id && s.IsActive == false).SingleOrDefaultAsync();
+                if (Query != null)
+                {
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    Query.IsActive = true;
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<RepoBase> DeleteBranchAlloction(Guid Id, AppUser user)
         {
-            throw new NotImplementedException();
+            RepoBase _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.UserBranches.SingleOrDefaultAsync(x => x.Id == Id && x.IsActive == false);
+                if (Query != null)
+                {
+                    _ctx.UserBranches.Remove(Query);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
         }
         public async Task<RepoBase> RecoverAllBranchAlloction(List<string> Ids, AppUser user)
         {
-            throw new NotImplementedException();
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var userBranchToRecover = await _ctx.UserBranches.Where(s => Ids.Contains(s.Id.ToString()) && s.IsActive == false).ToListAsync();
+                if (userBranchToRecover.Count > 0)
+                {
+                    foreach (var userbranch in userBranchToRecover)
+                    {
+                        userbranch.ModifyDate = DateTime.UtcNow;
+                        userbranch.ModifyBy = user.Name;
+                        userbranch.IsActive = true;
+                    }
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        transaction.Commit();
+                    }
+                }
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+            return _Result;
         }
         public async Task<RepoBase> DeleteAllBranchAlloction(List<string> Ids, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await _ctx.Companies.Where(x => Ids.Contains(x.CompanyId.ToString()) && x.IsActive == false).ToListAsync();
+                if (Query.Count > 0)
+                {
+                    _ctx.Companies.RemoveRange(Query);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.IsSucess = true;
+                        _Result.Count = Count.ToString();
+                        transaction.Commit();
+                    }
+                }
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+            return _Result;
+        }
+        #endregion
+        #endregion
+        #region Product Setup
+        #region Product Type
+        public async Task<Result<ProductType>> GetProductTypes()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #region Product Group
+        #region Crud
+        public async Task<RepoBase> CreateProductGroup(ProductGroupModel data, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<Result<ProductGroup>> GetProductGroups()
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> UpdateProductGroup(Guid Id, ProductGroupModel data, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> RemoveProductGroup(Guid Id, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #region Recover
+        public async Task<Result<ProductGroup>> GetRemovedProductGroup()
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> RecoverProductGroup(Guid Id, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> DeleteProductGroup(Guid Id, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> RecoverAllProductGroup(List<string> Ids, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> DeleteAllProductGroup(List<string> Ids, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #endregion
+        #region Product SubGroup
+        #region Crud
+        public async Task<Result<ProductSubGroup>> GetProductSubGroups()
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> CreateProductSubGroup(ProductSubGroupModel data, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> UpdateProductSubGroup(Guid Id, ProductSubGroupModel data, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> RemoveProductSubGroup(Guid Id, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #region Recover
+        public async Task<Result<ProductSubGroup>> GetRemovedProductSubGroup()
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> RecoverProductSubGroup(Guid Id, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> DeleteProductSubGroup(Guid Id, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> RecoverAllProductSubGroup(List<string> Ids, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<RepoBase> DeleteAllProductSubGroup(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -447,95 +707,7 @@ namespace FMS.Repo.AdminSetting
         }
         #endregion
         #endregion
-        #region Product Group
-        #region Crud
-        public async Task<RepoBase> CreateProductGroup(ProductGroupModel data, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<Result<ProductGroup>> GetProductGroups()
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> UpdateProductGroup(Guid Id, ProductGroupModel data, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> RemoveProductGroup(Guid Id, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-        #region Recover
-        public async Task<Result<ProductGroup>> GetRemovedProductGroup()
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> RecoverProductGroup(Guid Id, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> DeleteProductGroup(Guid Id, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> RecoverAllProductGroup(List<string> Ids, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> DeleteAllProductGroup(List<string> Ids, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-        #endregion
-        #region Product SubGroup
-        #region Crud
-        public async Task<Result<ProductSubGroup>> GetProductSubGroups()
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> CreateProductSubGroup(ProductSubGroupModel data, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> UpdateProductSubGroup(Guid Id, ProductSubGroupModel data, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> RemoveProductSubGroup(Guid Id, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-        #region Recover
-        public async Task<Result<ProductSubGroup>> GetRemovedProductSubGroup()
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> RecoverProductSubGroup(Guid Id, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> DeleteProductSubGroup(Guid Id, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> RecoverAllProductSubGroup(List<string> Ids, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<RepoBase> DeleteAllProductSubGroup(List<string> Ids, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-        #endregion
         #region Product
-        public async Task<Result<ProductType>> GetProductTypes()
-        {
-            throw new NotImplementedException();
-        }
         #region Crud
         public async Task<Result<Product>> GetAllProducts()
         {
@@ -575,6 +747,7 @@ namespace FMS.Repo.AdminSetting
         {
             throw new NotImplementedException();
         }
+        #endregion
         #endregion
         #endregion
         #region Production Configuration

@@ -15,6 +15,12 @@ namespace FMS.Repo
             CreateMap<RegisterToken, RegisterTokenModel>().ReverseMap();
             CreateMap<Company, CompanyModel>().ReverseMap();
             CreateMap<UserBranch, UserBranchModel>().ReverseMap();
+            CreateMap<ProductType,ProductTypeModel>().ReverseMap();
+            CreateMap<ProductGroup, ProductGroupModel>().ReverseMap();
+            CreateMap<ProductSubGroup,ProductSubGroup>().ReverseMap();
+            CreateMap<Unit, UnitModel>().ReverseMap();
+            CreateMap<AlternateUnit, AlternateUnitModel>().ReverseMap();
+            CreateMap<Product, ProductModel>().ReverseMap();
         }
     }
 }

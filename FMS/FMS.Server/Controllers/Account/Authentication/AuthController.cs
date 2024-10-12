@@ -88,7 +88,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             if (ModelState.IsValid)
             {
                 var result = await _authenticationSvcs.SignIn(signInModel);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 200 || result.ResponseCode == 405 ? Ok(result) : BadRequest(result);
             }
             else
             {
