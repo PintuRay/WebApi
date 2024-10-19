@@ -36,7 +36,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             }
         }
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> SignUp([FromBody] AppUser model)
+        public async Task<IActionResult> SignUp([FromBody] RegisterModel model)
         {
             if (ModelState.IsValid)
             {

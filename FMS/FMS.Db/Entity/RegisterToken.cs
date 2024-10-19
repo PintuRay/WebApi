@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -6,6 +8,17 @@ namespace FMS.Db.Entity
     public class RegisterTokenModel
     {
         public string TokenValue { get; set; }
+    }
+    public class RegisterTokenValidator : AbstractValidator<RegisterTokenModel>
+    {
+        public RegisterTokenValidator(CustomValidation vaidator)
+        {
+            // Validate Token
+            RuleFor(tregkoken => tregkoken.TokenValue)
+             .NotNull().WithMessage(" Registration Token is required.")
+             .NotEmpty().WithMessage("Registration Token cannot be empty.")
+             .Matches(@"^\d{3}-\d{3}-\d{4}$").WithMessage("Registration Token Format Mismatch"); 
+        }
     }
     public class RegisterToken: RegisterTokenModel
     {

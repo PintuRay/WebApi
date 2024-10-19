@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FMS.Db.Entity;
+using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
 namespace FMS.Repo
 {
@@ -7,6 +8,7 @@ namespace FMS.Repo
     {
         public MappingProfile()
         {
+            CreateMap<AppUser, RegisterModel>().ReverseMap();
             //Devloper
             CreateMap<Branch, BranchModel>().ReverseMap();
             CreateMap<FinancialYear, FinancialYearModel>().ReverseMap();

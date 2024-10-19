@@ -1,7 +1,10 @@
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using FMS.Db;
+using FMS.Db.CustomVaidator;
 using FMS.Db.Entity;
-using FMS.Model;
+using FMS.Model.Account.Authentication;
 using FMS.Model.Email;
 using FMS.Model.SMS;
 using FMS.Repo;
@@ -23,12 +26,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson(
     options =>
@@ -48,6 +49,14 @@ builder.Services.Configure<SMTPConfigModel>(builder.Configuration.GetSection("SM
 builder.Services.Configure<SmsConfigModel>(builder.Configuration.GetSection("TwilioSMS"));
 builder.Services.AddScoped<IEmailSvcs, EmailSvcs>();
 builder.Services.AddScoped<ISmsSvcs, SmsSvcs>();
+//**************************************************** Model Validation ************************************************//
+// Register FluentValidation services
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters(); 
+builder.Services.AddTransient<CustomValidation>();
+// Register your validators
+builder.Services.AddTransient<IValidator<RegisterTokenModel>, RegisterTokenValidator>();
+builder.Services.AddTransient <IValidator<RegisterModel>, RegisterValidator>();
 //*************************************************Dependancy Injection***************************************// 
 builder.Services.AddScoped<IAuthentication, AuthenticationRepo>();
 builder.Services.AddScoped<IAuthenticationSvcs, AuthenticationSvcs>();
@@ -135,30 +144,25 @@ builder.Services.AddSwaggerGen(
             In = ParameterLocation.Header,
             Name = "Authorization",
             Type = SecuritySchemeType.ApiKey,
-            Description="Jwt Autentication"
+            Description = "Jwt Autentication"
         });
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
 //******************************************************************************************************************************************//
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    //app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors(policy =>
-{
-    policy.WithOrigins("http://localhost:4200", "https://localhost:7117")
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .WithHeaders(HeaderNames.ContentType)
-    .AllowCredentials();
-});
+//app.UseExceptionHandler();
+//app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
