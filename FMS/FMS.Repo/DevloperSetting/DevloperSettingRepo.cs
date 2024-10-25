@@ -2,14 +2,18 @@
 using FMS.Db;
 using FMS.Db.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using System.Diagnostics.Metrics;
 
 namespace FMS.Repo.DevloperSetting
 {
-    public class DevloperSettingRepo(Context ctx, IMapper mapper) : IDevloperSettingRepo
+    public class DevloperSettingRepo(Context ctx, IMapper mapper, ICustomCache cache) : IDevloperSettingRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
+        private readonly ICustomCache _cache = cache;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Branch
         #region Crud
@@ -19,11 +23,20 @@ namespace FMS.Repo.DevloperSetting
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.Branches where s.IsActive == true select s).ToListAsync();
-                if (Query.Count > 0)
+                var cacheKey = "Branches";
+                var cacheData = _cache.Get<Result<Branch>>(cacheKey);
+                if (cacheData == null) {
+                    var Query = await (from s in _ctx.Branches where s.IsActive == true select s).ToListAsync();
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                    }
+                }
+                else
                 {
-                    _Result.CollectionObjData = Query;
-                    _Result.IsSucess = true;
+                    _Result = cacheData;
                 }
             }
             catch
@@ -37,11 +50,11 @@ namespace FMS.Repo.DevloperSetting
             RepoBase _Result = new();
             try
             {
-
                 _Result.IsSucess = false;
                 var Query = await (from s in _ctx.Branches where s.BranchName == data.BranchName && s.IsActive == true select s).SingleOrDefaultAsync();
                 if (Query == null)
                 {
+                    _cache.Remove("Branches");
                     Branch newBranch = _mapper.Map<Branch>(data);
                     newBranch.CreatedDate = DateTime.UtcNow;
                     newBranch.CreatedBy = user.Name;
@@ -69,6 +82,7 @@ namespace FMS.Repo.DevloperSetting
                 var Query = await (from s in _ctx.Branches where s.BranchId == Id && s.IsActive == true select s).SingleOrDefaultAsync();
                 if (Query != null)
                 {
+                    _cache.Remove("Branches");
                     Branch updateBranch = _mapper.Map(data, Query);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
@@ -95,6 +109,7 @@ namespace FMS.Repo.DevloperSetting
                 var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == true);
                 if (Query != null)
                 {
+                    _cache.Remove("Branches");
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
@@ -142,6 +157,7 @@ namespace FMS.Repo.DevloperSetting
                 var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == false);
                 if (Query != null)
                 {
+                    _cache.Remove("Branches");
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = true;
@@ -167,6 +183,7 @@ namespace FMS.Repo.DevloperSetting
                 var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == false);
                 if (Query != null)
                 {
+                    _cache.Remove("Branches");
                     _ctx.Branches.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
                     _Result.Count = Count.ToString();
@@ -194,6 +211,7 @@ namespace FMS.Repo.DevloperSetting
                     var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Guid.Parse(item) && x.IsActive == false);
                     if (Query != null)
                     {
+                        _cache.Remove("Branches");
                         Query.ModifyDate = DateTime.UtcNow;
                         Query.ModifyBy = user.Name;
                         Query.IsActive = true;
@@ -225,6 +243,7 @@ namespace FMS.Repo.DevloperSetting
                     var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Guid.Parse(item) && x.IsActive == false);
                     if (Query != null)
                     {
+                        _cache.Remove("Branches");
                         _ctx.Branches.Remove(Query);
                         Count = await _ctx.SaveChangesAsync();
                     }

@@ -135,6 +135,9 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("Delete", "Delete");
     });
 });
+//*******************************************************Caching******************************************************//
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<ICustomCache, CustomCache>(); 
 //*********************************************************************************************************************//
 builder.Services.AddSwaggerGen(
     options =>

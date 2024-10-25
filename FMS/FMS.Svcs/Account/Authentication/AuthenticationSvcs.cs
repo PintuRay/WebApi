@@ -546,7 +546,8 @@ namespace FMS.Svcs.Account.Authentication
                     Result = await _smsSvcs.SendSmsAsync(user.PhoneNumber, $"Your Token To {Message} Is {TwoFactorToken}");
                     Obj = new()
                     {
-                        Message = $"We Send A Conformation Token To Your Registerd Phone Number to {Message}",
+                        Message = $"We Send A Conformation Token To Your Registerd Phone Number",
+                        Data = new { email = user.Email },
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                     #endregion
@@ -567,7 +568,8 @@ namespace FMS.Svcs.Account.Authentication
                     Result = await _emailSvcs.SendTwoFactorToken(options);
                     Obj = new()
                     {
-                        Message = $"We Send A Conformation Token To Your Registerd Mail to {Message}",
+                        Message = $"We Send A Conformation Token To Your Registerd Mail ",
+                        Data = new { email = user.Email },
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                     #endregion
