@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.DevloperSetting;
+using FMS.Svcs.Devloper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +8,10 @@ namespace FMS.Server.Controllers.Devloper
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper")]
-    public class BranchController(IDevloperSettingSvcs devloperSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class BranchController(IDevloperSvcs devloperSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IDevloperSettingSvcs _devloperSvcs = devloperSvcs;
+        private readonly IDevloperSvcs _devloperSvcs = devloperSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
@@ -34,7 +34,7 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetAllBranch()
         {
             var result = await _devloperSvcs.GetAllBranch();
-            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> UpdateBranch([FromRoute] Guid id, [FromBody] BranchModel model)
@@ -45,7 +45,7 @@ namespace FMS.Server.Controllers.Devloper
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var result = await _devloperSvcs.UpdateBranch(id, model, user);
-                    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
                 }
                 else
                 {
@@ -65,7 +65,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _devloperSvcs.RemoveBranch(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
@@ -78,7 +78,7 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetAllRemovedBranch()
         {
             var result = await _devloperSvcs.GetRemovedBranches();
-            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverBranch([FromRoute] Guid id)
@@ -89,7 +89,7 @@ namespace FMS.Server.Controllers.Devloper
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var result = await _devloperSvcs.RecoverBranch(id, user);
-                    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace FMS.Server.Controllers.Devloper
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _devloperSvcs.RecoverAllBranch(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteBranch([FromRoute] Guid id)
@@ -116,7 +116,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _devloperSvcs.DeleteBranch(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
@@ -128,7 +128,7 @@ namespace FMS.Server.Controllers.Devloper
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _devloperSvcs.DeleteAllBranch(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         #endregion
     }

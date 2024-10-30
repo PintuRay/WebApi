@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics.Metrics;
 
-namespace FMS.Repo.DevloperSetting
+namespace FMS.Repo.Devloper
 {
-    public class DevloperSettingRepo(Context ctx, IMapper mapper, ICustomCache cache) : IDevloperSettingRepo
+    public class DevloperRepo(Context ctx, IMapper mapper, ICustomCache cache) : IDevloperRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;

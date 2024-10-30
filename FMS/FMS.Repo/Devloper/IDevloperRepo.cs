@@ -1,8 +1,8 @@
 ﻿using FMS.Db.Entity;
 
-namespace FMS.Repo.DevloperSetting
+namespace FMS.Repo.Devloper
 {
-    public interface IDevloperSettingRepo
+    public interface IDevloperRepo
     {
         #region Branch
         #region Crud

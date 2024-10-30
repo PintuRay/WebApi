@@ -1,12 +1,16 @@
 ﻿using FMS.Db.Entity;
-using FMS.Repo.AdminSetting;
+using FMS.Repo.Admin;
+using FMS.Svcs.Admin;
+using FMS.Svcs.Email;
 
-namespace FMS.Svcs.AdminSetting
+namespace FMS.Svcs.Admin
 {
-    public class AdminSettingSvcs(IAdminSettingRepo adminRepo) : IAdminSettingSvcs
+    public class AdminSvcs(IAdminRepo adminRepo, IEmailSvcs emailSvc) : IAdminSvcs
     {
         #region Dependancy
-        private readonly IAdminSettingRepo _adminRepo = adminRepo;
+        private readonly IAdminRepo _adminRepo = adminRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+
         #endregion
         #region Generate SignUp Token
         public async Task<SvcsBase> CreateToken(RegisterTokenModel Token)
@@ -36,14 +40,15 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateToken", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
-        #region Company Details
+        #region Company
         #region Crud
         public async Task<SvcsBase> GetCompany(string BranchId)
         {
@@ -70,9 +75,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetCompany", _Exception.ToString());
             }
             return Obj;
         }
@@ -102,9 +108,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateCompany", _Exception.ToString());
             }
             return Obj;
         }
@@ -134,9 +141,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateCompany", _Exception.ToString());
             }
             return Obj;
         }
@@ -166,9 +174,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveCompany", _Exception.ToString());
             }
             return Obj;
         }
@@ -199,9 +208,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedCompanies", _Exception.ToString());
             }
             return Obj;
         }
@@ -231,9 +241,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverCompany", _Exception.ToString());
             }
             return Obj;
         }
@@ -263,9 +274,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteCompany", _Exception.ToString());
             }
             return Obj;
         }
@@ -294,9 +306,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllCompany", _Exception.ToString());
             }
             return Obj;
         }
@@ -325,22 +338,23 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllCompany", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
-        #region User Branch Allocation  
+        #region User Branch  
         #region Crud
-        public async Task<SvcsBase> GetAllUserAndBranch()
+        public async Task<SvcsBase> GetUserBranches()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetBranchAlloctions();
+                var repoResult = await _adminRepo.GetUserBranches();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -360,18 +374,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetUserBranches", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateBranchAlloction(UserBranchModel data, AppUser user)
+        public async Task<SvcsBase> CreateUserBranch(UserBranchModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.CreateBranchAlloction(data, user);
+                var repoResult = await _adminRepo.CreateUserBranch(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -392,18 +407,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateUserBranch", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateBranchAlloction(Guid Id, UserBranchModel data, AppUser user)
+        public async Task<SvcsBase> UpdateUserBranch(Guid Id, UserBranchModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.UpdateBranchAlloction(Id, data, user);
+                var repoResult = await _adminRepo.UpdateUserBranch(Id, data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -424,18 +440,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateUserBranch", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveBranchAlloction(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveUserBranch(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RemoveBranchAlloction(Id, user);
+                var repoResult = await _adminRepo.RemoveUserBranch(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -456,20 +473,21 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveUserBranch", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedBranchAlloction()
+        public async Task<SvcsBase> GetRemovedUserBranches()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetRemovedBranchAlloction();
+                var repoResult = await _adminRepo.GetRemovedUserBranches();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -489,18 +507,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedUserBranches", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverBranchAlloction(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverUserBranch(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverBranchAlloction(Id, user);
+                var repoResult = await _adminRepo.RecoverUserBranch(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -521,18 +540,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverUserBranch", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteBranchAlloction(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteUserBranch(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteBranchAlloction(Id, user);
+                var repoResult = await _adminRepo.DeleteUserBranch(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -553,18 +573,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteUserBranch", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllBranchAlloction(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllUserBranches(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverAllBranchAlloction(Ids, user);
+                var repoResult = await _adminRepo.RecoverAllUserBranches(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -584,18 +605,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllUserBranches", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllBranchAlloction(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllUserBranches(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteAllBranchAlloction(Ids, user);
+                var repoResult = await _adminRepo.DeleteAllUserBranches(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -615,13 +637,49 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllUserBranches", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
+        #endregion
+        #region Product 
+        #region Product Type
+        public async Task<SvcsBase> GetProductTypes()
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _adminRepo.GetProductTypes();
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult.CollectionObjData,
+                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "No Record Exist",
+                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetProductTypes", _Exception.ToString());
+            }
+            return Obj;
+        }
         #endregion
         #region Unit
         #region Crud
@@ -650,9 +708,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAllUnits", _Exception.ToString());
             }
             return Obj;
         }
@@ -668,12 +727,12 @@ namespace FMS.Svcs.AdminSetting
                     {
                         Data = new { Id = repoResult.Id },
                         Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Message = "Unit Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"Unit '{data.UnitName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -682,9 +741,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -714,9 +774,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -746,9 +807,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -779,9 +841,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedUnits", _Exception.ToString());
             }
             return Obj;
         }
@@ -811,9 +874,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -843,9 +907,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -874,9 +939,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -905,9 +971,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -940,9 +1007,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAlternateUnits", _Exception.ToString());
             }
             return Obj;
         }
@@ -972,9 +1040,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateAlternateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -1004,9 +1073,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateAlternateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -1036,9 +1106,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveAlternateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -1069,9 +1140,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedAlternateUnits", _Exception.ToString());
             }
             return Obj;
         }
@@ -1101,9 +1173,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAlternateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -1133,9 +1206,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAlternateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -1164,9 +1238,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllAlternateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -1195,9 +1270,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllAlternateUnit", _Exception.ToString());
             }
             return Obj;
         }
@@ -1230,9 +1306,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetProductGroups", _Exception.ToString());
             }
             return Obj;
         }
@@ -1262,9 +1339,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1294,9 +1372,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1326,9 +1405,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1359,9 +1439,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1391,9 +1472,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1423,9 +1505,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1454,9 +1537,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1485,9 +1569,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllProductGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1520,9 +1605,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetProductSubGroups", _Exception.ToString());
             }
             return Obj;
         }
@@ -1552,9 +1638,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1584,9 +1671,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1616,9 +1704,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1649,9 +1738,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1681,9 +1771,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1713,9 +1804,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1744,9 +1836,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -1775,46 +1868,16 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllProductSubGroup", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
         #region Product
-        public async Task<SvcsBase> GetProductTypes()
-        {
-            SvcsBase Obj;
-            try
-            {
-                var repoResult = await _adminRepo.GetProductTypes();
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Exception = _Exception,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-            }
-            return Obj;
-        }
         #region Crud
         public async Task<SvcsBase> GetAllProducts()
         {
@@ -1841,9 +1904,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAllProducts", _Exception.ToString());
             }
             return Obj;
         }
@@ -1873,9 +1937,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateProduct", _Exception.ToString());
             }
             return Obj;
         }
@@ -1905,9 +1970,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateProduct", _Exception.ToString());
             }
             return Obj;
         }
@@ -1937,9 +2003,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveProduct", _Exception.ToString());
             }
             return Obj;
         }
@@ -1970,9 +2037,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedProduct", _Exception.ToString());
             }
             return Obj;
         }
@@ -2002,9 +2070,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverProduct", _Exception.ToString());
             }
             return Obj;
         }
@@ -2034,9 +2103,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteProduct", _Exception.ToString());
             }
             return Obj;
         }
@@ -2065,9 +2135,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllProduct", _Exception.ToString());
             }
             return Obj;
         }
@@ -2096,22 +2167,24 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllProduct", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
-        #region Production Configuration
+        #endregion
+        #region Production 
         #region Crud
-        public async Task<SvcsBase> GetProductionConfig()
+        public async Task<SvcsBase> GetProduction()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetProductionConfig();
+                var repoResult = await _adminRepo.GetProduction();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2131,18 +2204,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetProduction", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateProductionConfig(ProductionOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateProduction(ProductionOrderModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.CreateProductionConfig(data, user);
+                var repoResult = await _adminRepo.CreateProduction(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2163,18 +2237,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateProduction", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateProductionConfig(Guid Id, ProductionOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdateProduction(Guid Id, ProductionOrderModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.UpdateProductionConfig(Id, data, user);
+                var repoResult = await _adminRepo.UpdateProduction(Id, data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2195,18 +2270,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateProduction", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveProductionConfig(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveProduction(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RemoveProductionConfig(Id, user);
+                var repoResult = await _adminRepo.RemoveProduction(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2227,20 +2303,21 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveProduction", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedProductionConfig()
+        public async Task<SvcsBase> GetRemovedProduction()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetRemovedProductionConfig();
+                var repoResult = await _adminRepo.GetRemovedProduction();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2260,18 +2337,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedProduction", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverProductionConfig(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverProduction(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverProductionConfig(Id, user);
+                var repoResult = await _adminRepo.RecoverProduction(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2292,18 +2370,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverProduction", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteProductionConfig(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteProduction(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteProductionConfig(Id, user);
+                var repoResult = await _adminRepo.DeleteProduction(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2324,18 +2403,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteProduction", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllProductionConfig(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllProduction(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverAllProductionConfig(Ids, user);
+                var repoResult = await _adminRepo.RecoverAllProduction(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2355,18 +2435,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllProduction", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllProductionConfig(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllProduction(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteAllProductionConfig(Ids, user);
+                var repoResult = await _adminRepo.DeleteAllProduction(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2386,22 +2467,23 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllProduction", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
-        #region Sales Config  
+        #region Sales   
         #region Crud
-        public async Task<SvcsBase> GetSalesConfig()
+        public async Task<SvcsBase> GetSales()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetSalesConfig();
+                var repoResult = await _adminRepo.GetSales();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2421,18 +2503,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", " GetSales", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateSalesConfig(SalesOrderSetupModel requestData, AppUser user)
+        public async Task<SvcsBase> CreateSales(SalesOrderSetupModel requestData, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.CreateSalesConfig(requestData, user);
+                var repoResult = await _adminRepo.CreateSales(requestData, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2453,18 +2536,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateSales", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateSalesConfig(Guid Id, SalesOrderSetupModel data, AppUser user)
+        public async Task<SvcsBase> UpdateSales(Guid Id, SalesOrderSetupModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.UpdateSalesConfig(Id, data, user);
+                var repoResult = await _adminRepo.UpdateSales(Id, data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2485,18 +2569,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateSales", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveSalesConfig(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveSales(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RemoveSalesConfig(Id, user);
+                var repoResult = await _adminRepo.RemoveSales(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2517,20 +2602,21 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveSales", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedSalesConfig()
+        public async Task<SvcsBase> GetRemovedSales()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetRemovedSalesConfig();
+                var repoResult = await _adminRepo.GetRemovedSales();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2550,18 +2636,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedSales", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverSalesConfig(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverSales(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverSalesConfig(Id, user);
+                var repoResult = await _adminRepo.RecoverSales(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2582,18 +2669,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverSales", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteSalesConfig(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteSales(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteSalesConfig(Id, user);
+                var repoResult = await _adminRepo.DeleteSales(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2614,18 +2702,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteSales", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllSalesConfig(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllSales(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverAllSalesConfig(Ids, user);
+                var repoResult = await _adminRepo.RecoverAllSales(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2645,18 +2734,19 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllSales", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllSalesConfig(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllSales(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteAllSalesConfig(Ids, user);
+                var repoResult = await _adminRepo.DeleteAllSales(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2676,15 +2766,16 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllSales", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
-        #region Labour Rate Configuration
+        #region Labour Rate 
         #region Crud
         public async Task<SvcsBase> GetAllLabourRates()
         {
@@ -2711,9 +2802,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAllLabourRates", _Exception.ToString());
             }
             return Obj;
         }
@@ -2743,9 +2835,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateLabourRate", _Exception.ToString());
             }
             return Obj;
         }
@@ -2775,9 +2868,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateLabourRate", _Exception.ToString());
             }
             return Obj;
         }
@@ -2807,9 +2901,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveLabourRate", _Exception.ToString());
             }
             return Obj;
         }
@@ -2840,9 +2935,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedLabourRate", _Exception.ToString());
             }
             return Obj;
         }
@@ -2872,9 +2968,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverLabourRate", _Exception.ToString());
             }
             return Obj;
         }
@@ -2904,9 +3001,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteLabourRate", _Exception.ToString());
             }
             return Obj;
         }
@@ -2935,9 +3033,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllLabourRate", _Exception.ToString());
             }
             return Obj;
         }
@@ -2966,15 +3065,16 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllLabourRate", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
-        #region Accounting Config
+        #region Accounting 
         #region Group
         public async Task<SvcsBase> GetGroups()
         {
@@ -3001,9 +3101,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetGroups", _Exception.ToString());
             }
             return Obj;
         }
@@ -3035,9 +3136,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetSubGroups", _Exception.ToString());
             }
             return Obj;
         }
@@ -3067,9 +3169,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3099,9 +3202,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3131,9 +3235,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3164,9 +3269,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3196,9 +3302,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3228,9 +3335,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3259,9 +3367,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3290,9 +3399,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllSubGroup", _Exception.ToString());
             }
             return Obj;
         }
@@ -3325,9 +3435,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetLedgers", _Exception.ToString());
             }
             return Obj;
         }
@@ -3357,9 +3468,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateLedger", _Exception.ToString());
             }
             return Obj;
         }
@@ -3389,9 +3501,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateLedger", _Exception.ToString());
             }
             return Obj;
         }
@@ -3421,9 +3534,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveLedger", _Exception.ToString());
             }
             return Obj;
         }
@@ -3454,9 +3568,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedLedgers", _Exception.ToString());
             }
             return Obj;
         }
@@ -3486,9 +3601,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverLedger", _Exception.ToString());
             }
             return Obj;
         }
@@ -3518,9 +3634,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteLedger", _Exception.ToString());
             }
             return Obj;
         }
@@ -3549,9 +3666,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllLedger", _Exception.ToString());
             }
             return Obj;
         }
@@ -3580,9 +3698,10 @@ namespace FMS.Svcs.AdminSetting
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllLedger", _Exception.ToString());
             }
             return Obj;
         }

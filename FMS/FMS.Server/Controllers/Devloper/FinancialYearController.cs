@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.DevloperSetting;
+using FMS.Svcs.Devloper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace FMS.Server.Controllers.Devloper
 {
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper")]
-    public class FinancialYearController(IDevloperSettingSvcs devloperSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class FinancialYearController(IDevloperSvcs devloperSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IDevloperSettingSvcs _devloperSvcs = devloperSvcs;
+        private readonly IDevloperSvcs _devloperSvcs = devloperSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
@@ -33,7 +33,7 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetFinancialYears()
         {
             var result = await _devloperSvcs.GetFinancialYears();
-            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode ==204? NoContent() :BadRequest(result);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{Id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> UpdateFinancialYear([FromRoute] Guid Id, [FromBody] FinancialYearModel model)
@@ -44,7 +44,7 @@ namespace FMS.Server.Controllers.Devloper
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var result = await _devloperSvcs.UpdateFinancialYear(Id, model, user);
-                    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
                 }
                 else
                 {
@@ -64,7 +64,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _devloperSvcs.RemoveFinancialYear(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
@@ -88,7 +88,7 @@ namespace FMS.Server.Controllers.Devloper
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var result = await _devloperSvcs.RecoverFinancialYear(Id, user);
-                    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _devloperSvcs.DeleteFinancialYear(Id, user);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
@@ -120,14 +120,14 @@ namespace FMS.Server.Controllers.Devloper
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _devloperSvcs.RecoverAllFinancialYear(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAllFinancialYear(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _devloperSvcs.DeleteAllFinancialYear(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         #endregion
     }

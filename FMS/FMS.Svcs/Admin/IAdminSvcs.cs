@@ -1,14 +1,14 @@
 ﻿using FMS.Db.Entity;
 
-namespace FMS.Svcs.AdminSetting
+namespace FMS.Svcs.Admin
 {
-    public interface IAdminSettingSvcs
+    public interface IAdminSvcs
     {
        
         #region Generate SignUp Token
         Task<SvcsBase> CreateToken(RegisterTokenModel Token);
         #endregion
-        #region Company Details
+        #region Company
         #region Crud
         Task<SvcsBase> GetCompany(string BranchId);
         Task<SvcsBase> CreateCompany(CompanyModel data, AppUser user);
@@ -23,20 +23,24 @@ namespace FMS.Svcs.AdminSetting
         Task<SvcsBase> DeleteAllCompany(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region User Branch Allocation  
+        #region User Branch  
         #region Crud
-        Task<SvcsBase> GetAllUserAndBranch();
-        Task<SvcsBase> CreateBranchAlloction(UserBranchModel data, AppUser user);
-        Task<SvcsBase> UpdateBranchAlloction(Guid Id, UserBranchModel data, AppUser user);
-        Task<SvcsBase> RemoveBranchAlloction(Guid Id, AppUser user);
+        Task<SvcsBase> GetUserBranches();
+        Task<SvcsBase> CreateUserBranch(UserBranchModel data, AppUser user);
+        Task<SvcsBase> UpdateUserBranch(Guid Id, UserBranchModel data, AppUser user);
+        Task<SvcsBase> RemoveUserBranch(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<SvcsBase> GetRemovedBranchAlloction();
-        Task<SvcsBase> RecoverBranchAlloction(Guid Id, AppUser user);
-        Task<SvcsBase> DeleteBranchAlloction(Guid Id, AppUser user);
-        Task<SvcsBase> RecoverAllBranchAlloction(List<string> Ids, AppUser user);
-        Task<SvcsBase> DeleteAllBranchAlloction(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedUserBranches();
+        Task<SvcsBase> RecoverUserBranch(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteUserBranch(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllUserBranches(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllUserBranches(List<string> Ids, AppUser user);
         #endregion
+        #endregion
+        #region Product 
+        #region Product Type
+        Task<SvcsBase> GetProductTypes();
         #endregion
         #region Unit
         #region Crud
@@ -99,7 +103,6 @@ namespace FMS.Svcs.AdminSetting
         #endregion
         #endregion
         #region Product
-        Task<SvcsBase> GetProductTypes();
         #region Crud
         Task<SvcsBase> GetAllProducts();
         Task<SvcsBase> CreateProduct(ProductModel data, AppUser user);
@@ -114,37 +117,38 @@ namespace FMS.Svcs.AdminSetting
         Task<SvcsBase> DeleteAllProduct(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Production Configuration
+        #endregion
+        #region Production 
         #region Crud
-        Task<SvcsBase> GetProductionConfig();
-        Task<SvcsBase> CreateProductionConfig(ProductionOrderModel requestData, AppUser user);
-        Task<SvcsBase> UpdateProductionConfig(Guid Id, ProductionOrderModel data, AppUser user);
-        Task<SvcsBase> RemoveProductionConfig(Guid Id, AppUser user);
+        Task<SvcsBase> GetProduction();
+        Task<SvcsBase> CreateProduction(ProductionOrderModel requestData, AppUser user);
+        Task<SvcsBase> UpdateProduction(Guid Id, ProductionOrderModel data, AppUser user);
+        Task<SvcsBase> RemoveProduction(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<SvcsBase> GetRemovedProductionConfig();
-        Task<SvcsBase> RecoverProductionConfig(Guid Id, AppUser user);
-        Task<SvcsBase> DeleteProductionConfig(Guid Id, AppUser user);
-        Task<SvcsBase> RecoverAllProductionConfig(List<string> Ids, AppUser user);
-        Task<SvcsBase> DeleteAllProductionConfig(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedProduction();
+        Task<SvcsBase> RecoverProduction(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteProduction(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllProduction(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllProduction(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Sales Configuration  
+        #region Sales   
         #region Crud
-        Task<SvcsBase> GetSalesConfig();
-        Task<SvcsBase> CreateSalesConfig(SalesOrderSetupModel data, AppUser user);
-        Task<SvcsBase> UpdateSalesConfig(Guid Id, SalesOrderSetupModel data, AppUser user);
-        Task<SvcsBase> RemoveSalesConfig(Guid Id, AppUser user);
+        Task<SvcsBase> GetSales();
+        Task<SvcsBase> CreateSales(SalesOrderSetupModel data, AppUser user);
+        Task<SvcsBase> UpdateSales(Guid Id, SalesOrderSetupModel data, AppUser user);
+        Task<SvcsBase> RemoveSales(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<SvcsBase> GetRemovedSalesConfig();
-        Task<SvcsBase> RecoverSalesConfig(Guid Id, AppUser user);
-        Task<SvcsBase> DeleteSalesConfig(Guid Id, AppUser user);
-        Task<SvcsBase> RecoverAllSalesConfig(List<string> Ids, AppUser user);
-        Task<SvcsBase> DeleteAllSalesConfig(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedSales();
+        Task<SvcsBase> RecoverSales(Guid Id, AppUser user);
+        Task<SvcsBase> DeleteSales(Guid Id, AppUser user);
+        Task<SvcsBase> RecoverAllSales(List<string> Ids, AppUser user);
+        Task<SvcsBase> DeleteAllSales(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Labour Rate Configuration
+        #region Labour Rate 
         #region Crud
         Task<SvcsBase> GetAllLabourRates();
         Task<SvcsBase> CreateLabourRate(LabourRateModel data, AppUser user);
@@ -159,7 +163,7 @@ namespace FMS.Svcs.AdminSetting
         Task<SvcsBase> DeleteAllLabourRate(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Accounting Config
+        #region Accounting 
         #region Group
         Task<SvcsBase> GetGroups();
         #endregion

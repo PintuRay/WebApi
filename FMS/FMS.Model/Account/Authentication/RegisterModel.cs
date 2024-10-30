@@ -10,8 +10,9 @@ namespace FMS.Model.Account.Authentication
         public  string Email { get; set; }
         public  string PhoneNumber { get; set; }
         public string Password { get; set; }
-        public string ConformPassword { get; set; }
+        public string ConfirmPassword { get; set; }
         public string RouteUls { get; set; }
+        public bool TermCondition { get; set; }
     }
     public class RegisterValidator : AbstractValidator<RegisterModel>
     {
@@ -62,7 +63,7 @@ namespace FMS.Model.Account.Authentication
                   .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{8,}$")
                   .WithMessage("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
             // Validate Confirm Password
-            RuleFor(user => user.ConformPassword)
+            RuleFor(user => user.ConfirmPassword)
                 .NotNull().WithMessage("Confirmation password is required.")
                 .NotEmpty().WithMessage("Confirmation password cannot be empty.")
                 .Equal(user => user.Password).WithMessage("The password and confirmation password do not match.");

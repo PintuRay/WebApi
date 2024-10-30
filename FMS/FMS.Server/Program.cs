@@ -10,18 +10,20 @@ using FMS.Model.SMS;
 using FMS.Repo;
 using FMS.Repo.Account.Authentication;
 using FMS.Repo.Account.AutherIzation;
-using FMS.Repo.AdminSetting;
-using FMS.Repo.DevloperSetting;
+using FMS.Repo.Accounting;
+using FMS.Repo.Admin;
+using FMS.Repo.Devloper;
 using FMS.Repo.Transaction;
-using FMS.Repo.UserSetting;
+using FMS.Repo.User;
 using FMS.Svcs.Account.Authentication;
 using FMS.Svcs.Account.Autherization;
-using FMS.Svcs.AdminSetting;
-using FMS.Svcs.DevloperSetting;
+using FMS.Svcs.Accounting;
+using FMS.Svcs.Admin;
+using FMS.Svcs.Devloper;
 using FMS.Svcs.Email;
 using FMS.Svcs.SMS;
 using FMS.Svcs.Transaction;
-using FMS.Svcs.UserSetting;
+using FMS.Svcs.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -52,24 +54,26 @@ builder.Services.AddScoped<ISmsSvcs, SmsSvcs>();
 //**************************************************** Model Validation ************************************************//
 // Register FluentValidation services
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddFluentValidationClientsideAdapters(); 
+builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddTransient<CustomValidation>();
 // Register your validators
 builder.Services.AddTransient<IValidator<RegisterTokenModel>, RegisterTokenValidator>();
-builder.Services.AddTransient <IValidator<RegisterModel>, RegisterValidator>();
+builder.Services.AddTransient<IValidator<RegisterModel>, RegisterValidator>();
 //*************************************************Dependancy Injection***************************************// 
 builder.Services.AddScoped<IAuthentication, AuthenticationRepo>();
 builder.Services.AddScoped<IAuthenticationSvcs, AuthenticationSvcs>();
 builder.Services.AddScoped<IAutherizationRepo, AutherizationRepo>();
 builder.Services.AddScoped<IAutherizationSvcs, AutherizationSvcs>();
-builder.Services.AddScoped<IDevloperSettingSvcs, DevloperSettingSvcs>();
-builder.Services.AddScoped<IDevloperSettingRepo, DevloperSettingRepo>();
-builder.Services.AddScoped<IAdminSettingSvcs, AdminSettingSvcs>();
-builder.Services.AddScoped<IAdminSettingRepo, AdminSettingRepo>();
-builder.Services.AddScoped<IUserSettingSvcs, UserSettingSvcs>();
-builder.Services.AddScoped<IUserSettingRepo, UserSettingRepo>();
+builder.Services.AddScoped<IDevloperSvcs, DevloperSvcs>();
+builder.Services.AddScoped<IDevloperRepo, DevloperRepo>();
+builder.Services.AddScoped<IAdminSvcs, AdminSvcs>();
+builder.Services.AddScoped<IAdminRepo, AdminRepo>();
+builder.Services.AddScoped<IUserSvcs, UserSvcs>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<ITransactionSvcs, TransactionSvcs>();
 builder.Services.AddScoped<ITransactionRepo, TransactionRepo>();
+builder.Services.AddScoped<IAccountingSvcs, AccountingSvcs>();
+builder.Services.AddScoped<IAccountingRepo, AccountingRepo>();
 //*****************************************************AutoMapper*****************************************//
 var automapper = new MapperConfiguration(option => option.AddProfile(new MappingProfile()));
 IMapper mapper = automapper.CreateMapper();
@@ -137,7 +141,7 @@ builder.Services.AddAuthorization(options =>
 });
 //*******************************************************Caching******************************************************//
 builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<ICustomCache, CustomCache>(); 
+builder.Services.AddSingleton<ICustomCache, CustomCache>();
 //*********************************************************************************************************************//
 builder.Services.AddSwaggerGen(
     options =>

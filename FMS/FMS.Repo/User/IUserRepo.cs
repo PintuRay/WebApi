@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
-namespace FMS.Repo.UserSetting
+namespace FMS.Repo.User
 {
-    public interface IUserSettingRepo
+    public interface IUserRepo
     {
         #region Stock 
         #region Crud

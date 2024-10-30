@@ -35,6 +35,7 @@ namespace FMS.Svcs.Account.Authentication
          Task<SvcsBase> SendTwoFactorToken(AppUser user);
         Task<SvcsBase> VerifyTwoFactorToken(string Token, AppUser user);
         Task<SvcsBase> SignInWithOTP(SignIn2faModel model);
-        #endregion  
+        Task<SvcsBase> ReSendTwoFactorToken(string mail);
+        #endregion
     }
 }

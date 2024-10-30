@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.AdminSetting;
+using FMS.Svcs.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +8,10 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class LedgerController(IAdminSettingSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class LedgerController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSettingSvcs _adminSvcs = adminSvcs;
+        private readonly IAdminSvcs _adminSvcs = adminSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Ledgers

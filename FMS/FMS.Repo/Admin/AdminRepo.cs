@@ -3,9 +3,9 @@ using FMS.Db;
 using FMS.Db.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace FMS.Repo.AdminSetting
+namespace FMS.Repo.Admin
 {
-    public class AdminSettingRepo(Context ctx, IMapper mapper) : IAdminSettingRepo
+    public class AdminRepo(Context ctx, IMapper mapper) : IAdminRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
@@ -39,7 +39,7 @@ namespace FMS.Repo.AdminSetting
             return _Result;
         }
         #endregion
-        #region Company Details
+        #region Company
         #region Crud
         public async Task<Result<Company>> GetCompany(string BranchId)
         {
@@ -298,9 +298,9 @@ namespace FMS.Repo.AdminSetting
         }
         #endregion
         #endregion
-        #region User Branch Allocation
+        #region User Branch 
         #region Crud
-        public async Task<Result<UserBranch>> GetBranchAlloctions()
+        public async Task<Result<UserBranch>> GetUserBranches()
         {
             Result<UserBranch> _Result = new();
             try
@@ -320,7 +320,7 @@ namespace FMS.Repo.AdminSetting
             }
             return _Result;
         }
-        public async Task<RepoBase> CreateBranchAlloction(UserBranchModel data, AppUser user)
+        public async Task<RepoBase> CreateUserBranch(UserBranchModel data, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -347,7 +347,7 @@ namespace FMS.Repo.AdminSetting
             }
             return _Result;
         }
-        public async Task<RepoBase> UpdateBranchAlloction(Guid Id, UserBranchModel model, AppUser user)
+        public async Task<RepoBase> UpdateUserBranch(Guid Id, UserBranchModel model, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -373,7 +373,7 @@ namespace FMS.Repo.AdminSetting
             }
             return _Result;
         }
-        public async Task<RepoBase> RemoveBranchAlloction(Guid Id, AppUser user)
+        public async Task<RepoBase> RemoveUserBranch(Guid Id, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -401,7 +401,7 @@ namespace FMS.Repo.AdminSetting
         }
         #endregion
         #region Recover
-        public async Task<Result<UserBranch>> GetRemovedBranchAlloction()
+        public async Task<Result<UserBranch>> GetRemovedUserBranches()
         {
             Result<UserBranch> _Result = new();
             try
@@ -421,7 +421,7 @@ namespace FMS.Repo.AdminSetting
             }
             return _Result;
         }
-        public async Task<RepoBase> RecoverBranchAlloction(Guid Id, AppUser user)
+        public async Task<RepoBase> RecoverUserBranch(Guid Id, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -447,7 +447,7 @@ namespace FMS.Repo.AdminSetting
             }
             return _Result;
         }
-        public async Task<RepoBase> DeleteBranchAlloction(Guid Id, AppUser user)
+        public async Task<RepoBase> DeleteUserBranch(Guid Id, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -471,7 +471,7 @@ namespace FMS.Repo.AdminSetting
             }
             return _Result;
         }
-        public async Task<RepoBase> RecoverAllBranchAlloction(List<string> Ids, AppUser user)
+        public async Task<RepoBase> RecoverAllUserBranches(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
@@ -503,7 +503,7 @@ namespace FMS.Repo.AdminSetting
             }
             return _Result;
         }
-        public async Task<RepoBase> DeleteAllBranchAlloction(List<string> Ids, AppUser user)
+        public async Task<RepoBase> DeleteAllUserBranches(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
@@ -532,7 +532,7 @@ namespace FMS.Repo.AdminSetting
         }
         #endregion
         #endregion
-        #region Product Setup
+        #region Product 
         #region Product Type
         public async Task<Result<ProductType>> GetProductTypes()
         {
@@ -750,91 +750,91 @@ namespace FMS.Repo.AdminSetting
         #endregion
         #endregion
         #endregion
-        #region Production Configuration
+        #region Production
         #region Crud
-        public async Task<Result<ProductionOrder>> GetProductionConfig()
+        public async Task<Result<ProductionOrder>> GetProduction()
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> CreateProductionConfig(ProductionOrderModel data, AppUser user)
+        public async Task<RepoBase> CreateProduction(ProductionOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> UpdateProductionConfig(Guid Id, ProductionOrderModel data, AppUser user)
+        public async Task<RepoBase> UpdateProduction(Guid Id, ProductionOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> RemoveProductionConfig(Guid Id, AppUser user)
+        public async Task<RepoBase> RemoveProduction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Result<ProductionOrder>> GetRemovedProductionConfig()
+        public async Task<Result<ProductionOrder>> GetRemovedProduction()
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> RecoverProductionConfig(Guid Id, AppUser user)
+        public async Task<RepoBase> RecoverProduction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> DeleteProductionConfig(Guid Id, AppUser user)
+        public async Task<RepoBase> DeleteProduction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> RecoverAllProductionConfig(List<string> Ids, AppUser user)
+        public async Task<RepoBase> RecoverAllProduction(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> DeleteAllProductionConfig(List<string> Ids, AppUser user)
+        public async Task<RepoBase> DeleteAllProduction(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
-        #region  Sales Config
+        #region  Sales 
         #region Crud
-        public async Task<Result<SalesOrderSetup>> GetSalesConfig()
+        public async Task<Result<SalesOrderSetup>> GetSales()
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> CreateSalesConfig(SalesOrderSetupModel data, AppUser user)
+        public async Task<RepoBase> CreateSales(SalesOrderSetupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> UpdateSalesConfig(Guid Id, SalesOrderSetupModel data, AppUser user)
+        public async Task<RepoBase> UpdateSales(Guid Id, SalesOrderSetupModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> RemoveSalesConfig(Guid Id, AppUser user)
+        public async Task<RepoBase> RemoveSales(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<Result<SalesOrderSetup>> GetRemovedSalesConfig()
+        public async Task<Result<SalesOrderSetup>> GetRemovedSales()
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> RecoverSalesConfig(Guid Id, AppUser user)
+        public async Task<RepoBase> RecoverSales(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> DeleteSalesConfig(Guid Id, AppUser user)
+        public async Task<RepoBase> DeleteSales(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> RecoverAllSalesConfig(List<string> Ids, AppUser user)
+        public async Task<RepoBase> RecoverAllSales(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<RepoBase> DeleteAllSalesConfig(List<string> Ids, AppUser user)
+        public async Task<RepoBase> DeleteAllSales(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
-        #region Labour Rate Configration
+        #region Labour Rate
         #region Crud
         public async Task<Result<LabourRate>> GetAllLabourRates()
         {
@@ -876,7 +876,7 @@ namespace FMS.Repo.AdminSetting
         }
         #endregion
         #endregion
-        #region Account Configuration
+        #region Account 
         #region Group
         public async Task<Result<LedgerGroup>> GetGroups()
         {

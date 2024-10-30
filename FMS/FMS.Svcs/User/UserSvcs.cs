@@ -1,12 +1,12 @@
 ﻿using FMS.Db.Entity;
-using FMS.Repo.UserSetting;
+using FMS.Repo.User;
 
-namespace FMS.Svcs.UserSetting
+namespace FMS.Svcs.User
 {
-    public  class UserSettingSvcs(IUserSettingRepo userRepo) : IUserSettingSvcs
+    public  class UserSvcs(IUserRepo userRepo) : IUserSvcs
     {
         #region Dependancy
-        private readonly IUserSettingRepo _userRepo = userRepo;
+        private readonly IUserRepo _userRepo = userRepo;
         #endregion
         #region Stock 
         #region Crud

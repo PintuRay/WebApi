@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using FMS.Db;
 using FMS.Db.Entity;
-using FMS.Model;
-namespace FMS.Repo.UserSetting
+namespace FMS.Repo.User
 {
-    public  class UserSettingRepo(Context ctx, IMapper mapper) : IUserSettingRepo
+    public  class UserRepo(Context ctx, IMapper mapper) : IUserRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;

@@ -3,6 +3,7 @@ using FMS.Db.Entity;
 using FMS.Model.Account.Authentication;
 using FMS.Model.Account.Autherization;
 using FMS.Model.Email;
+using FMS.Repo;
 using FMS.Repo.Account.Authentication;
 using FMS.Svcs.Email;
 using FMS.Svcs.SMS;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Twilio.Jwt.AccessToken;
 
 namespace FMS.Svcs.Account.Authentication
 {
@@ -23,6 +25,7 @@ namespace FMS.Svcs.Account.Authentication
         IEmailSvcs emailSvcs,
         ISmsSvcs smsSvcs,
          IMapper mapper,
+         ICustomCache cache,
         IConfiguration configuration) : IAuthenticationSvcs
     {
         #region Dependancy
@@ -34,6 +37,7 @@ namespace FMS.Svcs.Account.Authentication
         private readonly SignInManager<AppUser> _signInManager = signInManager;
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly RoleManager<AppRole> _roleManager = roleManager;
+        private readonly ICustomCache _cache = cache;
         #endregion
         #region  SignUp 
         public async Task<SvcsBase> ValidateToken(string Token)
@@ -61,9 +65,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ValidateToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -120,7 +125,7 @@ namespace FMS.Svcs.Account.Authentication
                             if (_userManager.Users.Count() == 1)
                             {
                                 var checkDevloper = await _roleManager.FindByNameAsync("Devloper");
-                                if(checkDevloper is null)
+                                if (checkDevloper is null)
                                 {
                                     await _roleManager.CreateAsync(new AppRole() { Name = "Devloper" });
                                 }
@@ -177,9 +182,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SignUp", _Exception.ToString());
             }
             return Obj;
         }
@@ -217,18 +223,22 @@ namespace FMS.Svcs.Account.Authentication
                                 };
                                 var Result = await _emailSvcs.SendTwoFactorToken(options);
                                 #endregion
-                            
                                 if (Result)
                                 {
-                                    //int lengthToMask = user.PhoneNumber.Length - 4;
-                                    //string maskedPart = new string('*', lengthToMask);
-                                    //string lastFourDigits = user.PhoneNumber.Substring(lengthToMask);
+                                    #region Caching
+                                    var tokenGenerationTime = DateTime.UtcNow;
+                                    var tokenCacheKey = $"TwoFactorToken_{user.Id}";
+                                    var tokenTimeCacheKey = $"TokenGenerationTime_{user.Id}";
+                                    _cache.Remove(tokenCacheKey);
+                                    _cache.Remove(tokenTimeCacheKey);
+                                    _cache.Set(tokenCacheKey, code);
+                                    _cache.Set(tokenTimeCacheKey, tokenGenerationTime);
+                                    #endregion
                                     Obj = new()
                                     {
-                                        //Message = $"We Send An OTP To your Mobile no ends With {lastFourDigits} ",
                                         Message = $"We Send An OTP To your registered mail",
                                         ResponseCode = (int)ResponseCode.Status.Ok,
-                                        Data = new { twoFactorEnable = true, userId = user.Id }
+                                        Data = new { twoFactorEnable = true, userId = user.Id , OtpExpiredIn = tokenGenerationTime.AddMinutes(3)}
                                     };
                                 }
                                 else
@@ -283,9 +293,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SignIn", _Exception.ToString());
             }
             return Obj;
         }
@@ -358,9 +369,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "VerifyConfirmEmail", _Exception.ToString());
             }
             return Obj;
         }
@@ -427,9 +439,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ResendConfirmEmail", _Exception.ToString());
             }
             return Obj;
         }
@@ -476,9 +489,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SendConformationSms", _Exception.ToString());
             }
             return Obj;
         }
@@ -523,9 +537,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "VerifyPhoneNumber", _Exception.ToString());
             }
             return Obj;
         }
@@ -587,9 +602,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SendTwoFactorToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -636,9 +652,10 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "VerifyTwoFactorToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -647,27 +664,41 @@ namespace FMS.Svcs.Account.Authentication
             SvcsBase Obj;
             try
             {
-
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-                    var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
-                             await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
-                    if (result)
+                    var tokenCacheKey = $"TwoFactorToken_{user.Id}";
+                    var tokenTimeCacheKey = $"TokenGenerationTime_{user.Id}";
+                    var tokenGenerationTime = _cache.Get<DateTime>(tokenTimeCacheKey);
+                    var tokenValue = _cache.Get<string>(tokenCacheKey);
+                    if (tokenGenerationTime.AddMinutes(3) > DateTime.UtcNow && tokenValue == model.OTP)
                     {
-                        var JwtToken = await GenerateJwtToken(user);
-                        Obj = new()
+                        var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
+                            await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
+                        if (result)
                         {
-                            Message = "Bearer Token Created Successfully",
-                            ResponseCode = (int)ResponseCode.Status.Ok,
-                            Data = new { JwtToken = JwtToken }
-                        };
+                            var JwtToken = await GenerateJwtToken(user);
+                            Obj = new()
+                            {
+                                Message = "Bearer Token Created Successfully",
+                                ResponseCode = (int)ResponseCode.Status.Ok,
+                                Data = new { JwtToken = JwtToken }
+                            };
+                        }
+                        else
+                        {
+                            Obj = new()
+                            {
+                                Message = "Login Failed",
+                                ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            };
+                        }
                     }
                     else
                     {
                         Obj = new()
                         {
-                            Message = "Login Failed",
+                            Message = "Token Expired",
                             ResponseCode = (int)ResponseCode.Status.BadRequest,
                         };
                     }
@@ -685,9 +716,77 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Exception = _Exception,
+                   Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SignInWithOTP", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> ReSendTwoFactorToken(string mail)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(mail);
+                if (await _userManager.GetTwoFactorEnabledAsync(user))
+                {
+                    #region mail
+                    var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
+                    UserEmailOptions options = new()
+                    {
+                        ToEmail = user.Email,
+                        PlaceHolders =
+                            [
+                                new("{{UserName}}", user.Name),
+                                            new("{{OTP}}", code)
+                                ]
+                    };
+                    var Result = await _emailSvcs.SendTwoFactorToken(options);
+                    #endregion
+                    if (Result)
+                    {
+                        #region Caching
+                        var tokenGenerationTime = DateTime.UtcNow;
+                        var tokenCacheKey = $"TwoFactorToken_{user.Id}";
+                        var tokenTimeCacheKey = $"TokenGenerationTime_{user.Id}";
+                        _cache.Remove(tokenCacheKey);
+                        _cache.Remove(tokenTimeCacheKey);
+                        _cache.Set(tokenCacheKey, code);
+                        _cache.Set(tokenTimeCacheKey, tokenGenerationTime);
+                        #endregion
+                        Obj = new()
+                        {
+                            Message = $"We Send An OTP To your registered mail",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Message = "Failed To Send 2FA Token",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        };
+                    }
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Message = "Failed To Send 2FA Token",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                   Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ReSendTwoFactorToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -745,6 +844,7 @@ namespace FMS.Svcs.Account.Authentication
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                     Exception = _Exception
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ForgotPassword", _Exception.ToString());
             }
             return Obj;
         }
@@ -778,6 +878,7 @@ namespace FMS.Svcs.Account.Authentication
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                     Exception = _Exception
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ResetPassword", _Exception.ToString());
             }
             return Obj;
         }
@@ -811,6 +912,7 @@ namespace FMS.Svcs.Account.Authentication
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                     Exception = _Exception
                 };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ChangePassword", _Exception.ToString());
             }
             return Obj;
         }

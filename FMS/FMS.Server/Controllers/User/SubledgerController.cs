@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.UserSetting;
+using FMS.Svcs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +8,10 @@ namespace FMS.Server.Controllers.User
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
-    public class SubledgerController(IUserSettingSvcs userSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class SubledgerController(IUserSvcs userSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IUserSettingSvcs _userSvcs = userSvcs;
+        private readonly IUserSvcs _userSvcs = userSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud

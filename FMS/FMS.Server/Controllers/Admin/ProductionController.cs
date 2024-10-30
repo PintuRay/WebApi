@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.AdminSetting;
+using FMS.Svcs.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,21 +8,21 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class AlternateUnitController(IAdminSettingSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class ProductionController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSettingSvcs _adminSvcs = adminSvcs;
+        private readonly IAdminSvcs _adminSvcs = adminSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateAlternateUnit([FromBody] AlternateUnitModel model)
+        public async Task<IActionResult> CreateProduction([FromBody] ProductionOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.CreateAlternateUnit(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateAlternateUnit), result) : BadRequest(result);
+                var result = await _adminSvcs.CreateProduction(model, user);
+                return result.ResponseCode == 201 ? Created(nameof(CreateProduction), result) : BadRequest(result);
             }
             else
             {
@@ -31,20 +31,20 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAlternateUnits()
+        public async Task<IActionResult> GetProduction()
         {
-            var result = await _adminSvcs.GetAlternateUnits();
+            var result = await _adminSvcs.GetProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateAlternateUnit([FromRoute] Guid id, [FromBody] AlternateUnitModel model)
+        public async Task<IActionResult> UpdateProduction([FromRoute] Guid id, [FromBody] ProductionOrderModel model)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.UpdateAlternateUnit(id, model, user);
+                    var result = await _adminSvcs.UpdateProduction(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -58,13 +58,13 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Branchid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveAlternateUnit([FromRoute] Guid id)
+        [HttpDelete, Route("Productionid/{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveProduction([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.RemoveAlternateUnit(id, user);
+                var result = await _adminSvcs.RemoveProduction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -75,20 +75,20 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedAlternateUnits()
+        public async Task<IActionResult> GetRemovedProduction()
         {
-            var result = await _adminSvcs.GetRemovedAlternateUnits();
+            var result = await _adminSvcs.GetRemovedProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAlternateUnit([FromRoute] Guid id)
+        public async Task<IActionResult> RecoverProduction([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.RecoverAlternateUnit(id, user);
+                    var result = await _adminSvcs.RecoverProduction(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -103,19 +103,19 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllAlternateUnit([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAllProduction([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.RecoverAllAlternateUnit(Ids, user);
+            var result = await _adminSvcs.RecoverAllProduction(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAlternateUnit([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteProduction([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.DeleteAlternateUnit(id, user);
+                var result = await _adminSvcs.DeleteProduction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -124,10 +124,10 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllAlternateUnit([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAllProduction([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.DeleteAllAlternateUnit(Ids, user);
+            var result = await _adminSvcs.DeleteAllProduction(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

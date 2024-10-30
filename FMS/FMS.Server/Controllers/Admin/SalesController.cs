@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.AdminSetting;
+using FMS.Svcs.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,21 +8,22 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class BranchAllocationController(IAdminSettingSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class SalesController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSettingSvcs _adminSvcs = adminSvcs;
+        private readonly IAdminSvcs _adminSvcs = adminSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
+ 
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateBranchAlloction([FromBody] UserBranchModel model)
+        public async Task<IActionResult> CreateSales([FromBody] SalesOrderSetupModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.CreateBranchAlloction(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateBranchAlloction), result) : BadRequest(result);
+                var result = await _adminSvcs.CreateSales(model, user);
+                return result.ResponseCode == 201 ? Created(nameof(CreateSales), result) : BadRequest(result);
             }
             else
             {
@@ -31,20 +32,20 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllUserAndBranch()
+        public async Task<IActionResult> GetSales()
         {
-            var result = await _adminSvcs.GetAllUserAndBranch();
+            var result = await _adminSvcs.GetSales();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateBranchAlloction([FromRoute] Guid id, [FromBody] UserBranchModel model)
+        public async Task<IActionResult> UpdateSales([FromRoute] Guid id, [FromBody] SalesOrderSetupModel model)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.UpdateBranchAlloction(id, model, user);
+                    var result = await _adminSvcs.UpdateSales(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -58,13 +59,13 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("BranchAllocationid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveBranchAlloction([FromRoute] Guid id)
+        [HttpDelete, Route("Productid/{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveSales([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.RemoveBranchAlloction(id, user);
+                var result = await _adminSvcs.RemoveSales(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -75,20 +76,20 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedBranchAlloction()
+        public async Task<IActionResult> GetRemovedSales()
         {
-            var result = await _adminSvcs.GetRemovedBranchAlloction();
+            var result = await _adminSvcs.GetRemovedSales();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverBranchAlloction([FromRoute] Guid id)
+        public async Task<IActionResult> RecoverSales([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.RecoverBranchAlloction(id, user);
+                    var result = await _adminSvcs.RecoverSales(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -103,19 +104,19 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllBranchAlloction([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAllSales([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.RecoverAllBranchAlloction(Ids, user);
+            var result = await _adminSvcs.RecoverAllSales(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteBranchAlloction([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteSales([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.DeleteBranchAlloction(id, user);
+                var result = await _adminSvcs.DeleteSales(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -124,10 +125,10 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllBranchAlloction([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAllSales([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.DeleteAllBranchAlloction(Ids, user);
+            var result = await _adminSvcs.DeleteAllSales(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

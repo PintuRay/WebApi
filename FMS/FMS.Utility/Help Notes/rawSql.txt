@@ -1,0 +1,16 @@
+﻿---------------------------Using FromSqlRaw for Queries---------------------------------------------
+using (var context = new YourDbContext())
+{
+    var rawSql = "SELECT * FROM YourTable WHERE SomeColumn = {0}";
+    var parameter = "SomeValue";
+    var results = context.YourEntity
+        .FromSqlRaw(rawSql, parameter)
+        .ToList();
+}
+------------------------Using ExecuteSqlRaw for Non-Query Commands------------------------------------
+using (var context = new YourDbContext())
+{
+    var rawSql = "UPDATE YourTable SET SomeColumn = {0} WHERE Id = {1}";
+    var parameters = new object[] { "NewValue", 1 };
+    var affectedRows = context.Database.ExecuteSqlRaw(rawSql, parameters);
+}

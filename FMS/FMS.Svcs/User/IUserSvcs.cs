@@ -1,8 +1,8 @@
 ﻿using FMS.Db.Entity;
 
-namespace FMS.Svcs.UserSetting
+namespace FMS.Svcs.User
 {
-    public interface IUserSettingSvcs
+    public interface IUserSvcs
     {
         #region Stock 
         #region Crud

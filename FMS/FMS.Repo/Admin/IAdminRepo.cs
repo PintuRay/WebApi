@@ -1,14 +1,14 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 
-namespace FMS.Repo.AdminSetting
+namespace FMS.Repo.Admin
 {
-    public interface IAdminSettingRepo
+    public interface IAdminRepo
     {
         #region Generate SignUp Token
         Task<RepoBase> CreateToken(RegisterTokenModel model);
         #endregion
-        #region Company Details
+        #region Company
         #region Crud
         Task<RepoBase> CreateCompany(CompanyModel data, AppUser user);
         Task<Result<Company>> GetCompany(string BranchId);
@@ -23,20 +23,24 @@ namespace FMS.Repo.AdminSetting
         Task<RepoBase> DeleteAllCompany(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Branch Allocation
+        #region User Branch 
         #region Crud
-        Task<Result<UserBranch>> GetBranchAlloctions();
-        Task<RepoBase> CreateBranchAlloction(UserBranchModel data, AppUser user);
-        Task<RepoBase> UpdateBranchAlloction(Guid Id, UserBranchModel model, AppUser user);
-        Task<RepoBase> RemoveBranchAlloction(Guid Id, AppUser user);
+        Task<Result<UserBranch>> GetUserBranches();
+        Task<RepoBase> CreateUserBranch(UserBranchModel data, AppUser user);
+        Task<RepoBase> UpdateUserBranch(Guid Id, UserBranchModel model, AppUser user);
+        Task<RepoBase> RemoveUserBranch(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<UserBranch>> GetRemovedBranchAlloction();
-        Task<RepoBase> RecoverBranchAlloction(Guid Id, AppUser user);
-        Task<RepoBase> DeleteBranchAlloction(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllBranchAlloction(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllBranchAlloction(List<string> Ids, AppUser user);
+        Task<Result<UserBranch>> GetRemovedUserBranches();
+        Task<RepoBase> RecoverUserBranch(Guid Id, AppUser user);
+        Task<RepoBase> DeleteUserBranch(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllUserBranches(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllUserBranches(List<string> Ids, AppUser user);
         #endregion
+        #endregion
+        #region Product 
+        #region Product Type
+        Task<Result<ProductType>> GetProductTypes();
         #endregion
         #region Unit
         #region Crud
@@ -99,7 +103,6 @@ namespace FMS.Repo.AdminSetting
         #endregion
         #endregion
         #region Product
-        Task<Result<ProductType>> GetProductTypes();
         #region Crud
         Task<Result<Product>> GetAllProducts();
         Task<RepoBase> CreateProduct(ProductModel data, AppUser user);
@@ -114,37 +117,38 @@ namespace FMS.Repo.AdminSetting
         Task<RepoBase> DeleteAllProduct(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Production Configuration
+        #endregion
+        #region Production 
         #region Crud
-        Task<Result<ProductionOrder>> GetProductionConfig();
-        Task<RepoBase> CreateProductionConfig(ProductionOrderModel data, AppUser user);
-        Task<RepoBase> UpdateProductionConfig(Guid Id, ProductionOrderModel data, AppUser user);
-        Task<RepoBase> RemoveProductionConfig(Guid Id, AppUser user);
+        Task<Result<ProductionOrder>> GetProduction();
+        Task<RepoBase> CreateProduction(ProductionOrderModel data, AppUser user);
+        Task<RepoBase> UpdateProduction(Guid Id, ProductionOrderModel data, AppUser user);
+        Task<RepoBase> RemoveProduction(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<ProductionOrder>> GetRemovedProductionConfig();
-        Task<RepoBase> RecoverProductionConfig(Guid Id, AppUser user);
-        Task<RepoBase> DeleteProductionConfig(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllProductionConfig(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllProductionConfig(List<string> Ids, AppUser user);
+        Task<Result<ProductionOrder>> GetRemovedProduction();
+        Task<RepoBase> RecoverProduction(Guid Id, AppUser user);
+        Task<RepoBase> DeleteProduction(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllProduction(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllProduction(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region  Sales Config
+        #region  Sales 
         #region Crud
-        Task<Result<SalesOrderSetup>> GetSalesConfig();
-        Task<RepoBase> CreateSalesConfig(SalesOrderSetupModel data, AppUser user);
-        Task<RepoBase> UpdateSalesConfig(Guid Id, SalesOrderSetupModel data, AppUser user);
-        Task<RepoBase> RemoveSalesConfig(Guid Id, AppUser user);
+        Task<Result<SalesOrderSetup>> GetSales();
+        Task<RepoBase> CreateSales(SalesOrderSetupModel data, AppUser user);
+        Task<RepoBase> UpdateSales(Guid Id, SalesOrderSetupModel data, AppUser user);
+        Task<RepoBase> RemoveSales(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<SalesOrderSetup>> GetRemovedSalesConfig();
-        Task<RepoBase> RecoverSalesConfig(Guid Id, AppUser user);
-        Task<RepoBase> DeleteSalesConfig(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllSalesConfig(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllSalesConfig(List<string> Ids, AppUser user);
+        Task<Result<SalesOrderSetup>> GetRemovedSales();
+        Task<RepoBase> RecoverSales(Guid Id, AppUser user);
+        Task<RepoBase> DeleteSales(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllSales(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllSales(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Labour Rate Configration
+        #region Labour Rate
         #region Crud
         Task<Result<LabourRate>> GetAllLabourRates();
         Task<RepoBase> CreateLabourRate(LabourRateModel data, AppUser user);
@@ -159,7 +163,7 @@ namespace FMS.Repo.AdminSetting
         Task<RepoBase> DeleteAllLabourRate(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region Account Configuration
+        #region Account 
         #region Group
         Task<Result<LedgerGroup>> GetGroups();
         #endregion

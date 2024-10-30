@@ -28,7 +28,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             if (Regex.IsMatch(Token, pattern))
             {
                 var result = await _authenticationSvcs.ValidateToken(Token);
-                return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
@@ -76,7 +76,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             if (!string.IsNullOrEmpty(email))
             {
                 var result = await _authenticationSvcs.ResendConfirmEmail(email, routeUrl);
-                return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             return BadRequest();
         }
@@ -126,6 +126,16 @@ namespace FMS.Server.Controllers.Account.Authentication
             }
             return BadRequest();
         }
+        [HttpGet, AllowAnonymous]
+        public async Task<IActionResult> ReSendTwoFactorToken([FromQuery] string mail)
+        {
+            if (!string.IsNullOrEmpty(mail))
+            {
+                var result = await _authenticationSvcs.ReSendTwoFactorToken(mail);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest();
+        }
         #endregion
         #region ThiredParty SignIn
         #endregion
@@ -167,7 +177,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             if (!string.IsNullOrEmpty(mail) && !string.IsNullOrEmpty(routeUrl))
             {
                 var result = await _authenticationSvcs.ForgotPassword(mail, routeUrl);
-                return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
+                return result.ResponseCode == 200 ? Ok(result) :BadRequest(result);
             }
             return BadRequest();
         }
