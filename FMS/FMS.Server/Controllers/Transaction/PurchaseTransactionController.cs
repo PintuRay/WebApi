@@ -8,7 +8,7 @@ namespace FMS.Server.Controllers.Transaction
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
-    public class ServiceController(ITransactionSvcs transactionSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class PurchaseTransactionController(ITransactionSvcs transactionSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
         private readonly ITransactionSvcs _transactionSvcs = transactionSvcs;
@@ -16,13 +16,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateService([FromBody] LabourOrderModel model)
+        public async Task<IActionResult> CreatePurchaseTransaction([FromBody] PurchaseOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _transactionSvcs.CreateService(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateService), result) : BadRequest(result);
+                var result = await _transactionSvcs.CreatePurchaseTransaction(model, user);
+                return result.ResponseCode == 201 ? Created(nameof(CreatePurchaseTransaction), result) : BadRequest(result);
             }
             else
             {
@@ -31,20 +31,33 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetService()
+        public async Task<IActionResult> GetPurchaseTransactions()
         {
-            var result = await _transactionSvcs.GetService();
+            var result = await _transactionSvcs.GetPurchaseTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
+        [HttpGet, Route("{id}")]
+        public async Task<IActionResult> GetPurchaseTransactionById([FromRoute]Guid Id)
+        {
+            if (Id != Guid.Empty)
+            {
+                var result = await _transactionSvcs.GetPurchaseTransactionById(Id);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Plz Provide Valid Id");
+            }
+        }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateService([FromRoute] Guid id, [FromBody] LabourOrderModel model)
+        public async Task<IActionResult> UpdatePurchaseTransaction([FromRoute] Guid id, [FromBody] PurchaseOrderModel model)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _transactionSvcs.UpdateService(id, model, user);
+                    var result = await _transactionSvcs.UpdatePurchaseTransaction(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -58,13 +71,13 @@ namespace FMS.Server.Controllers.Transaction
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Serviceid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveService([FromRoute] Guid id)
+        [HttpDelete, Route("Purchaseid/{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemovePurchaseTransaction([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _transactionSvcs.RemoveService(id, user);
+                var result = await _transactionSvcs.RemovePurchaseTransaction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -75,20 +88,20 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedService()
+        public async Task<IActionResult> GetRemovedPurchaseTransactions()
         {
-            var result = await _transactionSvcs.GetRemovedService();
+            var result = await _transactionSvcs.GetRemovedPurchaseTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverService([FromRoute] Guid id)
+        public async Task<IActionResult> RecoverPurchaseTransaction([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _transactionSvcs.RecoverService(id, user);
+                    var result = await _transactionSvcs.RecoverPurchaseTransaction(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -103,19 +116,19 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllService([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAllPurchaseTransactions([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _transactionSvcs.RecoverAllService(Ids, user);
+            var result = await _transactionSvcs.RecoverAllPurchaseTransactions(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteService([FromRoute] Guid id)
+        public async Task<IActionResult> DeletePurchaseTransaction([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _transactionSvcs.DeleteService(id, user);
+                var result = await _transactionSvcs.DeletePurchaseTransaction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -124,10 +137,10 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllService([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAllPurchaseTransactions([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _transactionSvcs.DeleteAllService(Ids, user);
+            var result = await _transactionSvcs.DeleteAllPurchaseTransactions(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

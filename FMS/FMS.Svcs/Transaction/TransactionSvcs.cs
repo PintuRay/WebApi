@@ -14,45 +14,45 @@ namespace FMS.Svcs.Transaction
             throw new NotImplementedException(); 
         }
         #region Crud
-        public async Task<SvcsBase> GetPurchases()
+        public async Task<SvcsBase> GetPurchaseTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetPurchaseById(Guid Id)
+        public async Task<SvcsBase> GetPurchaseTransactionById(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreatePurchase(PurchaseOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreatePurchaseTransaction(PurchaseOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdatePurchase(Guid Id, PurchaseOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdatePurchaseTransaction(Guid Id, PurchaseOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemovePurchase(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemovePurchaseTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedPurchase()
+        public async Task<SvcsBase> GetRemovedPurchaseTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverPurchase(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverPurchaseTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeletePurchase(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeletePurchaseTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllPurchase(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllPurchaseTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllPurchase(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllPurchaseTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
@@ -64,387 +64,387 @@ namespace FMS.Svcs.Transaction
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> GetPurchaseReturns()
+        public async Task<SvcsBase> GetPurchaseReturnTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetPurchaseReturnById(Guid Id)
+        public async Task<SvcsBase> GetPurchaseReturnTransactionById(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreatetPurchaseReturn(PurchaseReturnOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreatetPurchaseReturnTransaction(PurchaseReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdatetPurchaseReturn(Guid Id, PurchaseReturnOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdatetPurchaseReturnTransaction(Guid Id, PurchaseReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemovePurchaseReturn(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemovePurchaseReturnTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedPurchaseReturn()
+        public async Task<SvcsBase> GetRemovedPurchaseReturnTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverPurchaseReturn(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverPurchaseReturnTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeletePurchaseReturn(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeletePurchaseReturnTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllPurchaseReturn(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllPurchaseReturnTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllPurchaseReturn(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllPurchaseReturnTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
         #region Production
-        public async Task<SvcsBase> GetLastProductionNo()
+        public async Task<SvcsBase> GetLastProductionTransactionNo()
         {
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> GetProduction()
+        public async Task<SvcsBase> GetProductionTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateProduction(LabourOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateProductionTransaction(LabourOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateProduction(Guid Id, LabourOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdateProductionTransaction(Guid Id, LabourOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemoveProduction(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveProductionTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedProduction()
+        public async Task<SvcsBase> GetRemovedProductionTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverProduction(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverProductionTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteProduction(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteProductionTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllProduction(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllProductionTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllProduction(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllProductionTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
         #region Service
-        public async Task<SvcsBase> GetLastServiceNo()
+        public async Task<SvcsBase> GetLastServiceTransactionNo()
         {
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> GetService()
+        public async Task<SvcsBase> GetServiceTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateService(LabourOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateServiceTransaction(LabourOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateService(Guid Id, LabourOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdateServiceTransaction(Guid Id, LabourOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemoveService(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveServiceTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedService()
+        public async Task<SvcsBase> GetRemovedServiceTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverService(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverServiceTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteService(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteServiceTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllService(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllServiceTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllService(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllServiceTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
         #region Sales
-        public async Task<SvcsBase> GetLastSalesTransactionNo()
+        public async Task<SvcsBase> GetLastSaleTransactionNo()
         {
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> CreateSale(SalesOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateSaleTransaction(SalesOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetSales()
+        public async Task<SvcsBase> GetSaleTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetSalesById(Guid Id)
+        public async Task<SvcsBase> GetSaleTransactionById(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdatSales(Guid Id, SalesOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdatSaleTransaction(Guid Id, SalesOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemoveSales(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveSaleTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedSale()
+        public async Task<SvcsBase> GetRemovedSaleTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverSale(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverSaleTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteSale(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteSaleTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllSale(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllSaleTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllSale(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllSaleTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
         #region Sales Return
-        public async Task<SvcsBase> GetLastSalesReturnTransactionNo()
+        public async Task<SvcsBase> GetLastSaleReturnTransactionNo()
         {
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> CreateSalesReturn(SalesReturnOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateSaleReturnTransaction(SalesReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetSalesReturns()
+        public async Task<SvcsBase> GetSaleReturnsTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetSalesReturnById(Guid Id)
+        public async Task<SvcsBase> GetSaleReturnTransactionById(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateSalesReturn(Guid Id, SalesReturnOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdateSaleReturnTransaction(Guid Id, SalesReturnOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemoveSalesReturn(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveSaleReturnTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedSalesReturn()
+        public async Task<SvcsBase> GetRemovedSaleReturnTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverSalesReturn(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverSaleReturnTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteSalesReturn(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteSaleReturnTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllSalesReturn(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllSaleReturnTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllSalesReturn(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllSaleReturnTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
         #region Inward Supply    
-        public async Task<SvcsBase> GetLastInwardSupplyNo()
+        public async Task<SvcsBase> GetLastInwardSupplyTransactionNo()
         {
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> GetInwardSupply()
+        public async Task<SvcsBase> GetInwardSupplyTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetInwardSupplyById(Guid Id)
+        public async Task<SvcsBase> GetInwardSupplyTransactionById(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateInwardSupply(InwardSupplyOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateInwardSupplyTransaction(InwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateInwardSupply(Guid Id, InwardSupplyOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdateInwardSupplyTransaction(Guid Id, InwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemoveInwardSupply(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveInwardSupplyTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedInwardSupply()
+        public async Task<SvcsBase> GetRemovedInwardSupplyTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverInwardSupply(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverInwardSupplyTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteInwardSupply(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteInwardSupplyTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllInwardSupply(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllInwardSupplyTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllInwardSupply(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllInwardSupplyTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
         #region Outward Supply
-        public async Task<SvcsBase> GetLastOutwardSupplyNo()
+        public async Task<SvcsBase> GetLastOutwardSupplyTransactionNo()
         {
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> GetOutwardSupply()
+        public async Task<SvcsBase> GetOutwardSupplyTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetOutwardSupplyById(Guid Id)
+        public async Task<SvcsBase> GetOutwardSupplyTransactionById(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateOutwardSupply(OutwardSupplyOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateOutwardSupplyTransaction(OutwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateOutwardSupply(Guid Id, OutwardSupplyOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdateOutwardSupplyTransaction(Guid Id, OutwardSupplyOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemoveOutwardSupply(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveOutwardSupplyTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedOutwardSupply()
+        public async Task<SvcsBase> GetRemovedOutwardSupplyTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverOutwardSupply(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverOutwardSupplyTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteOutwardSupply(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteOutwardSupplyTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllOutwardSupply(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllOutwardSupplyTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllOutwardSupply(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllOutwardSupplyTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #endregion
         #region Damage
-        public async Task<SvcsBase> GetLastDamageEntryNo()
+        public async Task<SvcsBase> GetLastDamageEntryTransactionNo()
         {
             throw new NotImplementedException();
         }
         #region Crud
-        public async Task<SvcsBase> GetDamages()
+        public async Task<SvcsBase> GetDamagesTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> GetDamageById(Guid Id)
+        public async Task<SvcsBase> GetDamageTransactionById(Guid Id)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> CreateDamage(DamageOrderModel data, AppUser user)
+        public async Task<SvcsBase> CreateDamageTransaction(DamageOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateDamage(Guid Id, DamageOrderModel data, AppUser user)
+        public async Task<SvcsBase> UpdateDamageTransaction(Guid Id, DamageOrderModel data, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RemoveDamage(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveDamageTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedDamage()
+        public async Task<SvcsBase> GetRemovedDamageTransactions()
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverDamage(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverDamageTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteDamage(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteDamageTransaction(Guid Id, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> RecoverAllDamage(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllDamageTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> DeleteAllDamage(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllDamageTransactions(List<string> Ids, AppUser user)
         {
             throw new NotImplementedException();
         }
