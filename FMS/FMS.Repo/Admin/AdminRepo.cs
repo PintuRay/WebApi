@@ -12,7 +12,7 @@ namespace FMS.Repo.Admin
         private readonly IMapper _mapper = mapper;
         #endregion
         #region Generate SignUp Token
-        public async Task<RepoBase> CreateToken(RegisterTokenModel model)
+        public async Task<RepoBase> CreateToken(RegisterTokenModel model, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -22,6 +22,8 @@ namespace FMS.Repo.Admin
                 if (isExistToken == null)
                 {
                     var regToken = _mapper.Map<RegisterToken>(model);
+                    regToken.CreatedBy = user.Id;
+                    regToken.CreatedDate = DateTime.Now;
                     await _ctx.RegisterTokens.AddAsync(regToken);
                     int Count = await _ctx.SaveChangesAsync();
                     _Result.Count = Count.ToString();

@@ -35,6 +35,16 @@ namespace FMS.Server.Controllers.Account.Authentication
                 return BadRequest("Invalid Token Format : Correct format : xxx-xxx-xxxx");
             }
         }
+        [HttpGet, AllowAnonymous]
+        public async Task<IActionResult> IsEmailInUse([FromQuery] string email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                var result = await _authenticationSvcs.IsEmailInUse(email);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest();
+        }
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> SignUp([FromBody] RegisterModel model)
         {
@@ -49,16 +59,7 @@ namespace FMS.Server.Controllers.Account.Authentication
                 return BadRequest(errors);
             }
         }
-        [HttpGet, AllowAnonymous]
-        public async Task<IActionResult> IsEmailInUse([FromQuery] string email)
-        {
-            if (!string.IsNullOrEmpty(email))
-            {
-                var result = await _authenticationSvcs.IsEmailInUse(email);
-                return Ok(result);
-            }
-            return BadRequest();
-        }
+  
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> VerifyConfirmEmail([FromQuery] string uid, [FromQuery] string token)
         {

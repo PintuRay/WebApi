@@ -13,12 +13,12 @@ namespace FMS.Svcs.Admin
 
         #endregion
         #region Generate SignUp Token
-        public async Task<SvcsBase> CreateToken(RegisterTokenModel Token)
+        public async Task<SvcsBase> CreateToken(RegisterTokenModel Token, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.CreateToken(Token);
+                var repoResult = await _adminRepo.CreateToken(Token, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()

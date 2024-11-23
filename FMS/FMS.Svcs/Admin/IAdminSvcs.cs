@@ -6,7 +6,7 @@ namespace FMS.Svcs.Admin
     {
        
         #region Generate SignUp Token
-        Task<SvcsBase> CreateToken(RegisterTokenModel Token);
+        Task<SvcsBase> CreateToken(RegisterTokenModel Token, AppUser user);
         #endregion
         #region Company
         #region Crud

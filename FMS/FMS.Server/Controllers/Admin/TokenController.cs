@@ -19,7 +19,8 @@ namespace FMS.Server.Controllers.Admin
         {
             if (ModelState.IsValid)
             {
-                var result = await _adminSvcs.CreateToken(model);
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _adminSvcs.CreateToken(model , user);
                 return result.ResponseCode == 201 ? Created(nameof(GenerateRegistationToken), result) : BadRequest(result);
             }
             else

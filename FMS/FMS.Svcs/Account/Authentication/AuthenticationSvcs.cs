@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Twilio.Jwt.AccessToken;
 
 namespace FMS.Svcs.Account.Authentication
 {
@@ -82,7 +81,7 @@ namespace FMS.Svcs.Account.Authentication
                 {
                     Data = user,
                     Message = $"Mail '{email}' Already In Use",
-                    ResponseCode = (int)ResponseCode.Status.Ok,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
             }
             else
@@ -90,7 +89,7 @@ namespace FMS.Svcs.Account.Authentication
                 Obj = new()
                 {
                     Message = $"No Such Mail '{email}' Exist",
-                    ResponseCode = (int)ResponseCode.Status.NotFound,
+                    ResponseCode = (int)ResponseCode.Status.Ok,
                 };
             }
             return Obj;
@@ -385,34 +384,43 @@ namespace FMS.Svcs.Account.Authentication
                 var user = await _userManager.FindByEmailAsync(mail); ;
                 if (user != null)
                 {
-                    var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    if (!string.IsNullOrEmpty(regToken))
+                    if (!user.EmailConfirmed)
                     {
-                        //string apiDomain = _configuration.GetSection("Application:ApiDomain").Value;
-                        //string confirmationLink = _configuration.GetSection("Application:EmailConfirmation").Value;
-                        UserEmailOptions options = new()
+                        var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        if (!string.IsNullOrEmpty(regToken))
                         {
-                            ToEmail = mail,
-                            PlaceHolders =
-                            [
-                                    new("{{UserName}}", user.Name),
-                                    new("{{Link}}", string.Format(RouteUrl.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(regToken))))
-                            ]
-                        };
-                        isEmailSend = await _emailSvcs.SendConfirmationEmail(options);
-                        if (isEmailSend)
-                        {
-                            Obj = new()
+                            UserEmailOptions options = new()
                             {
-                                Message = "We send a Confomation mail to your registed mail",
-                                ResponseCode = (int)ResponseCode.Status.Ok,
+                                ToEmail = mail,
+                                PlaceHolders =
+                                [
+                                        new("{{UserName}}", user.Name),
+                                    new("{{Link}}", string.Format(RouteUrl.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(regToken))))
+                                ]
                             };
+                            isEmailSend = await _emailSvcs.SendConfirmationEmail(options);
+                            if (isEmailSend)
+                            {
+                                Obj = new()
+                                {
+                                    Message = "We send a Confomation mail to your registed mail",
+                                    ResponseCode = (int)ResponseCode.Status.Ok,
+                                };
+                            }
+                            else
+                            {
+                                Obj = new()
+                                {
+                                    Message = $"Failed To Send ConfirmMail To Your Provided Mail {mail} ",
+                                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                                };
+                            }
                         }
                         else
                         {
                             Obj = new()
                             {
-                                Message = $"Failed To Send ConfirmMail To Your Provided Mail {mail} ",
+                                Message = "Failed To Generate Email Conformation Token",
                                 ResponseCode = (int)ResponseCode.Status.BadRequest,
                             };
                         }
@@ -421,7 +429,7 @@ namespace FMS.Svcs.Account.Authentication
                     {
                         Obj = new()
                         {
-                            Message = "Failed To Generate Email Conformation Token",
+                            Message = $"Your Email '{mail}' Already Confirmed",
                             ResponseCode = (int)ResponseCode.Status.BadRequest,
                         };
                     }
@@ -698,7 +706,7 @@ namespace FMS.Svcs.Account.Authentication
                     {
                         Obj = new()
                         {
-                            Message = "Token Expired",
+                            Message = "Token Expired or Invalid Token",
                             ResponseCode = (int)ResponseCode.Status.BadRequest,
                         };
                     }
