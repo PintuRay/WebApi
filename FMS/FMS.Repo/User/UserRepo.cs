@@ -40,36 +40,6 @@ namespace FMS.Repo.User
         public async Task <RepoBase> DeleteAllLabourDetails(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
         #endregion
         #endregion
-        #region State
-        #region Crud
-        public async Task <Result<State>> GetStates(){ throw new NotImplementedException(); }
-        public async Task <RepoBase> CreateState(StateModel data, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> UpdateState(Guid Id, StateModel data, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> RemoveState(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        #endregion
-        #region Recover
-        public async Task <Result<State>> GetRemovedStates(){ throw new NotImplementedException(); }
-        public async Task <RepoBase> RecoverState(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> DeleteState(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> RecoverAllStates(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> DeleteAllStates(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
-        #endregion
-        #endregion
-        #region City
-        #region Crud
-        public async Task <Result<City>> GetCities(Guid Id){ throw new NotImplementedException(); }
-        public async Task <RepoBase> CreateCity(CityModel data, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> UpdateCity(Guid Id, CityModel data, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> RemoveCity(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        #endregion
-        #region Recover
-        public async Task <Result<City>> GetRemovedCity(){ throw new NotImplementedException(); }
-        public async Task <RepoBase> RecoverCity(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> DeleteCity(Guid Id, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> RecoverAllCity(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
-        public async Task <RepoBase> DeleteAllCity(List<string> Ids, AppUser user){ throw new NotImplementedException(); }
-        #endregion
-        #endregion
         #region Party Details
         #region Crud
         public async Task <Result<Party>> GetParties(){ throw new NotImplementedException(); }

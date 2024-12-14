@@ -1,22 +1,24 @@
 ﻿using FMS.Db.Entity;
-using FMS.Repo.Devloper;
+using FMS.Repo.Common;
+using FMS.Svcs.CommonSvcs;
 using FMS.Svcs.Email;
-namespace FMS.Svcs.Devloper
+
+namespace FMS.Svcs.Common
 {
-    public class DevloperSvcs(IDevloperRepo devloperRepo, IEmailSvcs emailSvc)  : IDevloperSvcs
+    public  class CommonSvcs(ICommonRepo commonRepo,IEmailSvcs emailSvc) :ICommonSvcs
     {
         #region Dependancy
-        private readonly IDevloperRepo _devloperRepo = devloperRepo;
+        private readonly ICommonRepo _commonRepo = commonRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
-        #region Branch
+        #region Country
         #region Crud
-        public async Task<SvcsBase> GetAllBranch()
+        public async Task<SvcsBase> GetCountries()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.GetAllBranch();
+                var repoResult = await _commonRepo.GetCountries();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -38,27 +40,27 @@ namespace FMS.Svcs.Devloper
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAllBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetCountries", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateBranch(BranchModel data, AppUser user)
+        public async Task<SvcsBase> CreateCountry(CountryModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.CreateBranch(data, user);
+                var repoResult = await _commonRepo.CreateCountry(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Created Successfully",
+                        Message = "Country Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"Country '{data.CountryName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -67,30 +69,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateBranch(Guid Id, BranchModel data, AppUser user)
+        public async Task<SvcsBase> UpdateCountry(Guid Id, CountryModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.UpdateBranch(Id, data, user);
+                var repoResult = await _commonRepo.UpdateCountry(Id, data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Updated Successfully",
+                        Message = "Country Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CountryId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -99,30 +101,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveBranch(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveCountry(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RemoveBranch(Id, user);
+                var repoResult = await _commonRepo.RemoveCountry(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Removed Successfully",
+                        Message = "Country Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CountryId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -131,21 +133,21 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveCountry", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedBranches()
+        public async Task<SvcsBase> GetRemovedCountries()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.GetRemovedBranches();
+                var repoResult = await _commonRepo.GetRemovedCountries();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -164,30 +166,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedBranches", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedCountries", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverBranch(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverCountry(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RecoverBranch(Id, user);
+                var repoResult = await _commonRepo.RecoverCountry(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Recovered Successfully",
+                        Message = "Country Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CountryId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -196,30 +198,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteBranch(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteCountry(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.DeleteBranch(Id, user);
+                var repoResult = await _commonRepo.DeleteCountry(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Deleted Successfully",
+                        Message = "Country Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CountryId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -228,30 +230,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllBranch(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllCountry(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RecoverAllBranch(Ids, user);
+                var repoResult = await _commonRepo.RecoverAllCountry(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branches Recovered Successfully",
+                        Message = "Countries Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover Countries",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -260,30 +262,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllBranch(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllCountry(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.DeleteAllBranch(Ids, user);
+                var repoResult = await _commonRepo.DeleteAllCountry(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branches Deleted Successfully",
+                        Message = "Country Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete Country",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -292,23 +294,23 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllCountry", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
-        #region Financial Year
+        #region State
         #region Crud
-        public async Task<SvcsBase> GetFinancialYears()
+        public async Task<SvcsBase> GetStates(Guid CountryId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.GetFinancialYears();
+                var repoResult = await _commonRepo.GetStates(CountryId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -327,30 +329,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetStates", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateFinancialYear(FinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> CreateState(StateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.CreateFinancialYear(data, user);
+                var repoResult = await _commonRepo.CreateState(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Year Created Successfully",
+                        Message = "State Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        Message = $"Financial Year {data.Financial_Year} Already Exist",
+                        Message = $"State '{data.StateName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -359,30 +361,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> UpdateState(Guid Id, StateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.UpdateFinancialYear(Id, data, user);
+                var repoResult = await _commonRepo.UpdateState(Id, data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Year Updated Successfully",
+                        Message = "State Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Financial Year '{Id}' Not Found",
+                        Message = $"StateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -391,30 +393,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveState(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RemoveFinancialYear(Id, user);
+                var repoResult = await _commonRepo.RemoveState(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Year Removed Successfully",
+                        Message = "State Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"FinancialYear Id '{Id}' Not Found",
+                        Message = $"StateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -423,21 +425,21 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveState", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedFinancialYears()
+        public async Task<SvcsBase> GetRemovedStates()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.GetRemovedFinancialYears();
+                var repoResult = await _commonRepo.GetRemovedStates();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -456,30 +458,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedStates", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverState(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RecoverFinancialYear(Id, user);
+                var repoResult = await _commonRepo.RecoverState(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Year Recovered Successfully",
+                        Message = "State Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"FinancialYear Id '{Id}' Not Found",
+                        Message = $"StateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -488,30 +490,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteState(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.DeleteFinancialYear(Id, user);
+                var repoResult = await _commonRepo.DeleteState(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Year Deleted Successfully",
+                        Message = "State Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Financial Year",
+                        Message = $"StateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -520,30 +522,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllStates(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RecoverAllFinancialYear(Ids, user);
+                var repoResult = await _commonRepo.RecoverAllStates(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Years Recovered Successfully",
+                        Message = "States Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Financial Years",
+                        Message = "Failed To Recover States",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -552,30 +554,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllStates", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllStates(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.DeleteAllFinancialYear(Ids, user);
+                var repoResult = await _commonRepo.DeleteAllStates(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Years Deleted Successfully",
+                        Message = "States Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Financial Years",
+                        Message = "Failed To Delete States",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -584,23 +586,23 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllStates", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #endregion
-        #region Branch Financial Year
+        #region Dist
         #region Crud
-        public async Task<SvcsBase> GetBranchFinancialYears()
+        public async Task<SvcsBase> GetDists(Guid Id)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.GetBranchFinancialYears();
+                var repoResult = await _commonRepo.GetDists(Id);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -619,61 +621,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetDists", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> GetBranchFinancialYears(Guid BranchId)
+        public async Task<SvcsBase> CreateDist(DistModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.GetBranchFinancialYears(BranchId);
+                var repoResult = await _commonRepo.CreateDist(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                     Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> CreateBranchFinancialYear(BranchFinancialYearModel data, AppUser user)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var repoResult = await _devloperRepo.CreateBranchFinancialYear(data, user);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        Message = "Branch FinancialYear Created Successfully",
+                        Message = "Dist Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        Message = $"Branch FinancialYear Already Exist",
+                        Message = $"Dist '{data.DistName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -682,30 +653,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateBranchFinancialYear(Guid Id, BranchFinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> UpdateDist(Guid Id, DistModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.UpdateBranchFinancialYear(Id, data, user);
+                var repoResult = await _commonRepo.UpdateDist(Id, data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYear Updated Successfully",
+                        Message = "Dist Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' Not Found",
+                        Message = $"DistId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -714,30 +685,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveDist(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RemoveBranchFinancialYear(Id, user);
+                var repoResult = await _commonRepo.RemoveDist(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYear Removed Successfully",
+                        Message = "Dist Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' Not Found",
+                        Message = $"DistId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -746,21 +717,21 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveDist", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedBranchFinancialYears()
+        public async Task<SvcsBase> GetRemovedDists()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.GetRemovedBranchFinancialYears();
+                var repoResult = await _commonRepo.GetRemovedDists();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -779,30 +750,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedDists", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverDist(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RecoverBranchFinancialYear(Id, user);
+                var repoResult = await _commonRepo.RecoverDist(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYear Recovered Successfully",
+                        Message = "Dist Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' Not Found",
+                        Message = $"DistId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -811,30 +782,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteDist(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.DeleteBranchFinancialYear(Id, user);
+                var repoResult = await _commonRepo.DeleteDist(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Financial Year Deleted Successfully",
+                        Message = "Dist Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' Not Found",
+                        Message = $"DistId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -843,30 +814,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllDists(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.RecoverAllBranchFinancialYear(Ids, user);
+                var repoResult = await _commonRepo.RecoverAllDist(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYears Recovered Successfully",
+                        Message = "Dists Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch FinancialYears",
+                        Message = "Failed To Recover Dists",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -875,30 +846,30 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllDists", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllDists(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _devloperRepo.DeleteAllBranchFinancialYear(Ids, user);
+                var repoResult = await _commonRepo.DeleteAllDist(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYears Deleted Successfully",
+                        Message = "Dists Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch Financial Years",
+                        Message = "Failed To Delete Dists",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -907,10 +878,10 @@ namespace FMS.Svcs.Devloper
             {
                 Obj = new()
                 {
-                     Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllDists", _Exception.ToString());
             }
             return Obj;
         }

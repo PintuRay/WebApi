@@ -59,7 +59,6 @@ namespace FMS.Server.Controllers.Account.Authentication
                 return BadRequest(errors);
             }
         }
-  
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> VerifyConfirmEmail([FromQuery] string uid, [FromQuery] string token)
         {
@@ -70,7 +69,6 @@ namespace FMS.Server.Controllers.Account.Authentication
             }
             return BadRequest();
         }
-
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> ResendConfirmEmail([FromQuery] string email, [FromQuery] string routeUrl)
         {
@@ -178,7 +176,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             if (!string.IsNullOrEmpty(mail) && !string.IsNullOrEmpty(routeUrl))
             {
                 var result = await _authenticationSvcs.ForgotPassword(mail, routeUrl);
-                return result.ResponseCode == 200 ? Ok(result) :BadRequest(result);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             return BadRequest();
         }
@@ -217,6 +215,14 @@ namespace FMS.Server.Controllers.Account.Authentication
                 var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
                 return BadRequest(errors);
             }
+        }
+        #endregion
+        #region LogOut
+        [HttpGet, Authorize]
+        public IActionResult LogOut()
+        {
+            var result = _authenticationSvcs.LogOut();
+            return Ok(result);
         }
         #endregion
     }

@@ -23,8 +23,9 @@ namespace FMS.Db.Entity
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Country Country { get; set; }
         public State State { get; set; }
-        public City City { get; set; }
+        public Dist City { get; set; }
         public LedgerDev LedgerDev { get; set; }
         public SubLedger SubLedger { get; set; }
     }
@@ -51,6 +52,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyDate).HasColumnType("datetime");
             builder.HasOne(p => p.LedgerDev).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_PartyType).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(p => p.SubLedger).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_SubledgerId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(p => p.Country).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_StateId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(p => p.State).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_StateId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(p => p.City).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_CityId).OnDelete(DeleteBehavior.Restrict);
         }

@@ -47,8 +47,10 @@ namespace FMS.Db
         public DbSet<SubLedger> SubLedgers { get; set; }
         public DbSet<SubLedgerBalance> SubLedgerBalances { get; set; }
         public DbSet<Party> Parties { get; set; }
+       public DbSet<Address> Addresses { get; set; }
+        public DbSet<Country> Countries { get; set; }
         public DbSet<State> States { get; set; }
-        public DbSet<City> Cities { get; set; }
+        public DbSet<Dist> Dists { get; set; }
         public DbSet<JournalOrder> JournalOrders { get; set; }
         public DbSet<JournalTransaction> JournalTransactions { get; set; }
         public DbSet<PaymentOrder> PaymentOrders { get; set; }
@@ -87,6 +89,11 @@ namespace FMS.Db
             new AppUserRoleConfig().Configure(modelBuilder.Entity<AppUserRole>());
             new AppUserClaimConfig().Configure(modelBuilder.Entity<AppUserClaim>());
             new UserBranchConfig().Configure(modelBuilder.Entity<UserBranch>());
+            /*----------------------------------Address-------------------------------------*/
+            new AddressConfig().Configure(modelBuilder.Entity<Address>());
+            new CountryConfig().Configure(modelBuilder.Entity<Country>());
+            new StateConfig().Configure(modelBuilder.Entity<State>());
+            new CityConfig().Configure(modelBuilder.Entity<Dist>());
             /*------------------------------Company--------------------------------------*/
             new CompanyConfig().Configure(modelBuilder.Entity<Company>());
             /*------------------------------product---------------------------*/
@@ -130,8 +137,6 @@ namespace FMS.Db
             new SubLedgerBalanceConfig().Configure(modelBuilder.Entity<SubLedgerBalance>());
             /*-----------------------------------Party----------------------------------*/
             new PartyConfig().Configure(modelBuilder.Entity<Party>());
-            new StateConfig().Configure(modelBuilder.Entity<State>());
-            new CityConfig().Configure(modelBuilder.Entity<City>());
             //Purchase & Purchase Return
             new PurchaseOrderConfig().Configure(modelBuilder.Entity<PurchaseOrder>());
             new PurchaseTransactionConfig().Configure(modelBuilder.Entity<PurchaseTransaction>());          

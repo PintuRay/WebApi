@@ -105,57 +105,69 @@ namespace FMS.Svcs.Account.Authentication
                 var identity = await _userManager.CreateAsync(user, data.Password);
                 if (identity.Succeeded)
                 {
-                    var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    if (!string.IsNullOrEmpty(regToken))
+                   var repoResult = await _authenticationRepo.CreateUserAdress(data.Address , user);
+                    if (repoResult.IsSucess)
                     {
-                        UserEmailOptions options = new()
+                        var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        if (!string.IsNullOrEmpty(regToken))
                         {
-                            ToEmail = data.Email,
-                            PlaceHolders = new List<KeyValuePair<string, string>>()
+                            UserEmailOptions options = new()
+                            {
+                                ToEmail = data.Email,
+                                PlaceHolders = new List<KeyValuePair<string, string>>()
                                 {
                                     new KeyValuePair<string, string>("{{UserName}}", data.Name),
                                     new KeyValuePair<string, string>("{{Link}}", data.RouteUls.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(regToken)))
                                 }
-                        };
-                        isMailSend = await _emailSvcs.SendConfirmationEmail(options);
-                        if (isMailSend)
-                        {
-                            #region Assign Default Role : Devloper to first registrar; rest is user
-                            if (_userManager.Users.Count() == 1)
+                            };
+                            isMailSend = await _emailSvcs.SendConfirmationEmail(options);
+                            if (isMailSend)
                             {
-                                var checkDevloper = await _roleManager.FindByNameAsync("Devloper");
-                                if (checkDevloper is null)
+                                #region Assign Default Role : Devloper to first registrar; rest is user
+                                if (_userManager.Users.Count() == 1)
                                 {
-                                    await _roleManager.CreateAsync(new AppRole() { Name = "Devloper" });
+                                    var checkDevloper = await _roleManager.FindByNameAsync("Devloper");
+                                    if (checkDevloper is null)
+                                    {
+                                        await _roleManager.CreateAsync(new AppRole() { Name = "Devloper" });
+                                    }
+                                    await _userManager.AddToRoleAsync(user, "Devloper");
+                                    await _userManager.AddClaimsAsync(user, ClaimsStoreModel.AllClaims);
                                 }
-                                await _userManager.AddToRoleAsync(user, "Devloper");
-                                await _userManager.AddClaimsAsync(user, ClaimsStoreModel.AllClaims);
+                                else
+                                {
+                                    var checkUser = await _roleManager.FindByNameAsync("User");
+                                    if (checkUser is null)
+                                    {
+                                        await _roleManager.CreateAsync(new AppRole() { Name = "User" });
+                                    }
+                                    await _userManager.AddToRoleAsync(user, "User");
+                                    await _userManager.AddClaimsAsync(user, ClaimsStoreModel.AllClaims);
+                                }
+                                #endregion
+                                Obj = new()
+                                {
+                                    Data = new { Id = user.Id },
+                                    Message = "Registraion Successful, We Send A Comfomation Mail To Your Account",
+                                    ResponseCode = (int)ResponseCode.Status.Created
+                                };
                             }
                             else
                             {
-                                var checkUser = await _roleManager.FindByNameAsync("User");
-                                if (checkUser is null)
+                                Obj = new()
                                 {
-                                    await _roleManager.CreateAsync(new AppRole() { Name = "User" });
-                                }
-                                await _userManager.AddToRoleAsync(user, "User");
-                                await _userManager.AddClaimsAsync(user, ClaimsStoreModel.AllClaims);
+                                    Data = new { Id = user.Id },
+                                    Message = $"Account Created But Failed To Send ConfirmMail To Your Provided Mail {data.Email} ",
+                                    ResponseCode = (int)ResponseCode.Status.Created,
+                                };
                             }
-                            #endregion
-                            Obj = new()
-                            {
-                                Data = new { Id = user.Id },
-                                Message = "Registraion Successful, We Send A Comfomation Mail To Your Account",
-                                ResponseCode = (int)ResponseCode.Status.Created
-                            };
                         }
                         else
                         {
                             Obj = new()
                             {
-                                Data = new { Id = user.Id },
-                                Message = $"Account Created But Failed To Send ConfirmMail To Your Provided Mail {data.Email} ",
-                                ResponseCode = (int)ResponseCode.Status.Created,
+                                Message = "Failed To Generate Email Conformation Token",
+                                ResponseCode = (int)ResponseCode.Status.BadRequest,
                             };
                         }
                     }
@@ -163,7 +175,7 @@ namespace FMS.Svcs.Account.Authentication
                     {
                         Obj = new()
                         {
-                            Message = "Failed To Generate Email Conformation Token",
+                            Message = "Registration Failed",
                             ResponseCode = (int)ResponseCode.Status.BadRequest,
                         };
                     }
@@ -226,8 +238,8 @@ namespace FMS.Svcs.Account.Authentication
                                 {
                                     #region Caching
                                     var tokenGenerationTime = DateTime.UtcNow;
-                                    var tokenCacheKey = $"TwoFactorToken_{user.Id}";
-                                    var tokenTimeCacheKey = $"TokenGenerationTime_{user.Id}";
+                                    var tokenCacheKey = $"TwoFactorToken_{code}";
+                                    var tokenTimeCacheKey = $"TokenGenerationTime_{code}";
                                     _cache.Remove(tokenCacheKey);
                                     _cache.Remove(tokenTimeCacheKey);
                                     _cache.Set(tokenCacheKey, code);
@@ -675,12 +687,14 @@ namespace FMS.Svcs.Account.Authentication
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-                    var tokenCacheKey = $"TwoFactorToken_{user.Id}";
-                    var tokenTimeCacheKey = $"TokenGenerationTime_{user.Id}";
+                    var tokenCacheKey = $"TwoFactorToken_{model.OTP}";
+                    var tokenTimeCacheKey = $"TokenGenerationTime_{model.OTP}";
                     var tokenGenerationTime = _cache.Get<DateTime>(tokenTimeCacheKey);
                     var tokenValue = _cache.Get<string>(tokenCacheKey);
                     if (tokenGenerationTime.AddMinutes(3) > DateTime.UtcNow && tokenValue == model.OTP)
                     {
+                        _cache.Remove(tokenCacheKey);
+                        _cache.Remove(tokenTimeCacheKey);
                         var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
                             await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
                         if (result)
@@ -688,7 +702,6 @@ namespace FMS.Svcs.Account.Authentication
                             var JwtToken = await GenerateJwtToken(user);
                             Obj = new()
                             {
-                                Message = "Bearer Token Created Successfully",
                                 ResponseCode = (int)ResponseCode.Status.Ok,
                                 Data = new { JwtToken = JwtToken }
                             };
@@ -756,8 +769,8 @@ namespace FMS.Svcs.Account.Authentication
                     {
                         #region Caching
                         var tokenGenerationTime = DateTime.UtcNow;
-                        var tokenCacheKey = $"TwoFactorToken_{user.Id}";
-                        var tokenTimeCacheKey = $"TokenGenerationTime_{user.Id}";
+                        var tokenCacheKey = $"TwoFactorToken_{code}";
+                        var tokenTimeCacheKey = $"TokenGenerationTime_{code}";
                         _cache.Remove(tokenCacheKey);
                         _cache.Remove(tokenTimeCacheKey);
                         _cache.Set(tokenCacheKey, code);
@@ -925,6 +938,17 @@ namespace FMS.Svcs.Account.Authentication
             return Obj;
         }
         #endregion
-
+        #region LogOut
+        public SvcsBase LogOut()
+        {
+            _cache.Clear();
+            SvcsBase Obj = new()
+            {
+                ResponseCode = (int)ResponseCode.Status.Ok,
+                Message = "Cache cleared"
+            };
+            return Obj;
+        }
+        #endregion
     }
 }

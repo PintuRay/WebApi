@@ -35,36 +35,6 @@ namespace FMS.Svcs.User
         Task<SvcsBase> DeleteAllLabourDetails(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region State
-        #region Crud
-        Task<SvcsBase> GetStates();
-        Task<SvcsBase> CreateState(StateModel data, AppUser user);
-        Task<SvcsBase> UpdateState(Guid Id, StateModel data, AppUser user);
-        Task<SvcsBase> RemoveState(Guid Id, AppUser user);
-        #endregion
-        #region Recover
-        Task<SvcsBase> GetRemovedStates();
-        Task<SvcsBase> RecoverState(Guid Id, AppUser user);
-        Task<SvcsBase> DeleteState(Guid Id, AppUser user);
-        Task<SvcsBase> RecoverAllStates(List<string> Ids, AppUser user);
-        Task<SvcsBase> DeleteAllStates(List<string> Ids, AppUser user);
-        #endregion
-        #endregion
-        #region City
-        #region Crud
-        Task<SvcsBase> GetCities(Guid Id);
-        Task<SvcsBase> CreateCity(CityModel data, AppUser user);
-        Task<SvcsBase> UpdateCity(Guid Id, CityModel data, AppUser user);
-        Task<SvcsBase> RemoveCity(Guid Id, AppUser user);
-        #endregion
-        #region Recover
-        Task<SvcsBase> GetRemovedCity();
-        Task<SvcsBase> RecoverCity(Guid Id, AppUser user);
-        Task<SvcsBase> DeleteCity(Guid Id, AppUser user);
-        Task<SvcsBase> RecoverAllCity(List<string> Ids, AppUser user);
-        Task<SvcsBase> DeleteAllCity(List<string> Ids, AppUser user);
-        #endregion
-        #endregion
         #region Party Details
         #region Crud
         Task<SvcsBase> GetParties();

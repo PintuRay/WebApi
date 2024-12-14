@@ -3,6 +3,7 @@ using FMS.Db;
 using FMS.Db.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Identity.Client;
 using System.Diagnostics.Metrics;
 
 namespace FMS.Repo.Devloper
@@ -26,10 +27,11 @@ namespace FMS.Repo.Devloper
                 var cacheKey = "Branches";
                 var cacheData = _cache.Get<Result<Branch>>(cacheKey);
                 if (cacheData == null) {
-                    var Query = await (from s in _ctx.Branches where s.IsActive == true select s).ToListAsync();
+                    var Query = await (from s in _ctx.Branches where s.IsActive == true select s).OrderBy(s=>s.BranchName).ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
+                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
@@ -54,7 +56,6 @@ namespace FMS.Repo.Devloper
                 var Query = await (from s in _ctx.Branches where s.BranchName == data.BranchName && s.IsActive == true select s).SingleOrDefaultAsync();
                 if (Query == null)
                 {
-                    _cache.Remove("Branches");
                     Branch newBranch = _mapper.Map<Branch>(data);
                     newBranch.CreatedDate = DateTime.UtcNow;
                     newBranch.CreatedBy = user.Name;
@@ -63,7 +64,9 @@ namespace FMS.Repo.Devloper
                     if (Count > 0)
                     {
                         _Result.Id = newBranch.BranchId.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("Branches");
                     }
                 }
             }
@@ -82,7 +85,6 @@ namespace FMS.Repo.Devloper
                 var Query = await (from s in _ctx.Branches where s.BranchId == Id && s.IsActive == true select s).SingleOrDefaultAsync();
                 if (Query != null)
                 {
-                    _cache.Remove("Branches");
                     Branch updateBranch = _mapper.Map(data, Query);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
@@ -90,7 +92,10 @@ namespace FMS.Repo.Devloper
                     _Result.Count = Count.ToString();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("Branches");
                     }
                 }
             }
@@ -109,15 +114,16 @@ namespace FMS.Repo.Devloper
                 var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == true);
                 if (Query != null)
                 {
-                    _cache.Remove("Branches");
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("Branches");
                     }
                 }
             }
@@ -135,11 +141,21 @@ namespace FMS.Repo.Devloper
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.Branches where s.IsActive == false select s).ToListAsync();
-                if (Query.Count > 0)
+                var cacheKey = "RemovedBranches";
+                var cacheData = _cache.Get<Result<Branch>>(cacheKey);
+                if (cacheData == null)
                 {
-                    _Result.CollectionObjData = Query;
-                    _Result.IsSucess = true;
+                    var Query = await (from s in _ctx.Branches where s.IsActive == false select s).OrderBy(s=>s.BranchName).ToListAsync();
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                    }
+                }
+                else
+                {
+                    _Result = cacheData;
                 }
             }
             catch
@@ -157,14 +173,17 @@ namespace FMS.Repo.Devloper
                 var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == false);
                 if (Query != null)
                 {
-                    _cache.Remove("Branches");
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = true;
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("Branches");
+                        _cache.Remove("RemovedBranches");
                     }
                 }
             }
@@ -183,13 +202,15 @@ namespace FMS.Repo.Devloper
                 var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == false);
                 if (Query != null)
                 {
-                    _cache.Remove("Branches");
                     _ctx.Branches.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("Branches");
+                        _cache.Remove("RemovedBranches");
                     }
                 }
             }
@@ -204,25 +225,26 @@ namespace FMS.Repo.Devloper
             RepoBase _Result = new();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var branchIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                var branchToRecover = await _ctx.Branches.Where(x => branchIds.Contains(x.BranchId) && x.IsActive == false).ToListAsync();
+                if (branchToRecover.Any())
                 {
-                    var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    foreach (var branch in branchToRecover)
                     {
-                        _cache.Remove("Branches");
-                        Query.ModifyDate = DateTime.UtcNow;
-                        Query.ModifyBy = user.Name;
-                        Query.IsActive = true;
-                        Count = await _ctx.SaveChangesAsync();
+                        branch.ModifyDate = DateTime.UtcNow;
+                        branch.ModifyBy = user.Name;
+                        branch.IsActive = true;
                     }
-                    Count++;
-                }
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Ids = Ids;
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        _cache.Remove("Branches");
+                        _cache.Remove("RemovedBranches");
+                    }
                 }
             }
             catch
@@ -236,22 +258,21 @@ namespace FMS.Repo.Devloper
             RepoBase _Result = new();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var branchIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                var branchToDelete = await _ctx.Branches.Where(x => branchIds.Contains(x.BranchId) && x.IsActive == false).ToListAsync();
+                if (branchToDelete.Any())
                 {
-                    var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    _ctx.Branches.RemoveRange(branchToDelete);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
                     {
+                        _Result.Ids = Ids;
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
                         _cache.Remove("Branches");
-                        _ctx.Branches.Remove(Query);
-                        Count = await _ctx.SaveChangesAsync();
+                        _cache.Remove("RemovedBranches");
                     }
-                }
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
                 }
             }
             catch
@@ -270,19 +291,29 @@ namespace FMS.Repo.Devloper
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.FinancialYears
-                                   orderby s.StartDate descending
-                                   select new FinancialYear
-                                   {
-                                       FinancialYearId = s.FinancialYearId,
-                                       Financial_Year = s.Financial_Year,
-                                       StartDate = s.StartDate,
-                                       EndDate = s.EndDate,
-                                   }).ToListAsync();
-                if (Query.Count > 0)
+                var cacheKey = "FinancialYears";
+                var cacheData = _cache.Get<Result<FinancialYear>>(cacheKey);
+                if (cacheData == null)
                 {
-                    _Result.CollectionObjData = Query;
-                    _Result.IsSucess = true;
+                    var Query = await (from s in _ctx.FinancialYears
+                                       orderby s.StartDate descending
+                                       select new FinancialYear
+                                       {
+                                           FinancialYearId = s.FinancialYearId,
+                                           Financial_Year = s.Financial_Year,
+                                           StartDate = s.StartDate,
+                                           EndDate = s.EndDate,
+                                       }).OrderByDescending(s=>s.Financial_Year).ToListAsync();
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                    }
+                    else
+                    {
+                        _Result = cacheData;
+                    }
                 }
             }
             catch
@@ -305,11 +336,12 @@ namespace FMS.Repo.Devloper
                     newFinancialYear.CreatedBy = user.Name;
                     await _ctx.FinancialYears.AddAsync(newFinancialYear);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
                     if (Count > 0)
                     {
                         _Result.Id = newFinancialYear.FinancialYearId.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -331,10 +363,13 @@ namespace FMS.Repo.Devloper
                     FinancialYear updateFinancialYear = _mapper.Map(data, Query);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
-                    int count = await _ctx.SaveChangesAsync();
-                    if (count > 0)
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -359,7 +394,10 @@ namespace FMS.Repo.Devloper
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -377,12 +415,22 @@ namespace FMS.Repo.Devloper
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.FinancialYears where s.IsActive == false select s).ToListAsync();
-                if (Query.Count > 0)
+                var cacheKey = "RecoverFinancialYears";
+                var cacheData = _cache.Get<Result<FinancialYear>>(cacheKey);
+                if (cacheData == null)
                 {
-                    _Result.CollectionObjData = Query;
-                    _Result.IsSucess = true;
+                    var Query = await (from s in _ctx.FinancialYears where s.IsActive == false select s).OrderByDescending(s=>s.Financial_Year).ToListAsync();
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                    }
                 }
+                else
+                {
+                    _Result = cacheData;
+                } 
             }
             catch
             {
@@ -405,7 +453,11 @@ namespace FMS.Repo.Devloper
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("FinancialYears");
+                        _cache.Remove("RecoverFinancialYears");
                     }
                 }
             }
@@ -426,10 +478,14 @@ namespace FMS.Repo.Devloper
                 {
                     _ctx.FinancialYears.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
+                    
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("FinancialYears");
+                        _cache.Remove("RecoverFinancialYears");
                     }
                 }
             }
@@ -444,24 +500,26 @@ namespace FMS.Repo.Devloper
             RepoBase _Result = new();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var financialYearIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                var financialYearToRecover = await _ctx.FinancialYears.Where(x => financialYearIds.Contains(x.FinancialYearId) && x.IsActive == false).ToListAsync();
+                if (financialYearToRecover.Any())
                 {
-                    var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(x => x.FinancialYearId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    foreach (var financialyear in financialYearToRecover)
                     {
-                        Query.ModifyDate = DateTime.UtcNow;
-                        Query.ModifyBy = user.Name;
-                        Query.IsActive = true;
-                        Count = await _ctx.SaveChangesAsync();
+                        financialyear.ModifyDate = DateTime.UtcNow;
+                        financialyear.ModifyBy = user.Name;
+                        financialyear.IsActive = true;
                     }
-                    Count++;
-                }
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Ids = Ids;
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        _cache.Remove("FinancialYears");
+                        _cache.Remove("RecoverFinancialYears");
+                    }
                 }
             }
             catch
@@ -475,22 +533,21 @@ namespace FMS.Repo.Devloper
             RepoBase _Result = new();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var financialYearIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                var financialYearToDelete = await _ctx.FinancialYears.Where(x => financialYearIds.Contains(x.FinancialYearId) && x.IsActive == false).ToListAsync();
+                if (financialYearToDelete.Any())
                 {
-                    var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(x => x.FinancialYearId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    _ctx.FinancialYears.RemoveRange(financialYearToDelete);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
                     {
-                        _ctx.FinancialYears.Remove(Query);
-                        Count = await _ctx.SaveChangesAsync();
+                        _Result.Ids = Ids;
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        _cache.Remove("FinancialYears");
+                        _cache.Remove("RecoverFinancialYears");
                     }
-                    Count++;
-                }
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
                 }
             }
             catch
@@ -509,21 +566,31 @@ namespace FMS.Repo.Devloper
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.BranchFinancialYears
-                                   where s.IsActive == true
-                                   select new BranchFinancialYear
-                                   {
-                                       BranchFinancialYearId = s.BranchFinancialYearId,
-                                       Fk_BranchId = s.Fk_BranchId,
-                                       Branch = s.Branch != null ? new Branch { BranchName = s.Branch.BranchName } : null,
-                                       Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                       FinancialYear = s.FinancialYear != null ? new FinancialYear { Financial_Year = s.FinancialYear.Financial_Year } : null,
-                                   }).OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
-                if (Query.Count > 0)
+                var cacheKey = "BranchFinancialYear";
+                var cacheData = _cache.Get<Result<BranchFinancialYear>>(cacheKey);
+                if (cacheData == null)
                 {
-                    _Result.CollectionObjData = Query;
-                    _Result.IsSucess = true;
+                    var Query = await (from s in _ctx.BranchFinancialYears
+                                       where s.IsActive == true
+                                       select new BranchFinancialYear
+                                       {
+                                           BranchFinancialYearId = s.BranchFinancialYearId,
+                                           Fk_BranchId = s.Fk_BranchId,
+                                           Branch = s.Branch != null ? new Branch { BranchName = s.Branch.BranchName } : null,
+                                           Fk_FinancialYearId = s.Fk_FinancialYearId,
+                                           FinancialYear = s.FinancialYear != null ? new FinancialYear { Financial_Year = s.FinancialYear.Financial_Year } : null,
+                                       }).OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                    }
                 }
+                else
+                {
+                    _Result = cacheData;
+                }    
             }
             catch
             {
@@ -537,16 +604,26 @@ namespace FMS.Repo.Devloper
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.BranchFinancialYears
-                                   where s.Fk_BranchId == BranchId && s.IsActive == true
-                                   select s)
+                var cacheKey = "BranchFinancialYearsByBranchId";
+                var cacheData = _cache.Get<Result<BranchFinancialYear>>(cacheKey);
+                if (cacheData == null)
+                {
+                    var Query = await (from s in _ctx.BranchFinancialYears
+                                       where s.Fk_BranchId == BranchId && s.IsActive == true
+                                       select s)
                                    .OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
 
-                if (Query.Count > 0)
-                {
-                    _Result.CollectionObjData = Query;
-                    _Result.IsSucess = true;
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                    }
                 }
+                else
+                {
+                    _Result = cacheData;
+                }     
             }
             catch
             {
@@ -571,7 +648,10 @@ namespace FMS.Repo.Devloper
                     if (Count > 0)
                     {
                         _Result.Id = newYear.BranchFinancialYearId.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("BranchFinancialYear");
+                        _cache.Remove("BranchFinancialYearsByBranchId");
                     }
                 }
             }
@@ -593,10 +673,14 @@ namespace FMS.Repo.Devloper
                     BranchFinancialYear updateBranchFinancialYear = _mapper.Map(data, Query);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
-                    int count = await _ctx.SaveChangesAsync();
-                    if (count > 0)
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("BranchFinancialYear");
+                        _cache.Remove("BranchFinancialYearsByBranchId");
                     }
                 }
             }
@@ -619,10 +703,13 @@ namespace FMS.Repo.Devloper
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("BranchFinancialYear");
+                        _cache.Remove("BranchFinancialYearsByBranchId");
                     }
                 }
             }
@@ -640,14 +727,23 @@ namespace FMS.Repo.Devloper
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.BranchFinancialYears
-                                   where s.IsActive == false
-                                   select s)
-                                 .OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
-                if (Query.Count > 0)
+                var cacheKey = "RemovedBranchFinancialYears";
+                var cacheData = _cache.Get<Result<BranchFinancialYear>>(cacheKey);
+                if (cacheData == null)
                 {
-                    _Result.CollectionObjData = Query;
-                    _Result.IsSucess = true;
+                    var Query = await (from s in _ctx.BranchFinancialYears
+                                       where s.IsActive == false
+                                       select s).OrderByDescending(s => s.FinancialYear.Financial_Year).ToListAsync();
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                    }
+                }
+                else
+                {
+                    _Result = cacheData;
                 }
             }
             catch
@@ -669,10 +765,15 @@ namespace FMS.Repo.Devloper
                     Query.ModifyBy = user.Name;
                     Query.IsActive = true;
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
+                   
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("BranchFinancialYear");
+                        _cache.Remove("BranchFinancialYearsByBranchId");
+                        _cache.Remove("RemovedBranchFinancialYears");
                     }
                 }
             }
@@ -693,10 +794,14 @@ namespace FMS.Repo.Devloper
                 {
                     _ctx.BranchFinancialYears.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        _cache.Remove("BranchFinancialYear");
+                        _cache.Remove("BranchFinancialYearsByBranchId");
+                        _cache.Remove("RemovedBranchFinancialYears");
                     }
                 }
             }
@@ -711,25 +816,27 @@ namespace FMS.Repo.Devloper
             RepoBase _Result = new();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var branchFinancialYearIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                var branchFinancialYearToRecover = await _ctx.BranchFinancialYears.Where(x => branchFinancialYearIds.Contains(x.BranchFinancialYearId) && x.IsActive == false).ToListAsync();
+                if (branchFinancialYearToRecover.Any())
                 {
-                    var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(x => x.BranchFinancialYearId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    foreach (var branchFinancialYear in branchFinancialYearToRecover)
                     {
-                        Query.ModifyDate = DateTime.UtcNow;
-                        Query.ModifyBy = user.Name;
-                        Query.IsActive = true;
-                        Count = await _ctx.SaveChangesAsync();
+                        branchFinancialYear.ModifyDate = DateTime.UtcNow;
+                        branchFinancialYear.ModifyBy = user.Name;
+                        branchFinancialYear.IsActive = true;
                     }
-                    Count++;
-                }
-
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        _Result.Ids = Ids;
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        _cache.Remove("BranchFinancialYear");
+                        _cache.Remove("BranchFinancialYearsByBranchId");
+                        _cache.Remove("RemovedBranchFinancialYears");
+                    }
                 }
             }
             catch
@@ -743,22 +850,22 @@ namespace FMS.Repo.Devloper
             RepoBase _Result = new();
             try
             {
-                int Count = 0;
                 _Result.IsSucess = false;
-                foreach (var item in Ids)
+                var branchFinancialYearIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                var branchFinancialYearToDelete = await _ctx.BranchFinancialYears.Where(x => branchFinancialYearIds.Contains(x.BranchFinancialYearId) && x.IsActive == false).ToListAsync();
+                if (branchFinancialYearToDelete.Any())
                 {
-                    var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(x => x.BranchFinancialYearId == Guid.Parse(item) && x.IsActive == false);
-                    if (Query != null)
+                    _ctx.BranchFinancialYears.RemoveRange(branchFinancialYearToDelete);
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
                     {
-                        _ctx.BranchFinancialYears.Remove(Query);
-                        Count = await _ctx.SaveChangesAsync();
+                        _Result.Ids = Ids;
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        _cache.Remove("BranchFinancialYear");
+                        _cache.Remove("BranchFinancialYearsByBranchId");
+                        _cache.Remove("RemovedBranchFinancialYears");
                     }
-                    Count++;
-                }
-                if (Count > 0)
-                {
-                    _Result.IsSucess = true;
-                    _Result.Count = Count.ToString();
                 }
             }
             catch

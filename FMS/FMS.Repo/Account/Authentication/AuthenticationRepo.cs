@@ -1,14 +1,16 @@
-﻿using FMS.Db;
+﻿using AutoMapper;
+using FMS.Db;
 using FMS.Db.Entity;
 using Microsoft.EntityFrameworkCore;
 namespace FMS.Repo.Account.Authentication
 {
     public class AuthenticationRepo(
-        Context ctx
+        Context ctx, IMapper mapper
     ) : IAuthentication
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
+        private readonly IMapper _mapper = mapper;
         #endregion
         #region  SignUp Token
         public async Task<Result<RegisterToken>> ValidateToken(string data)
@@ -18,7 +20,7 @@ namespace FMS.Repo.Account.Authentication
             {
                 _Result.IsSucess = false;
                 var Query = await (from rt in _ctx.RegisterTokens
-                                   join au in _ctx.AppUsers on rt.TokenId equals au.FkTokenId into auGroup
+                                   join au in _ctx.AppUsers on rt.TokenId equals au.Fk_TokenId into auGroup
                                    from au in auGroup.DefaultIfEmpty()
                                    where rt.TokenValue == data && au == null
                                    select new RegisterToken
@@ -29,6 +31,32 @@ namespace FMS.Repo.Account.Authentication
                 if (Query != null)
                 {
                     _Result.SingleObjData = Query;
+                    _Result.IsSucess = true;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
+        }
+        #endregion
+        #region Address
+        public async Task<RepoBase> CreateUserAdress(AddressModel data, AppUser user)
+        {
+            RepoBase _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var newAddress = _mapper.Map<Address>(data);
+                newAddress.UserId = Guid.Parse(user.Id);
+                newAddress.CreatedDate = DateTime.UtcNow;
+                newAddress.CreatedBy = user.Name;
+                await _ctx.Addresses.AddAsync(newAddress);
+                int Count = await _ctx.SaveChangesAsync();
+                if (Count > 0)
+                {
+                    _Result.Id = newAddress.AddressId.ToString();
                     _Result.IsSucess = true;
                 }
             }

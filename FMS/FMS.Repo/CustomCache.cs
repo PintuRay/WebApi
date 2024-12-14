@@ -8,6 +8,7 @@ namespace FMS.Repo
         void Set<T>(string key, T value, TimeSpan? absoluteExpireTime = null, TimeSpan? slidingExpiration = null, CacheItemPriority priority = CacheItemPriority.Normal);
         IDictionary<string, object> GetAllCaches();
         void Remove(string key);
+        void RemoveByPrefix(string prefix);
         void Clear();
     }
     public class CustomCache : ICustomCache
@@ -54,6 +55,15 @@ namespace FMS.Repo
         {
             _memoryCache.Remove(key);
             _keys.Remove(key);
+        }
+        public void RemoveByPrefix(string prefix)
+        {
+            var keysToRemove = _keys.Where(k => k.StartsWith(prefix)).ToList();
+            foreach (var key in keysToRemove)
+            {
+                _memoryCache.Remove(key);
+                _keys.Remove(key);
+            }
         }
         public void Clear()
         {

@@ -34,36 +34,7 @@ namespace FMS.Repo.User
         Task<RepoBase> DeleteAllLabourDetails(List<string> Ids, AppUser user);
         #endregion
         #endregion
-        #region State
-        #region Crud
-        Task<Result<State>> GetStates();
-        Task<RepoBase> CreateState(StateModel data, AppUser user);
-        Task<RepoBase> UpdateState(Guid Id, StateModel data, AppUser user);
-        Task<RepoBase> RemoveState(Guid Id, AppUser user);
-        #endregion
-        #region Recover
-        Task<Result<State>> GetRemovedStates();
-        Task<RepoBase> RecoverState(Guid Id, AppUser user);
-        Task<RepoBase> DeleteState(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllStates(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllStates(List<string> Ids, AppUser user);
-        #endregion
-        #endregion
-        #region City
-        #region Crud
-        Task<Result<City>> GetCities(Guid Id);
-        Task<RepoBase> CreateCity(CityModel data, AppUser user);
-        Task<RepoBase> UpdateCity(Guid Id, CityModel data, AppUser user);
-        Task<RepoBase> RemoveCity(Guid Id, AppUser user);
-        #endregion
-        #region Recover
-        Task<Result<City>> GetRemovedCity();
-        Task<RepoBase> RecoverCity(Guid Id, AppUser user);
-        Task<RepoBase> DeleteCity(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllCity(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllCity(List<string> Ids, AppUser user);
-        #endregion
-        #endregion
+
         #region Party Details
         #region Crud
         Task<Result<Party>> GetParties();

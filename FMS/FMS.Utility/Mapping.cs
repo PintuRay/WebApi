@@ -19,6 +19,26 @@
             }
             return _instance;
         }
+        public Dictionary<string, string> GetGender()
+        {
+            var gender = new Dictionary<string, string>
+            {
+                { "male", "Male" },
+                { "female", "Female" },
+                 { "other", "Other" },
+            };
+            return gender;
+        }
+        public Dictionary<string, string> MaratialStatus()
+        {
+            var maratialStatus = new Dictionary<string, string>
+            {
+                { "married", "Married" },
+                { "unmarred", "Unmarried" },
+                 { "other", "Other" },
+            };
+            return maratialStatus;
+        }
         public Dictionary<string, string> GetSalesType()
         {
             var salesType = new Dictionary<string, string>
