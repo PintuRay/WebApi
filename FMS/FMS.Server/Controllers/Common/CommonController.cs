@@ -8,20 +8,21 @@ namespace FMS.Server.Controllers.Common
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]")]
-    public class CommonController : ControllerBase
+    public class CommonController(ICommonSvcs commonSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly ICommonSvcs _commonSvcs;
-        private readonly UserManager<AppUser> _userManager;
-        public CommonController(ICommonSvcs commonSvcs, UserManager<AppUser> userManager)
-        {
-            _commonSvcs = commonSvcs;
-            _userManager = userManager;
-        }
+        private readonly ICommonSvcs _commonSvcs = commonSvcs;
+        private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Country
         #region Crud
-        [HttpPost, Authorize(policy: "Create")]
+        [HttpGet, AllowAnonymous]
+        public async Task<IActionResult> GetCountries()
+        {
+            var result = await _commonSvcs.GetCountries();
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        }
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Create")]
         public async Task<IActionResult> CreateCountry([FromBody] CountryModel model)
         {
             if (ModelState.IsValid)
@@ -36,13 +37,7 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetCountries()
-        {
-            var result = await _commonSvcs.GetCountries();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpPut, Authorize(policy: "Update")]
+        [HttpPut, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> UpdateCountry([FromRoute] Guid id, [FromBody] CountryModel model)
         {
             if (id != Guid.Empty)
@@ -64,7 +59,7 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> RemoveCountry([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -80,13 +75,13 @@ namespace FMS.Server.Controllers.Common
         }
         #endregion
         #region Recover
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin,Devloper")]
         public async Task<IActionResult> GetRemovedCountries()
         {
             var result = await _commonSvcs.GetRemovedCountries();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
+        [HttpPatch, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverCountry([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -108,14 +103,14 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverAllCountry([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _commonSvcs.RecoverAllCountry(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteCountry([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -129,7 +124,7 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Delete")]
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAllCountry([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -140,7 +135,13 @@ namespace FMS.Server.Controllers.Common
         #endregion
         #region State
         #region Crud
-        [HttpPost, Authorize(policy: "Create")]
+        [HttpGet, AllowAnonymous]
+        public async Task<IActionResult> GetStates(Guid CountryId)
+        {
+            var result = await _commonSvcs.GetStates(CountryId);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        }
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Create")]
         public async Task<IActionResult> CreateState([FromBody] StateModel model)
         {
             if (ModelState.IsValid)
@@ -155,13 +156,8 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetStates(Guid CountryId)
-        {
-            var result = await _commonSvcs.GetStates(CountryId);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpPut, Authorize(policy: "Update")]
+   
+        [HttpPut, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> UpdateState([FromRoute] Guid id, [FromBody] StateModel model)
         {
             if (id != Guid.Empty)
@@ -183,7 +179,7 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> RemoveState([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -199,13 +195,13 @@ namespace FMS.Server.Controllers.Common
         }
         #endregion
         #region Recover
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin,Devloper")]
         public async Task<IActionResult> GetRemovedStates()
         {
             var result = await _commonSvcs.GetRemovedStates();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
+        [HttpPatch, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverState([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -227,14 +223,14 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverAllStates([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _commonSvcs.RecoverAllStates(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteState([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -248,7 +244,7 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Delete")]
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAllStates([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -259,7 +255,13 @@ namespace FMS.Server.Controllers.Common
         #endregion
         #region Dist
         #region Crud
-        [HttpPost, Authorize(policy: "Create")]
+        [HttpGet, AllowAnonymous]
+        public async Task<IActionResult> GetDists(Guid Id)
+        {
+            var result = await _commonSvcs.GetDists(Id);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        }
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Create")]
         public async Task<IActionResult> CreateDist([FromBody] DistModel model)
         {
             if (ModelState.IsValid)
@@ -274,13 +276,8 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetDists(Guid Id)
-        {
-            var result = await _commonSvcs.GetDists(Id);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpPut, Authorize(policy: "Update")]
+
+        [HttpPut, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> UpdateDist([FromRoute] Guid id, [FromBody] DistModel model)
         {
             if (id != Guid.Empty)
@@ -302,7 +299,7 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(policy: "Delete")]
         public async Task<IActionResult> RemoveDist([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -318,13 +315,13 @@ namespace FMS.Server.Controllers.Common
         }
         #endregion
         #region Recover
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin,Devloper"),]
         public async Task<IActionResult> GetRemovedDists()
         {
             var result = await _commonSvcs.GetRemovedDists();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
+        [HttpPatch, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverDist([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -346,14 +343,14 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverAllDists([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _commonSvcs.RecoverAllDists(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteDist([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -367,7 +364,7 @@ namespace FMS.Server.Controllers.Common
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Delete")]
+        [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAllDists([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);

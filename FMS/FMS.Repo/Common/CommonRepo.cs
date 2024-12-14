@@ -29,6 +29,7 @@ namespace FMS.Repo.Common
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
+                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
@@ -145,6 +146,7 @@ namespace FMS.Repo.Common
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
+                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
@@ -291,6 +293,7 @@ namespace FMS.Repo.Common
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
+                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
@@ -404,6 +407,7 @@ namespace FMS.Repo.Common
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
+                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
@@ -549,6 +553,7 @@ namespace FMS.Repo.Common
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
+                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
@@ -665,6 +670,7 @@ namespace FMS.Repo.Common
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
+                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }

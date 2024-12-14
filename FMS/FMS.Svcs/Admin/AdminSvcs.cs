@@ -23,8 +23,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
+                        Data = repoResult,
                         Message = "Token Created",
                         ResponseCode = (int)ResponseCode.Status.Created,
 
@@ -60,8 +59,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -92,14 +90,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult,
+                        Message = "Company Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"Company '{data.CompanyName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -125,14 +122,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "Company Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CompanyId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -158,14 +154,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "Company Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CompanyId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -193,8 +188,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -225,14 +219,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Company Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CompanyId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -258,14 +251,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Company Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"CompanyId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -291,13 +283,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Companies Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover Companies",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -323,13 +315,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Companies Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete Companies",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -359,8 +351,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -391,14 +382,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult,
+                        Message = "UserBranch Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"UserBranch Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -424,14 +414,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "UserBranch Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"BranchId or UserId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -457,14 +446,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "UserBranch Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"BranchId or UserId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -492,8 +480,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -524,14 +511,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "UserBranch Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"UserBranchId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -557,14 +543,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "UserBranch Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"UserBranchId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -590,13 +575,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "UserBranches Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover UserBranches",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -622,13 +607,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "UserBranches Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete UserBranches",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -658,8 +643,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -693,8 +677,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -725,8 +708,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
+                        Data = repoResult,
                         Message = "Unit Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
@@ -758,14 +740,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "Unit Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"UnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -791,14 +772,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "Unit Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"UnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -826,8 +806,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -858,14 +837,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Unit Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"UnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -891,14 +869,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Unit Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"UnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -924,13 +901,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Units Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover Units",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -956,13 +933,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Units Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete Units",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -992,8 +969,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -1024,14 +1000,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data =repoResult,
+                        Message = "AlternateUnit Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"AlternateUnit '{data.AlternateUnitName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -1057,14 +1032,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "AlternateUnit Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"AlternateUnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1090,14 +1064,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "AlternateUnit Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"AlternateUnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1125,8 +1098,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -1157,14 +1129,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "AlternateUnit Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"AlternateUnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1190,14 +1161,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "AlternateUnit Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"AlternateUnitId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1223,13 +1193,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "AlternateUnits Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover AlternateUnits",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1250,18 +1220,18 @@ namespace FMS.Svcs.Admin
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteAllCompany(Ids, user);
+                var repoResult = await _adminRepo.DeleteAllAlternateUnit(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "AlternateUnits Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete AlternateUnits",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1291,8 +1261,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -1323,14 +1292,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult.Id,
+                        Message = "ProductGroup Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"ProductGroup '{data.ProductGroupName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -1356,14 +1324,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "ProductGroup Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1389,14 +1356,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "ProductGroup Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1424,8 +1390,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -1456,14 +1421,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "ProductGroup Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1489,14 +1453,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "ProductGroup Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1522,13 +1485,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "ProductGroups Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover ProductGroups",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1554,13 +1517,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "ProductGroups Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete ProductGroups",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1590,8 +1553,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -1622,14 +1584,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult,
+                        Message = "ProductSubGroup Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"ProductSubGroup '{data.ProductSubGroupName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -1655,14 +1616,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "ProductSubGroup Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductSubGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1688,14 +1648,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "ProductSubGroup Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductSubGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1723,8 +1682,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -1755,14 +1713,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "ProductSubGroup Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductSubGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1788,14 +1745,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "ProductSubGroup Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductSubGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1821,13 +1777,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "ProductSubGroups Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover ProductSubGroups",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1853,13 +1809,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "ProductSubGroups Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete ProductSubGroups",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1889,8 +1845,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -1921,14 +1876,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult.Id,
+                        Message = "Product Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"Product '{data.ProductName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -1954,14 +1908,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "Product Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -1987,14 +1940,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "Product Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2022,8 +1974,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -2054,14 +2005,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Product Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2087,14 +2037,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Product Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2120,13 +2069,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Products Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover Products",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2152,13 +2101,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Products Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete Products",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2189,8 +2138,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -2221,14 +2169,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data =  repoResult ,
+                        Message = "Production Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"Production Record Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -2254,14 +2201,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "Production Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductionId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2287,14 +2233,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "Production Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductionId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2322,8 +2267,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -2354,14 +2298,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Production Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductionId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2387,14 +2330,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Production Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"ProductionId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2420,13 +2362,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Productions Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover Productions",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2452,13 +2394,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Productions Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete Productions",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2488,8 +2430,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -2520,14 +2461,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult,
+                        Message = "Sales Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"Sales Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -2553,14 +2493,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "Sales Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"SalesId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2586,14 +2525,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "Sales Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"SalesId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2621,8 +2559,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -2653,14 +2590,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Sales Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"SalesId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2686,14 +2622,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Sales Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"SalesId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2719,13 +2654,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Sales Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover Sales",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2751,13 +2686,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Sales Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete Sales",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2787,8 +2722,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -2819,14 +2753,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data =repoResult,
+                        Message = "LabourRate Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"LabourRate Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -2852,14 +2785,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "LabourRate Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LabourRateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2885,14 +2817,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "LabourRate Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LabourRateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2920,8 +2851,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -2952,14 +2882,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "LabourRate Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LabourRateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -2985,14 +2914,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "LabourRate Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LabourRateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3018,13 +2946,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "LabourRates Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover LabourRates",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3045,18 +2973,18 @@ namespace FMS.Svcs.Admin
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteAllCompany(Ids, user);
+                var repoResult = await _adminRepo.DeleteAllLabourRate(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "LabourRates Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete LabourRates",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3086,8 +3014,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -3121,8 +3048,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -3153,14 +3079,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult,
+                        Message = "SubGroup Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"SubGroup '{data.SubGroupName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -3186,14 +3111,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "SubGroup Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"SubGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3219,14 +3143,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "SubGroup Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"SubGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3254,8 +3177,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -3286,14 +3208,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Data = repoResult,
+                        Message = "SubGroup Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"SubGroupId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3319,9 +3240,8 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "SubGroup Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -3352,13 +3272,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "SubGroups Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover SubGroups",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3384,13 +3304,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "SubGroups Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete SubGroups",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3420,8 +3340,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -3452,14 +3371,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = repoResult.Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Created Successfully",
+                        Data = repoResult,
+                        Message = "Ledger Created Successfully",
                         ResponseCode = (int)ResponseCode.Status.Created,
                     },
                     false => new()
                     {
-                        //Message = $"Branch '{data.BranchName}' Already Exist",
+                        Message = $"Ledger '{data.LedgerName}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -3485,14 +3403,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id = Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Updated Successfully",
+                        Data = repoResult,
+                        Message = "Ledger Updated Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LedgerId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3518,14 +3435,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Removed Successfully",
+                        Data = repoResult,
+                        Message = "Ledger Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LedgerId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3553,8 +3469,7 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = repoResult.CollectionObjData,
-                        Count = repoResult.CollectionObjData.Count.ToString(),
+                        Data = repoResult,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -3586,13 +3501,12 @@ namespace FMS.Svcs.Admin
                     true => new()
                     {
                         Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Recovered Successfully",
+                        Message = "Ledger Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LedgerId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3618,14 +3532,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Data = new { Id },
-                        Count = repoResult.Count,
-                        Message = "Branch Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Ledger Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"LedgerId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3651,13 +3564,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Recovered Successfully",
+                        Data = repoResult,
+                        Message = "Ledgers Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover Branch",
+                        Message = "Failed To Recover Ledgers",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -3683,13 +3596,13 @@ namespace FMS.Svcs.Admin
                 {
                     true => new()
                     {
-                        Count = repoResult.Count,
-                        Message = "Branches Deleted Successfully",
+                        Data = repoResult,
+                        Message = "Ledgers Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = "Failed To Delete Ledgers",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };

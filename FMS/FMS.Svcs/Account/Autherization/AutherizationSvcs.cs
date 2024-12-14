@@ -35,7 +35,6 @@ namespace FMS.Svcs.Account.Autherization
                     Obj = new()
                     {
                         Data = repoResult,
-                        Count = repoResult.Count.ToString(),
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                     return Obj;
@@ -291,7 +290,6 @@ namespace FMS.Svcs.Account.Autherization
                     Obj = new()
                     {
                         Data = repoResult,
-                        Count = repoResult.Count.ToString(),
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                 }
@@ -499,7 +497,6 @@ namespace FMS.Svcs.Account.Autherization
                 Obj = new()
                 {
                     Data = users,
-                    Count = users.Count.ToString(),
                     ResponseCode = (int)ResponseCode.Status.Ok,
                 };
             }
