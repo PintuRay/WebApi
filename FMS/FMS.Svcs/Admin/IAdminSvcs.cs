@@ -89,7 +89,7 @@ namespace FMS.Svcs.Admin
         #endregion
         #region Product SubGroup
         #region Crud
-        Task<SvcsBase> GetProductSubGroups();
+        Task<SvcsBase> GetProductSubGroups(Guid GroupId);
         Task<SvcsBase> CreateProductSubGroup(ProductSubGroupModel data, AppUser user);
         Task<SvcsBase> UpdateProductSubGroup(Guid Id, ProductSubGroupModel data, AppUser user);
         Task<SvcsBase> RemoveProductSubGroup(Guid Id, AppUser user);
@@ -150,13 +150,13 @@ namespace FMS.Svcs.Admin
         #endregion
         #region Labour Rate 
         #region Crud
-        Task<SvcsBase> GetAllLabourRates();
+        Task<SvcsBase> GetAllLabourRates(Guid FinancialYearId, Guid BranchId);
         Task<SvcsBase> CreateLabourRate(LabourRateModel data, AppUser user);
         Task<SvcsBase> UpdateLabourRate(Guid Id, LabourRateModel data, AppUser user);
         Task<SvcsBase> RemoveLabourRate(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<SvcsBase> GetRemovedLabourRate();
+        Task<SvcsBase> GetRemovedLabourRate(Guid FinancialYearId, Guid BranchId);
         Task<SvcsBase> RecoverLabourRate(Guid Id, AppUser user);
         Task<SvcsBase> DeleteLabourRate(Guid Id, AppUser user);
         Task<SvcsBase> RecoverAllLabourRate(List<string> Ids, AppUser user);
@@ -169,17 +169,17 @@ namespace FMS.Svcs.Admin
         #endregion
         #region SubGroup
         #region Crud
-        Task<SvcsBase> GetSubGroups();
+        Task<SvcsBase> GetSubGroups(Guid GroupId, Guid BranchId);
         Task<SvcsBase> CreateSubGroup(LedgerSubGroupModel data, AppUser user);
         Task<SvcsBase> UpdateSubGroup(Guid Id, LedgerSubGroupModel data, AppUser user);
-        Task<SvcsBase> RemoveSubGroup(Guid Id, AppUser user);
+        Task<SvcsBase> RemoveSubGroup(Guid Id, Guid BranchId, AppUser user);
         #endregion
         #region Recover
-        Task<SvcsBase> GetRemovedSubGroup();
-        Task<SvcsBase> RecoverSubGroup(Guid Id, AppUser user);
-        Task<SvcsBase> DeleteSubGroup(Guid Id, AppUser user);
-        Task<SvcsBase> RecoverAllSubGroup(List<string> Ids, AppUser user);
-        Task<SvcsBase> DeleteAllSubGroup(List<string> Ids, AppUser user);
+        Task<SvcsBase> GetRemovedSubGroups(Guid BranchId);
+        Task<SvcsBase> RecoverSubGroup(Guid Id, Guid BranchId, AppUser user);
+        Task<SvcsBase> DeleteSubGroup(Guid Id, Guid BranchId, AppUser user);
+        Task<SvcsBase> RecoverAllSubGroup(List<string> Ids, Guid BranchId, AppUser user);
+        Task<SvcsBase> DeleteAllSubGroup(List<string> Ids, Guid BranchId, AppUser user);
         #endregion
         #endregion
         #region Ledger

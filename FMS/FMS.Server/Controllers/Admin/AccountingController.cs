@@ -40,9 +40,9 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetSubGroups()
+        public async Task<IActionResult> GetSubGroups(Guid GroupId, Guid BranchId)
         {
-            var result = await _adminSvcs.GetSubGroups();
+            var result = await _adminSvcs.GetSubGroups(GroupId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
@@ -68,12 +68,12 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpDelete, Route("SubGroupd/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveSubGroup([FromRoute] Guid id)
+        public async Task<IActionResult> RemoveSubGroup([FromRoute] Guid id, [FromRoute] Guid BranchId)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.RemoveSubGroup(id, user);
+                var result = await _adminSvcs.RemoveSubGroup(id, BranchId, user);
                 return result.ResponseCode == 200 ? Ok(result) :  BadRequest(result);
             }
             else
@@ -84,20 +84,20 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedSubGroup()
+        public async Task<IActionResult> GetRemovedSubGroup(Guid BranchId)
         {
-            var result = await _adminSvcs.GetRemovedSubGroup();
+            var result = await _adminSvcs.GetRemovedSubGroups(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverSubGroup([FromRoute] Guid id)
+        public async Task<IActionResult> RecoverSubGroup([FromRoute] Guid id, [FromRoute] Guid BranchId)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.RecoverSubGroup(id, user);
+                    var result = await _adminSvcs.RecoverSubGroup(id, BranchId, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -112,19 +112,19 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllSubGroup([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAllSubGroup([FromBody] List<string> Ids, [FromRoute] Guid BranchId)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.RecoverAllSubGroup(Ids, user);
+            var result = await _adminSvcs.RecoverAllSubGroup(Ids, BranchId, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteSubGroup([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteSubGroup([FromRoute] Guid id, [FromRoute] Guid BranchId)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.DeleteSubGroup(id, user);
+                var result = await _adminSvcs.DeleteSubGroup(id, BranchId, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -133,10 +133,10 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllSubGroup([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAllSubGroup([FromBody] List<string> Ids, [FromRoute] Guid BranchId)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.DeleteAllSubGroup(Ids, user);
+            var result = await _adminSvcs.DeleteAllSubGroup(Ids, BranchId, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

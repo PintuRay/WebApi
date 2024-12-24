@@ -21,6 +21,7 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public LedgerGroup LedgerGroup { get; set; }
         public LedgerSubGroup LedgerSubGroup { get; set; }
+
         public ICollection<SubLedger> SubLedgers { get; set; }
         public ICollection<LedgerBalance> LedgerBalances { get; set; }
         public ICollection<Party> Parties { get; set; }

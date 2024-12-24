@@ -8,7 +8,7 @@ namespace FMS.Db.Entity
         public Guid Fk_BranchId { get; set; }
         public string CompanyName { get; set; }
         public string State { get; set; }
-        public string Adress { get; set; }
+        public string Address { get; set; }
         public string Email { get; set; }
         public string PhoneNo { get; set; }
         public string GSTIN { get; set; }
@@ -35,7 +35,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_BranchId).IsRequired(true);
             builder.Property(e => e.Logo).IsRequired(true);
             builder.Property(e => e.State).IsRequired(true);
-            builder.Property(e => e.Adress).HasMaxLength(100).IsRequired(true);
+            builder.Property(e => e.Address).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.GSTIN).IsRequired(true);
             builder.Property(e => e.Email).IsRequired(true);
             builder.Property(e => e.PhoneNo).IsRequired(true);

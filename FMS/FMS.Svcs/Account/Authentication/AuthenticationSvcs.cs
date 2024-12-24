@@ -49,7 +49,7 @@ namespace FMS.Svcs.Account.Authentication
                 {
                     true => new()
                     {
-                        Data = repoResult.SingleObjData,
+                        Data = repoResult,
                         Message = $"Token '{Token}' Found",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },

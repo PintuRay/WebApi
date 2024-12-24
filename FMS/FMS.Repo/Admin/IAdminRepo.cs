@@ -10,8 +10,8 @@ namespace FMS.Repo.Admin
         #endregion
         #region Company
         #region Crud
-        Task<RepoBase> CreateCompany(CompanyModel data, AppUser user);
         Task<Result<Company>> GetCompany(string BranchId);
+        Task<RepoBase> CreateCompany(CompanyModel data, AppUser user);
         Task<RepoBase> UpdateCompany(Guid Id, CompanyModel model, AppUser user);
         Task<RepoBase> RemoveCompany(Guid Id, AppUser user);
         #endregion
@@ -42,6 +42,37 @@ namespace FMS.Repo.Admin
         #region Product Type
         Task<Result<ProductType>> GetProductTypes();
         #endregion
+        #region Product Group
+        #region Crud
+        Task<Result<ProductGroup>> GetProductGroups();
+        Task<Result<ProductGroup>> GetProductGroups(Guid ProdutTypeId);
+        Task<RepoBase> CreateProductGroup(ProductGroupModel data, AppUser user);
+        Task<RepoBase> UpdateProductGroup(Guid Id, ProductGroupModel data, AppUser user);
+        Task<RepoBase> RemoveProductGroup(Guid Id, AppUser user);
+        #endregion
+        #region Recover
+        Task<Result<ProductGroup>> GetRemovedProductGroup();
+        Task<RepoBase> RecoverProductGroup(Guid Id, AppUser user);
+        Task<RepoBase> DeleteProductGroup(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllProductGroup(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllProductGroup(List<string> Ids, AppUser user);
+        #endregion
+        #endregion
+        #region Product SubGroup
+        #region Crud
+        Task<Result<ProductSubGroup>> GetProductSubGroups(Guid GroupId);
+        Task<RepoBase> CreateProductSubGroup(ProductSubGroupModel data, AppUser user);
+        Task<RepoBase> UpdateProductSubGroup(Guid Id, ProductSubGroupModel data, AppUser user);
+        Task<RepoBase> RemoveProductSubGroup(Guid Id, AppUser user);
+        #endregion
+        #region Recover
+        Task<Result<ProductSubGroup>> GetRemovedProductSubGroup();
+        Task<RepoBase> RecoverProductSubGroup(Guid Id, AppUser user);
+        Task<RepoBase> DeleteProductSubGroup(Guid Id, AppUser user);
+        Task<RepoBase> RecoverAllProductSubGroup(List<string> Ids, AppUser user);
+        Task<RepoBase> DeleteAllProductSubGroup(List<string> Ids, AppUser user);
+        #endregion
+        #endregion
         #region Unit
         #region Crud
         Task<Result<Unit>> GetAllUnits();
@@ -60,6 +91,9 @@ namespace FMS.Repo.Admin
         #region Alternate Units
         #region Crud
         Task<Result<AlternateUnit>> GetAlternateUnits();
+        Task<Result<AlternateUnit>> GetAlternateUnitByUnitId(Guid UnitId);
+        Task<Result<AlternateUnit>>  GetAlternateUnitByProductId(Guid ProductId);
+        Task<Result<AlternateUnit>> GetAlternateUnitByAlternateUnitId(Guid AlternateUnitId);
         Task<RepoBase> CreateAlternateUnit(AlternateUnitModel data, AppUser user);
         Task<RepoBase> UpdateAlternateUnit(Guid Id, AlternateUnitModel data, AppUser user);
         Task<RepoBase> RemoveAlternateUnit(Guid Id, AppUser user);
@@ -71,40 +105,13 @@ namespace FMS.Repo.Admin
         Task<RepoBase> RecoverAllAlternateUnit(List<string> Ids, AppUser user);
         Task<RepoBase> DeleteAllAlternateUnit(List<string> Ids, AppUser user);
         #endregion
-        #endregion
-        #region Product Group
-        #region Crud
-        Task<Result<ProductGroup>> GetProductGroups();
-        Task<RepoBase> CreateProductGroup(ProductGroupModel data, AppUser user);
-        Task<RepoBase> UpdateProductGroup(Guid Id, ProductGroupModel data, AppUser user);
-        Task<RepoBase> RemoveProductGroup(Guid Id, AppUser user);
-        #endregion
-        #region Recover
-        Task<Result<ProductGroup>> GetRemovedProductGroup();
-        Task<RepoBase> RecoverProductGroup(Guid Id, AppUser user);
-        Task<RepoBase> DeleteProductGroup(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllProductGroup(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllProductGroup(List<string> Ids, AppUser user);
-        #endregion
-        #endregion
-        #region Product SubGroup
-        #region Crud
-        Task<Result<ProductSubGroup>> GetProductSubGroups();
-        Task<RepoBase> CreateProductSubGroup(ProductSubGroupModel data, AppUser user);
-        Task<RepoBase> UpdateProductSubGroup(Guid Id, ProductSubGroupModel data, AppUser user);
-        Task<RepoBase> RemoveProductSubGroup(Guid Id, AppUser user);
-        #endregion
-        #region Recover
-        Task<Result<ProductSubGroup>> GetRemovedProductSubGroup();
-        Task<RepoBase> RecoverProductSubGroup(Guid Id, AppUser user);
-        Task<RepoBase> DeleteProductSubGroup(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllProductSubGroup(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllProductSubGroup(List<string> Ids, AppUser user);
-        #endregion
-        #endregion
+        #endregion    
         #region Product
         #region Crud
         Task<Result<Product>> GetAllProducts();
+        Task<Result<Product>> GetProductById(Guid ProductId);
+        Task<Result<Product>>  GetProductByTypeId(Guid ProductTypeId);
+        Task<Result<Product>> GetProductGstWithRate(Guid id, string RateType);
         Task<RepoBase> CreateProduct(ProductModel data, AppUser user);
         Task<RepoBase> UpdateProduct(Guid Id, ProductModel data, AppUser user);
         Task<RepoBase> RemoveProduct(Guid Id, AppUser user);
@@ -150,13 +157,13 @@ namespace FMS.Repo.Admin
         #endregion
         #region Labour Rate
         #region Crud
-        Task<Result<LabourRate>> GetAllLabourRates();
+        Task<Result<LabourRate>> GetAllLabourRates(Guid FinancialYearId, Guid BranchId);
         Task<RepoBase> CreateLabourRate(LabourRateModel data, AppUser user);
         Task<RepoBase> UpdateLabourRate(Guid Id, LabourRateModel data, AppUser user);
         Task<RepoBase> RemoveLabourRate(Guid Id, AppUser user);
         #endregion
         #region Recover
-        Task<Result<LabourRate>> GetRemovedLabourRate();
+        Task<Result<LabourRate>> GetRemovedLabourRate(Guid FinancialYearId, Guid BranchId);
         Task<RepoBase> RecoverLabourRate(Guid Id, AppUser user);
         Task<RepoBase> DeleteLabourRate(Guid Id, AppUser user);
         Task<RepoBase> RecoverAllLabourRate(List<string> Ids, AppUser user);
@@ -169,22 +176,25 @@ namespace FMS.Repo.Admin
         #endregion
         #region SubGroup  
         #region Crud
-        Task<Result<LedgerSubGroup>> GetSubGroups();
+        Task<Result<LedgerSubGroup>> GetSubGroups(Guid GroupId, Guid BranchId);
         Task<RepoBase> CreateSubGroup(LedgerSubGroupModel data,AppUser user);
         Task<RepoBase> UpdateSubGroup(Guid Id,LedgerSubGroupModel data, AppUser user);
-        Task<RepoBase> RemoveSubGroup(Guid Id, AppUser user);
+        Task<RepoBase> RemoveSubGroup(Guid Id, Guid BranchId, AppUser user);
         #endregion
         #region Recover
-        Task<Result<LedgerSubGroup>> GetRemovedSubGroup();
-        Task<RepoBase> RecoverSubGroup(Guid Id, AppUser user);
-        Task<RepoBase> DeleteSubGroup(Guid Id, AppUser user);
-        Task<RepoBase> RecoverAllSubGroup(List<string> Ids, AppUser user);
-        Task<RepoBase> DeleteAllSubGroup(List<string> Ids, AppUser user);
+        Task<Result<LedgerSubGroup>> GetRemovedSubGroups(Guid BranchId);
+        Task<RepoBase> RecoverSubGroup(Guid Id, Guid BranchId, AppUser user);
+        Task<RepoBase> DeleteSubGroup(Guid Id, Guid BranchId, AppUser user);
+        Task<RepoBase> RecoverAllSubGroup(List<string> Ids, Guid BranchId, AppUser user);
+        Task<RepoBase> DeleteAllSubGroup(List<string> Ids, Guid BranchId, AppUser user);
         #endregion
         #endregion
         #region Ledger
         #region Crud
         Task<Result<Ledger>> GetLedgers();
+        Task<Result<Ledger>> GetLedgerById(Guid Id);
+        Task<Result<Ledger>> GetLedgersHasSubLedger(Guid BranchId);
+        Task<Result<Ledger>> GetLedgersHasNoSubLedger(Guid BranchId);            
         Task<RepoBase> CreateLedger(LedgerModel data, AppUser user);
         Task<RepoBase> UpdateLedger(Guid Id, LedgerModel data, AppUser user);
         Task<RepoBase> RemoveLedger(Guid Id, AppUser user);

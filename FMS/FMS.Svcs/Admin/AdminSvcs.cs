@@ -1543,12 +1543,12 @@ namespace FMS.Svcs.Admin
         #endregion
         #region Product SubGroup
         #region Crud
-        public async Task<SvcsBase> GetProductSubGroups()
+        public async Task<SvcsBase> GetProductSubGroups(Guid GroupId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetProductSubGroups();
+                var repoResult = await _adminRepo.GetProductSubGroups(GroupId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2712,12 +2712,12 @@ namespace FMS.Svcs.Admin
         #endregion
         #region Labour Rate 
         #region Crud
-        public async Task<SvcsBase> GetAllLabourRates()
+        public async Task<SvcsBase> GetAllLabourRates(Guid FinancialYearId, Guid BranchId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetAllLabourRates();
+                var repoResult = await _adminRepo.GetAllLabourRates(FinancialYearId, BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -2841,12 +2841,12 @@ namespace FMS.Svcs.Admin
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedLabourRate()
+        public async Task<SvcsBase> GetRemovedLabourRate(Guid FinancialYearId, Guid BranchId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetRemovedLabourRate();
+                var repoResult = await _adminRepo.GetRemovedLabourRate(FinancialYearId, BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -3038,12 +3038,12 @@ namespace FMS.Svcs.Admin
         #endregion
         #region SubGroup
         #region Crud
-        public async Task<SvcsBase> GetSubGroups()
+        public async Task<SvcsBase> GetSubGroups(Guid GroupId, Guid BranchId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetSubGroups();
+                var repoResult = await _adminRepo.GetSubGroups(GroupId, BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -3133,12 +3133,12 @@ namespace FMS.Svcs.Admin
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveSubGroup(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveSubGroup(Guid Id,Guid BranchId, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RemoveSubGroup(Id, user);
+                var repoResult = await _adminRepo.RemoveSubGroup(Id, BranchId, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -3167,12 +3167,12 @@ namespace FMS.Svcs.Admin
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedSubGroup()
+        public async Task<SvcsBase> GetRemovedSubGroups(Guid BranchId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.GetRemovedSubGroup();
+                var repoResult = await _adminRepo.GetRemovedSubGroups(BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -3198,12 +3198,12 @@ namespace FMS.Svcs.Admin
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverSubGroup(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverSubGroup(Guid Id, Guid BranchId, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverSubGroup(Id, user);
+                var repoResult = await _adminRepo.RecoverSubGroup(Id, BranchId, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -3230,12 +3230,12 @@ namespace FMS.Svcs.Admin
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteSubGroup(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteSubGroup(Guid Id, Guid BranchId, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteSubGroup(Id, user);
+                var repoResult = await _adminRepo.DeleteSubGroup(Id, BranchId, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -3262,12 +3262,12 @@ namespace FMS.Svcs.Admin
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllSubGroup(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> RecoverAllSubGroup(List<string> Ids,Guid BranchId, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.RecoverAllSubGroup(Ids, user);
+                var repoResult = await _adminRepo.RecoverAllSubGroup(Ids, BranchId, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -3294,12 +3294,12 @@ namespace FMS.Svcs.Admin
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllSubGroup(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> DeleteAllSubGroup(List<string> Ids,Guid BranchId, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _adminRepo.DeleteAllSubGroup(Ids, user);
+                var repoResult = await _adminRepo.DeleteAllSubGroup(Ids,BranchId, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()

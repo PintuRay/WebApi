@@ -25,7 +25,7 @@ namespace FMS.Db
         public DbSet<UserBranch> UserBranches { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<ProductGroup> ProductGroups { get; set; }
-        public DbSet<ProductSubGroup> SubGroups { get; set; }
+        public DbSet<ProductSubGroup> ProductSubGroups { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<AlternateUnit> AlternateUnits { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }

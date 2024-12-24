@@ -397,9 +397,9 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet,Authorize]
-        public async Task<IActionResult> GetProductSubGroups()
+        public async Task<IActionResult> GetProductSubGroups(Guid GroupId)
         {
-            var result = await _adminSvcs.GetProductSubGroups();
+            var result = await _adminSvcs.GetProductSubGroups(GroupId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]

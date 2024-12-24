@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -16,6 +17,8 @@ namespace FMS.Db.Entity
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        [NotMapped]
+        public string FinishedGoodName { get; set; }
     }
     public class SalesOrderSetupConfig : IEntityTypeConfiguration<SalesOrderSetup>
     {

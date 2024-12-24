@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -19,6 +20,8 @@ namespace FMS.Db.Entity
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
         public ProductionOrder ProductionOrder { get; set; }
+        [NotMapped]
+        public string RawMaterialName { get; set; }
     }
     internal class ProductionTransactionConfig : IEntityTypeConfiguration<ProductionTransaction>
     {
@@ -35,7 +38,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyDate).HasColumnType("datetime");
             builder.Property(e => e.Quantity).HasColumnType("decimal(18, 5)").IsRequired(true);
             builder.Property(e => e.Unit).HasMaxLength(100).IsRequired(true);
-            builder.HasOne(e => e.ProductionOrder).WithMany(s => s.ProductionTransactions).HasForeignKey(e => e.Fk_ProductionOrderId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(e => e.ProductionOrder).WithMany(s => s.ProductionTransactions).HasForeignKey(e => e.Fk_ProductionOrderId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -31,9 +31,9 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllLabourRates()
+        public async Task<IActionResult> GetAllLabourRates([FromQuery] Guid FinancialYearId, Guid BranchId)
         {
-            var result = await _adminSvcs.GetAllLabourRates();
+            var result = await _adminSvcs.GetAllLabourRates(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
@@ -75,9 +75,9 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedLabourRate()
+        public async Task<IActionResult> GetRemovedLabourRate(Guid FinancialYearId, Guid BranchId)
         {
-            var result = await _adminSvcs.GetRemovedLabourRate();
+            var result = await _adminSvcs.GetRemovedLabourRate(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]

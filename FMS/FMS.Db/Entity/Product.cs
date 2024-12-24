@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -13,6 +14,8 @@ namespace FMS.Db.Entity
         public Guid Fk_UnitId { get; set; }
         public Guid Fk_ProductGroupId { get; set; }
         public Guid? Fk_ProductSubGroupId { get; set; }
+        [NotMapped]
+        public decimal Price {  get; set; }
     }
     public class Product : ProductModel
     {

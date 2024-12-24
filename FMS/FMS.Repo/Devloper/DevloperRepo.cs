@@ -2,9 +2,6 @@
 using FMS.Db;
 using FMS.Db.Entity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Identity.Client;
-using System.Diagnostics.Metrics;
 
 namespace FMS.Repo.Devloper
 {
@@ -223,6 +220,7 @@ namespace FMS.Repo.Devloper
         public async Task<RepoBase> RecoverAllBranch(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
@@ -242,6 +240,7 @@ namespace FMS.Repo.Devloper
                         _Result.Ids = Ids;
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        transaction.Commit();
                         _cache.Remove("Branches");
                         _cache.Remove("RemovedBranches");
                     }
@@ -249,6 +248,7 @@ namespace FMS.Repo.Devloper
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;
@@ -256,6 +256,7 @@ namespace FMS.Repo.Devloper
         public async Task<RepoBase> DeleteAllBranch(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
@@ -270,6 +271,7 @@ namespace FMS.Repo.Devloper
                         _Result.Ids = Ids;
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        transaction.Commit();
                         _cache.Remove("Branches");
                         _cache.Remove("RemovedBranches");
                     }
@@ -277,6 +279,7 @@ namespace FMS.Repo.Devloper
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;
@@ -498,6 +501,7 @@ namespace FMS.Repo.Devloper
         public async Task<RepoBase> RecoverAllFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
@@ -517,6 +521,7 @@ namespace FMS.Repo.Devloper
                         _Result.Ids = Ids;
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        transaction.Commit();
                         _cache.Remove("FinancialYears");
                         _cache.Remove("RecoverFinancialYears");
                     }
@@ -524,6 +529,7 @@ namespace FMS.Repo.Devloper
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;
@@ -531,6 +537,7 @@ namespace FMS.Repo.Devloper
         public async Task<RepoBase> DeleteAllFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
@@ -545,6 +552,7 @@ namespace FMS.Repo.Devloper
                         _Result.Ids = Ids;
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        transaction.Commit();
                         _cache.Remove("FinancialYears");
                         _cache.Remove("RecoverFinancialYears");
                     }
@@ -552,6 +560,7 @@ namespace FMS.Repo.Devloper
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;
@@ -814,6 +823,7 @@ namespace FMS.Repo.Devloper
         public async Task<RepoBase> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
@@ -833,6 +843,7 @@ namespace FMS.Repo.Devloper
                         _Result.Ids = Ids;
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        transaction.Commit();
                         _cache.Remove("BranchFinancialYear");
                         _cache.Remove("BranchFinancialYearsByBranchId");
                         _cache.Remove("RemovedBranchFinancialYears");
@@ -841,6 +852,7 @@ namespace FMS.Repo.Devloper
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;
@@ -848,6 +860,7 @@ namespace FMS.Repo.Devloper
         public async Task<RepoBase> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
@@ -862,6 +875,7 @@ namespace FMS.Repo.Devloper
                         _Result.Ids = Ids;
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
+                        transaction.Commit();
                         _cache.Remove("BranchFinancialYear");
                         _cache.Remove("BranchFinancialYearsByBranchId");
                         _cache.Remove("RemovedBranchFinancialYears");
@@ -870,6 +884,7 @@ namespace FMS.Repo.Devloper
             }
             catch
             {
+                transaction.Rollback();
                 throw;
             }
             return _Result;

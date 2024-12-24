@@ -136,7 +136,7 @@ namespace FMS.Server.Controllers.Common
         #region State
         #region Crud
         [HttpGet, AllowAnonymous]
-        public async Task<IActionResult> GetStates(Guid CountryId)
+        public async Task<IActionResult> GetStates([FromRoute] Guid CountryId)
         {
             var result = await _commonSvcs.GetStates(CountryId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
@@ -256,9 +256,9 @@ namespace FMS.Server.Controllers.Common
         #region Dist
         #region Crud
         [HttpGet, AllowAnonymous]
-        public async Task<IActionResult> GetDists(Guid Id)
+        public async Task<IActionResult> GetDists([FromRoute] Guid StateId)
         {
-            var result = await _commonSvcs.GetDists(Id);
+            var result = await _commonSvcs.GetDists(StateId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Create")]
