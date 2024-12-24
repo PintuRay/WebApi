@@ -37,8 +37,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.GetLedgers();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateLedger([FromRoute] Guid id, [FromBody] LedgerModel model)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateLedger([FromQuery] Guid id, [FromBody] LedgerModel model)
         {
             if (id != Guid.Empty)
             {
@@ -59,8 +59,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Ledgerd/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveLedger([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveLedger([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -81,8 +81,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.GetRemovedLedgers();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverLedger([FromRoute] Guid id)
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverLedger([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -110,8 +110,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.RecoverAllLedger(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteLedger([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteLedger([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {

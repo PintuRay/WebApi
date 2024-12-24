@@ -36,8 +36,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.GetAllLabourRates(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateLabourRate([FromRoute] Guid id, [FromBody] LabourRateModel model)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateLabourRate([FromQuery] Guid id, [FromBody] LabourRateModel model)
         {
             if (id != Guid.Empty)
             {
@@ -58,8 +58,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("LabourRateid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveLabourRate([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveLabourRate([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -75,13 +75,13 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedLabourRate(Guid FinancialYearId, Guid BranchId)
+        public async Task<IActionResult> GetRemovedLabourRate([FromQuery] Guid FinancialYearId, [FromQuery] Guid BranchId)
         {
             var result = await _adminSvcs.GetRemovedLabourRate(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverLabourRate([FromRoute] Guid id)
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverLabourRate([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -109,8 +109,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.RecoverAllLabourRate(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteLabourRate([FromRoute] Guid id)
+        [HttpDelete,  Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteLabourRate([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {

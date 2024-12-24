@@ -36,8 +36,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.GetCompany(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateBranch([FromRoute] Guid id, [FromBody] CompanyModel model)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateBranch([FromQuery] Guid id, [FromBody] CompanyModel model)
         {
             if (id != Guid.Empty)
             {
@@ -58,8 +58,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Companyid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveCompany([FromRoute] Guid id)
+        [HttpDelete,Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveCompany([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -80,8 +80,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.GetRemovedCompanies(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverCompany([FromRoute] Guid id)
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverCompany([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -109,8 +109,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _adminSvcs.RecoverAllCompany(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteCompany([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteCompany([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {

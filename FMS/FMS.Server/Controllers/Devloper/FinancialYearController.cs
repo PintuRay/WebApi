@@ -1,4 +1,5 @@
 ﻿using FMS.Db.Entity;
+using FMS.Model;
 using FMS.Svcs.Devloper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -7,20 +8,26 @@ using Microsoft.AspNetCore.Mvc;
 namespace FMS.Server.Controllers.Devloper
 {
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper")]
-    public class FinancialYearController(IDevloperSvcs devloperSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class FinancialYearController(IFinancialYearSvcs financialYearSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IDevloperSvcs _devloperSvcs = devloperSvcs;
+        private readonly IFinancialYearSvcs _financialYearSvcs = financialYearSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
+        [HttpGet]
+        public async Task<IActionResult> GetFinancialYears(PaginationParams pagination)
+        {
+            var result = await _financialYearSvcs.GetFinancialYears(pagination);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        }
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> CreateFinancialYear([FromBody] FinancialYearModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _devloperSvcs.CreateFinancialYear(model, user);
+                var result = await _financialYearSvcs.CreateFinancialYear(model, user);
                 return result.ResponseCode == 201 ? Created(nameof(CreateFinancialYear), result) : BadRequest(result);
             }
             else
@@ -29,21 +36,15 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetFinancialYears()
-        {
-            var result = await _devloperSvcs.GetFinancialYears();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpPut, Route("{Id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateFinancialYear([FromRoute] Guid Id, [FromBody] FinancialYearModel model)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateFinancialYear([FromQuery] Guid Id, [FromBody] FinancialYearModel model)
         {
             if (Id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _devloperSvcs.UpdateFinancialYear(Id, model, user);
+                    var result = await _financialYearSvcs.UpdateFinancialYear(Id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
                 }
                 else
@@ -57,13 +58,13 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("FinancialYearId/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveFinancialYear([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveFinancialYear([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _devloperSvcs.RemoveFinancialYear(id, user);
+                var result = await _financialYearSvcs.RemoveFinancialYear(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
@@ -74,20 +75,20 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedFinancialYears()
+        public async Task<IActionResult> GetRemovedFinancialYears(PaginationParams pagination)
         {
-            var result = await _devloperSvcs.GetRemovedFinancialYears();
+            var result = await _financialYearSvcs.GetRemovedFinancialYears(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{Id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverFinancialYear(Guid Id)
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverFinancialYear([FromQuery] Guid Id)
         {
             if (Id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _devloperSvcs.RecoverFinancialYear(Id, user);
+                    var result = await _financialYearSvcs.RecoverFinancialYear(Id, user);
                     return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
                 }
                 else
@@ -101,13 +102,13 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("{Id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteFinancialYear(Guid Id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteFinancialYear([FromQuery] Guid Id)
         {
             if (Id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _devloperSvcs.DeleteFinancialYear(Id, user);
+                var result = await _financialYearSvcs.DeleteFinancialYear(Id, user);
                 return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
@@ -119,14 +120,14 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> RecoverAllFinancialYear(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _devloperSvcs.RecoverAllFinancialYear(Ids, user);
+            var result = await _financialYearSvcs.RecoverAllFinancialYear(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAllFinancialYear(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _devloperSvcs.DeleteAllFinancialYear(Ids, user);
+            var result = await _financialYearSvcs.DeleteAllFinancialYear(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         #endregion
