@@ -1,5 +1,6 @@
 ﻿using FMS.Db.Entity;
 using FMS.Svcs.Admin;
+using FMS.Svcs.Admin.Production;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,10 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class ProductionController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class ProductionController(IProductionSvcs productionSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSvcs _adminSvcs = adminSvcs;
+        private readonly IProductionSvcs _productionSvcs = productionSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
@@ -21,7 +22,7 @@ namespace FMS.Server.Controllers.Admin
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.CreateProduction(model, user);
+                var result = await _productionSvcs.CreateProduction(model, user);
                 return result.ResponseCode == 201 ? Created(nameof(CreateProduction), result) : BadRequest(result);
             }
             else
@@ -33,7 +34,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetProduction()
         {
-            var result = await _adminSvcs.GetProduction();
+            var result = await _productionSvcs.GetProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
@@ -44,7 +45,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.UpdateProduction(id, model, user);
+                    var result = await _productionSvcs.UpdateProduction(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -64,7 +65,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.RemoveProduction(id, user);
+                var result = await _productionSvcs.RemoveProduction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -77,7 +78,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetRemovedProduction()
         {
-            var result = await _adminSvcs.GetRemovedProduction();
+            var result = await _productionSvcs.GetRemovedProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
@@ -88,7 +89,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.RecoverProduction(id, user);
+                    var result = await _productionSvcs.RecoverProduction(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -106,7 +107,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> RecoverAllProduction([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.RecoverAllProduction(Ids, user);
+            var result = await _productionSvcs.RecoverAllProduction(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
@@ -115,7 +116,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.DeleteProduction(id, user);
+                var result = await _productionSvcs.DeleteProduction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -127,7 +128,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> DeleteAllProduction([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.DeleteAllProduction(Ids, user);
+            var result = await _productionSvcs.DeleteAllProduction(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

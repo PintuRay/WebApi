@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Admin;
+using FMS.Svcs.Admin.Company;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +8,10 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class CompanyController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class CompanyController(ICompanySvcs companySvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSvcs _adminSvcs = adminSvcs;
+        private readonly ICompanySvcs _companySvcs = companySvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
@@ -21,7 +21,7 @@ namespace FMS.Server.Controllers.Admin
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.CreateCompany(data, user);
+                var result = await _companySvcs.CreateCompany(data, user);
                 return result.ResponseCode == 201 ? Created(nameof(CreateCompany), result) : BadRequest(result);
             }
             else
@@ -33,7 +33,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetCompany([FromQuery] string BranchId)
         {
-            var result = await _adminSvcs.GetCompany(BranchId);
+            var result = await _companySvcs.GetCompany(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
         [HttpPut, Authorize(policy: "Update")]
@@ -44,7 +44,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.UpdateCompany(id, model, user);
+                    var result = await _companySvcs.UpdateCompany(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -64,7 +64,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.RemoveCompany(id, user);
+                var result = await _companySvcs.RemoveCompany(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -77,7 +77,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetRemovedCompanies([FromQuery] string BranchId)
         {
-            var result = await _adminSvcs.GetRemovedCompanies(BranchId);
+            var result = await _companySvcs.GetRemovedCompanies(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
         [HttpPatch, Authorize(policy: "Update")]
@@ -88,7 +88,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.RecoverCompany(id, user);
+                    var result = await _companySvcs.RecoverCompany(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -106,7 +106,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> RecoverAllCompany([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.RecoverAllCompany(Ids, user);
+            var result = await _companySvcs.RecoverAllCompany(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete, Authorize(policy: "Delete")]
@@ -115,7 +115,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.DeleteCompany(id, user);
+                var result = await _companySvcs.DeleteCompany(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -127,7 +127,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> DeleteAllCompany([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.DeleteAllCompany(Ids, user);
+            var result = await _companySvcs.DeleteAllCompany(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

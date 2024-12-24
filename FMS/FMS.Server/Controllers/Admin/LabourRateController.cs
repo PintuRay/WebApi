@@ -1,5 +1,5 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Admin;
+using FMS.Svcs.Admin.LabourRate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +8,10 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class LabourRateController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class LabourRateController(ILabourRateSvcs labourRateSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSvcs _adminSvcs = adminSvcs;
+        private readonly ILabourRateSvcs _labourRateSvcs = labourRateSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
@@ -21,7 +21,7 @@ namespace FMS.Server.Controllers.Admin
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.CreateLabourRate(model, user);
+                var result = await _labourRateSvcs.CreateLabourRate(model, user);
                 return result.ResponseCode == 201 ? Created(nameof(CreateLabourRate), result) : BadRequest(result);
             }
             else
@@ -33,7 +33,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetAllLabourRates([FromQuery] Guid FinancialYearId, Guid BranchId)
         {
-            var result = await _adminSvcs.GetAllLabourRates(FinancialYearId, BranchId);
+            var result = await _labourRateSvcs.GetAllLabourRates(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Authorize(policy: "Update")]
@@ -44,7 +44,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.UpdateLabourRate(id, model, user);
+                    var result = await _labourRateSvcs.UpdateLabourRate(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -64,7 +64,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.RemoveLabourRate(id, user);
+                var result = await _labourRateSvcs.RemoveLabourRate(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -77,7 +77,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetRemovedLabourRate([FromQuery] Guid FinancialYearId, [FromQuery] Guid BranchId)
         {
-            var result = await _adminSvcs.GetRemovedLabourRate(FinancialYearId, BranchId);
+            var result = await _labourRateSvcs.GetRemovedLabourRate(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Authorize(policy: "Update")]
@@ -88,7 +88,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.RecoverLabourRate(id, user);
+                    var result = await _labourRateSvcs.RecoverLabourRate(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -106,7 +106,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> RecoverAllLabourRate([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.RecoverAllLabourRate(Ids, user);
+            var result = await _labourRateSvcs.RecoverAllLabourRate(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete,  Authorize(policy: "Delete")]
@@ -115,7 +115,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.DeleteLabourRate(id, user);
+                var result = await _labourRateSvcs.DeleteLabourRate(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -127,7 +127,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> DeleteAllLabourRate([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.DeleteAllLabourRate(Ids, user);
+            var result = await _labourRateSvcs.DeleteAllLabourRate(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

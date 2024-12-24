@@ -1,5 +1,6 @@
 ﻿using FMS.Db.Entity;
 using FMS.Svcs.Admin;
+using FMS.Svcs.Admin.Sales;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,10 @@ namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
-    public class SalesController(IAdminSvcs adminSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class SalesController(ISalesSvcs salesSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAdminSvcs _adminSvcs = adminSvcs;
+        private readonly ISalesSvcs _salesSvcs = salesSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
@@ -22,7 +23,7 @@ namespace FMS.Server.Controllers.Admin
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.CreateSales(model, user);
+                var result = await _salesSvcs.CreateSales(model, user);
                 return result.ResponseCode == 201 ? Created(nameof(CreateSales), result) : BadRequest(result);
             }
             else
@@ -34,7 +35,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetSales()
         {
-            var result = await _adminSvcs.GetSales();
+            var result = await _salesSvcs.GetSales();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPut, Route("{id}"), Authorize(policy: "Update")]
@@ -45,7 +46,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.UpdateSales(id, model, user);
+                    var result = await _salesSvcs.UpdateSales(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -65,7 +66,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.RemoveSales(id, user);
+                var result = await _salesSvcs.RemoveSales(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -78,7 +79,7 @@ namespace FMS.Server.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> GetRemovedSales()
         {
-            var result = await _adminSvcs.GetRemovedSales();
+            var result = await _salesSvcs.GetRemovedSales();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
@@ -89,7 +90,7 @@ namespace FMS.Server.Controllers.Admin
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _adminSvcs.RecoverSales(id, user);
+                    var result = await _salesSvcs.RecoverSales(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -107,7 +108,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> RecoverAllSales([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.RecoverAllSales(Ids, user);
+            var result = await _salesSvcs.RecoverAllSales(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
@@ -116,7 +117,7 @@ namespace FMS.Server.Controllers.Admin
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _adminSvcs.DeleteSales(id, user);
+                var result = await _salesSvcs.DeleteSales(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -128,7 +129,7 @@ namespace FMS.Server.Controllers.Admin
         public async Task<IActionResult> DeleteAllSales([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _adminSvcs.DeleteAllSales(Ids, user);
+            var result = await _salesSvcs.DeleteAllSales(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion
