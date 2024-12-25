@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.User.Party;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.User.Party
 {
-    public class PartySvcs: IPartySvcs
+    public class PartySvcs(IPartyRepo partyRepo, IEmailSvcs emailSvc) : IPartySvcs
     {
+        #region Dependancy
+        private readonly IPartyRepo _partyRepo = partyRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Party Details
         #region Crud
         public async Task<SvcsBase> GetParties()

@@ -1,9 +1,18 @@
-﻿using FMS.Db.Entity;
+﻿using AutoMapper;
+using FMS.Db;
+using FMS.Db.Entity;
 
 namespace FMS.Repo.User.Labour
 {
-    public class LabourRepo: ILabourRepo
+    public class LabourRepo(Context ctx, IMapper mapper, ICustomCache cache) : ILabourRepo
     {
+
+        #region Dependancy
+        private readonly Context _ctx = ctx;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICustomCache _cache = cache;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        #endregion
         #region labour Details    
         #region Crud
         public async Task<RepoBase> GetAllLabourTypes() { throw new NotImplementedException(); }

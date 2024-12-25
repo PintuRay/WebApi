@@ -1,9 +1,18 @@
-﻿using FMS.Db.Entity;
+﻿using AutoMapper;
+using FMS.Db;
+using FMS.Db.Entity;
 
 namespace FMS.Repo.User.Party
 {
-    public class PartyRepo: IPartyRepo
+    public class PartyRepo(Context ctx, IMapper mapper, ICustomCache cache) : IPartyRepo
     {
+
+        #region Dependancy
+        private readonly Context _ctx = ctx;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICustomCache _cache = cache;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        #endregion
         #region Party Details
         #region Crud
         public async Task<Result<Db.Entity.Party>> GetParties() { throw new NotImplementedException(); }

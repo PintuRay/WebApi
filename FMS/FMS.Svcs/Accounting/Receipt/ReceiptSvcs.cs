@@ -1,9 +1,16 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Accounting.Receipt;
+using FMS.Repo.Devloper.Branch;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Accounting.Receipt
 {
-    public class ReceiptSvcs: IReceiptSvcs
+    public class ReceiptSvcs(IReceiptRepo receiptRepo, IEmailSvcs emailSvc) : IReceiptSvcs
     {
+        #region Dependancy
+        private readonly IReceiptRepo _receiptRepoo = receiptRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Receipt
         public async Task<SvcsBase> GetReceiptVoucherNo(string CashBank) { throw new NotImplementedException(); }
         #region Crud

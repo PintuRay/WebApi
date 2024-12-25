@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.User.SubLedgerBalance;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.User.SubLedgerBalance
 {
-    public class SubLedgerBalanceSvcs: ISubLedgerBalanceSvcs
+    public class SubLedgerBalanceSvcs(ISubLedgerBalanceRepo subLedgerBalanceRepo, IEmailSvcs emailSvc) : ISubLedgerBalanceSvcs
     {
+        #region Dependancy
+        private readonly ISubLedgerBalanceRepo _subLedgerBalanceRepo = subLedgerBalanceRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region SubLedger Balance
         #region Crud
         public async Task<SvcsBase> GetSubLedgerBalances()

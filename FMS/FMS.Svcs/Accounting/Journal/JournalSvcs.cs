@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Accounting.Journal;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Accounting.Journal
 {
-    public class JournalSvcs: IJournalSvcs
+    public class JournalSvcs(IJournalRepo journalRepo, IEmailSvcs emailSvc) : IJournalSvcs
     {
+        #region Dependancy
+        private readonly IJournalRepo _journalRepo = journalRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Journal
         public async Task<SvcsBase> GetJournalVoucherNo()
         {

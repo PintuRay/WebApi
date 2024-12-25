@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Transaction.Damage;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Transaction.Damage
 {
-    public class DamageSvcs: IDamageSvcs
+    public class DamageSvcs(IDamageRepo damageRepo, IEmailSvcs emailSvc) : IDamageSvcs
     {
+        #region Dependancy
+        private readonly IDamageRepo _damageRepo = damageRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Damage
         public async Task<SvcsBase> GetLastDamageEntryTransactionNo()
         {

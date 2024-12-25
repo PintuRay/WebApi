@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Transaction.OutwardSupply;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Transaction.OutwardSupply
 {
-    public class OutwardSupplySvcs: IOutwardSupplySvcs
+    public class OutwardSupplySvcs(IOutwardSupplyRepo outwardSupplyRepo, IEmailSvcs emailSvc) : IOutwardSupplySvcs
     {
+        #region Dependancy
+        private readonly IOutwardSupplyRepo _outwardSupplyRepo = outwardSupplyRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Outward Supply
         public async Task<SvcsBase> GetLastOutwardSupplyTransactionNo()
         {

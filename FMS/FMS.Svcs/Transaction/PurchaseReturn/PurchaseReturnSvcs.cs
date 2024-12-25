@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Transaction.PurchaseReturn;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Transaction.PurchaseReturn
 {
-    public class PurchaseReturnSvcs: IPurchaseReturnSvcs
+    public class PurchaseReturnSvcs(IPurchaseReturnRepo purchaseReturnRepo, IEmailSvcs emailSvc) : IPurchaseReturnSvcs
     {
+        #region Dependancy
+        private readonly IPurchaseReturnRepo _purchaseReturnRepo = purchaseReturnRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Purchase Return
         public async Task<SvcsBase> GetLastPurchaseReturnTransactionNo()
         {

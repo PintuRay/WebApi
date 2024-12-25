@@ -1,9 +1,18 @@
-﻿using FMS.Db.Entity;
+﻿using AutoMapper;
+using FMS.Db;
+using FMS.Db.Entity;
 
 namespace FMS.Repo.Transaction.Sales
 {
-    public class SalesRepo: ISalesRepo
+    public class SalesRepo(Context ctx, IMapper mapper, ICustomCache cache) : ISalesRepo
     {
+
+        #region Dependancy
+        private readonly Context _ctx = ctx;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICustomCache _cache = cache;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        #endregion
         #region Sales
         public async Task<RepoBase> GetLastSalesTransactionNo() { throw new NotImplementedException(); }
         #region Crud

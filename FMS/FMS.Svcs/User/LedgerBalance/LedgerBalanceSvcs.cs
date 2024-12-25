@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.User.LedgerBalance;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.User.LedgerBalance
 {
-    public class LedgerBalanceSvcs: ILedgerBalanceSvcs
+    public class LedgerBalanceSvcs(ILedgerBalanceRepo ledgerBalanceRepo, IEmailSvcs emailSvc) : ILedgerBalanceSvcs
     {
+        #region Dependancy
+        private readonly ILedgerBalanceRepo _ledgerBalanceRepo = ledgerBalanceRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region LedgerBalance
         #region Crud
         public async Task<SvcsBase> GetLedgerBalances()

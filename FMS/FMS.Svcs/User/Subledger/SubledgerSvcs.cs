@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.User.SubLedger;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.User.Subledger
 {
-    public class SubledgerSvcs: ISubledgerSvcs
+    public class SubledgerSvcs(ISubLedgerRepo subLedgerRepo, IEmailSvcs emailSvc) : ISubledgerSvcs
     {
+        #region Dependancy
+        private readonly ISubLedgerRepo _subLedgerRepo = subLedgerRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Subledger
         #region Crud
         public async Task<SvcsBase> GetSubLedgers()

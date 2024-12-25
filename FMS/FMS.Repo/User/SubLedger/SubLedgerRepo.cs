@@ -1,9 +1,18 @@
-﻿using FMS.Db.Entity;
+﻿using AutoMapper;
+using FMS.Db;
+using FMS.Db.Entity;
 
 namespace FMS.Repo.User.SubLedger
 {
-    public class SubLedgerRepo: ISubLedgerRepo
+    public class SubLedgerRepo(Context ctx, IMapper mapper, ICustomCache cache) : ISubLedgerRepo
     {
+
+        #region Dependancy
+        private readonly Context _ctx = ctx;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICustomCache _cache = cache;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        #endregion
         #region Subledger
         #region Crud
         public async Task<Result<Db.Entity.SubLedger>> GetSubLedgers() { throw new NotImplementedException(); }

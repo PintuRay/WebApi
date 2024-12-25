@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Transaction.Sales;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Transaction.Sales
 {
-    public class SalesSvcs: ISalesSvcs
+    public class SalesSvcs(ISalesRepo salesRepo, IEmailSvcs emailSvc) : ISalesSvcs
     {
+        #region Dependancy
+        private readonly ISalesRepo _salesRepo = salesRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Sales
         public async Task<SvcsBase> GetLastSaleTransactionNo()
         {

@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.User.Stock;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.User.Stock
 {
-    public class StockSvcs: IStockSvcs
+    public class StockSvcs(IStockRepo stockRepo, IEmailSvcs emailSvc) : IStockSvcs
     {
+        #region Dependancy
+        private readonly IStockRepo _stockRepo = stockRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Stock 
         #region Crud
         public async Task<SvcsBase> GetStocks()

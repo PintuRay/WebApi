@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Transaction.Service;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Transaction.Service
 {
-    public class ServiceSvcs: IServiceSvcs
+    public class ServiceSvcs(IServiceRepo serviceRepo, IEmailSvcs emailSvc) : IServiceSvcs
     {
+        #region Dependancy
+        private readonly IServiceRepo _serviceRepo = serviceRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Service
         public async Task<SvcsBase> GetLastServiceTransactionNo()
         {

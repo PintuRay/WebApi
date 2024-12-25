@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Transaction.Production;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Transaction.Production
 {
-    public class ProductionSvcs: IProductionSvcs
+    public class ProductionSvcs(IProductionRepo productionRepo, IEmailSvcs emailSvc) : IProductionSvcs
     {
+        #region Dependancy
+        private readonly IProductionRepo _productionRepo = productionRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Production
         public async Task<SvcsBase> GetLastProductionTransactionNo()
         {

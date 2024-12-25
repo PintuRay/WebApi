@@ -1,9 +1,18 @@
-﻿using FMS.Db.Entity;
+﻿using AutoMapper;
+using FMS.Db;
+using FMS.Db.Entity;
 
 namespace FMS.Repo.Transaction.PurchaseReturn
 {
-    public class PurchaseReturnRepo: IPurchaseReturnRepo
+    public class PurchaseReturnRepo(Context ctx, IMapper mapper, ICustomCache cache) : IPurchaseReturnRepo
     {
+
+        #region Dependancy
+        private readonly Context _ctx = ctx;
+        private readonly IMapper _mapper = mapper;
+        private readonly ICustomCache _cache = cache;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        #endregion
         #region Purchase Return
         public async Task<RepoBase> GetLastPurchaseReturnTransactionNo() { throw new NotImplementedException(); }
         #region Crud

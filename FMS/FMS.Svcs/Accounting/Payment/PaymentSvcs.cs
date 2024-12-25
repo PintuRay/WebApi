@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.Accounting.Payment;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Accounting.Payment
 {
-    public class PaymentSvcs: IPaymentSvcs
+    public class PaymentSvcs(IPaymentRepo paymentRepo, IEmailSvcs emailSvc) : IPaymentSvcs
     {
+        #region Dependancy
+        private readonly IPaymentRepo _paymentRepo = paymentRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Payment
         public async Task<SvcsBase> GetPaymentVoucherNo(string CashBank) { throw new NotImplementedException(); }
         #region Crud

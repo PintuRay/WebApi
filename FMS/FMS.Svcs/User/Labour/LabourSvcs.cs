@@ -1,9 +1,15 @@
 ﻿using FMS.Db.Entity;
+using FMS.Repo.User.Labour;
+using FMS.Svcs.Email;
 
 namespace FMS.Svcs.User.Labour
 {
-    public class LabourSvcs: ILabourSvcs
+    public class LabourSvcs(ILabourRepo labourRepo, IEmailSvcs emailSvc) : ILabourSvcs
     {
+        #region Dependancy
+        private readonly ILabourRepo _labourRepo = labourRepo;
+        private readonly IEmailSvcs _emailSvcs = emailSvc;
+        #endregion
         #region Labour Details
         #region Crud
         public async Task<SvcsBase> GetAllLabourTypes()
