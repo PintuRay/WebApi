@@ -16,20 +16,20 @@ namespace FMS.Server.Controllers.User
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         [HttpGet]
-        public async Task<IActionResult> GetAllLabourTypes()
+        public async Task<IActionResult> LabourTypes()
         {
             var result = await _labourSvcs.GetAllLabourTypes();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateLabourDetail([FromBody] LabourModel model)
+        public async Task<IActionResult> Create([FromBody] LabourModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _labourSvcs.CreateLabourDetail(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateLabourDetail), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -38,13 +38,13 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllLabourDetails()
+        public async Task<IActionResult> Get()
         {
             var result = await _labourSvcs.GetAllLabourDetails();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut,  Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateLabourDetail([FromQuery] Guid id, [FromBody] LabourModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] LabourModel model)
         {
             if (id != Guid.Empty)
             {
@@ -65,8 +65,8 @@ namespace FMS.Server.Controllers.User
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveLabourDetail([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -82,13 +82,13 @@ namespace FMS.Server.Controllers.User
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedLabourDetails()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _labourSvcs.GetRemovedLabourDetails();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverLabourDetails([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -110,14 +110,14 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllLabourDetails([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _labourSvcs.RecoverAllLabourDetails(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteLabourDetails([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -131,7 +131,7 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllLabourDetails([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _labourSvcs.DeleteAllLabourDetails(Ids, user);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
-    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
+    [ApiController, Route("Accounting"), Authorize(Roles = "Devloper,Admin")]
     public class AccountingController(IAccountingSvcs accountingSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
@@ -15,7 +15,7 @@ namespace FMS.Server.Controllers.Admin
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Group
-        [HttpGet]
+        [HttpGet, Route("Group/Get")]
         public async Task<IActionResult> GetGroups()
         {
             var result = await _accountingSvcs.GetGroups();
@@ -24,7 +24,7 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region SubGroup
         #region Crud
-        [HttpPost, Authorize(policy: "Create")]
+        [HttpPost, Route("SubGroup/Create"), Authorize(policy: "Create")]
         public async Task<IActionResult> CreateSubGroup([FromBody] LedgerSubGroupModel model)
         {
             if (ModelState.IsValid)
@@ -39,21 +39,21 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
+        [HttpGet,Route("SubGroup/Get")]
         public async Task<IActionResult> GetSubGroups([FromQuery]Guid GroupId, [FromQuery] Guid BranchId)
         {
             var result = await _accountingSvcs.GetSubGroups(GroupId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateSubGroup([FromQuery] Guid Id, [FromBody] LedgerSubGroupModel model)
+        [HttpPut, Route("SubGroup/Update/{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateSubGroup([FromRoute] Guid id, [FromBody] LedgerSubGroupModel model)
         {
-            if (Id != Guid.Empty)
+            if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _accountingSvcs.UpdateSubGroup(Id, model, user);
+                    var result = await _accountingSvcs.UpdateSubGroup(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result): BadRequest(result);
                 }
                 else
@@ -67,13 +67,13 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveSubGroup([FromQuery] Guid Id, [FromQuery] Guid BranchId)
+        [HttpDelete, Route("SubGroup/Remove"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveSubGroup([FromQuery] Guid id, [FromQuery] Guid BranchId)
         {
-            if (Id != Guid.Empty)
+            if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _accountingSvcs.RemoveSubGroup(Id, BranchId, user);
+                var result = await _accountingSvcs.RemoveSubGroup(id, BranchId, user);
                 return result.ResponseCode == 200 ? Ok(result) :  BadRequest(result);
             }
             else
@@ -83,13 +83,13 @@ namespace FMS.Server.Controllers.Admin
         }
         #endregion
         #region Recover
-        [HttpGet]
-        public async Task<IActionResult> GetRemovedSubGroup([FromQuery] Guid BranchId)
+        [HttpGet, Route("SubGroup/GetRemoved/{BranchId}")]
+        public async Task<IActionResult> GetRemovedSubGroup([FromRoute] Guid BranchId)
         {
             var result = await _accountingSvcs.GetRemovedSubGroups(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
+        [HttpPatch, Route("SubGroup/Recover"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverSubGroup([FromQuery] Guid Id, [FromQuery] Guid BranchId)
         {
             if (Id != Guid.Empty)
@@ -111,14 +111,14 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPost, Route("SubGroup/RecoverAll"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverAllSubGroup([FromBody] List<string> Ids, [FromQuery] Guid BranchId)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _accountingSvcs.RecoverAllSubGroup(Ids, BranchId, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
+        [HttpDelete, Route("SubGroup/Delete"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteSubGroup([FromQuery] Guid Id, [FromQuery] Guid BranchId)
         {
             if (Id != Guid.Empty)
@@ -132,7 +132,7 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Delete")]
+        [HttpPost, Route("SubGroup/DeleteAll"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAllSubGroup([FromBody] List<string> Ids, [FromQuery] Guid BranchId)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -143,7 +143,7 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Ledgers
         #region Crud
-        [HttpPost, Authorize(policy: "Create")]
+        [HttpPost, Route("Ledger/Create"),Authorize(policy: "Create")]
         public async Task<IActionResult> CreateLedger([FromBody] LedgerModel model)
         {
             if (ModelState.IsValid)
@@ -158,14 +158,14 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
+        [HttpGet, Route("Ledger/Get")]
         public async Task<IActionResult> GetLedgers()
         {
             var result = await _accountingSvcs.GetLedgers();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateLedger([FromQuery] Guid id, [FromBody] LedgerModel model)
+        [HttpPut, Route("Ledger/Update/{id}"),Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateLedger([FromRoute] Guid id, [FromBody] LedgerModel model)
         {
             if (id != Guid.Empty)
             {
@@ -186,8 +186,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveLedger([FromQuery] Guid id)
+        [HttpDelete, Route("Ledger/Remove/{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveLedger([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -202,14 +202,14 @@ namespace FMS.Server.Controllers.Admin
         }
         #endregion
         #region Recover
-        [HttpGet]
+        [HttpGet,Route("Ledger/GetRemoved")]
         public async Task<IActionResult> GetRemovedLedgers()
         {
             var result = await _accountingSvcs.GetRemovedLedgers();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverLedger([FromQuery] Guid id)
+        [HttpPatch, Route("Ledger/Recover/{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverLedger([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -230,15 +230,15 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPost, Route("Ledger/RecoverAll"), Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverAllLedger([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _accountingSvcs.RecoverAllLedger(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteLedger([FromQuery] Guid id)
+        [HttpDelete, Route("Ledger/Delete/{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteLedger([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -251,7 +251,7 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Delete")]
+        [HttpPost, Route("Ledger/DeleteAll"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAllLedger([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);

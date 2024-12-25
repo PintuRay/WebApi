@@ -2,17 +2,25 @@
 using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class AddressModel
     {
+        [Required]
         public Guid Fk_CountryId { get; set; }
+        [Required]
         public Guid Fk_StateId { get; set; }
+        [Required]
         public Guid Fk_DistId { get; set; }
+        [Required]
         public string At { get; set; }
+        [Required]
         public string Post { get; set; }
+        [Required]
         public string City { get; set; }
+        [Required]
         public string PinCode { get; set; }
     }
     public class Address : AddressModel

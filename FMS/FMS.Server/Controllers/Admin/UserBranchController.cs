@@ -17,19 +17,19 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Crud
         [HttpGet]
-        public async Task<IActionResult> GetUserBranches()
+        public async Task<IActionResult> Get()
         {
             var result = await _userBranchSvcs.GetUserBranches();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateUserBranch([FromBody] UserBranchModel model)
+        public async Task<IActionResult> Create([FromBody] UserBranchModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _userBranchSvcs.CreateUserBranch(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateUserBranch), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -37,8 +37,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest(errors);
             }
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateUserBranch([FromQuery] Guid id, [FromBody] UserBranchModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UserBranchModel model)
         {
             if (id != Guid.Empty)
             {
@@ -59,8 +59,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveUserBranch([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -76,13 +76,13 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedUserBranches()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _userBranchSvcs.GetRemovedUserBranches();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverUserBranch([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -104,14 +104,14 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllUserBranches([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _userBranchSvcs.RecoverAllUserBranches(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete,Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteUserBranch([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -125,7 +125,7 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllUserBranches([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _userBranchSvcs.DeleteAllUserBranches(Ids, user);

@@ -1,5 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Transaction;
 using FMS.Svcs.Transaction.Damage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,13 +16,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateDamageTransaction([FromBody] DamageOrderModel model)
+        public async Task<IActionResult> Create([FromBody] DamageOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _damageSvcs.CreateDamageTransaction(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateDamageTransaction), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -32,19 +31,19 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetDamagesTransactions()
+        public async Task<IActionResult> Get()
         {
             var result = await _damageSvcs.GetDamagesTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetDamageTransactionById([FromQuery]Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute]Guid Id)
         {
             var result = await _damageSvcs.GetDamageTransactionById(Id);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateDamageTransaction([FromQuery] Guid id, [FromBody] DamageOrderModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] DamageOrderModel model)
         {
             if (id != Guid.Empty)
             {
@@ -65,8 +64,8 @@ namespace FMS.Server.Controllers.Transaction
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveDamageTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -82,13 +81,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedDamageTransactions()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _damageSvcs.GetRemovedDamageTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverDamageTransaction([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -110,14 +109,14 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllDamageTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _damageSvcs.RecoverAllDamageTransactions(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteDamageTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -131,7 +130,7 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllDamageTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _damageSvcs.DeleteAllDamageTransactions(Ids, user);

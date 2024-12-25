@@ -16,19 +16,19 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Crud
         [HttpGet]
-        public async Task<IActionResult> GetBranchFinancialYears(PaginationParams pagination)
+        public async Task<IActionResult> Get(PaginationParams pagination)
         {
             var result = await _branchFinancialYearSvcs.GetBranchFinancialYears(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateBranchFinancialYear([FromBody] BranchFinancialYearModel model)
+        public async Task<IActionResult> Create([FromBody] BranchFinancialYearModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchFinancialYearSvcs.CreateBranchFinancialYear(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateBranchFinancialYear), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -36,8 +36,8 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateBranchFinancialYear([FromQuery] Guid Id, [FromBody] BranchFinancialYearModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromBody] BranchFinancialYearModel model)
         {
             if (Id != Guid.Empty)
             {
@@ -58,8 +58,8 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveBranchFinancialYear([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -75,13 +75,13 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedBranchFinancialYears(PaginationParams pagination)
+        public async Task<IActionResult> GetRemoved(PaginationParams pagination)
         {
             var result = await _branchFinancialYearSvcs.GetRemovedBranchFinancialYears(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverBranchFinancialYear([FromQuery] Guid Id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid Id)
         {
             if (Id != Guid.Empty)
             {
@@ -102,8 +102,8 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteBranchFinancialYear([FromQuery] Guid Id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid Id)
         {
             if (Id != Guid.Empty)
             {
@@ -117,14 +117,14 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllBranchFinancialYear(List<string> Ids)
+        public async Task<IActionResult> RecoverAll(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _branchFinancialYearSvcs.RecoverAllBranchFinancialYear(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllBranchFinancialYear(List<string> Ids)
+        public async Task<IActionResult> DeleteAll(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _branchFinancialYearSvcs.DeleteAllBranchFinancialYear(Ids, user);

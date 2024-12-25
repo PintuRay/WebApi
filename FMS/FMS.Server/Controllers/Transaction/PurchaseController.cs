@@ -17,13 +17,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreatePurchaseTransaction([FromBody] PurchaseOrderModel model)
+        public async Task<IActionResult> Create([FromBody] PurchaseOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _purchaseSvcs.CreatePurchaseTransaction(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreatePurchaseTransaction), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -32,13 +32,13 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetPurchaseTransactions()
+        public async Task<IActionResult> Get()
         {
             var result = await _purchaseSvcs.GetPurchaseTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetPurchaseTransactionById([FromQuery] Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid Id)
         {
             if (Id != Guid.Empty)
             {
@@ -50,8 +50,8 @@ namespace FMS.Server.Controllers.Transaction
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdatePurchaseTransaction([FromQuery] Guid id, [FromBody] PurchaseOrderModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PurchaseOrderModel model)
         {
             if (id != Guid.Empty)
             {
@@ -72,8 +72,8 @@ namespace FMS.Server.Controllers.Transaction
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemovePurchaseTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -89,13 +89,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedPurchaseTransactions()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _purchaseSvcs.GetRemovedPurchaseTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverPurchaseTransaction([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -117,14 +117,14 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllPurchaseTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _purchaseSvcs.RecoverAllPurchaseTransactions(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeletePurchaseTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -138,7 +138,7 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllPurchaseTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _purchaseSvcs.DeleteAllPurchaseTransactions(Ids, user);

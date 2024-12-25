@@ -16,13 +16,13 @@ namespace FMS.Server.Controllers.User
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateLedgerBalance([FromBody] LedgerBalanceModel model)
+        public async Task<IActionResult> Create([FromBody] LedgerBalanceModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _ledgerBalanceSvcs.CreateLedgerBalance(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateLedgerBalance), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -31,13 +31,13 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetLedgerBalances()
+        public async Task<IActionResult> Get()
         {
             var result = await _ledgerBalanceSvcs.GetLedgerBalances();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut,  Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateLedgerBalance([FromQuery] Guid id, [FromBody] LedgerBalanceModel model)
+        [HttpPut("{id}"),  Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] LedgerBalanceModel model)
         {
             if (id != Guid.Empty)
             {
@@ -58,8 +58,8 @@ namespace FMS.Server.Controllers.User
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveLedgerBalance([FromQuery] Guid id)
+        [HttpDelete("{id}"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -75,13 +75,13 @@ namespace FMS.Server.Controllers.User
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedLedgerBalance()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _ledgerBalanceSvcs.GetRemovedLedgerBalance();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch,  Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverLedgerBalance([FromQuery] Guid id)
+        [HttpPatch("{id}"),  Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -103,14 +103,14 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllLedgerBalance([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _ledgerBalanceSvcs.RecoverAllLedgerBalance(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteLedgerBalance([FromQuery] Guid id)
+        [HttpDelete("{id}"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -124,7 +124,7 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllLedgerBalance([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _ledgerBalanceSvcs.DeleteAllLedgerBalance(Ids, user);

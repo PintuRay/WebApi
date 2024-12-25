@@ -2,24 +2,37 @@
 using FMS.Db.CustomVaidator;
 using FMS.Db.Entity;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Model.Account.Authentication
 {
     public class RegisterModel
     {
+        [Required]
         public Guid FkTokenId { get; set; }
+        [Required, StringLength(30, MinimumLength = 5)]
         public string Name { get; set; }
+        [Required]
         public DateTime BirthDate { get; set; }
+        [Required]
         public string MaratialStatus { get; set; }
+        [Required]
         public string Gender { get; set; }
+        [Required]
         public IFormFile ProfilePhoto { get; set; }
+        [Required]
         public  string Email { get; set; }
+        [Required]
         public  string PhoneNumber { get; set; }
+        [Required]
         public string Password { get; set; }
+        [Required]
         public string ConfirmPassword { get; set; }
         public bool TermCondition { get; set; }
+        [Required]
         public string RouteUls { get; set; }
         public string PhotoPath { get; set; }
+        [Required]
         public AddressModel Address { get; set; }
     }
     public class RegisterValidator : AbstractValidator<RegisterModel>

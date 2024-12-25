@@ -16,13 +16,13 @@ namespace FMS.Server.Controllers.User
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateParty([FromBody] PartyModel model)
+        public async Task<IActionResult> Create([FromBody] PartyModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _partySvcs.CreateParty(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateParty), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -31,13 +31,13 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetParties()
+        public async Task<IActionResult> Get()
         {
             var result = await _partySvcs.GetParties();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut,  Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateParty([FromQuery] Guid id, [FromBody] PartyModel model)
+        [HttpPut("{id}"),  Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PartyModel model)
         {
             if (id != Guid.Empty)
             {
@@ -58,8 +58,8 @@ namespace FMS.Server.Controllers.User
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveParty([FromQuery] Guid id)
+        [HttpDelete("{id}"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -75,13 +75,13 @@ namespace FMS.Server.Controllers.User
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedParty()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _partySvcs.GetRemovedParty();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch,  Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverParty([FromQuery] Guid id)
+        [HttpPatch("{id}"),  Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -103,14 +103,14 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllParty([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _partySvcs.RecoverAllParty(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteParty([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -123,8 +123,8 @@ namespace FMS.Server.Controllers.User
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllParty([FromBody] List<string> Ids)
+        [HttpPost, Authorize(policy: "Delete")]    
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _partySvcs.DeleteAllParty(Ids, user);

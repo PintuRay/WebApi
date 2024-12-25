@@ -16,13 +16,13 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateLabourRate([FromBody] LabourRateModel model)
+        public async Task<IActionResult> Create([FromBody] LabourRateModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _labourRateSvcs.CreateLabourRate(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateLabourRate), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -31,13 +31,13 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllLabourRates([FromQuery] Guid FinancialYearId, Guid BranchId)
+        public async Task<IActionResult> Get([FromQuery] Guid FinancialYearId, [FromQuery] Guid BranchId)
         {
             var result = await _labourRateSvcs.GetAllLabourRates(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateLabourRate([FromQuery] Guid id, [FromBody] LabourRateModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] LabourRateModel model)
         {
             if (id != Guid.Empty)
             {
@@ -58,8 +58,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveLabourRate([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -75,13 +75,13 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedLabourRate([FromQuery] Guid FinancialYearId, [FromQuery] Guid BranchId)
+        public async Task<IActionResult> GetRemoved([FromQuery] Guid FinancialYearId, [FromQuery] Guid BranchId)
         {
             var result = await _labourRateSvcs.GetRemovedLabourRate(FinancialYearId, BranchId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverLabourRate([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -103,14 +103,14 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllLabourRate([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _labourRateSvcs.RecoverAllLabourRate(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteLabourRate([FromQuery] Guid id)
+        [HttpDelete("{id}"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -124,7 +124,7 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllLabourRate([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _labourRateSvcs.DeleteAllLabourRate(Ids, user);

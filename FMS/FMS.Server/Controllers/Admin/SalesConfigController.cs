@@ -18,13 +18,13 @@ namespace FMS.Server.Controllers.Admin
         #region Crud
  
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateSales([FromBody] SalesOrderSetupModel model)
+        public async Task<IActionResult> Create([FromBody] SalesOrderSetupModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _salesSvcs.CreateSales(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateSales), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -33,13 +33,13 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetSales()
+        public async Task<IActionResult> Get()
         {
             var result = await _salesSvcs.GetSales();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut,  Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateSales([FromQuery] Guid id, [FromBody] SalesOrderSetupModel model)
+        [HttpPut("{id}"),  Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] SalesOrderSetupModel model)
         {
             if (id != Guid.Empty)
             {
@@ -60,8 +60,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveSales([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -77,13 +77,13 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedSales()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _salesSvcs.GetRemovedSales();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverSales([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -105,14 +105,14 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllSales([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _salesSvcs.RecoverAllSales(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteSales([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -126,7 +126,7 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllSales([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _salesSvcs.DeleteAllSales(Ids, user);

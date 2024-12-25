@@ -1,5 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Accounting;
 using FMS.Svcs.Accounting.Receipt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,13 +22,13 @@ namespace FMS.Server.Controllers.Accounting
         }
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateRecipt([FromBody] ReceiptOrderModel model)
+        public async Task<IActionResult> Create([FromBody] ReceiptOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _receiptSvcs.CreateRecipt(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateRecipt), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -38,19 +37,19 @@ namespace FMS.Server.Controllers.Accounting
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetReceipts()
+        public async Task<IActionResult> Get()
         {
             var result = await _receiptSvcs.GetReceipts();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetReceiptById([FromQuery] Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid Id)
         {
             var result = await _receiptSvcs.GetReceiptById(Id);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpDelete,Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveReceipt([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Removed([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -66,13 +65,13 @@ namespace FMS.Server.Controllers.Accounting
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedReceipt()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _receiptSvcs.GetRemovedReceipt();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverReceipt([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -94,14 +93,14 @@ namespace FMS.Server.Controllers.Accounting
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllReceipt([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _receiptSvcs.RecoverAllReceipt(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteReceipt([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -115,7 +114,7 @@ namespace FMS.Server.Controllers.Accounting
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllReceipt([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _receiptSvcs.DeleteAllReceipt(Ids, user);

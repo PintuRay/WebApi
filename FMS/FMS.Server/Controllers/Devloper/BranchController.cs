@@ -17,19 +17,19 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Crud
         [HttpGet]
-        public async Task<IActionResult> GetAllBranch([FromBody] PaginationParams pagination)
+        public async Task<IActionResult> Get([FromBody] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetAllBranch(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateBranch([FromBody] BranchModel data)
+        public async Task<IActionResult> Create([FromBody] BranchModel data)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.CreateBranch(data, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateBranch), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -37,8 +37,8 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateBranch([FromQuery] Guid id, [FromBody] BranchModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] BranchModel model)
         {
             if (id != Guid.Empty)
             {
@@ -59,8 +59,8 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveBranch([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -76,13 +76,13 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetAllRemovedBranch([FromBody] PaginationParams pagination)
+        public async Task<IActionResult> GetRemoved([FromBody] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetRemovedBranches(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverBranch([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -104,14 +104,14 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllBranch([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _branchSvcs.RecoverAllBranch(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteBranch([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -125,7 +125,7 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllBranch([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _branchSvcs.DeleteAllBranch(Ids, user);

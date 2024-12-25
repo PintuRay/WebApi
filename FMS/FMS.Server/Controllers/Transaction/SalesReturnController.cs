@@ -17,13 +17,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateSalesReturnTransaction([FromBody] SalesReturnOrderModel model)
+        public async Task<IActionResult> Create([FromBody] SalesReturnOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _salesReturnSvcs.CreateSaleReturnTransaction(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateSalesReturnTransaction), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -32,13 +32,13 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetSaleReturnTransactions()
+        public async Task<IActionResult> Get()
         {
             var result = await _salesReturnSvcs.GetSaleReturnsTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut,  Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateSaleReturnTransaction([FromQuery] Guid id, [FromBody] SalesReturnOrderModel model)
+        [HttpPut("{id}"),  Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] SalesReturnOrderModel model)
         {
             if (id != Guid.Empty)
             {
@@ -59,8 +59,8 @@ namespace FMS.Server.Controllers.Transaction
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveSaleReturnTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -76,13 +76,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedSaleReturnTransactions()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _salesReturnSvcs.GetRemovedSaleReturnTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch,  Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverSaleReturnTransaction([FromQuery] Guid id)
+        [HttpPatch("{id}"),  Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -104,14 +104,14 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllSaleReturnTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _salesReturnSvcs.RecoverAllSaleReturnTransactions(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete,  Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteSaleReturnTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -125,7 +125,7 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllSaleReturnTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _salesReturnSvcs.DeleteAllSaleReturnTransactions(Ids, user);

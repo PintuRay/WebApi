@@ -16,13 +16,13 @@ namespace FMS.Server.Controllers.Admin
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateCompany([FromBody] CompanyModel data)
+        public async Task<IActionResult> Create([FromBody] CompanyModel data)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _companySvcs.CreateCompany(data, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateCompany), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -30,14 +30,14 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetCompany([FromQuery] string BranchId)
+        [HttpGet("{BranchId}")]
+        public async Task<IActionResult> Get([FromRoute] string BranchId)
         {
             var result = await _companySvcs.GetCompany(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateBranch([FromQuery] Guid id, [FromBody] CompanyModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CompanyModel model)
         {
             if (id != Guid.Empty)
             {
@@ -58,8 +58,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete,Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveCompany([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -74,14 +74,14 @@ namespace FMS.Server.Controllers.Admin
         }
         #endregion
         #region Recover
-        [HttpGet]
-        public async Task<IActionResult> GetRemovedCompanies([FromQuery] string BranchId)
+        [HttpGet("{BranchId}")]
+        public async Task<IActionResult> GetRemoved([FromRoute] string BranchId)
         {
             var result = await _companySvcs.GetRemovedCompanies(BranchId);
             return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 204 ? NoContent() : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverCompany([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -103,14 +103,14 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllCompany([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _companySvcs.RecoverAllCompany(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteCompany([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -124,7 +124,7 @@ namespace FMS.Server.Controllers.Admin
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllCompany([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _companySvcs.DeleteAllCompany(Ids, user);

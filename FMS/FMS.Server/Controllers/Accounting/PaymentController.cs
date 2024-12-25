@@ -1,5 +1,4 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Accounting;
 using FMS.Svcs.Accounting.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,25 +22,25 @@ namespace FMS.Server.Controllers.Accounting
         }
         #region Crud
         [HttpGet]
-        public async Task<IActionResult> GetPayments()
+        public async Task<IActionResult> Get()
         {
             var result = await _paymentSvcs.GetPayments();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetPaymentById([FromQuery] Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid Id)
         {
             var result = await _paymentSvcs.GetPaymentById(Id);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreatePayment([FromBody] PaymentOrderModel model)
+        public async Task<IActionResult> Create([FromBody] PaymentOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _paymentSvcs.CreatePayment(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreatePayment), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -49,8 +48,8 @@ namespace FMS.Server.Controllers.Accounting
                 return BadRequest(errors);
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemovePayment([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -66,13 +65,13 @@ namespace FMS.Server.Controllers.Accounting
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedPayment()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _paymentSvcs.GetRemovedPayment();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverPayment([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -94,14 +93,14 @@ namespace FMS.Server.Controllers.Accounting
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllPayment([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _paymentSvcs.RecoverAllPayment(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeletePayment([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -115,7 +114,7 @@ namespace FMS.Server.Controllers.Accounting
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllPayment([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _paymentSvcs.DeleteAllPayment(Ids, user);

@@ -17,13 +17,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateOutwardSupplyTransaction([FromBody] OutwardSupplyOrderModel model)
+        public async Task<IActionResult> Create([FromBody] OutwardSupplyOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _outwardSupplySvcs.CreateOutwardSupplyTransaction(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateOutwardSupplyTransaction), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -32,19 +32,19 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetOutwardSupplyTransactions()
+        public async Task<IActionResult> Get()
         {
             var result = await _outwardSupplySvcs.GetOutwardSupplyTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetOutwardSupplyTransactionById([FromQuery] Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid Id)
         {
             var result = await _outwardSupplySvcs.GetOutwardSupplyTransactionById(Id);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateOutwardSupplyTransaction([FromQuery] Guid id, [FromBody] OutwardSupplyOrderModel model)
+        [HttpPut("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] OutwardSupplyOrderModel model)
         {
             if (id != Guid.Empty)
             {
@@ -65,8 +65,8 @@ namespace FMS.Server.Controllers.Transaction
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveOutwardSupplyTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -82,13 +82,13 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedOutwardSupplyTransactions()
+        public async Task<IActionResult> GetRemoved()
         {
             var result = await _outwardSupplySvcs.GetRemovedOutwardSupplyTransactions();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverOutwardSupplyTransaction([FromQuery] Guid id)
+        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -110,14 +110,14 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllOutwardSupplyTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _outwardSupplySvcs.RecoverAllOutwardSupplyTransactions(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteOutwardSupplyTransaction([FromQuery] Guid id)
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -131,7 +131,7 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllOutwardSupplyTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _outwardSupplySvcs.DeleteAllOutwardSupplyTransactions(Ids, user);
