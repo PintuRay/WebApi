@@ -1,34 +1,29 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.User;
+using FMS.Svcs.Admin;
+using FMS.Svcs.Admin.Production;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FMS.Server.Controllers.User
+namespace FMS.Server.Controllers.Admin
 {
     [Produces("application/json")]
-    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
-    public class LabourDetailsController(IUserSvcs userSvcs, UserManager<AppUser> userManager) : ControllerBase
+    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
+    public class ProductionConfigController(IProductionSvcs productionSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IUserSvcs _userSvcs = userSvcs;
+        private readonly IProductionSvcs _productionSvcs = productionSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
-        [HttpGet]
-        public async Task<IActionResult> GetAllLabourTypes()
-        {
-            var result = await _userSvcs.GetAllLabourTypes();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateLabourDetail([FromBody] LabourModel model)
+        public async Task<IActionResult> CreateProduction([FromBody] ProductionOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _userSvcs.CreateLabourDetail(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateLabourDetail), result) : BadRequest(result);
+                var result = await _productionSvcs.CreateProduction(model, user);
+                return result.ResponseCode == 201 ? Created(nameof(CreateProduction), result) : BadRequest(result);
             }
             else
             {
@@ -37,20 +32,20 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllLabourDetails()
+        public async Task<IActionResult> GetProduction()
         {
-            var result = await _userSvcs.GetAllLabourDetails();
+            var result = await _productionSvcs.GetProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateLabourDetail([FromRoute] Guid id, [FromBody] LabourModel model)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateProduction([FromQuery] Guid id, [FromBody] ProductionOrderModel model)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _userSvcs.UpdateLabourDetail(id, model, user);
+                    var result = await _productionSvcs.UpdateProduction(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -64,13 +59,13 @@ namespace FMS.Server.Controllers.User
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Labourid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveLabourDetail([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveProduction([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _userSvcs.RemoveLabourDetail(id, user);
+                var result = await _productionSvcs.RemoveProduction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -81,20 +76,20 @@ namespace FMS.Server.Controllers.User
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedLabourDetails()
+        public async Task<IActionResult> GetRemovedProduction()
         {
-            var result = await _userSvcs.GetRemovedLabourDetails();
+            var result = await _productionSvcs.GetRemovedProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverLabourDetails([FromRoute] Guid id)
+        [HttpPatch,  Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverProduction([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _userSvcs.RecoverLabourDetails(id, user);
+                    var result = await _productionSvcs.RecoverProduction(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -109,19 +104,19 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllLabourDetails([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAllProduction([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _userSvcs.RecoverAllLabourDetails(Ids, user);
+            var result = await _productionSvcs.RecoverAllProduction(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteLabourDetails([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteProduction([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _userSvcs.DeleteLabourDetails(id, user);
+                var result = await _productionSvcs.DeleteProduction(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -130,10 +125,10 @@ namespace FMS.Server.Controllers.User
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllLabourDetails([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAllProduction([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _userSvcs.DeleteAllLabourDetails(Ids, user);
+            var result = await _productionSvcs.DeleteAllProduction(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

@@ -81,7 +81,7 @@ namespace FMS.Server.Controllers.Devloper
             var result = await _branchSvcs.GetRemovedBranches(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
+        [HttpPatch, Authorize(policy: "Update")]
         public async Task<IActionResult> RecoverBranch([FromQuery] Guid id)
         {
             if (id != Guid.Empty)

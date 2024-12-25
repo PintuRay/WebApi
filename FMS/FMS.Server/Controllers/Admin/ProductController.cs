@@ -45,8 +45,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetAllUnits();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateUnit([FromRoute] Guid id, [FromBody] UnitModel model)
+        [HttpPut,  Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateUnit([FromQuery] Guid id, [FromBody] UnitModel model)
         {
             if (id != Guid.Empty)
             {
@@ -67,8 +67,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Unitid/{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveUnit([FromRoute] Guid id)
+        [HttpDelete, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveUnit([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -89,8 +89,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetRemovedUnits();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(Roles = "Devloper,Admin"),Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverUnit([FromRoute] Guid id)
+        [HttpPatch,  Authorize(Roles = "Devloper,Admin"),Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverUnit([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -118,8 +118,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.RecoverAllUnit(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteUnit([FromRoute] Guid id)
+        [HttpDelete, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteUnit([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -164,8 +164,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetAlternateUnits();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateAlternateUnit([FromRoute] Guid id, [FromBody] AlternateUnitModel model)
+        [HttpPut, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateAlternateUnit([FromQuery] Guid id, [FromBody] AlternateUnitModel model)
         {
             if (id != Guid.Empty)
             {
@@ -186,8 +186,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Branchid/{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveAlternateUnit([FromRoute] Guid id)
+        [HttpDelete, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveAlternateUnit([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -208,8 +208,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetRemovedAlternateUnits();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAlternateUnit([FromRoute] Guid id)
+        [HttpPatch, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverAlternateUnit([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -237,8 +237,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.RecoverAllAlternateUnit(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAlternateUnit([FromRoute] Guid id)
+        [HttpDelete,  Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteAlternateUnit([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -283,8 +283,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetProductGroups();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateProductGroup([FromRoute] Guid id, [FromBody] ProductGroupModel model)
+        [HttpPut, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateProductGroup([FromQuery] Guid id, [FromBody] ProductGroupModel model)
         {
             if (id != Guid.Empty)
             {
@@ -305,8 +305,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("ProductGroupid/{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveProductGroup([FromRoute] Guid id)
+        [HttpDelete, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveProductGroup([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -327,8 +327,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetRemovedProductGroup();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverProductGroup([FromRoute] Guid id)
+        [HttpPatch, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverProductGroup([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -356,8 +356,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.RecoverAllProductGroup(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteProductGroup([FromRoute] Guid id)
+        [HttpDelete, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteProductGroup([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -402,8 +402,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetProductSubGroups(GroupId);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateProductSubGroup([FromRoute] Guid id, [FromBody] ProductSubGroupModel model)
+        [HttpPut,  Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateProductSubGroup([FromQuery] Guid id, [FromBody] ProductSubGroupModel model)
         {
             if (id != Guid.Empty)
             {
@@ -424,8 +424,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("ProductSubgroupid/{id}"), Authorize(Roles = "Devloper,Admin"),  Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveProductSubGroup([FromRoute] Guid id)
+        [HttpDelete,Authorize(Roles = "Devloper,Admin"),  Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveProductSubGroup([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -446,8 +446,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetRemovedProductSubGroup();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverProductSubGroup([FromRoute] Guid id)
+        [HttpPatch,  Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverProductSubGroup([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -475,8 +475,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.RecoverAllProductSubGroup(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteProductSubGroup([FromRoute] Guid id)
+        [HttpDelete, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteProductSubGroup([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -521,8 +521,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetAllProducts();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] Guid id, [FromBody] ProductModel model)
+        [HttpPut, Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateProduct([FromQuery] Guid id, [FromBody] ProductModel model)
         {
             if (id != Guid.Empty)
             {
@@ -543,8 +543,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Productid/{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveProduct([FromRoute] Guid id)
+        [HttpDelete,  Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveProduct([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -565,8 +565,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.GetRemovedProduct();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverProduct([FromRoute] Guid id)
+        [HttpPatch,  Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverProduct([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -594,8 +594,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productSvcs.RecoverAllProduct(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
+        [HttpDelete,  Authorize(Roles = "Devloper,Admin"), Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteProduct([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {

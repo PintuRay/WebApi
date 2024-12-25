@@ -1,5 +1,6 @@
 ﻿using FMS.Db.Entity;
 using FMS.Svcs.Accounting;
+using FMS.Svcs.Accounting.Receipt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,16 +9,16 @@ namespace FMS.Server.Controllers.Accounting
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
-    public class ReciptController(IAccountingSvcs accountingSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class ReciptController(IReceiptSvcs receiptSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAccountingSvcs _accountingSvcs = accountingSvcs;
+        private readonly IReceiptSvcs _receiptSvcs = receiptSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         [HttpGet]
         public async Task<IActionResult> GetReceiptVoucherNo([FromQuery] string CashBank)
         {
-            var result = await _accountingSvcs.GetReceiptVoucherNo(CashBank);
+            var result = await _receiptSvcs.GetReceiptVoucherNo(CashBank);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         #region Crud
@@ -27,7 +28,7 @@ namespace FMS.Server.Controllers.Accounting
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _accountingSvcs.CreateRecipt(model, user);
+                var result = await _receiptSvcs.CreateRecipt(model, user);
                 return result.ResponseCode == 201 ? Created(nameof(CreateRecipt), result) : BadRequest(result);
             }
             else
@@ -39,22 +40,22 @@ namespace FMS.Server.Controllers.Accounting
         [HttpGet]
         public async Task<IActionResult> GetReceipts()
         {
-            var result = await _accountingSvcs.GetReceipts();
+            var result = await _receiptSvcs.GetReceipts();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet, Route("{Id}")]
-        public async Task<IActionResult> GetReceiptById([FromRoute] Guid Id)
+        [HttpGet]
+        public async Task<IActionResult> GetReceiptById([FromQuery] Guid Id)
         {
-            var result = await _accountingSvcs.GetReceiptById(Id);
+            var result = await _receiptSvcs.GetReceiptById(Id);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpDelete, Route("Reciptid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveReceipt([FromRoute] Guid id)
+        [HttpDelete,Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveReceipt([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _accountingSvcs.RemoveReceipt(id, user);
+                var result = await _receiptSvcs.RemoveReceipt(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -67,18 +68,18 @@ namespace FMS.Server.Controllers.Accounting
         [HttpGet]
         public async Task<IActionResult> GetRemovedReceipt()
         {
-            var result = await _accountingSvcs.GetRemovedReceipt();
+            var result = await _receiptSvcs.GetRemovedReceipt();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverReceipt([FromRoute] Guid id)
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverReceipt([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _accountingSvcs.RecoverReceipt(id, user);
+                    var result = await _receiptSvcs.RecoverReceipt(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -96,16 +97,16 @@ namespace FMS.Server.Controllers.Accounting
         public async Task<IActionResult> RecoverAllReceipt([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _accountingSvcs.RecoverAllReceipt(Ids, user);
+            var result = await _receiptSvcs.RecoverAllReceipt(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteReceipt([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteReceipt([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _accountingSvcs.DeleteReceipt(id, user);
+                var result = await _receiptSvcs.DeleteReceipt(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -117,7 +118,7 @@ namespace FMS.Server.Controllers.Accounting
         public async Task<IActionResult> DeleteAllReceipt([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _accountingSvcs.DeleteAllReceipt(Ids, user);
+            var result = await _receiptSvcs.DeleteAllReceipt(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

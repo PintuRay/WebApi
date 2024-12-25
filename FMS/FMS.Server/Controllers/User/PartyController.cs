@@ -1,28 +1,28 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Transaction;
+using FMS.Svcs.User.Party;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FMS.Server.Controllers.Transaction
+namespace FMS.Server.Controllers.User
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
-    public class ServiceTransactionController(ITransactionSvcs transactionSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class PartyController(IPartySvcs partySvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly ITransactionSvcs _transactionSvcs = transactionSvcs;
+        private readonly IPartySvcs _partySvcs = partySvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateServiceTransaction([FromBody] LabourOrderModel model)
+        public async Task<IActionResult> CreateParty([FromBody] PartyModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _transactionSvcs.CreateServiceTransaction(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(CreateServiceTransaction), result) : BadRequest(result);
+                var result = await _partySvcs.CreateParty(model, user);
+                return result.ResponseCode == 201 ? Created(nameof(CreateParty), result) : BadRequest(result);
             }
             else
             {
@@ -31,20 +31,20 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetServiceTransactions()
+        public async Task<IActionResult> GetParties()
         {
-            var result = await _transactionSvcs.GetServiceTransactions();
+            var result = await _partySvcs.GetParties();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateServiceTransaction([FromRoute] Guid id, [FromBody] LabourOrderModel model)
+        [HttpPut,  Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateParty([FromQuery] Guid id, [FromBody] PartyModel model)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _transactionSvcs.UpdateServiceTransaction(id, model, user);
+                    var result = await _partySvcs.UpdateParty(id, model, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -58,13 +58,13 @@ namespace FMS.Server.Controllers.Transaction
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Serviceid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveServiceTransaction([FromRoute] Guid id)
+        [HttpDelete,  Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveParty([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _transactionSvcs.RemoveServiceTransaction(id, user);
+                var result = await _partySvcs.RemoveParty(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -75,20 +75,20 @@ namespace FMS.Server.Controllers.Transaction
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemovedServiceTransactions()
+        public async Task<IActionResult> GetRemovedParty()
         {
-            var result = await _transactionSvcs.GetRemovedServiceTransactions();
+            var result = await _partySvcs.GetRemovedParty();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverServiceTransaction([FromRoute] Guid id)
+        [HttpPatch,  Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverParty([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _transactionSvcs.RecoverServiceTransaction(id, user);
+                    var result = await _partySvcs.RecoverParty(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -103,19 +103,19 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAllServiceTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> RecoverAllParty([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _transactionSvcs.RecoverAllServiceTransactions(Ids, user);
+            var result = await _partySvcs.RecoverAllParty(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteServiceTransaction([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteParty([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _transactionSvcs.DeleteServiceTransaction(id, user);
+                var result = await _partySvcs.DeleteParty(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -124,10 +124,10 @@ namespace FMS.Server.Controllers.Transaction
             }
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAllServiceTransactions([FromBody] List<string> Ids)
+        public async Task<IActionResult> DeleteAllParty([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _transactionSvcs.DeleteAllServiceTransactions(Ids, user);
+            var result = await _partySvcs.DeleteAllParty(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion

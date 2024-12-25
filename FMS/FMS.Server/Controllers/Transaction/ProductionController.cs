@@ -1,14 +1,14 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Admin;
 using FMS.Svcs.Admin.Production;
+using FMS.Svcs.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FMS.Server.Controllers.Admin
+namespace FMS.Server.Controllers.Transaction
 {
     [Produces("application/json")]
-    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
+    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
     public class ProductionController(IProductionSvcs productionSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
@@ -37,8 +37,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productionSvcs.GetProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPut, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateProduction([FromRoute] Guid id, [FromBody] ProductionOrderModel model)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> UpdateProduction([FromQuery] Guid id, [FromBody] ProductionOrderModel model)
         {
             if (id != Guid.Empty)
             {
@@ -59,8 +59,8 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("Productionid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemoveProduction([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemoveProduction([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -81,8 +81,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productionSvcs.GetRemovedProduction();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverProduction([FromRoute] Guid id)
+        [HttpPatch,  Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverProduction([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -110,8 +110,8 @@ namespace FMS.Server.Controllers.Admin
             var result = await _productionSvcs.RecoverAllProduction(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteProduction([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeleteProduction([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {

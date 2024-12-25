@@ -1,5 +1,6 @@
 ﻿using FMS.Db.Entity;
 using FMS.Svcs.Accounting;
+using FMS.Svcs.Accounting.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,26 +9,38 @@ namespace FMS.Server.Controllers.Accounting
 {
     [Produces("application/json")]
     [ApiController, Route("[controller]/[action]"), Authorize(Roles = "User,Admin,Devloper")]
-    public class PaymentController(IAccountingSvcs accountingSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class PaymentController(IPaymentSvcs paymentSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
-        private readonly IAccountingSvcs _accountingSvcs = accountingSvcs;
+        private readonly IPaymentSvcs _paymentSvcs = paymentSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         [HttpGet]
         public async Task<IActionResult> GetPaymentVoucherNo([FromQuery] string CashBank)
         {
-            var result = await _accountingSvcs.GetPaymentVoucherNo(CashBank);
+            var result = await _paymentSvcs.GetPaymentVoucherNo(CashBank);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         #region Crud
+        [HttpGet]
+        public async Task<IActionResult> GetPayments()
+        {
+            var result = await _paymentSvcs.GetPayments();
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetPaymentById([FromQuery] Guid Id)
+        {
+            var result = await _paymentSvcs.GetPaymentById(Id);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        }
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> CreatePayment([FromBody] PaymentOrderModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _accountingSvcs.CreatePayment(model, user);
+                var result = await _paymentSvcs.CreatePayment(model, user);
                 return result.ResponseCode == 201 ? Created(nameof(CreatePayment), result) : BadRequest(result);
             }
             else
@@ -36,25 +49,13 @@ namespace FMS.Server.Controllers.Accounting
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetPayments()
-        {
-            var result = await _accountingSvcs.GetPayments();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpGet, Route("{Id}")]
-        public async Task<IActionResult> GetPaymentById([FromRoute] Guid Id)
-        {
-            var result = await _accountingSvcs.GetPaymentById(Id);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpDelete, Route("Paymentid/{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> RemovePayment([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> RemovePayment([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _accountingSvcs.RemovePayment(id, user);
+                var result = await _paymentSvcs.RemovePayment(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -67,18 +68,18 @@ namespace FMS.Server.Controllers.Accounting
         [HttpGet]
         public async Task<IActionResult> GetRemovedPayment()
         {
-            var result = await _accountingSvcs.GetRemovedPayment();
+            var result = await _paymentSvcs.GetRemovedPayment();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch, Route("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverPayment([FromRoute] Guid id)
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> RecoverPayment([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 if (ModelState.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _accountingSvcs.RecoverPayment(id, user);
+                    var result = await _paymentSvcs.RecoverPayment(id, user);
                     return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
                 }
                 else
@@ -96,16 +97,16 @@ namespace FMS.Server.Controllers.Accounting
         public async Task<IActionResult> RecoverAllPayment([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _accountingSvcs.RecoverAllPayment(Ids, user);
+            var result = await _paymentSvcs.RecoverAllPayment(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpDelete, Route("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeletePayment([FromRoute] Guid id)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> DeletePayment([FromQuery] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _accountingSvcs.DeletePayment(id, user);
+                var result = await _paymentSvcs.DeletePayment(id, user);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
             else
@@ -117,7 +118,7 @@ namespace FMS.Server.Controllers.Accounting
         public async Task<IActionResult> DeleteAllPayment([FromBody] List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _accountingSvcs.DeleteAllPayment(Ids, user);
+            var result = await _paymentSvcs.DeleteAllPayment(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
         #endregion
