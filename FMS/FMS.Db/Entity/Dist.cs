@@ -21,24 +21,24 @@ namespace FMS.Db.Entity
         public Country Country { get; set; }
         public State State { get; set; }
         public ICollection<Address> Addresses { get; set; }
-        public ICollection<Party> Parties { get; set; }
+       // public ICollection<Party> Parties { get; set; }
     }
     internal class CityConfig : IEntityTypeConfiguration<Dist>
     {
         public void Configure(EntityTypeBuilder<Dist> builder)
         {
-            builder.ToTable("Dists", "dbo");
+            builder.ToTable("Dists", "public");
             builder.HasKey(e => e.DistId);
-            builder.Property(e => e.DistId).HasDefaultValueSql("(newid())");
-            builder.Property(e => e.Fk_StateId).IsRequired(true);
+            builder.Property(e => e.DistId).HasDefaultValueSql("gen_random_uuid()");
+            builder.Property(e => e.Fk_StateId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.DistName).HasMaxLength(100).IsRequired(true);
-            builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+             builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(c => c.Country).WithMany(s => s.Dists).HasForeignKey(c => c.Fk_CountryId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(c => c.State).WithMany(s => s.Dists).HasForeignKey(c => c.Fk_StateId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow); 
+            builder.HasOne(c => c.Country).WithMany(s => s.Dists).HasForeignKey(c => c.Fk_CountryId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(c => c.State).WithMany(s => s.Dists).HasForeignKey(c => c.Fk_StateId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
              //Andhra Pradesh
              new Dist { DistId = Guid.NewGuid(), Fk_StateId = Guid.Parse("67C9F3A9-9235-428A-8463-A743F711A5A3"), Fk_CountryId = Guid.Parse("E02EB064-DEF5-434A-8798-6F144A54003C"), DistName = "Alluri Sitharama Raju", IsActive = true, CreatedDate = DateTime.UtcNow },

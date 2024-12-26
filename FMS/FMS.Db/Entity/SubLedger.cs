@@ -35,18 +35,18 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<SubLedger> builder)
         {
-            builder.ToTable("SubLedgers", "dbo");
+            builder.ToTable("SubLedgers", "public");
             builder.HasKey(e => e.SubLedgerId);
-            builder.Property(e => e.SubLedgerId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.SubLedgerId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.SubLedgerName).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.Fk_BranchId).IsRequired(false);
             builder.Property(e => e.Fk_LedgerId).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(bs => bs.Branch).WithMany(b => b.SubLedgers).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(bs => bs.Branch).WithMany(b => b.SubLedgers).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

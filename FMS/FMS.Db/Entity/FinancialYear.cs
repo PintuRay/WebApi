@@ -49,17 +49,17 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<FinancialYear> builder)
         {
-            builder.ToTable("FinancialYears", "dbo");
+            builder.ToTable("FinancialYears", "public");
             builder.HasKey(e => e.FinancialYearId);
-            builder.Property(e => e.FinancialYearId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.FinancialYearId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Financial_Year).IsRequired(true);
-            builder.Property(e => e.StartDate).IsRequired(true).HasColumnType("datetime");
-            builder.Property(e => e.EndDate).IsRequired(true).HasColumnType("datetime");
+            builder.Property(e => e.StartDate).IsRequired(true).HasColumnType("timestamp");
+            builder.Property(e => e.EndDate).IsRequired(true).HasColumnType("timestamp");
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
         }
     }
 }

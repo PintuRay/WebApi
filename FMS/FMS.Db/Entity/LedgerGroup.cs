@@ -23,9 +23,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<LedgerGroup> builder)
         {
-            builder.ToTable("LedgerGroups", "dbo");
+            builder.ToTable("LedgerGroups", "public");
             builder.HasKey(e => e.LedgerGroupId);
-            builder.Property(e => e.LedgerGroupId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.LedgerGroupId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.GroupName).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.GroupAlias).HasMaxLength(100).IsRequired(false);
             builder.HasData(

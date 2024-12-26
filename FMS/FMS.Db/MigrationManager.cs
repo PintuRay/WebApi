@@ -16,8 +16,6 @@ namespace FMS.Db
                 {
                     var db = services.GetRequiredService<T>();
                     db.Database.Migrate();
-
-                    // Optional: You can add seed data here if needed
                 }
                 catch (Exception ex)
                 {

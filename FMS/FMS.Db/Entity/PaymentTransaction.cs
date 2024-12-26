@@ -34,9 +34,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<PaymentTransaction> builder)
         {
-            builder.ToTable("PaymentTransaction", "dbo");
+            builder.ToTable("PaymentTransaction", "public");
             builder.HasKey(e => e.PaymentId);
-            builder.Property(e => e.PaymentId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.PaymentId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_LedgerGroupId).IsRequired(true);
             builder.Property(e => e.Fk_LedgerId).IsRequired(true);
             builder.Property(e => e.Fk_SubLedgerId).IsRequired(false);
@@ -46,14 +46,14 @@ namespace FMS.Db.Entity
             builder.Property(e => e.DrCr).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(e => e.PaymentOrder).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_PaymentOrderId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.LedgerGroup).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.SubLedger).WithMany(s => s.PaymentTransaction).HasForeignKey(e => e.Fk_SubLedgerId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.Branch).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.FinancialYear).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(e => e.PaymentOrder).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_PaymentOrderId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.LedgerGroup).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.SubLedger).WithMany(s => s.PaymentTransaction).HasForeignKey(e => e.Fk_SubLedgerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.Branch).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.FinancialYear).WithMany(s => s.PaymentTransactions).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

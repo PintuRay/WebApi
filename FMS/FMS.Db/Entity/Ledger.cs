@@ -33,9 +33,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<Ledger> builder)
         {
-            builder.ToTable("Ledgers", "dbo");
+            builder.ToTable("Ledgers", "public");
             builder.HasKey(e => e.LedgerId);
-            builder.Property(e => e.LedgerId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.LedgerId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.LedgerName).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.LedgerType).HasMaxLength(10).IsRequired(false);
             builder.Property(e => e.HasSubLedger).HasMaxLength(10).IsRequired(true);
@@ -43,11 +43,11 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_LedgerSubGroupId).IsRequired(false);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+           builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(l => l.LedgerGroup).WithMany(g => g.Ledgers).HasForeignKey(l => l.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(l => l.LedgerSubGroup).WithMany(g => g.Ledgers).HasForeignKey(l => l.Fk_LedgerSubGroupId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(l => l.LedgerGroup).WithMany(g => g.Ledgers).HasForeignKey(l => l.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(l => l.LedgerSubGroup).WithMany(g => g.Ledgers).HasForeignKey(l => l.Fk_LedgerSubGroupId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

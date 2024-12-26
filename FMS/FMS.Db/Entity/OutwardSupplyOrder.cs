@@ -30,10 +30,10 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<OutwardSupplyOrder> builder)
         {
-            builder.ToTable("OutwardSupplyOrders", "dbo");
+            builder.ToTable("OutwardSupplyOrders", "public");
             builder.HasKey(e => e.OutwardSupplyOrderId);
             builder.Property(e => e.OutwardSupplyOrderId).ValueGeneratedOnAdd().HasDefaultValueSql("NEWID()");
-            builder.Property(e => e.TransactionDate).HasColumnType("datetime").IsRequired(true);
+            builder.Property(e => e.TransactionDate).HasColumnType("timestamp").IsRequired(true);
             builder.Property(e => e.TransactionNo).IsRequired(true);
             builder.Property(e => e.ToBranch).IsRequired(true);
             builder.Property(e => e.Fk_ProductTypeId).IsRequired(true);
@@ -42,12 +42,12 @@ namespace FMS.Db.Entity
             builder.Property(e => e.TotalAmount).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(p => p.ProductType).WithMany(po => po.OutwardSupplyOrders).HasForeignKey(po => po.Fk_ProductTypeId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.Branch).WithMany(po => po.OutwardSupplyOrders).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.FinancialYear).WithMany(po => po.OutwardSupplyOrders).HasForeignKey(po => po.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(p => p.ProductType).WithMany(po => po.OutwardSupplyOrders).HasForeignKey(po => po.Fk_ProductTypeId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.Branch).WithMany(po => po.OutwardSupplyOrders).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.FinancialYear).WithMany(po => po.OutwardSupplyOrders).HasForeignKey(po => po.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

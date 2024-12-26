@@ -42,7 +42,7 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<SalesOrder> builder)
         {
-            builder.ToTable("SalesOrders", "dbo");
+            builder.ToTable("SalesOrders", "public");
             builder.HasKey(e => e.SalesOrderId);
             builder.Property(e => e.SalesOrderId).ValueGeneratedOnAdd().HasDefaultValueSql("NEWID()");
             builder.Property(e => e.TransactionNo).HasMaxLength(10).IsRequired(true);
@@ -52,9 +52,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.CustomerName).HasMaxLength(200).IsRequired(false);
             builder.Property(e => e.Fk_BranchId).IsRequired(true);
             builder.Property(e => e.Fk_FinancialYearId).IsRequired(true);
-            builder.Property(e => e.TransactionDate).HasColumnType("datetime").IsRequired(true);
+            builder.Property(e => e.TransactionDate).HasColumnType("timestamp").IsRequired(true);
             builder.Property(e => e.OrderNo).HasMaxLength(200).IsRequired(true);
-            builder.Property(e => e.OrderDate).HasColumnType("datetime").IsRequired(true);
+            builder.Property(e => e.OrderDate).HasColumnType("timestamp").IsRequired(true);
             builder.Property(e => e.VehicleNo).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.ReceivingPerson).HasMaxLength(100).IsRequired(false);
             builder.Property(e => e.TranspoterName).HasMaxLength(100).IsRequired(true);
@@ -65,12 +65,12 @@ namespace FMS.Db.Entity
             builder.Property(e => e.GrandTotal).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(e => e.SubLedger).WithMany(s => s.SalesOrders).HasForeignKey(e => e.Fk_SubLedgerId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.Branch).WithMany(po => po.SalesOrders).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.FinancialYear).WithMany(po => po.SalesOrders).HasForeignKey(po => po.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(e => e.SubLedger).WithMany(s => s.SalesOrders).HasForeignKey(e => e.Fk_SubLedgerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.Branch).WithMany(po => po.SalesOrders).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.FinancialYear).WithMany(po => po.SalesOrders).HasForeignKey(po => po.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

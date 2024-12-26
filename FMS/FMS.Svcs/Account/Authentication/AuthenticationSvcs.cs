@@ -105,9 +105,9 @@ namespace FMS.Svcs.Account.Authentication
                 var identity = await _userManager.CreateAsync(user, data.Password);
                 if (identity.Succeeded)
                 {
-                   var repoResult = await _authenticationRepo.CreateUserAdress(data.Address , user);
-                    if (repoResult.IsSucess)
-                    {
+                   //var repoResult = await _authenticationRepo.CreateUserAdress(data.Address , user);
+                   // if (repoResult.IsSucess)
+                   // {
                         var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         if (!string.IsNullOrEmpty(regToken))
                         {
@@ -170,15 +170,15 @@ namespace FMS.Svcs.Account.Authentication
                                 ResponseCode = (int)ResponseCode.Status.BadRequest,
                             };
                         }
-                    }
-                    else
-                    {
-                        Obj = new()
-                        {
-                            Message = "Registration Failed",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
-                        };
-                    }
+                    //}
+                    //else
+                    //{
+                    //    Obj = new()
+                    //    {
+                    //        Message = "Registration Failed",
+                    //        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    //    };
+                    //}
                 }
                 else
                 {

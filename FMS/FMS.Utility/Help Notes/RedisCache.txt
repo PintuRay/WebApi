@@ -21,4 +21,4 @@
 	To stop the Redis service, run the following command: redis-server --service-stop.
 	To uninstall the Redis service, run the following command: redis-server --service-uninstall.
 	To configure Redis, edit the redis.windows-service.conf file in the Redis folder. You can modify settings like memory limits, logging, and security options. After making changes, restart the Redis service to apply the new configuration.
-	-------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------

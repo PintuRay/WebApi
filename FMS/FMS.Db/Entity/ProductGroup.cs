@@ -24,17 +24,17 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<ProductGroup> builder)
         {
-            builder.ToTable("ProductGroups", "dbo");
+            builder.ToTable("ProductGroups", "public");
             builder.HasKey(e => e.ProductGroupId);
-            builder.Property(e => e.ProductGroupId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.ProductGroupId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.ProductGroupName).HasMaxLength(500).IsRequired(true);
             builder.Property(e => e.Fk_ProductTypeId).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(p => p.ProductType).WithMany(po => po.ProductGroups).HasForeignKey(po => po.Fk_ProductTypeId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(p => p.ProductType).WithMany(po => po.ProductGroups).HasForeignKey(po => po.Fk_ProductTypeId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

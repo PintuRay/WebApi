@@ -38,17 +38,16 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<LabourOrder> builder)
         {
-            builder.ToTable("LabourOrders", "dbo");
+            builder.ToTable("LabourOrders", "public");
             builder.HasKey(e => e.LabourOrderId);
-            builder.Property(e => e.LabourOrderId).HasDefaultValueSql("(newid())");
-            builder.Property(e => e.TransactionDate).HasMaxLength(10).IsRequired(true);
+            builder.Property(e => e.LabourOrderId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.TransactionNo).IsRequired(true);
-            builder.Property(e => e.Fk_ProductId).IsRequired(true);
-            builder.Property(e => e.Fk_LabourId).IsRequired(true);
-            builder.Property(e => e.Fk_LabourTypeId).IsRequired(true);
-            builder.Property(e => e.Fk_FinancialYearId).IsRequired(true);
-            builder.Property(e => e.FK_BranchId).IsRequired(true);
-            builder.Property(e => e.TransactionDate).HasColumnType("datetime");
+            builder.Property(e => e.Fk_ProductId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_LabourId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_LabourTypeId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.FK_BranchId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.TransactionDate).HasColumnType("timestamp").IsRequired(true);
             builder.Property(e => e.Quantity).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
             builder.Property(e => e.Rate).HasColumnType("decimal(18, 4)").HasDefaultValue(0);
             builder.Property(e => e.Amount).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
@@ -56,14 +55,14 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Narration).IsRequired(false);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(p => p.Product).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_ProductId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(l => l.Labour).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_LabourId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(f => f.FinancialYear).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.Branch).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.FK_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.LabourType).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_LabourTypeId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(p => p.Product).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(l => l.Labour).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_LabourId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(f => f.FinancialYear).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.Branch).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.FK_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.LabourType).WithMany(pe => pe.LabourOrders).HasForeignKey(e => e.Fk_LabourTypeId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

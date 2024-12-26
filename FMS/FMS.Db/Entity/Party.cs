@@ -33,9 +33,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<Party> builder)
         {
-            builder.ToTable("Parties", "dbo");
+            builder.ToTable("Parties", "public");
             builder.HasKey(e => e.PartyId);
-            builder.Property(e => e.PartyId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.PartyId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_PartyType).IsRequired(true);
             builder.Property(e => e.Fk_SubledgerId).IsRequired(true);
             builder.Property(e => e.Fk_StateId).IsRequired(true);
@@ -47,14 +47,14 @@ namespace FMS.Db.Entity
             builder.Property(e => e.GstNo).HasMaxLength(200).IsRequired(false);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(p => p.LedgerDev).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_PartyType).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.SubLedger).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_SubledgerId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.Country).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_StateId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.State).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_StateId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.City).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_CityId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(p => p.LedgerDev).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_PartyType).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.SubLedger).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_SubledgerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.Country).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_StateId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.State).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_StateId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.City).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_CityId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

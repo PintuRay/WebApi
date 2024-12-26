@@ -40,9 +40,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-            builder.ToTable("Address", "dbo");
+            builder.ToTable("Address", "public");
             builder.HasKey(e => e.AddressId);
-            builder.Property(e => e.AddressId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.AddressId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.At).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.Post).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.City).HasMaxLength(50).IsRequired(true);
@@ -51,15 +51,15 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_CountryId).IsRequired(true);
             builder.Property(e => e.Fk_StateId).IsRequired(true);
             builder.Property(e => e.Fk_DistId).IsRequired(true);
-            builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow); 
             //One-To-Many Relationship
-            builder.HasOne(d => d.Country).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_CountryId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(d => d.State).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_StateId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(d => d.Dist).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_DistId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(d => d.Country).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_CountryId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.State).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_StateId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Dist).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_DistId).OnDelete(DeleteBehavior.Cascade);
         }
     }
     public class AddressValidator : AbstractValidator<AddressModel>

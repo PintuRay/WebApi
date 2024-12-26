@@ -23,9 +23,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<ProductType> builder)
         {
-            builder.ToTable("ProductTypes", "dbo");
+            builder.ToTable("ProductTypes", "public");
             builder.HasKey(e => e.ProductTypeId);
-            builder.Property(e => e.ProductTypeId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.ProductTypeId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Product_Type).HasMaxLength(200).IsRequired(true);
             builder.HasData(
                  new ProductType() { ProductTypeId = Guid.Parse("A4AB180B-ACC7-44CE-AEF7-C588D41EDD5C"), Product_Type = "FINISHED GOODS" },

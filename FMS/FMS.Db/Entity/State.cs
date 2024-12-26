@@ -18,23 +18,23 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public Country Country { get; set; }
         public ICollection<Address> Addresses { get; set; }
-        public ICollection<Party> Parties { get; set; }
+        //public ICollection<Party> Parties { get; set; }
         public ICollection<Dist> Dists { get; set; }
     }
     internal class StateConfig : IEntityTypeConfiguration<State>
     {
         public void Configure(EntityTypeBuilder<State> builder)
         {
-            builder.ToTable("States", "dbo");
+            builder.ToTable("States", "public");
             builder.HasKey(e => e.StateId);
-            builder.Property(e => e.StateId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.StateId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.StateName).HasMaxLength(100).IsRequired(true);
-            builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(c => c.Country).WithMany(s => s.States).HasForeignKey(c => c.Fk_CounryId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow); 
+            builder.HasOne(c => c.Country).WithMany(s => s.States).HasForeignKey(c => c.Fk_CounryId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
              new State { StateId = Guid.Parse("67C9F3A9-9235-428A-8463-A743F711A5A3"), Fk_CounryId = Guid.Parse("E02EB064-DEF5-434A-8798-6F144A54003C"), StateName = "Andhra Pradesh", IsActive = true, CreatedDate = DateTime.UtcNow },
              new State { StateId = Guid.Parse("E691660F-BB06-416A-A79C-9EF41E67AD11"), Fk_CounryId = Guid.Parse("E02EB064-DEF5-434A-8798-6F144A54003C"), StateName = "Arunachal Pradesh", IsActive = true, CreatedDate = DateTime.UtcNow },

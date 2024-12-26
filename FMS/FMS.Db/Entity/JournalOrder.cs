@@ -29,21 +29,21 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<JournalOrder> builder)
         {
-            builder.ToTable("JournalOrders", "dbo");
+            builder.ToTable("JournalOrders", "public");
             builder.HasKey(e => e.JournalOrderId);
-            builder.Property(e => e.JournalOrderId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.JournalOrderId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.VouvherNo).HasMaxLength(100).IsRequired(true);
-            builder.Property(e => e.VoucherDate).HasColumnType("datetime").IsRequired(true);
+            builder.Property(e => e.VoucherDate).HasColumnType("timestamp").IsRequired(true);
             builder.Property(e => e.Narration).HasMaxLength(500).IsRequired(false);
             builder.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
             builder.Property(e => e.DrCr).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+           builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(e => e.Branch).WithMany(s => s.JournalOrders).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.FinancialYear).WithMany(s => s.JournalOrders).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(e => e.Branch).WithMany(s => s.JournalOrders).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.FinancialYear).WithMany(s => s.JournalOrders).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

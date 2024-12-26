@@ -24,19 +24,19 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<UserBranch> builder)
         {
-            builder.ToTable("UserBranches", "dbo");
+            builder.ToTable("UserBranches", "public");
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_BranchId).IsRequired(true);
             builder.Property(e => e.Fk_UserId).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             //One-To-Many Relationship
-            builder.HasOne(ub => ub.User).WithMany(u => u.UserBranch).HasForeignKey(ub => ub.Fk_UserId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(ub => ub.Branch).WithMany(b => b.UserBranch).HasForeignKey(ub => ub.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(ub => ub.User).WithMany(u => u.UserBranch).HasForeignKey(ub => ub.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(ub => ub.Branch).WithMany(b => b.UserBranch).HasForeignKey(ub => ub.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

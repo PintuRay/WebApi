@@ -27,15 +27,15 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<SalesTransactionSetup> builder)
         {
-            builder.ToTable("SalesTransactionSetups", "dbo");
+            builder.ToTable("SalesTransactionSetups", "public");
             builder.HasKey(e => e.SalesTransactionSetupId);
-            builder.Property(e => e.SalesTransactionSetupId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.SalesTransactionSetupId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_SubFinishedGoodId).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.Quantity).HasColumnType("decimal(18, 5)").IsRequired(true);
             builder.Property(e => e.Unit).HasMaxLength(100).IsRequired(true);
             builder.HasOne(s=>s.SalesOrderSetup).WithMany(s=>s.SalesTransactionSetups).HasForeignKey(d => d.Fk_SalesOrderSetupId).OnDelete(DeleteBehavior.Cascade);

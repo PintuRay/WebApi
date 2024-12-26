@@ -24,15 +24,15 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<ProductionOrder> builder)
         {
-            builder.ToTable("ProductionOrders", "dbo");
+            builder.ToTable("ProductionOrders", "public");
             builder.HasKey(e => e.ProductionOrderId);
-            builder.Property(e => e.ProductionOrderId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.ProductionOrderId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_FinishedGoodId).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
         }
     }
 }

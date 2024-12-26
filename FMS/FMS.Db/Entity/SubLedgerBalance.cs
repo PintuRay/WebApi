@@ -31,9 +31,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<SubLedgerBalance> builder)
         {
-            builder.ToTable("SubLedgerBalances", "dbo");
+            builder.ToTable("SubLedgerBalances", "public");
             builder.HasKey(e => e.SubLedgerBalanceId);
-            builder.Property(e => e.SubLedgerBalanceId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.SubLedgerBalanceId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_LedgerBalanceId).IsRequired(true);
             builder.Property(e => e.Fk_SubLedgerId).IsRequired(true);
             builder.Property(e => e.Fk_BranchId).IsRequired(true);
@@ -44,13 +44,13 @@ namespace FMS.Db.Entity
             builder.Property(e => e.RunningBalanceType).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(bs => bs.SubLedger).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_SubLedgerId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(bs => bs.Branch).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(bs => bs.LedgerBalance).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_LedgerBalanceId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(bs => bs.SubLedger).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_SubLedgerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.Branch).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.LedgerBalance).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_LedgerBalanceId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

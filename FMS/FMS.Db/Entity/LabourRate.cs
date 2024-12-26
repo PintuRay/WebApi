@@ -29,24 +29,24 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<LabourRate> builder)
         {
-            builder.ToTable("LabourRates", "dbo");
+            builder.ToTable("LabourRates", "public");
             builder.HasKey(e => e.LabourRateId);
-            builder.Property(e => e.LabourRateId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.LabourRateId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_FinancialYearId).IsRequired(true);
-            builder.Property(e => e.Date).HasColumnType("datetime").IsRequired(true);
+            builder.Property(e => e.Date).HasColumnType("timestamp").IsRequired(true);
             builder.Property(e => e.Fk_ProductId).IsRequired(true);
             builder.Property(e => e.Fk_ProductTypeId).IsRequired(true);
             builder.Property(e => e.Fk_BranchId).IsRequired(false);
             builder.Property(e => e.Rate).HasColumnType("decimal(18, 4)").HasDefaultValue(0);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(lr => lr.Product).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_ProductId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(lr => lr.ProductType).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_ProductTypeId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(lr => lr.Branch).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(lr => lr.FinancialYear).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(lr => lr.Product).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(lr => lr.ProductType).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_ProductTypeId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(lr => lr.Branch).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(lr => lr.FinancialYear).WithMany(i => i.LabourRates).HasForeignKey(lr => lr.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
 
         }
     }

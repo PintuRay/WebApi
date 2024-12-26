@@ -28,9 +28,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<AlternateUnit> builder)
         {
-            builder.ToTable("AlternateUnits", "dbo");
+            builder.ToTable("AlternateUnits", "public");
             builder.HasKey(e => e.AlternateUnitId);
-            builder.Property(e => e.AlternateUnitId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.AlternateUnitId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.FK_ProductId).IsRequired(true);
             builder.Property(e => e.Fk_UnitId).IsRequired(true);
             builder.Property(e => e.AlternateUnitName).HasMaxLength(100).IsRequired(true);
@@ -38,11 +38,11 @@ namespace FMS.Db.Entity
             builder.Property(e => e.UnitQuantity).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+           builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(p => p.Product).WithMany(po => po.AlternateUnits).HasForeignKey(po => po.FK_ProductId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(p => p.Unit).WithMany(po => po.AlternateUnits).HasForeignKey(po => po.Fk_UnitId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(p => p.Product).WithMany(po => po.AlternateUnits).HasForeignKey(po => po.FK_ProductId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.Unit).WithMany(po => po.AlternateUnits).HasForeignKey(po => po.Fk_UnitId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

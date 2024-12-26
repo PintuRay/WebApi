@@ -1,0 +1,16 @@
+﻿step 1 => Install PostgreSQL
+			Ensure PostgreSQL is installed and running on your machine. 
+			You can download it from the official PostgreSQL 
+			website.https://www.enterprisedb.com/downloads/postgres-postgresql-downloads?form=MG0AV3
+step 2 => Install Required Packages
+			dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL 
+			dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL.Design 
+			dotnet add package Microsoft.EntityFrameworkCore.Tools
+step 3 => Open the appsettings.json file and add your PostgreSQL connection string:
+			"ConnectionStrings": { 
+			"DefaultConnection": "Host=localhost;Database=mydatabase;Username=postgres;Password=yourpassword" 
+			},
+step 4 => Configure Services in Program.cs
+			builder.Services.AddDbContext<MyDbContext>(options => 
+			options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+			);

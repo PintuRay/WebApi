@@ -16,21 +16,21 @@ namespace FMS.Db.Entity
         //Reference Navigation Property
         public RegisterToken Token { get; set; }
         //collection Navigation Property
-        public ICollection<UserBranch> UserBranch { get; set; }
+      // public ICollection<UserBranch> UserBranch { get; set; }
     }
     internal class AppUserConfig : IEntityTypeConfiguration<AppUser>
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            builder.Property(e => e.Fk_TokenId).HasColumnType("uniqueidentifier").IsRequired(true);
+            builder.Property(e => e.Fk_TokenId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Name).HasMaxLength(50).IsRequired(true);
-            builder.Property(e => e.BirthDate).HasColumnType("datetime").IsRequired(true);
+            builder.Property(e => e.BirthDate).HasColumnType("timestamptz").IsRequired(true);
             builder.Property(e => e.MaratialStatus).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.Gender).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.PhotoPath).IsRequired(false);
-            builder.Property(e => e.TermCondition).HasDefaultValueSql("((1))");
+            builder.Property(e => e.TermCondition).HasDefaultValueSql("true");
             //One-To-One Relationship
-            builder.HasOne(d => d.Token).WithOne(p => p.User).HasForeignKey<AppUser>(d => d.Fk_TokenId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(d => d.Token).WithOne(p => p.User).HasForeignKey<AppUser>(d => d.Fk_TokenId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
             new AppUser
             {
@@ -39,7 +39,7 @@ namespace FMS.Db.Entity
                 Name = "Pintu Ray",
                 Gender = "male",
                 MaratialStatus = "unmarred",
-                BirthDate = DateTime.Parse("1993-07-04"),
+                BirthDate = DateTime.SpecifyKind(DateTime.Parse("1993-07-04"), DateTimeKind.Utc),
                 Email = "raypintu959@gmail.com", 
                 UserName = "raypintu959@gmail.com",
                 PhoneNumber = "8249486590",

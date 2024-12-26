@@ -46,9 +46,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.ToTable("Products", "dbo");
+            builder.ToTable("Products", "public");
             builder.HasKey(e => e.ProductId);
-            builder.Property(e => e.ProductId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.ProductId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.ProductName).HasMaxLength(200).IsRequired(true);
             builder.Property(e => e.RetailPrice).HasColumnType("decimal(18, 2)").HasDefaultValue(0.00);
             builder.Property(e => e.WholeSalePrice).HasColumnType("decimal(18, 2)").IsRequired(true).HasDefaultValue(0.00);
@@ -59,13 +59,13 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_UnitId).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(d => d.ProductGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductGroupId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(d => d.ProductSubGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductSubGroupId).OnDelete(DeleteBehavior.Restrict).IsRequired(false);
-            builder.HasOne(d => d.ProductType).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductTypeId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(d => d.Unit).WithMany(e => e.Products).HasForeignKey(d => d.Fk_UnitId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(d => d.ProductGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductGroupId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.ProductSubGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductSubGroupId).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
+            builder.HasOne(d => d.ProductType).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductTypeId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Unit).WithMany(e => e.Products).HasForeignKey(d => d.Fk_UnitId).OnDelete(DeleteBehavior.Cascade);
 
         }
     }

@@ -7,7 +7,7 @@ namespace FMS.Repo.Account.Authentication
         Task<Result<RegisterToken>> ValidateToken(string data);
         #endregion
         #region Address
-        Task<RepoBase> CreateUserAdress(AddressModel data , AppUser user);
+        //Task<RepoBase> CreateUserAdress(AddressModel data , AppUser user);
         #endregion
     }
 }

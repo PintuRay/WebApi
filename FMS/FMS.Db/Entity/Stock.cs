@@ -31,9 +31,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<Stock> builder)
         {
-            builder.ToTable("Stocks", "dbo");
+            builder.ToTable("Stocks", "public");
             builder.HasKey(e => e.StockId);
-            builder.Property(e => e.StockId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.StockId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_ProductId).IsRequired(true);
             builder.Property(e => e.Fk_BranchId).IsRequired(true);
             builder.Property(e => e.Fk_FinancialYear).IsRequired(true);
@@ -45,12 +45,12 @@ namespace FMS.Db.Entity
             builder.Property(e => e.AvilableStock).HasColumnType("decimal(18, 2)").HasDefaultValue(0.00);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(bs => bs.Branch).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(bs => bs.Product).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_ProductId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_FinancialYear).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(bs => bs.Branch).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.Product).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_FinancialYear).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

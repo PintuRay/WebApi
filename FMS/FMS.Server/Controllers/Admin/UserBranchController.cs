@@ -16,121 +16,121 @@ namespace FMS.Server.Controllers.Admin
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            var result = await _userBranchSvcs.GetUserBranches();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> Create([FromBody] UserBranchModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                var result = await _userBranchSvcs.CreateUserBranch(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
-            }
-            else
-            {
-                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                return BadRequest(errors);
-            }
-        }
-        [HttpPut("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UserBranchModel model)
-        {
-            if (id != Guid.Empty)
-            {
-                if (ModelState.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _userBranchSvcs.UpdateUserBranch(id, model, user);
-                    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
-                }
-                else
-                {
-                    var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                    return BadRequest(errors);
-                }
-            }
-            else
-            {
-                return BadRequest("Plz Provide Valid Id");
-            }
-        }
-        [HttpDelete("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> Remove([FromRoute] Guid id)
-        {
-            if (id != Guid.Empty)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                var result = await _userBranchSvcs.RemoveUserBranch(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
-            }
-            else
-            {
-                return BadRequest("Invalid Id");
-            }
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> Get()
+        //{
+        //    var result = await _userBranchSvcs.GetUserBranches();
+        //    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        //}
+        //[HttpPost, Authorize(policy: "Create")]
+        //public async Task<IActionResult> Create([FromBody] UserBranchModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = await _userManager.GetUserAsync(User);
+        //        var result = await _userBranchSvcs.CreateUserBranch(model, user);
+        //        return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
+        //    }
+        //    else
+        //    {
+        //        var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+        //        return BadRequest(errors);
+        //    }
+        //}
+        //[HttpPut("{id}"), Authorize(policy: "Update")]
+        //public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UserBranchModel model)
+        //{
+        //    if (id != Guid.Empty)
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var user = await _userManager.GetUserAsync(User);
+        //            var result = await _userBranchSvcs.UpdateUserBranch(id, model, user);
+        //            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+        //        }
+        //        else
+        //        {
+        //            var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+        //            return BadRequest(errors);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Plz Provide Valid Id");
+        //    }
+        //}
+        //[HttpDelete("{id}"), Authorize(policy: "Delete")]
+        //public async Task<IActionResult> Remove([FromRoute] Guid id)
+        //{
+        //    if (id != Guid.Empty)
+        //    {
+        //        var user = await _userManager.GetUserAsync(User);
+        //        var result = await _userBranchSvcs.RemoveUserBranch(id, user);
+        //        return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Invalid Id");
+        //    }
+        //}
         #endregion
         #region Recover
-        [HttpGet]
-        public async Task<IActionResult> GetRemoved()
-        {
-            var result = await _userBranchSvcs.GetRemovedUserBranches();
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpPatch("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> Recover([FromRoute] Guid id)
-        {
-            if (id != Guid.Empty)
-            {
-                if (ModelState.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _userBranchSvcs.RecoverUserBranch(id, user);
-                    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
-                }
-                else
-                {
-                    var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                    return BadRequest(errors);
-                }
-            }
-            else
-            {
-                return BadRequest("Plz Provide Valid Id");
-            }
-        }
-        [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _userBranchSvcs.RecoverAllUserBranches(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
-        }
-        [HttpDelete("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id)
-        {
-            if (id != Guid.Empty)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                var result = await _userBranchSvcs.DeleteUserBranch(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
-            }
-            else
-            {
-                return BadRequest("Invalid Id");
-            }
-        }
-        [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _userBranchSvcs.DeleteAllUserBranches(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetRemoved()
+        //{
+        //    var result = await _userBranchSvcs.GetRemovedUserBranches();
+        //    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        //}
+        //[HttpPatch("{id}"), Authorize(policy: "Update")]
+        //public async Task<IActionResult> Recover([FromRoute] Guid id)
+        //{
+        //    if (id != Guid.Empty)
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var user = await _userManager.GetUserAsync(User);
+        //            var result = await _userBranchSvcs.RecoverUserBranch(id, user);
+        //            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+        //        }
+        //        else
+        //        {
+        //            var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+        //            return BadRequest(errors);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Plz Provide Valid Id");
+        //    }
+        //}
+        //[HttpPost, Authorize(policy: "Update")]
+        //public async Task<IActionResult> RecoverAll([FromBody] List<string> Ids)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+        //    var result = await _userBranchSvcs.RecoverAllUserBranches(Ids, user);
+        //    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+        //}
+        //[HttpDelete("{id}"), Authorize(policy: "Delete")]
+        //public async Task<IActionResult> Delete([FromRoute] Guid id)
+        //{
+        //    if (id != Guid.Empty)
+        //    {
+        //        var user = await _userManager.GetUserAsync(User);
+        //        var result = await _userBranchSvcs.DeleteUserBranch(id, user);
+        //        return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Invalid Id");
+        //    }
+        //}
+        //[HttpPost, Authorize(policy: "Delete")]
+        //public async Task<IActionResult> DeleteAll([FromBody] List<string> Ids)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+        //    var result = await _userBranchSvcs.DeleteAllUserBranches(Ids, user);
+        //    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+        //}
         #endregion
     }
 }

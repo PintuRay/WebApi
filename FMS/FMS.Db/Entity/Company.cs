@@ -28,11 +28,11 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<Company> builder)
         {
-            builder.ToTable("Company", "dbo");
+            builder.ToTable("Company", "public");
             builder.HasKey(e => e.CompanyId);
-            builder.Property(e => e.CompanyId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.CompanyId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.CompanyName).HasMaxLength(200).IsRequired(true);
-            builder.Property(e => e.Fk_BranchId).IsRequired(true);
+            builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Logo).IsRequired(true);
             builder.Property(e => e.State).IsRequired(true);
             builder.Property(e => e.Address).HasMaxLength(100).IsRequired(true);
@@ -41,10 +41,10 @@ namespace FMS.Db.Entity
             builder.Property(e => e.PhoneNo).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(s => s.Branch).WithMany(e => e.Companies).HasForeignKey(e => e.Fk_BranchId);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(s => s.Branch).WithMany(e => e.Companies).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

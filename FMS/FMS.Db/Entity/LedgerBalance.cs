@@ -32,9 +32,9 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<LedgerBalance> builder)
         {
-            builder.ToTable("LedgerBalances", "dbo");
+            builder.ToTable("LedgerBalances", "public");
             builder.HasKey(e => e.LedgerBalanceId);
-            builder.Property(e => e.LedgerBalanceId).HasDefaultValueSql("(newid())");
+            builder.Property(e => e.LedgerBalanceId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_LedgerId).IsRequired(true);
             builder.Property(e => e.Fk_BranchId).IsRequired(true);
             builder.Property(e => e.Fk_FinancialYear).IsRequired(true);
@@ -44,11 +44,11 @@ namespace FMS.Db.Entity
             builder.Property(e => e.RunningBalanceType).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(bs => bs.Branch).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_FinancialYear).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(bs => bs.Branch).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_FinancialYear).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

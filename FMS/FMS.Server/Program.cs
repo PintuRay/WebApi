@@ -73,6 +73,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -89,9 +90,10 @@ builder.Services.AddControllers().AddNewtonsoftJson(
 builder.Services.AddEndpointsApiExplorer();
 //***************************************************Add Connection to Db**************************************//
 builder.Services.AddDbContext<Context>(option =>
-option.UseSqlServer(builder.Configuration.GetConnectionString("DBCS"))
+option.UseNpgsql(builder.Configuration.GetConnectionString("DBCS"))
 .EnableSensitiveDataLogging(builder.Environment.IsDevelopment())
 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
 );
 
 //****************************************************Email & SMS setup************************************************//

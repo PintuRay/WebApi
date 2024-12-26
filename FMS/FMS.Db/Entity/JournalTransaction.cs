@@ -36,28 +36,28 @@ namespace FMS.Db.Entity
     {
         public void Configure(EntityTypeBuilder<JournalTransaction> builder)
         {
-            builder.ToTable("JournalTransactions", "dbo");
+            builder.ToTable("JournalTransactions", "public");
             builder.HasKey(e => e.JournalId);
-            builder.Property(e => e.JournalId).HasDefaultValueSql("(newid())");
-            builder.Property(e => e.Fk_LedgerGroupId).IsRequired(true);
-            builder.Property(e => e.Fk_LedgerId).IsRequired(true);
-            builder.Property(e => e.Fk_SubLedgerId).IsRequired(false);
-            builder.Property(e => e.Fk_BranchId).IsRequired(true);
-            builder.Property(e => e.Fk_FinancialYearId).IsRequired(true);
+            builder.Property(e => e.JournalId).HasDefaultValueSql("gen_random_uuid()");
+            builder.Property(e => e.Fk_LedgerGroupId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_LedgerId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_SubLedgerId).HasColumnType("uuid").IsRequired(false);
+            builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.TransactionId).IsRequired(false);
             builder.Property(e => e.TransactionNo).HasMaxLength(100).IsRequired(false);
             builder.Property(e => e.Amount).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
             builder.Property(e => e.DrCr).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("datetime");
-            builder.HasOne(e => e.JournalOrder).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_JournalOrderId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.LedgerGroup).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.SubLedger).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_SubLedgerId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.Branch).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.FinancialYear).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.HasOne(e => e.JournalOrder).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_JournalOrderId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.LedgerGroup).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.SubLedger).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_SubLedgerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.Branch).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.FinancialYear).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
