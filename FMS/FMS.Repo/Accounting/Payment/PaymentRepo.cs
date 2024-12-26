@@ -4,12 +4,12 @@ using FMS.Db.Entity;
 
 namespace FMS.Repo.Accounting.Payment
 {
-    public class PaymentRepo(Context ctx, IMapper mapper, ICustomCache cache) : IPaymentRepo
+    public class PaymentRepo(Context ctx, IMapper mapper, IRedisCache cache) : IPaymentRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Payment

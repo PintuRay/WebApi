@@ -1,0 +1,24 @@
+﻿=> Step 1: Download Redis for Windows
+		Visit the Redis for Windows GitHub repository: https://github.com/microsoftarchive/redis
+		Click on the "releases" tab and choose the latest release (or the version you wish to install).
+		Download the zip file containing the binaries (for example, Redis-x64-<version>.zip).
+=> Step 2: Extract the Redis binaries
+	 Once the download is complete, extract the contents of the zip file to a folder of your choice. For example, you can extract it to C:\Redis.
+=> Step 3: Install Redis as a Windows service
+		Open a command prompt (cmd) with administrative privileges.
+		Navigate to the Redis folder you extracted earlier, for example: cd C:\Redis.
+		To install Redis as a service, run the following command: redis-server --service-install redis.windows-service.conf. This will use the configuration file provided with the binaries.
+		You should receive a message indicating that Redis has been successfully installed as a service.
+=>  Step 4: Start Redis service
+	To start the Redis service, run the following command: redis-server --service-start.
+	You should receive a message indicating that the Redis service has been started.
+=> Step 5: Verify Redis installation
+	In the command prompt, run the Redis CLI by typing redis-cli and pressing Enter.
+	To check if Redis is running, type ping and press Enter. If Redis is running, it will return "PONG".
+	You can also run other Redis commands to interact with the server, such as SET key value and GET key.
+	Managing Redis on Windows
+---------------------------------------------------------------------------------------------------------------
+	To stop the Redis service, run the following command: redis-server --service-stop.
+	To uninstall the Redis service, run the following command: redis-server --service-uninstall.
+	To configure Redis, edit the redis.windows-service.conf file in the Redis folder. You can modify settings like memory limits, logging, and security options. After making changes, restart the Redis service to apply the new configuration.
+	-------------------------------------------------------------------------------------------------------------

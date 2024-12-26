@@ -24,7 +24,7 @@ namespace FMS.Svcs.Account.Authentication
         IEmailSvcs emailSvcs,
         ISmsSvcs smsSvcs,
          IMapper mapper,
-         ICustomCache cache,
+         IRedisCache cache,
         IConfiguration configuration) : IAuthenticationSvcs
     {
         #region Dependancy
@@ -36,7 +36,7 @@ namespace FMS.Svcs.Account.Authentication
         private readonly SignInManager<AppUser> _signInManager = signInManager;
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly RoleManager<AppRole> _roleManager = roleManager;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         #endregion
         #region  SignUp 
         public async Task<SvcsBase> ValidateToken(string Token)

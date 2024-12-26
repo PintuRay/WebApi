@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.Admin.LabourRate
 {
-    public class LabourRateRepo(Context ctx, IMapper mapper, ICustomCache cache) : ILabourRateRepo
+    public class LabourRateRepo(Context ctx, IMapper mapper, IRedisCache cache) : ILabourRateRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Labour Rate

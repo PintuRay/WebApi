@@ -4,13 +4,13 @@ using FMS.Db.Entity;
 
 namespace FMS.Repo.Transaction.PurchaseReturn
 {
-    public class PurchaseReturnRepo(Context ctx, IMapper mapper, ICustomCache cache) : IPurchaseReturnRepo
+    public class PurchaseReturnRepo(Context ctx, IMapper mapper, IRedisCache cache) : IPurchaseReturnRepo
     {
 
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Purchase Return

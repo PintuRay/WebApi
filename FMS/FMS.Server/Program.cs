@@ -24,7 +24,6 @@ using FMS.Repo.Common;
 using FMS.Repo.Devloper.Branch;
 using FMS.Repo.Devloper.BranchFinancialYear;
 using FMS.Repo.Devloper.FinancialYear;
-using FMS.Repo.Transaction;
 using FMS.Repo.Transaction.Damage;
 using FMS.Repo.Transaction.InwardSupply;
 using FMS.Repo.Transaction.OutwardSupply;
@@ -57,7 +56,6 @@ using FMS.Svcs.Devloper.BranchFinancialYear;
 using FMS.Svcs.Devloper.FinancialYear;
 using FMS.Svcs.Email;
 using FMS.Svcs.SMS;
-using FMS.Svcs.Transaction;
 using FMS.Svcs.Transaction.Damage;
 using FMS.Svcs.Transaction.InwardSupply;
 using FMS.Svcs.Transaction.OutwardSupply;
@@ -72,11 +70,13 @@ using FMS.Svcs.User.Stock;
 using FMS.Svcs.User.Subledger;
 using FMS.Svcs.User.SubLedgerBalance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
@@ -93,6 +93,7 @@ option.UseSqlServer(builder.Configuration.GetConnectionString("DBCS"))
 .EnableSensitiveDataLogging(builder.Environment.IsDevelopment())
 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
 );
+
 //****************************************************Email & SMS setup************************************************//
 builder.Services.Configure<SMTPConfigModel>(builder.Configuration.GetSection("SMTPConfig"));
 builder.Services.Configure<SmsConfigModel>(builder.Configuration.GetSection("TwilioSMS"));
@@ -242,8 +243,17 @@ builder.Services.AddAuthorization(options =>
     });
 });
 //*******************************************************Caching******************************************************//
-builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<ICustomCache, CustomCache>();
+builder.Services.AddStackExchangeRedisCache(options => 
+{ 
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    //options.InstanceName = "SampleInstance";
+});
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Redis");
+    return ConnectionMultiplexer.Connect(connectionString);
+});
+builder.Services.AddSingleton<IRedisCache, RedisCache>();
 //*********************************************************************************************************************//
 
 builder.Services.AddSwaggerGen(
@@ -260,15 +270,18 @@ builder.Services.AddSwaggerGen(
     });
 //******************************************************************************************************************************************//
 var app = builder.Build();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.MigrateDatabase<Context>();
+    app.UseDeveloperExceptionPage();
 }
 //app.UseExceptionHandler();
 //app.UseHsts();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

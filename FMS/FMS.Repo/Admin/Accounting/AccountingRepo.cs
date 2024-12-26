@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.Admin.Accounting
 {
-    public class AccountingRepo(Context ctx, IMapper mapper, ICustomCache cache): IAccountingRepo
+    public class AccountingRepo(Context ctx, IMapper mapper, IRedisCache cache): IAccountingRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Account 

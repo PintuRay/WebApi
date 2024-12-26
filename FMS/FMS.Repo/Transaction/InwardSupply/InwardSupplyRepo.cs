@@ -4,13 +4,13 @@ using FMS.Db.Entity;
 
 namespace FMS.Repo.Transaction.InwardSupply
 {
-    public class InwardSupplyRepo(Context ctx, IMapper mapper, ICustomCache cache) : IInwardSupplyRepo
+    public class InwardSupplyRepo(Context ctx, IMapper mapper, IRedisCache cache) : IInwardSupplyRepo
     {
 
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Inward Supply    

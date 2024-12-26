@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.Devloper.FinancialYear
 {
-    public class FinancialYearRepo(Context ctx, IMapper mapper, ICustomCache cache) : IFinancialYearRepo
+    public class FinancialYearRepo(Context ctx, IMapper mapper, IRedisCache cache) : IFinancialYearRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Financial Year

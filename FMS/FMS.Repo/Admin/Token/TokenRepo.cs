@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.Admin.Token
 {
-    public class TokenRepo(Context ctx, IMapper mapper, ICustomCache cache) : ITokenRepo
+    public class TokenRepo(Context ctx, IMapper mapper, IRedisCache cache) : ITokenRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Generate SignUp Token

@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.Admin.UserBranch
 {
-    public class UserBranchRepo(Context ctx, IMapper mapper, ICustomCache cache) : IUserBranchRepo
+    public class UserBranchRepo(Context ctx, IMapper mapper, IRedisCache cache) : IUserBranchRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region User Branch 

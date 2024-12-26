@@ -4,13 +4,13 @@ using FMS.Db.Entity;
 
 namespace FMS.Repo.Transaction.Service
 {
-    public class ServiceRepo(Context ctx, IMapper mapper, ICustomCache cache) : IServiceRepo
+    public class ServiceRepo(Context ctx, IMapper mapper, IRedisCache cache) : IServiceRepo
     {
 
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
-        private readonly ICustomCache _cache = cache;
+        private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Service
