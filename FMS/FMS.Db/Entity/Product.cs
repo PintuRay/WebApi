@@ -31,16 +31,16 @@ namespace FMS.Db.Entity
         public Unit Unit { get; set; }
         public ICollection<AlternateUnit> AlternateUnits { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
-        public ICollection<Stock> Stocks { get; set; }
-        public ICollection<LabourOrder> LabourOrders { get; set; }
-        public ICollection<LabourTransaction> LabourTransactions { get; set; }
-        public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
-        public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
-        public ICollection<SalesTransaction> SalesTransactions { get; set; }
-        public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
-        public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
-        public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
-        public ICollection<DamageTransaction> DamageTransactions { get; set; }
+        //public ICollection<Stock> Stocks { get; set; }
+        //public ICollection<LabourOrder> LabourOrders { get; set; }
+        //public ICollection<LabourTransaction> LabourTransactions { get; set; }
+        //public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
+        //public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
+        //public ICollection<SalesTransaction> SalesTransactions { get; set; }
+        //public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
+        //public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
+        //public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
+        //public ICollection<DamageTransaction> DamageTransactions { get; set; }
     }
     internal class ProductConfig : IEntityTypeConfiguration<Product>
     {
@@ -53,15 +53,15 @@ namespace FMS.Db.Entity
             builder.Property(e => e.RetailPrice).HasColumnType("decimal(18, 2)").HasDefaultValue(0.00);
             builder.Property(e => e.WholeSalePrice).HasColumnType("decimal(18, 2)").IsRequired(true).HasDefaultValue(0.00);
             builder.Property(e => e.GST).HasColumnType("decimal(18, 2)").HasDefaultValue(0.00);
-            builder.Property(e => e.Fk_ProductGroupId).IsRequired(true);
-            builder.Property(e => e.Fk_ProductSubGroupId).IsRequired(false);
-            builder.Property(e => e.Fk_ProductTypeId).IsRequired(true);
-            builder.Property(e => e.Fk_UnitId).IsRequired(true);
-            builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            builder.Property(e => e.Fk_ProductGroupId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_ProductSubGroupId).HasColumnType("uuid").IsRequired(false);
+            builder.Property(e => e.Fk_ProductTypeId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_UnitId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.HasOne(d => d.ProductGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductGroupId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.ProductSubGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductSubGroupId).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
             builder.HasOne(d => d.ProductType).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductTypeId).OnDelete(DeleteBehavior.Cascade);

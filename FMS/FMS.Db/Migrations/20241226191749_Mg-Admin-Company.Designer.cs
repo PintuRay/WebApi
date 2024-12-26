@@ -3,6 +3,7 @@ using System;
 using FMS.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FMS.Db.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241226191749_Mg-Admin-Company")]
+    partial class MgAdminCompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,62 +25,6 @@ namespace FMS.Db.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("FMS.Db.Entity.AlternateUnit", b =>
-                {
-                    b.Property<Guid>("AlternateUnitId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<decimal>("AlternateQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("AlternateUnitName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("FK_ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_UnitId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<decimal>("UnitQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("AlternateUnitId");
-
-                    b.HasIndex("FK_ProductId");
-
-                    b.HasIndex("Fk_UnitId");
-
-                    b.ToTable("AlternateUnits", "public");
-                });
 
             modelBuilder.Entity("FMS.Db.Entity.AppRole", b =>
                 {
@@ -461,273 +408,6 @@ namespace FMS.Db.Migrations
                     b.ToTable("FinancialYears", "public");
                 });
 
-            modelBuilder.Entity("FMS.Db.Entity.LabourRate", b =>
-                {
-                    b.Property<Guid>("LabourRateId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<Guid?>("Fk_BranchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_FinancialYearId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_ProductTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<decimal>("Rate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18, 4)")
-                        .HasDefaultValue(0m);
-
-                    b.HasKey("LabourRateId");
-
-                    b.HasIndex("Fk_BranchId");
-
-                    b.HasIndex("Fk_FinancialYearId");
-
-                    b.HasIndex("Fk_ProductId");
-
-                    b.HasIndex("Fk_ProductTypeId");
-
-                    b.ToTable("LabourRates", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.Product", b =>
-                {
-                    b.Property<Guid>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("Fk_ProductGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("Fk_ProductSubGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_ProductTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_UnitId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("GST")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18, 2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<decimal>("RetailPrice")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18, 2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<decimal>("WholeSalePrice")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18, 2)")
-                        .HasDefaultValue(0m);
-
-                    b.HasKey("ProductId");
-
-                    b.HasIndex("Fk_ProductGroupId");
-
-                    b.HasIndex("Fk_ProductSubGroupId");
-
-                    b.HasIndex("Fk_ProductTypeId");
-
-                    b.HasIndex("Fk_UnitId");
-
-                    b.ToTable("Products", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductGroup", b =>
-                {
-                    b.Property<Guid>("ProductGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("Fk_ProductTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("ProductGroupName")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.HasKey("ProductGroupId");
-
-                    b.HasIndex("Fk_ProductTypeId");
-
-                    b.ToTable("ProductGroups", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductSubGroup", b =>
-                {
-                    b.Property<Guid>("ProductSubGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("Fk_ProductGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("ProductSubGroupName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("ProductSubGroupId");
-
-                    b.HasIndex("Fk_ProductGroupId");
-
-                    b.ToTable("ProductSubGroups", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductType", b =>
-                {
-                    b.Property<Guid>("ProductTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("Product_Type")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("ProductTypeId");
-
-                    b.ToTable("ProductTypes", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductTypeId = new Guid("a4ab180b-acc7-44ce-aef7-c588d41edd5c"),
-                            Product_Type = "FINISHED GOODS"
-                        },
-                        new
-                        {
-                            ProductTypeId = new Guid("b524f4a7-1bb2-4347-84ae-e0da56eb4a31"),
-                            Product_Type = "RAW MATERIALS"
-                        },
-                        new
-                        {
-                            ProductTypeId = new Guid("b504237f-af5f-485a-bec9-0906c50df3c6"),
-                            Product_Type = "SERVICE GOODS"
-                        },
-                        new
-                        {
-                            ProductTypeId = new Guid("66ada405-1229-45df-9598-90b602078933"),
-                            Product_Type = "MOULD & MECHINARY"
-                        });
-                });
-
             modelBuilder.Entity("FMS.Db.Entity.RegisterToken", b =>
                 {
                     b.Property<Guid>("TokenId")
@@ -755,92 +435,6 @@ namespace FMS.Db.Migrations
                             IsActive = true,
                             TokenValue = "123-123-1234"
                         });
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.Unit", b =>
-                {
-                    b.Property<Guid>("UnitId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("UnitName")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.HasKey("UnitId");
-
-                    b.ToTable("Units", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.UserBranch", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("Fk_BranchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Fk_UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Fk_BranchId");
-
-                    b.HasIndex("Fk_UserId");
-
-                    b.ToTable("UserBranches", "public");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1027,29 +621,10 @@ namespace FMS.Db.Migrations
                             UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                             RoleId = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 12, 26, 20, 10, 54, 953, DateTimeKind.Utc).AddTicks(5104),
+                            CreatedDate = new DateTime(2024, 12, 26, 19, 17, 48, 711, DateTimeKind.Utc).AddTicks(8819),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 12, 26, 20, 10, 54, 953, DateTimeKind.Utc).AddTicks(6604)
+                            ModifyDate = new DateTime(2024, 12, 26, 19, 17, 48, 711, DateTimeKind.Utc).AddTicks(9855)
                         });
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.AlternateUnit", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.Product", "Product")
-                        .WithMany("AlternateUnits")
-                        .HasForeignKey("FK_ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.Unit", "Unit")
-                        .WithMany("AlternateUnits")
-                        .HasForeignKey("Fk_UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.AppUser", b =>
@@ -1091,115 +666,6 @@ namespace FMS.Db.Migrations
                         .IsRequired();
 
                     b.Navigation("Branch");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LabourRate", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.Branch", "Branch")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_BranchId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FMS.Db.Entity.FinancialYear", "FinancialYear")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_FinancialYearId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.Product", "Product")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.ProductType", "ProductType")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("FinancialYear");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductType");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.Product", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.ProductGroup", "ProductGroup")
-                        .WithMany("Products")
-                        .HasForeignKey("Fk_ProductGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.ProductSubGroup", "ProductSubGroup")
-                        .WithMany("Products")
-                        .HasForeignKey("Fk_ProductSubGroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FMS.Db.Entity.ProductType", "ProductType")
-                        .WithMany("Products")
-                        .HasForeignKey("Fk_ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.Unit", "Unit")
-                        .WithMany("Products")
-                        .HasForeignKey("Fk_UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductGroup");
-
-                    b.Navigation("ProductSubGroup");
-
-                    b.Navigation("ProductType");
-
-                    b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductGroup", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.ProductType", "ProductType")
-                        .WithMany("ProductGroups")
-                        .HasForeignKey("Fk_ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductType");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductSubGroup", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.ProductGroup", "ProductGroup")
-                        .WithMany("ProductSubGroups")
-                        .HasForeignKey("Fk_ProductGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductGroup");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.UserBranch", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.Branch", "Branch")
-                        .WithMany("UserBranch")
-                        .HasForeignKey("Fk_BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.AppUser", "User")
-                        .WithMany("UserBranch")
-                        .HasForeignKey("Fk_UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1253,67 +719,21 @@ namespace FMS.Db.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FMS.Db.Entity.AppUser", b =>
-                {
-                    b.Navigation("UserBranch");
-                });
-
             modelBuilder.Entity("FMS.Db.Entity.Branch", b =>
                 {
                     b.Navigation("BranchFinancialYears");
 
                     b.Navigation("Companies");
-
-                    b.Navigation("LabourRates");
-
-                    b.Navigation("UserBranch");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.FinancialYear", b =>
                 {
                     b.Navigation("BranchFinancialYears");
-
-                    b.Navigation("LabourRates");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.Product", b =>
-                {
-                    b.Navigation("AlternateUnits");
-
-                    b.Navigation("LabourRates");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductGroup", b =>
-                {
-                    b.Navigation("ProductSubGroups");
-
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductSubGroup", b =>
-                {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.ProductType", b =>
-                {
-                    b.Navigation("LabourRates");
-
-                    b.Navigation("ProductGroups");
-
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.RegisterToken", b =>
                 {
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.Unit", b =>
-                {
-                    b.Navigation("AlternateUnits");
-
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

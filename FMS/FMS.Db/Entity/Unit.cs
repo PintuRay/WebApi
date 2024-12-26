@@ -26,11 +26,11 @@ namespace FMS.Db.Entity
             builder.HasKey(e => e.UnitId);
             builder.Property(e => e.UnitId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.UnitName).HasMaxLength(500).IsRequired(true);
-            builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-                       builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
         }
     }
 }

@@ -16,7 +16,7 @@ namespace FMS.Db.Entity
         //Reference Navigation Property
         public RegisterToken Token { get; set; }
         //collection Navigation Property
-      // public ICollection<UserBranch> UserBranch { get; set; }
+      public ICollection<UserBranch> UserBranch { get; set; }
     }
     internal class AppUserConfig : IEntityTypeConfiguration<AppUser>
     {

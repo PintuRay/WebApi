@@ -7,14 +7,15 @@ namespace FMS.Repo
     {
         public MappingProfile()
         {
+            CreateMap<RegisterToken, RegisterTokenModel>().ReverseMap();
             CreateMap<AppUser, RegisterModel>().ReverseMap();
-            CreateMap<AddressModel, Address>().ReverseMap();
+           // CreateMap<AddressModel, Address>().ReverseMap();
             //Devloper
             //CreateMap<Branch, BranchModel>().ReverseMap();
             //CreateMap<FinancialYear, FinancialYearModel>().ReverseMap();
             //CreateMap<BranchFinancialYear, BranchFinancialYearModel>().ReverseMap();
             //admin
-            CreateMap<RegisterToken, RegisterTokenModel>().ReverseMap();
+            
             //CreateMap<Company, CompanyModel>().ReverseMap();
             //CreateMap<UserBranch, UserBranchModel>().ReverseMap();
             //CreateMap<ProductType,ProductTypeModel>().ReverseMap();
@@ -24,9 +25,9 @@ namespace FMS.Repo
             //CreateMap<AlternateUnit, AlternateUnitModel>().ReverseMap();
             //CreateMap<Product, ProductModel>().ReverseMap();
             //common
-            CreateMap<CountryModel, Country>().ReverseMap();
-            CreateMap<StateModel, State>().ReverseMap();
-            CreateMap<DistModel, Dist>().ReverseMap();
+            //CreateMap<CountryModel, Country>().ReverseMap();
+            //CreateMap<StateModel, State>().ReverseMap();
+            //CreateMap<DistModel, Dist>().ReverseMap();
         }
     }
 }

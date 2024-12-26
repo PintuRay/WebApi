@@ -3,6 +3,7 @@ using System;
 using FMS.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FMS.Db.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241226195024_Mg-Admin-Product")]
+    partial class MgAdminProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -459,69 +462,6 @@ namespace FMS.Db.Migrations
                     b.HasKey("FinancialYearId");
 
                     b.ToTable("FinancialYears", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LabourRate", b =>
-                {
-                    b.Property<Guid>("LabourRateId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<Guid?>("Fk_BranchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_FinancialYearId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_ProductTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<decimal>("Rate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18, 4)")
-                        .HasDefaultValue(0m);
-
-                    b.HasKey("LabourRateId");
-
-                    b.HasIndex("Fk_BranchId");
-
-                    b.HasIndex("Fk_FinancialYearId");
-
-                    b.HasIndex("Fk_ProductId");
-
-                    b.HasIndex("Fk_ProductTypeId");
-
-                    b.ToTable("LabourRates", "public");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Product", b =>
@@ -1027,9 +967,9 @@ namespace FMS.Db.Migrations
                             UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                             RoleId = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 12, 26, 20, 10, 54, 953, DateTimeKind.Utc).AddTicks(5104),
+                            CreatedDate = new DateTime(2024, 12, 26, 19, 50, 23, 319, DateTimeKind.Utc).AddTicks(3440),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 12, 26, 20, 10, 54, 953, DateTimeKind.Utc).AddTicks(6604)
+                            ModifyDate = new DateTime(2024, 12, 26, 19, 50, 23, 319, DateTimeKind.Utc).AddTicks(4509)
                         });
                 });
 
@@ -1091,40 +1031,6 @@ namespace FMS.Db.Migrations
                         .IsRequired();
 
                     b.Navigation("Branch");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LabourRate", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.Branch", "Branch")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_BranchId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FMS.Db.Entity.FinancialYear", "FinancialYear")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_FinancialYearId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.Product", "Product")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.ProductType", "ProductType")
-                        .WithMany("LabourRates")
-                        .HasForeignKey("Fk_ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("FinancialYear");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductType");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Product", b =>
@@ -1264,23 +1170,17 @@ namespace FMS.Db.Migrations
 
                     b.Navigation("Companies");
 
-                    b.Navigation("LabourRates");
-
                     b.Navigation("UserBranch");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.FinancialYear", b =>
                 {
                     b.Navigation("BranchFinancialYears");
-
-                    b.Navigation("LabourRates");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Product", b =>
                 {
                     b.Navigation("AlternateUnits");
-
-                    b.Navigation("LabourRates");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.ProductGroup", b =>
@@ -1297,8 +1197,6 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.ProductType", b =>
                 {
-                    b.Navigation("LabourRates");
-
                     b.Navigation("ProductGroups");
 
                     b.Navigation("Products");

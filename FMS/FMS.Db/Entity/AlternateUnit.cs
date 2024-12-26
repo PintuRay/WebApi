@@ -21,8 +21,8 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public Product Product { get; set; }
         public Unit Unit { get; set; }
-        public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
-        public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
+        //public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
+        //public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
     }
     internal class AlternateUnitConfig : IEntityTypeConfiguration<AlternateUnit>
     {
@@ -31,16 +31,16 @@ namespace FMS.Db.Entity
             builder.ToTable("AlternateUnits", "public");
             builder.HasKey(e => e.AlternateUnitId);
             builder.Property(e => e.AlternateUnitId).HasDefaultValueSql("gen_random_uuid()");
-            builder.Property(e => e.FK_ProductId).IsRequired(true);
-            builder.Property(e => e.Fk_UnitId).IsRequired(true);
+            builder.Property(e => e.FK_ProductId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_UnitId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.AlternateUnitName).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.AlternateQuantity).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.UnitQuantity).HasColumnType("decimal(18,2)").IsRequired(true);
-            builder.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-           builder.Property(e => e.CreatedDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+           builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.HasOne(p => p.Product).WithMany(po => po.AlternateUnits).HasForeignKey(po => po.FK_ProductId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Unit).WithMany(po => po.AlternateUnits).HasForeignKey(po => po.Fk_UnitId).OnDelete(DeleteBehavior.Cascade);
         }

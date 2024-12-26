@@ -14,26 +14,35 @@ namespace FMS.Db
 
         }
         #region Entity
+        //Account
+        public DbSet<RegisterToken> RegisterTokens { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<AppUserRole> AppUserRoles { get; set; }
         public DbSet<AppUserClaim> AppUserClaims { get; set; }
-        public DbSet<RegisterToken> RegisterTokens { get; set; }
+        //Devloper
+        public DbSet<FinancialYear> FinancialYears { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<BranchFinancialYear> BranchFinancialYears { get; set; }
+        //Admin
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<UserBranch> UserBranches { get; set; }
+        public DbSet<ProductGroup> ProductGroups { get; set; }
+        public DbSet<ProductSubGroup> ProductSubGroups { get; set; }
+        public DbSet<Unit> Units { get; set; }
+        public DbSet<AlternateUnit> AlternateUnits { get; set; }
+        public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<LabourRate> LabourRates { get; set; }
+        //Common
         //public DbSet<Address> Addresses { get; set; }
         //public DbSet<Country> Countries { get; set; }
         //public DbSet<State> States { get; set; }
         //public DbSet<Dist> Dists { get; set; }
-        // public DbSet<FinancialYear> FinancialYears { get; set; }
-        // public DbSet<Branch> Branches { get; set; }
-        // public DbSet<BranchFinancialYear> BranchFinancialYears { get; set; }
-        // public DbSet<UserBranch> UserBranches { get; set; }
-        // public DbSet<Company> Companies { get; set; }
-        // public DbSet<ProductGroup> ProductGroups { get; set; }
-        // public DbSet<ProductSubGroup> ProductSubGroups { get; set; }
-        // public DbSet<Unit> Units { get; set; }
-        // public DbSet<AlternateUnit> AlternateUnits { get; set; }
-        // public DbSet<ProductType> ProductTypes { get; set; }
-        // public DbSet<Product> Products { get; set; }
+
+
+
+
         // public DbSet<ProductionOrder> ProductionOrders { get; set; }
         // public DbSet<ProductionTransaction> ProductionTransactions { get; set; }
         // public DbSet<LabourOrder> LabourOrders { get; set; }
@@ -41,7 +50,7 @@ namespace FMS.Db
         // public DbSet<Stock> Stocks { get; set; }
         // public DbSet<Labour> Labours { get; set; }
         // public DbSet<LabourType> LabourTypes { get; set; }
-        // public DbSet<LabourRate> LabourRates { get; set; }
+
         // public DbSet<LedgerGroup> LedgerGroups { get; set; }
         // public DbSet<LedgerSubGroup> LedgerSubGroups { get; set; }
         // public DbSet<LedgerSubGroupDev> LedgerSubGroupDevs { get; set; }
@@ -86,33 +95,38 @@ namespace FMS.Db
         {
             modelBuilder.HasDefaultSchema("public");
             #region EntityConfig
-            /*--------------------Branch & Financial Year-------------------------------*/
-            //new FinancialYearConfig().Configure(modelBuilder.Entity<FinancialYear>());
-            //new BranchConfig().Configure(modelBuilder.Entity<Branch>());
-            //new BranchFinancialYearConfig().Configure(modelBuilder.Entity<BranchFinancialYear>());
-            /*--------------------------------User--------------------------------------*/
+            /*---------------------------Account----------------------------------*/
             new RegisterTokenConfig().Configure(modelBuilder.Entity<RegisterToken>());
             new AppUserConfig().Configure(modelBuilder.Entity<AppUser>());
             new AppRoleConfig().Configure(modelBuilder.Entity<AppRole>());
             new AppUserRoleConfig().Configure(modelBuilder.Entity<AppUserRole>());
             new AppUserClaimConfig().Configure(modelBuilder.Entity<AppUserClaim>());
-           // new UserBranchConfig().Configure(modelBuilder.Entity<UserBranch>());
+            /*----------------------------Devloper-------------------------------*/
+            new FinancialYearConfig().Configure(modelBuilder.Entity<FinancialYear>());
+            new BranchConfig().Configure(modelBuilder.Entity<Branch>());
+            new BranchFinancialYearConfig().Configure(modelBuilder.Entity<BranchFinancialYear>());
+            /*----------------------------Admin-------------------------------*/
+            new CompanyConfig().Configure(modelBuilder.Entity<Company>());
+            new UserBranchConfig().Configure(modelBuilder.Entity<UserBranch>());
+            new ProductTypeConfig().Configure(modelBuilder.Entity<ProductType>());
+            new ProductGroupConfig().Configure(modelBuilder.Entity<ProductGroup>());
+            new ProductSubGroupConfig().Configure(modelBuilder.Entity<ProductSubGroup>());
+            new UnitConfig().Configure(modelBuilder.Entity<Unit>());
+            new AlternateUnitConfig().Configure(modelBuilder.Entity<AlternateUnit>());
+            new ProductConfig().Configure(modelBuilder.Entity<Product>());
+            new LabourRateConfig().Configure(modelBuilder.Entity<LabourRate>());
+            /*--------------------------------User--------------------------------------*/
+            //Stock
+            //new StockConfig().Configure(modelBuilder.Entity<Stock>());
             /*----------------------------------Address-------------------------------------*/
             //new AddressConfig().Configure(modelBuilder.Entity<Address>());
             //new CountryConfig().Configure(modelBuilder.Entity<Country>());
             //new StateConfig().Configure(modelBuilder.Entity<State>());
             //new CityConfig().Configure(modelBuilder.Entity<Dist>());
             /*------------------------------Company--------------------------------------*/
-            //new CompanyConfig().Configure(modelBuilder.Entity<Company>());
+
             /*------------------------------product---------------------------*/
-            //new ProductTypeConfig().Configure(modelBuilder.Entity<ProductType>());
-            //new ProductGroupConfig().Configure(modelBuilder.Entity<ProductGroup>());
-            //new ProductSubGroupConfig().Configure(modelBuilder.Entity<ProductSubGroup>());
-            //new UnitConfig().Configure(modelBuilder.Entity<Unit>());
-            //new AlternateUnitConfig().Configure(modelBuilder.Entity<AlternateUnit>());
-            //new ProductConfig().Configure(modelBuilder.Entity<Product>());
-            //Stock
-            //new StockConfig().Configure(modelBuilder.Entity<Stock>());
+
             //Inward & OutWard Transaction
             //new InwardSupplyOrderConfig().Configure(modelBuilder.Entity<InwardSupplyOrder>());
             //new InwardSupplyTransactionConfig().Configure(modelBuilder.Entity<InwardSupplyTransaction>());
@@ -122,7 +136,7 @@ namespace FMS.Db
             //new ProductionOrderConfig().Configure(modelBuilder.Entity<ProductionOrder>());
             //new ProductionTransactionConfig().Configure(modelBuilder.Entity<ProductionTransaction>());
             /*--------------------------------Labour-----------------------------*/
-            //new LabourRateConfig().Configure(modelBuilder.Entity<LabourRate>());
+
             //new LabourTypeConfig().Configure(modelBuilder.Entity<LabourType>());
             //new LabourConfig().Configure(modelBuilder.Entity<Labour>());
             //Production & Service Transaction
@@ -132,7 +146,7 @@ namespace FMS.Db
             //new DamageOrderConfig().Configure(modelBuilder.Entity<DamageOrder>());
             //new DamageTransactionConfig().Configure(modelBuilder.Entity<DamageTransaction>());
             /*-----------------------------------Ledger----------------------------------*/
-           //Group
+            //Group
             //new LedgerGroupConfig().Configure(modelBuilder.Entity<LedgerGroup>());
             //new LedgerSubGroupConfig().Configure(modelBuilder.Entity<LedgerSubGroup>());
             //new LedgerSubGroupDevConfig().Configure(modelBuilder.Entity<LedgerSubGroupDev>());
@@ -140,7 +154,7 @@ namespace FMS.Db
             //new LedgerConfig().Configure(modelBuilder.Entity<Ledger>());
             //new LedgersDevConfig().Configure(modelBuilder.Entity<LedgerDev>());
             //new LedgerBalanceConfig().Configure(modelBuilder.Entity<LedgerBalance>());
-           //Sub Ledger
+            //Sub Ledger
             //new SubLedgerConfig().Configure(modelBuilder.Entity<SubLedger>());
             //new SubLedgerBalanceConfig().Configure(modelBuilder.Entity<SubLedgerBalance>());
             /*-----------------------------------Party----------------------------------*/
