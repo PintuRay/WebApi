@@ -9,15 +9,18 @@ namespace FMS.Svcs.Devloper.Branch
         #region Crud
         public Task<SvcsBase> GetAllBranch(PaginationParams pagination);
         public Task<SvcsBase> CreateBranch(BranchModel data, AppUser user);
-        public Task<SvcsBase> UpdateBranch(Guid BranchId, BranchModel data, AppUser user);
+        public Task<SvcsBase> BulkCreateBranch(List<BranchModel> listdata, AppUser user);
+        public Task<SvcsBase> UpdateBranch(BranchUpdateModel data, AppUser user);
+        public Task<SvcsBase> BulkUpdateBranch(List<BranchUpdateModel> listdata, AppUser user);
         public Task<SvcsBase> RemoveBranch(Guid Id, AppUser user);
+        public Task<SvcsBase> BulkRemoveBranch(List<Guid> Ids, AppUser user);
         #endregion
         #region Recover
         Task<SvcsBase> GetRemovedBranches(PaginationParams pagination);
         Task<SvcsBase> RecoverBranch(Guid Id, AppUser user);
+        Task<SvcsBase> BulkRecoverBranch(List<Guid> Ids, AppUser user);
         Task<SvcsBase> DeleteBranch(Guid Id, AppUser user);
-        Task<SvcsBase> RecoverAllBranch(List<string> Ids, AppUser user);
-        Task<SvcsBase> DeleteAllBranch(List<string> Ids, AppUser user);
+        Task<SvcsBase> BulkDeleteBranch(List<Guid> Ids, AppUser user);
         #endregion
         #endregion
     }

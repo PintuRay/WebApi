@@ -2,6 +2,7 @@
 using FMS.Model;
 using FMS.Repo.Devloper.Branch;
 using FMS.Svcs.Email;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Svcs.Devloper.Branch
 {
@@ -76,12 +77,44 @@ namespace FMS.Svcs.Devloper.Branch
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateBranch(Guid Id, BranchModel data, AppUser user)
+        public async Task<SvcsBase> BulkCreateBranch(List<BranchModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.UpdateBranch(Id, data, user);
+                var repoResult = await _branchRepo.BulkCreateBranch(listdata, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = "Branchs Created Successfully",
+                        ResponseCode = (int)ResponseCode.Status.Created,
+                    },
+                    false => new()
+                    {
+                        Message = $"Following Branches '{string.Join(", ", repoResult.Data)}' Already Exist",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateBranch", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> UpdateBranch(BranchUpdateModel data, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _branchRepo.UpdateBranch(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -92,7 +125,39 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"BranchId '{data.BranchId}' Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateBranch", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> BulkUpdateBranch(List<BranchUpdateModel> listdata, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _branchRepo.BulkUpdateBranch(listdata, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = "Branches Updated Successfully",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -125,6 +190,38 @@ namespace FMS.Svcs.Devloper.Branch
                     false => new()
                     {
                         Message = $"BranchId '{Id}' Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveBranch", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> BulkRemoveBranch(List<Guid> Ids, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _branchRepo.BulkRemoveBranch(Ids, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = "Branches Removed Successfully",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -205,6 +302,38 @@ namespace FMS.Svcs.Devloper.Branch
             }
             return Obj;
         }
+        public async Task<SvcsBase> BulkRecoverBranch(List<Guid> Ids, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _branchRepo.BulkRecoverBranch(Ids, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = "Branches Recovered Successfully",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllBranch", _Exception.ToString());
+            }
+            return Obj;
+        }
         public async Task<SvcsBase> DeleteBranch(Guid Id, AppUser user)
         {
             SvcsBase Obj;
@@ -237,44 +366,12 @@ namespace FMS.Svcs.Devloper.Branch
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllBranch(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> BulkDeleteBranch(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.RecoverAllBranch(Ids, user);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        Message = "Branches Recovered Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = "Failed To Recover Branch",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllBranch", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> DeleteAllBranch(List<string> Ids, AppUser user)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var repoResult = await _branchRepo.DeleteAllBranch(Ids, user);
+                var repoResult = await _branchRepo.BulkDeleteBranch(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -285,7 +382,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch",
+                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
