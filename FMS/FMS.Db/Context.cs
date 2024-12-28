@@ -34,14 +34,12 @@ namespace FMS.Db
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<LabourRate> LabourRates { get; set; }
+
         //Common
         //public DbSet<Address> Addresses { get; set; }
         //public DbSet<Country> Countries { get; set; }
         //public DbSet<State> States { get; set; }
         //public DbSet<Dist> Dists { get; set; }
-
-
-
 
         // public DbSet<ProductionOrder> ProductionOrders { get; set; }
         // public DbSet<ProductionTransaction> ProductionTransactions { get; set; }
@@ -50,7 +48,6 @@ namespace FMS.Db
         // public DbSet<Stock> Stocks { get; set; }
         // public DbSet<Labour> Labours { get; set; }
         // public DbSet<LabourType> LabourTypes { get; set; }
-
         // public DbSet<LedgerGroup> LedgerGroups { get; set; }
         // public DbSet<LedgerSubGroup> LedgerSubGroups { get; set; }
         // public DbSet<LedgerSubGroupDev> LedgerSubGroupDevs { get; set; }
@@ -60,7 +57,6 @@ namespace FMS.Db
         // public DbSet<SubLedger> SubLedgers { get; set; }
         // public DbSet<SubLedgerBalance> SubLedgerBalances { get; set; }
         // public DbSet<Party> Parties { get; set; }
-
         // public DbSet<JournalOrder> JournalOrders { get; set; }
         // public DbSet<JournalTransaction> JournalTransactions { get; set; }
         // public DbSet<PaymentOrder> PaymentOrders { get; set; }
