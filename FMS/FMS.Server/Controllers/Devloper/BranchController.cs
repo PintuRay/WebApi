@@ -65,7 +65,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPatch, Authorize(policy: "Update")]
         public async Task<IActionResult> Update([FromBody] BranchUpdateModel model)
         {
             if (ModelState.IsValid)
@@ -82,7 +82,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
+        [HttpPatch, Authorize(policy: "Update")]
         public async Task<IActionResult> BulkUpdate([FromBody] List<BranchUpdateModel> listdata)
         {
             var validator = new BranchValidator();
@@ -99,7 +99,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        [HttpPut("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -121,7 +121,7 @@ namespace FMS.Server.Controllers.Devloper
             var result = await _branchSvcs.GetRemovedBranches(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        [HttpPut("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -143,7 +143,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPatch, Authorize(policy: "Update")]
+        [HttpPut, Authorize(policy: "Update")]
         public async Task<IActionResult> BulkRecover([FromBody] List<Guid> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -164,7 +164,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(policy: "Delete")]
         public async Task<IActionResult> BulkDelete([FromBody] List<Guid> Ids)
         {
             var user = await _userManager.GetUserAsync(User);

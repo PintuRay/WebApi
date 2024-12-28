@@ -7,21 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FMS.Server.Controllers.Account.Autherization
 {
-    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Admin,Devloper")]
+    [ApiController, Route("User"), Authorize(Roles = "Admin,Devloper")]
     public class UserController(IAutherizationSvcs autherizationSvcs) : ControllerBase
     {
         #region Dependancy
         private readonly IAutherizationSvcs _autherizationSvcs = autherizationSvcs;
         #endregion
         #region User
-        [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        [HttpGet, Route("Get")]
+        public async Task<IActionResult> Get()
         {
             var result = await _autherizationSvcs.GetUsers();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet, Route("email/{email}")]
-        public async Task<IActionResult> GetUserByMail([FromRoute] string email)
+        [HttpGet, Route("GetByMail/{email}")]
+        public async Task<IActionResult> GetByMail([FromRoute] string email)
         {
             if (email != null)
             {
@@ -33,8 +33,8 @@ namespace FMS.Server.Controllers.Account.Autherization
                 return BadRequest("Plz Provide Valid Mail");
             }
         }
-        [HttpGet, Route("{Id}")]
-        public async Task<IActionResult> GetUserById([FromRoute] string Id)
+        [HttpGet, Route("GetById/{Id}")]
+        public async Task<IActionResult> GetById([FromRoute] string Id)
         {
             if (Id != null)
             {
@@ -46,8 +46,8 @@ namespace FMS.Server.Controllers.Account.Autherization
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPatch, Route("{Id}"), Authorize(Policy = "Update")]
-        public async Task<IActionResult> UpdateUser([FromRoute] string Id, [FromBody] AppUser User)
+        [HttpPatch, Route("Update/{Id}"), Authorize(Policy = "Update")]
+        public async Task<IActionResult> Update([FromRoute] string Id, [FromBody] AppUser User)
         {
             if (Id != null)
             {
@@ -67,8 +67,8 @@ namespace FMS.Server.Controllers.Account.Autherization
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("{Id}"), Authorize(Policy = "Delete")]
-        public async Task<IActionResult> DeleteUser([FromRoute] string Id)
+        [HttpDelete, Route("Delete/{Id}"), Authorize(Policy = "Delete")]
+        public async Task<IActionResult> Delete([FromRoute] string Id)
         {
             if (Id != null)
             {
@@ -82,7 +82,7 @@ namespace FMS.Server.Controllers.Account.Autherization
         }
         #endregion
         #region Role
-        [HttpPost, Authorize(Policy = "Create")]
+        [HttpPost, Route("Role/Create"), Authorize(Policy = "Create")]
         public async Task<IActionResult> CreateRole([FromBody] AppRole model)
         {
             if (ModelState.IsValid)
@@ -96,13 +96,13 @@ namespace FMS.Server.Controllers.Account.Autherization
                 return BadRequest(errors);
             }
         }
-        [HttpGet]
+        [HttpGet, Route("Role/Get")]
         public async Task<IActionResult> GetRoles()
         {
             var result = await _autherizationSvcs.GetRoles();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpGet, Route("{Id}")]
+        [HttpGet, Route("Role/GetById/{Id}")]
         public async Task<IActionResult> GetRoleById([FromRoute] string Id)
         {
             if (Id != null)
@@ -115,7 +115,7 @@ namespace FMS.Server.Controllers.Account.Autherization
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPatch, Route("{Id}"), Authorize(Policy = "Update")]
+        [HttpPatch, Route("Role/Update/{Id}"), Authorize(Policy = "Update")]
         public async Task<IActionResult> UpdateRole([FromRoute] string Id, [FromBody] AppRole model)
         {
             if (Id != null)
@@ -136,7 +136,7 @@ namespace FMS.Server.Controllers.Account.Autherization
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpDelete, Route("{Id}"), Authorize(Policy = "Delete")]
+        [HttpDelete, Route("Role/Delete/{Id}"),  Authorize(Policy = "Delete")]
         public async Task<IActionResult> DeleteRole([FromRoute] string Id)
         {
             if (Id != null)
@@ -151,13 +151,13 @@ namespace FMS.Server.Controllers.Account.Autherization
         }
         #endregion
         #region User-Role && User-Claims
-        [HttpGet]
+        [HttpGet, Route("RolesAndClaims/Get")]
         public async Task<IActionResult> GetAllUserWithRolesAndClaims()
         {
             var result = await _autherizationSvcs.GetAllUserWithRolesAndClaims();
             return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
         }
-        [HttpGet, Route("{UserId}")]
+        [HttpGet, Route("RolesAndClaims/GetById/{UserId}")]
         public async Task<IActionResult> GetUserWithRolesAndClaims([FromRoute] string UserId)
         {
             if (UserId != null)
@@ -170,7 +170,7 @@ namespace FMS.Server.Controllers.Account.Autherization
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPatch]
+        [HttpPatch, Route("RolesAndClaims/Update")]
         public async Task<IActionResult> UpdateUserRoleAndClaims([FromBody] UserRoleClaimModel model)
         {
             if (ModelState.IsValid)
