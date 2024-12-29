@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -8,10 +9,13 @@ namespace FMS.Db.Entity
         public string ProductGroupName { get; set; }
         public Guid Fk_ProductTypeId { get; set; }
     }
-    public class ProductGroup : ProductGroupModel
+    public class ProductGroupUpdateModel : ProductGroupModel
     {
         public Guid ProductGroupId { get; set; }
-        public bool? IsActive { get; set; }
+    }
+    public class ProductGroup : ProductGroupUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -19,6 +23,13 @@ namespace FMS.Db.Entity
         public ProductType ProductType { get; set; }
         public ICollection<ProductSubGroup> ProductSubGroups { get; set; }
         public ICollection<Product> Products { get; set; }
+    }
+    public class ProductGroupValidator : AbstractValidator<ProductGroupModel>
+    {
+        public ProductGroupValidator()
+        {
+
+        }
     }
     internal class ProductGroupConfig : IEntityTypeConfiguration<ProductGroup>
     {

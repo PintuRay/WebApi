@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace FMS.Db.Entity
 {
@@ -8,10 +9,13 @@ namespace FMS.Db.Entity
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }
-    public class FinancialYear : FinancialYearModel
+    public class FinancialYearUpdateModel : FinancialYearModel
     {
         public Guid FinancialYearId { get; set; }
-        public bool? IsActive { get; set; }
+    }
+    public class FinancialYear : FinancialYearUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; }
@@ -45,6 +49,13 @@ namespace FMS.Db.Entity
         //public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
         //public ICollection<DamageOrder> DamageOrders { get; set; }
         //public ICollection<DamageTransaction> DamageTransactions { get; set; }
+    }
+    public class FinancialYearValidator : AbstractValidator<CompanyModel>
+    {
+        public FinancialYearValidator()
+        {
+
+        }
     }
     internal class FinancialYearConfig : IEntityTypeConfiguration<FinancialYear>
     {

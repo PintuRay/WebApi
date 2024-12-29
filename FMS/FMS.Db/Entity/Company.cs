@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -14,15 +15,25 @@ namespace FMS.Db.Entity
         public string GSTIN { get; set; }
         public string Logo { get; set; }  
     }
-    public class Company : CompanyModel
+    public class CompanyUpdateModel : CompanyModel
     {
         public Guid CompanyId { get; set; }
-        public bool? IsActive { get; set; } = true;
+    }
+    public class Company : CompanyUpdateModel
+    {
+        public bool IsActive { get; set; } = true;
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; }
         public string ModifyBy { get; set; }
         public Branch Branch { get; set; }
+    }
+    public class CompanyValidator : AbstractValidator<CompanyModel>
+    {
+        public CompanyValidator()
+        {
+
+        }
     }
     internal class CompanyConfig : IEntityTypeConfiguration<Company>
     {

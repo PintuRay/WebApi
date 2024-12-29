@@ -9,10 +9,13 @@ namespace FMS.Db.Entity
         public Guid Fk_FinishedGoodId { get; set; }
         public ICollection<SalesTransactionSetup> SalesTransactionSetups { get; set; }
     }
-    public class SalesOrderSetup : SalesOrderSetupModel
+    public class SalesOrderSetupUpdateModel : SalesOrderSetupModel
     {
         public Guid SalesOrderSetupId { get; set; }
-        public bool? IsActive { get; set; }
+    }
+    public class SalesOrderSetup : SalesOrderSetupUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;

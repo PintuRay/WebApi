@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -7,16 +8,26 @@ namespace FMS.Db.Entity
     {
         public string UnitName { get; set; }
     }
-    public class Unit : UnitModel
+    public class UnitUpdateModel : UnitModel
     {
         public Guid UnitId { get; set; }
-        public bool? IsActive { get; set; }
+    }
+    public class Unit : UnitUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
         public ICollection<Product> Products { get; set; }
         public ICollection<AlternateUnit> AlternateUnits { get; set; }
+    }
+    public class UnitValidator : AbstractValidator<UnitModel>
+    {
+        public UnitValidator()
+        {
+
+        }
     }
     internal class UnitConfig : IEntityTypeConfiguration<Unit>
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,9 +18,12 @@ namespace FMS.Db.Entity
         [NotMapped]
         public decimal Price {  get; set; }
     }
-    public class Product : ProductModel
+    public class ProductUpdateModel : ProductModel
     {
         public Guid ProductId { get; set; }
+    }
+    public class Product : ProductUpdateModel
+    {
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
@@ -45,6 +49,13 @@ namespace FMS.Db.Entity
         //public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
         //public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
         //public ICollection<DamageTransaction> DamageTransactions { get; set; }
+    }
+    public class ProductValidator : AbstractValidator<ProductModel>
+    {
+        public ProductValidator()
+        {
+
+        }
     }
     internal class ProductConfig : IEntityTypeConfiguration<Product>
     {

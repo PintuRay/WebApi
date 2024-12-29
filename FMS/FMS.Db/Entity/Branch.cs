@@ -14,55 +14,11 @@ namespace FMS.Db.Entity
         [Required]
         public string BranchCode { get; set; }
     }
-    public class BranchValidator : AbstractValidator<BranchModel>
-    {
-        public BranchValidator()
-        {
-            RuleFor(branch => branch.BranchName)
-            .NotEmpty().WithMessage("BranchName is required.")
-            .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
-            .Matches(@"^[a-zA-Z\s]+$").WithMessage("BranchName should only contain letters and spaces.");
-
-            RuleFor(branch => branch.ContactNumber)
-            .NotEmpty().WithMessage("ContactNumber is required.")
-            .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")
-            .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
-
-            RuleFor(branch => branch.BranchCode)
-            .NotEmpty().WithMessage("BranchCode is required.")
-            .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a letter and followed by a combination of letters and numbers.");
-        }
-    }
     public class BranchUpdateModel : BranchModel
     {
         [Required]
         public Guid BranchId { get; set; }
-    }
-    //public class BranchUpdateValidator : AbstractValidator<BranchUpdateModel>
-    //{
-    //    public BranchUpdateValidator()
-    //    {
-    //        // First include all the base BranchModel validations
-    //        RuleFor(branch => branch.BranchName)
-    //            .NotEmpty().WithMessage("BranchName is required.")
-    //            .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
-    //            .Matches(@"^[a-zA-Z\s]+$").WithMessage("BranchName should only contain letters and spaces.");
-
-    //        RuleFor(branch => branch.ContactNumber)
-    //            .NotEmpty().WithMessage("ContactNumber is required.")
-    //            .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")
-    //            .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
-
-    //        RuleFor(branch => branch.BranchCode)
-    //            .NotEmpty().WithMessage("BranchCode is required.")
-    //            .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a letter and followed by a combination of letters and numbers.");
-
-    //        // Add the BranchId validation specific to update operations
-    //        RuleFor(branch => branch.BranchId)
-    //            .NotEmpty().WithMessage("BranchId is required.")
-    //            .NotEqual(Guid.Empty).WithMessage("Invalid BranchId.");
-    //    }
-    //}
+    } 
     public class Branch : BranchUpdateModel
     {
         public bool IsActive { get; set; }
@@ -105,6 +61,25 @@ namespace FMS.Db.Entity
         //public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
         //public ICollection<DamageOrder> DamageOrders { get; set; }
         //public ICollection<DamageTransaction> DamageTransactions { get; set; }
+    }
+    public class BranchValidator : AbstractValidator<BranchModel>
+    {
+        public BranchValidator()
+        {
+            RuleFor(branch => branch.BranchName)
+            .NotEmpty().WithMessage("BranchName is required.")
+            .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
+            .Matches(@"^[a-zA-Z\s]+$").WithMessage("BranchName should only contain letters and spaces.");
+
+            RuleFor(branch => branch.ContactNumber)
+            .NotEmpty().WithMessage("ContactNumber is required.")
+            .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")
+            .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
+
+            RuleFor(branch => branch.BranchCode)
+            .NotEmpty().WithMessage("BranchCode is required.")
+            .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a letter and followed by a combination of letters and numbers.");
+        }
     }
     internal class BranchConfig : IEntityTypeConfiguration<Branch>
     {

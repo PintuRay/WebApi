@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,10 +12,13 @@ namespace FMS.Db.Entity
         public decimal Quantity { get; set; }
         public string Unit { get; set; }
     }
-    public class ProductionTransaction: ProductionTransactionModel
+    public class ProductionTransactionUpdateModel : ProductionTransactionModel
     {
-        public Guid ProductionTransactionId {  get; set; }
-        public bool? IsActive { get; set; }
+        public Guid ProductionTransactionId { get; set; }
+    }
+    public class ProductionTransaction: ProductionTransactionUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -24,6 +28,13 @@ namespace FMS.Db.Entity
         public string RawMaterialName { get; set; }
 
         public Product Product { get; set; }
+    }
+    public class ProductionTransactionValidator : AbstractValidator<ProductionTransactionModel>
+    {
+        public ProductionTransactionValidator()
+        {
+
+        }
     }
     internal class ProductionTransactionConfig : IEntityTypeConfiguration<ProductionTransaction>
     {

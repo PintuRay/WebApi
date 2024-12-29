@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -8,10 +9,14 @@ namespace FMS.Db.Entity
         public Guid Fk_LedgerGroupId { get; set; }
         public string SubGroupName { get; set; }
     }
-    public class LedgerSubGroupDev : LedgerSubGroupDevModel
+    public class LedgerSubGroupDevUpdateModel : LedgerSubGroupDevModel
     {
         public Guid LedgerSubGroupId { get; set; }
-        public bool? IsActive { get; set; }
+    }
+
+    public class LedgerSubGroupDev : LedgerSubGroupDevUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -19,6 +24,13 @@ namespace FMS.Db.Entity
         public LedgerGroup LedgerGroup { get; set; }
         public Branch Branch { get; set; }
         public ICollection<LedgerDev> LedgersDev { get; set; }
+    }
+    public class LedgerSubGroupDevValidator : AbstractValidator<LedgerSubGroupDevModel>
+    {
+        public LedgerSubGroupDevValidator()
+        {
+
+        }
     }
     internal class LedgerSubGroupDevConfig : IEntityTypeConfiguration<LedgerSubGroupDev>
     {

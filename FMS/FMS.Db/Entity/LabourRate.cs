@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -12,10 +13,14 @@ namespace FMS.Db.Entity
         public Guid? Fk_BranchId { get; set; }
         public decimal Rate { get; set; }
     }
-    public class LabourRate : LabourRateModel
+
+    public class LabourRateUpdateModel : LabourRateModel
     {
         public Guid LabourRateId { get; set; }
-        public bool? IsActive { get; set; }
+    }
+    public class LabourRate : LabourRateUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -24,6 +29,13 @@ namespace FMS.Db.Entity
         public Product Product { get; set; }
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
+    }
+    public class LabourRateValidator : AbstractValidator<LabourRateModel>
+    {
+        public LabourRateValidator()
+        {
+
+        }
     }
     internal class LabourRateConfig : IEntityTypeConfiguration<LabourRate>
     {

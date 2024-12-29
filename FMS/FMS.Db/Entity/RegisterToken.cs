@@ -9,6 +9,13 @@ namespace FMS.Db.Entity
     {
         public string TokenValue { get; set; }
     }
+    public class RegisterToken: RegisterTokenModel
+    {
+        public Guid TokenId { get; set; }
+        public bool IsActive { get; set; }
+        //Reference Navigation Property
+        public AppUser User { get; set; }
+    }
     public class RegisterTokenValidator : AbstractValidator<RegisterTokenModel>
     {
         public RegisterTokenValidator(CustomValidation vaidator)
@@ -17,15 +24,8 @@ namespace FMS.Db.Entity
             RuleFor(tregkoken => tregkoken.TokenValue)
              .NotNull().WithMessage(" Registration Token is required.")
              .NotEmpty().WithMessage("Registration Token cannot be empty.")
-             .Matches(@"^\d{3}-\d{3}-\d{4}$").WithMessage("Registration Token Format Mismatch"); 
+             .Matches(@"^\d{3}-\d{3}-\d{4}$").WithMessage("Registration Token Format Mismatch");
         }
-    }
-    public class RegisterToken: RegisterTokenModel
-    {
-        public Guid TokenId { get; set; }
-        public bool? IsActive { get; set; }
-        //Reference Navigation Property
-        public AppUser User { get; set; }
     }
     internal class RegisterTokenConfig : IEntityTypeConfiguration<RegisterToken>
     {

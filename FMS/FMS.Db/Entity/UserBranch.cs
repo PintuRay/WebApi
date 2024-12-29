@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -8,10 +9,13 @@ namespace FMS.Db.Entity
         public string Fk_UserId { get; set; }
         public Guid Fk_BranchId { get; set; }
     }
-    public class UserBranch: UserBranchModel
+    public class UserBranchUpdateModel : UserBranchModel
     {
         public Guid Id { get; set; }
-        public bool? IsActive { get; set; }
+    }
+    public class UserBranch: UserBranchUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -19,6 +23,13 @@ namespace FMS.Db.Entity
         //Navigation Property
         public AppUser User { get; set; }
         public Branch Branch { get; set; }
+    }
+    public class UserBranchValidator : AbstractValidator<UserBranchModel>
+    {
+        public UserBranchValidator()
+        {
+
+        }
     }
     internal class UserBranchConfig : IEntityTypeConfiguration<UserBranch>
     {

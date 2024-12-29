@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
@@ -11,10 +12,13 @@ namespace FMS.Db.Entity
         public Guid Fk_LedgerGroupId { get; set; }
         public Guid? Fk_LedgerSubGroupId { get; set; }
     }
-    public class Ledger : LedgerModel
+    public class LedgerUpdateModel : LedgerModel
     {
         public Guid LedgerId { get; set; }
-        public bool? IsActive { get; set; }
+    }
+    public class Ledger : LedgerUpdateModel
+    {
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -28,6 +32,13 @@ namespace FMS.Db.Entity
         // public ICollection<JournalTransaction> Journals { get; set; }
         //public ICollection<PaymentTransaction> Payments { get; set; }
         // public ICollection<ReceiptTransaction> Receipts { get; set; }
+    }
+    public class LedgerValidator : AbstractValidator<LedgerModel>
+    {
+        public LedgerValidator()
+        {
+
+        }
     }
     internal class LedgerConfig : IEntityTypeConfiguration<Ledger>
     {

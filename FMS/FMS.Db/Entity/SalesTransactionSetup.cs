@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,10 +12,14 @@ namespace FMS.Db.Entity
         public decimal Quantity { get; set; }
         public string Unit { get; set; }
     }
+    public class SalesTransactionSetupUpdateModel : SalesTransactionSetupModel
+    {
+        public Guid LedgerId { get; set; }
+    }
     public class SalesTransactionSetup : SalesTransactionSetupModel
     {
         public Guid SalesTransactionSetupId { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -23,6 +28,13 @@ namespace FMS.Db.Entity
         [NotMapped]
         public string SubFinishedGoodName { get; set; }
         public Product Product { get; set; }
+    }
+    public class SalesTransactionSetupValidator : AbstractValidator<SalesTransactionSetupModel>
+    {
+        public SalesTransactionSetupValidator()
+        {
+
+        }
     }
     public class SalesTransactionSetupConfig : IEntityTypeConfiguration<SalesTransactionSetup>
     {
