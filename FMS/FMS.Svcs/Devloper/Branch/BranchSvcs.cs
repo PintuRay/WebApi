@@ -29,7 +29,6 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
                         ResponseCode = (int)ResponseCode.Status.NoContent,
                     },
                 };

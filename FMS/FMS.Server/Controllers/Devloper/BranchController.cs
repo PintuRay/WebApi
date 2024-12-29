@@ -18,10 +18,10 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Crud
         [HttpGet]
-        public async Task<IActionResult> Get([FromBody] PaginationParams pagination)
+        public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetAllBranch(pagination);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
         }
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> Create([FromBody] BranchModel data)
@@ -53,7 +53,7 @@ namespace FMS.Server.Controllers.Devloper
         {
             var validator = new BranchValidator();
             var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
-            if (validationResults.Any(r => !r.IsValid))
+            if (validationResults.All(r => r.IsValid))
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkCreateBranch(listdata, user);
@@ -87,7 +87,7 @@ namespace FMS.Server.Controllers.Devloper
         {
             var validator = new BranchValidator();
             var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
-            if (validationResults.Any(r => !r.IsValid))
+            if (validationResults.All(r => r.IsValid))
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkUpdateBranch(listdata, user);
@@ -113,10 +113,24 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Invalid Id");
             }
         }
+        [HttpPut, Authorize(policy: "Delete")]
+        public async Task<IActionResult> BulkRemove([FromBody] List<Guid> Ids)
+        {
+            if (Ids.Count !=0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchSvcs.BulkRemoveBranch(Ids, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Invalid Ids");
+            }
+        }
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemoved([FromBody] PaginationParams pagination)
+        public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetRemovedBranches(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
@@ -146,9 +160,16 @@ namespace FMS.Server.Controllers.Devloper
         [HttpPut, Authorize(policy: "Update")]
         public async Task<IActionResult> BulkRecover([FromBody] List<Guid> Ids)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _branchSvcs.BulkRecoverBranch(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            if (Ids.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchSvcs.BulkRecoverBranch(Ids, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Invalid Ids");
+            }
         }
         [HttpDelete("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
@@ -167,9 +188,16 @@ namespace FMS.Server.Controllers.Devloper
         [HttpDelete, Authorize(policy: "Delete")]
         public async Task<IActionResult> BulkDelete([FromBody] List<Guid> Ids)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _branchSvcs.BulkDeleteBranch(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            if (Ids.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchSvcs.BulkDeleteBranch(Ids, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Invalid Ids");
+            }
         }
         #endregion
     }

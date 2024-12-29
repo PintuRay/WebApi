@@ -105,7 +105,7 @@ builder.Services.AddScoped<ISmsSvcs, SmsSvcs>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddTransient<CustomValidation>();
-// Register your validators
+// Register Validators
 builder.Services.AddTransient<IValidator<RegisterTokenModel>, RegisterTokenValidator>();
 builder.Services.AddTransient<IValidator<RegisterModel>, RegisterValidator>();
 //*************************************************Dependancy Injection***************************************// 
@@ -271,7 +271,6 @@ builder.Services.AddSwaggerGen(
     });
 //******************************************************************************************************************************************//
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -282,7 +281,6 @@ if (app.Environment.IsDevelopment())
 }
 //app.UseExceptionHandler();
 //app.UseHsts();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
