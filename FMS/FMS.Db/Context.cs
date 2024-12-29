@@ -16,7 +16,6 @@ namespace FMS.Db
         }
         #region Entity
         //Account
-       
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<AppUserRole> AppUserRoles { get; set; }
@@ -46,10 +45,10 @@ namespace FMS.Db
         public DbSet<Ledger> Ledgers { get; set; }
         public DbSet<LedgerDev> LedgersDev { get; set; }
         //Common
-        //public DbSet<Address> Addresses { get; set; }
-        //public DbSet<Country> Countries { get; set; }
-        //public DbSet<State> States { get; set; }
-        //public DbSet<Dist> Dists { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<State> States { get; set; }
+        public DbSet<Dist> Dists { get; set; }
 
 
         // public DbSet<LabourOrder> LabourOrders { get; set; }
@@ -125,14 +124,15 @@ namespace FMS.Db
             new LedgerSubGroupDevConfig().Configure(modelBuilder.Entity<LedgerSubGroupDev>());
             new LedgerConfig().Configure(modelBuilder.Entity<Ledger>());
             new LedgersDevConfig().Configure(modelBuilder.Entity<LedgerDev>());
+            /*----------------------------------Address-------------------------------------*/
+            new AddressConfig().Configure(modelBuilder.Entity<Address>());
+            new CountryConfig().Configure(modelBuilder.Entity<Country>());
+            new StateConfig().Configure(modelBuilder.Entity<State>());
+            new DistConfig().Configure(modelBuilder.Entity<Dist>());
             /*--------------------------------User--------------------------------------*/
             //Stock
             //new StockConfig().Configure(modelBuilder.Entity<Stock>());
-            /*----------------------------------Address-------------------------------------*/
-            //new AddressConfig().Configure(modelBuilder.Entity<Address>());
-            //new CountryConfig().Configure(modelBuilder.Entity<Country>());
-            //new StateConfig().Configure(modelBuilder.Entity<State>());
-            //new CityConfig().Configure(modelBuilder.Entity<Dist>());
+
             /*------------------------------Company--------------------------------------*/
 
             /*------------------------------product---------------------------*/

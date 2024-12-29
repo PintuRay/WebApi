@@ -15,6 +15,7 @@ namespace FMS.Db.Entity
         public bool TermCondition { get; set; }
         //Reference Navigation Property
         public RegisterToken Token { get; set; }
+        public Address Address { get; set; }
         //collection Navigation Property
       public ICollection<UserBranch> UserBranch { get; set; }
     }
