@@ -1,13 +1,12 @@
-﻿using FMS.Db.Entity;
-using FMS.Repo.Transaction.Production;
+﻿using FMS.Repo.Transaction.ProductionLabour;
 using FMS.Svcs.Email;
 
-namespace FMS.Svcs.Transaction.Production
+namespace FMS.Svcs.Transaction.ProductionLabour
 {
-    public class ProductionSvcs(IProductionRepo productionRepo, IEmailSvcs emailSvc) : IProductionSvcs
+    public class ProductionLabourSvcs(IProductionLabourRepo productionRepo, IEmailSvcs emailSvc) : IProductionLabourSvcs
     {
         #region Dependancy
-        private readonly IProductionRepo _productionRepo = productionRepo;
+        private readonly IProductionLabourRepo _productionRepo = productionRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
         #region Production

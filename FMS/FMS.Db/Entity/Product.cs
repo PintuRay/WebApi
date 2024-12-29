@@ -31,6 +31,10 @@ namespace FMS.Db.Entity
         public Unit Unit { get; set; }
         public ICollection<AlternateUnit> AlternateUnits { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
+        public ICollection<ProductionOrder> ProductionOrders { get; set; }
+        public ICollection<ProductionTransaction> ProductionTransactions { get; set; }
+        public ICollection<SalesOrderSetup> SalesOrderSetups { get; set; }
+        public ICollection<SalesTransactionSetup> SalesTransactionSetups { get; set; }
         //public ICollection<Stock> Stocks { get; set; }
         //public ICollection<LabourOrder> LabourOrders { get; set; }
         //public ICollection<LabourTransaction> LabourTransactions { get; set; }

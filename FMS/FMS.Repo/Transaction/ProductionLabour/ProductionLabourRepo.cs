@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using FMS.Db;
-using FMS.Db.Entity;
 
-namespace FMS.Repo.Transaction.Production
+namespace FMS.Repo.Transaction.ProductionLabour
 {
-    public class ProductionRepo(Context ctx, IMapper mapper, IRedisCache cache) : IProductionRepo
+    public class ProductionLabourRepo(Context ctx, IMapper mapper, IRedisCache cache) : IProductionLabourRepo
     {
 
         #region Dependancy

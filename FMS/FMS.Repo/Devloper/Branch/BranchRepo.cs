@@ -4,6 +4,7 @@ using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FMS.Repo.Devloper.Branch
 {
@@ -20,27 +21,32 @@ namespace FMS.Repo.Devloper.Branch
         public async Task<Result<Db.Entity.Branch>> GetAllBranch(PaginationParams pagination)
         {
             Result<Db.Entity.Branch> _Result = new();
-            List<Db.Entity.Branch> Query = new();
+            List<Db.Entity.Branch> Query = [];
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber.HasValue && pagination.PageSize.HasValue ? $"Branches_{pagination.PageNumber}_{pagination.PageSize}" : "Branches";
+                string cacheKey = (pagination.PageNumber > 0 && pagination.PageSize > 0) ? $"Branches_{pagination.PageNumber}_{pagination.PageSize}" : "Branches";
                 var cacheData = _cache.Get<Result<Db.Entity.Branch>>(cacheKey);
                 if (cacheData == null)
                 {
-                    if (pagination.PageNumber.HasValue && pagination.PageSize.HasValue)
+                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                    if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                     {
                         Query = await _ctx.Branches.Where(s => s.IsActive == true)
-                                 .OrderBy(s => s.BranchName)
-                                 .Skip((pagination.PageNumber.Value - 1) * pagination.PageSize.Value)
-                                 .Take(pagination.PageSize.Value)
-                                 .ToListAsync();
+                               .OrderBy(s => s.BranchName)
+                               .Skip(pagination.PageNumber * effectivePageSize)
+                               .Take(effectivePageSize)
+                               .ToListAsync();
                     }
                     else
                     {
-                        Query = await _ctx.Branches.Where(s => s.IsActive == true)
-                             .OrderBy(s => s.BranchName)
-                             .ToListAsync();
+                       string searchTerm = pagination.SearchTerm.Trim().ToLower();
+                       var branches = await _ctx.Branches.Where(s => s.IsActive == true).ToListAsync();
+                       var filter = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
+                        Query =  filter.OrderBy(s => s.BranchName)
+                                .Skip(pagination.PageNumber * effectivePageSize)
+                                .Take(effectivePageSize)
+                                .ToList();
                     }
                     if (Query.Count > 0)
                     {
@@ -293,24 +299,17 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber.HasValue && pagination.PageSize.HasValue ? $"RemovedBranches_{pagination.PageNumber}_{pagination.PageSize}" : "RemovedBranches";
+
+                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"RemovedBranches_{pagination.PageNumber}_{pagination.PageSize}" : "RemovedBranches";
                 var cacheData = _cache.Get<Result<Db.Entity.Branch>>(cacheKey);
                 if (cacheData == null)
                 {
-                    if (pagination.PageNumber.HasValue && pagination.PageSize.HasValue)
-                    {
-                        Query = await _ctx.Branches.Where(s => s.IsActive == false)
-                                 .OrderBy(s => s.BranchName)
-                                 .Skip((pagination.PageNumber.Value - 1) * pagination.PageSize.Value)
-                                 .Take(pagination.PageSize.Value)
-                                 .ToListAsync();
-                    }
-                    else
-                    {
-                        Query = await _ctx.Branches.Where(s => s.IsActive == false)
+                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                    Query = await _ctx.Branches.Where(s => s.IsActive == false)
                              .OrderBy(s => s.BranchName)
+                             .Skip(pagination.PageNumber * effectivePageSize)
+                             .Take(effectivePageSize)
                              .ToListAsync();
-                    }
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;

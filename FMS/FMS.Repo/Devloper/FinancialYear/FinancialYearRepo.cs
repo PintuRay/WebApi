@@ -23,36 +23,26 @@ namespace FMS.Repo.Devloper.FinancialYear
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber.HasValue && pagination.PageSize.HasValue ? $"FinancialYears_{pagination.PageNumber}_{pagination.PageSize}" : "FinancialYears";
+                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"FinancialYears_{pagination.PageNumber}_{pagination.PageSize}" : "FinancialYears";
                 var cacheData = _cache.Get<Result<Db.Entity.FinancialYear>>(cacheKey);
                 if (cacheData == null)
                 {
-                    if (pagination.PageNumber.HasValue && pagination.PageSize.HasValue)
-                    {
-                        Query = await _ctx.FinancialYears.Where(s => s.IsActive == true).
-                                       Select(s => new Db.Entity.FinancialYear
-                                       {
-                                           FinancialYearId = s.FinancialYearId,
-                                           Financial_Year = s.Financial_Year,
-                                           StartDate = s.StartDate,
-                                           EndDate = s.EndDate,
-                                       })
-                                             .OrderByDescending(s => s.Financial_Year)
-                                             .Skip((pagination.PageNumber.Value - 1) * pagination.PageSize.Value)
-                                             .Take(pagination.PageSize.Value)
-                                             .ToListAsync();
-                    }
-                    else
-                    {
-                        Query = await _ctx.FinancialYears.Where(s => s.IsActive == true).
-                                       Select(s => new Db.Entity.FinancialYear
-                                       {
-                                           FinancialYearId = s.FinancialYearId,
-                                           Financial_Year = s.Financial_Year,
-                                           StartDate = s.StartDate,
-                                           EndDate = s.EndDate,
-                                       }).OrderByDescending(s => s.Financial_Year).ToListAsync();
-                    }
+
+                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                    Query = await _ctx.FinancialYears.Where(s => s.IsActive == true).
+                                   Select(s => new Db.Entity.FinancialYear
+                                   {
+                                       FinancialYearId = s.FinancialYearId,
+                                       Financial_Year = s.Financial_Year,
+                                       StartDate = s.StartDate,
+                                       EndDate = s.EndDate,
+                                   })
+                                         .OrderByDescending(s => s.Financial_Year)
+                                         .Skip(pagination.PageNumber * effectivePageSize)
+                                         .Take(effectivePageSize)
+                                         .ToListAsync();
+
+
 
                     if (Query.Count > 0)
                     {
@@ -166,36 +156,24 @@ namespace FMS.Repo.Devloper.FinancialYear
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber.HasValue && pagination.PageSize.HasValue ? $"RecoverFinancialYears_{pagination.PageNumber}_{pagination.PageSize}" : "RecoverFinancialYears";
+                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"RecoverFinancialYears_{pagination.PageNumber}_{pagination.PageSize}" : "RecoverFinancialYears";
                 var cacheData = _cache.Get<Result<Db.Entity.FinancialYear>>(cacheKey);
                 if (cacheData == null)
                 {
-                    if (pagination.PageNumber.HasValue && pagination.PageSize.HasValue)
-                    {
-                        Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).
-                                       Select(s => new Db.Entity.FinancialYear
-                                       {
-                                           FinancialYearId = s.FinancialYearId,
-                                           Financial_Year = s.Financial_Year,
-                                           StartDate = s.StartDate,
-                                           EndDate = s.EndDate,
-                                       })
-                                             .OrderByDescending(s => s.Financial_Year)
-                                             .Skip((pagination.PageNumber.Value - 1) * pagination.PageSize.Value)
-                                             .Take(pagination.PageSize.Value)
-                                             .ToListAsync();
-                    }
-                    else
-                    {
-                        Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).
-                                       Select(s => new Db.Entity.FinancialYear
-                                       {
-                                           FinancialYearId = s.FinancialYearId,
-                                           Financial_Year = s.Financial_Year,
-                                           StartDate = s.StartDate,
-                                           EndDate = s.EndDate,
-                                       }).OrderByDescending(s => s.Financial_Year).ToListAsync();
-                    }
+                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                    Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).
+                                   Select(s => new Db.Entity.FinancialYear
+                                   {
+                                       FinancialYearId = s.FinancialYearId,
+                                       Financial_Year = s.Financial_Year,
+                                       StartDate = s.StartDate,
+                                       EndDate = s.EndDate,
+                                   })
+                                         .OrderByDescending(s => s.Financial_Year)
+                                         .Skip(pagination.PageNumber * effectivePageSize)
+                                         .Take(effectivePageSize)
+                                         .ToListAsync();
+
 
                     if (Query.Count > 0)
                     {

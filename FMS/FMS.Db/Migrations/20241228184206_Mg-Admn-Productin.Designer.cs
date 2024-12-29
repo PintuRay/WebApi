@@ -3,6 +3,7 @@ using System;
 using FMS.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FMS.Db.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241228184206_Mg-Admn-Productin")]
+    partial class MgAdmnProductin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -522,423 +525,6 @@ namespace FMS.Db.Migrations
                     b.HasIndex("Fk_ProductTypeId");
 
                     b.ToTable("LabourRates", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.Ledger", b =>
-                {
-                    b.Property<Guid>("LedgerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("Fk_LedgerGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("Fk_LedgerSubGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("HasSubLedger")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("LedgerName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("LedgerType")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.HasKey("LedgerId");
-
-                    b.HasIndex("Fk_LedgerGroupId");
-
-                    b.HasIndex("Fk_LedgerSubGroupId");
-
-                    b.ToTable("Ledgers", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerDev", b =>
-                {
-                    b.Property<Guid>("LedgerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<Guid>("Fk_LedgerGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("Fk_LedgerSubGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("HasSubLedger")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("LedgerName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("LedgerType")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.HasKey("LedgerId");
-
-                    b.HasIndex("Fk_LedgerGroupId");
-
-                    b.HasIndex("Fk_LedgerSubGroupId");
-
-                    b.ToTable("ledgersDev", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            LedgerId = new Guid("d982b189-3326-430d-acde-13c12bba7992"),
-                            Fk_LedgerGroupId = new Guid("aca9caf1-ea9b-4602-bb60-6c354eac5ce6"),
-                            HasSubLedger = "Yes",
-                            LedgerName = "Sundry Creditors",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("fbf4a6c7-c33d-4ad0-b7a5-abb319cc1b93"),
-                            Fk_LedgerGroupId = new Guid("2fc89e45-7365-46b7-933c-9abae2e5967a"),
-                            HasSubLedger = "Yes",
-                            LedgerName = "Sundry Debtors",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("f07a3165-d63b-4dae-a820-ec79d83363b1"),
-                            Fk_LedgerGroupId = new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"),
-                            HasSubLedger = "Yes",
-                            LedgerName = "Labour A/c",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("1ecff7d8-702b-4dcd-93c5-b95a67e36fc9"),
-                            Fk_LedgerGroupId = new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"),
-                            HasSubLedger = "No",
-                            LedgerName = "Sales A/c",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("75e1fe3d-047d-41ad-a138-f0bb5bbc8b1f"),
-                            Fk_LedgerGroupId = new Guid("4458bce5-4546-4120-a7de-03acefd07b85"),
-                            HasSubLedger = "No",
-                            LedgerName = "Purchase A/c",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("80025398-c02f-4a1a-9db7-8a21f9efd9ef"),
-                            Fk_LedgerGroupId = new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"),
-                            HasSubLedger = "No",
-                            LedgerName = "Sales Return A/c",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("712d600b-dfd6-4704-9e32-317fe62499a9"),
-                            Fk_LedgerGroupId = new Guid("4458bce5-4546-4120-a7de-03acefd07b85"),
-                            HasSubLedger = "No",
-                            LedgerName = "Purchase Return A/c",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("701c663e-dac3-4a39-8d2a-36eb68426b54"),
-                            Fk_LedgerGroupId = new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"),
-                            HasSubLedger = "No",
-                            LedgerName = "Cash A/c",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("9bfa6931-977f-4a3d-a582-da5f1f4ab773"),
-                            Fk_LedgerGroupId = new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"),
-                            HasSubLedger = "No",
-                            LedgerName = "Bank A/c",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("7f740148-ed36-48ad-b194-031bc717842c"),
-                            Fk_LedgerGroupId = new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"),
-                            HasSubLedger = "No",
-                            LedgerName = "Labour Charges",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("9efd7830-125a-40e3-8f44-68ab03f52591"),
-                            Fk_LedgerGroupId = new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"),
-                            HasSubLedger = "No",
-                            LedgerName = "Transporting Charges Recive",
-                            LedgerType = "None"
-                        },
-                        new
-                        {
-                            LedgerId = new Guid("d281cbfb-3cac-4c6a-8ce1-7b51973b8ca4"),
-                            Fk_LedgerGroupId = new Guid("4458bce5-4546-4120-a7de-03acefd07b85"),
-                            HasSubLedger = "No",
-                            LedgerName = "Transporting Charges Payment",
-                            LedgerType = "None"
-                        });
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerGroup", b =>
-                {
-                    b.Property<Guid>("LedgerGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("GroupAlias")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("GroupName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("LedgerGroupId");
-
-                    b.ToTable("LedgerGroups", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            LedgerGroupId = new Guid("4458bce5-4546-4120-a7de-03acefd07b85"),
-                            GroupAlias = "PLTR-DR",
-                            GroupName = "Purchase"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("39b5514a-9359-46f3-8c3e-0eabd6880cf6"),
-                            GroupAlias = "LB",
-                            GroupName = "Unsecured Loan"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("c3c725d0-a502-4275-b0f9-1585ab6edcc7"),
-                            GroupAlias = "PL-DR",
-                            GroupName = "Depreciation"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"),
-                            GroupAlias = "AS",
-                            GroupName = "Cash & Bank Balance"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("58639324-2180-4e0b-932d-33024aa3fc5f"),
-                            GroupAlias = "PL-DR",
-                            GroupName = "Indirect Expenses"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("23d58228-db08-4c3d-9177-343b1cfdcf7a"),
-                            GroupAlias = "LB",
-                            GroupName = "Liability for Expenses"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("4d80e68f-ff00-486a-945a-3941761441d9"),
-                            GroupAlias = "AS",
-                            GroupName = "Fixed Assets"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("ea3f21ad-b0d4-4c27-9f9d-3c36a7a585c2"),
-                            GroupAlias = "PLTR-CR",
-                            GroupName = "Direct Income"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"),
-                            GroupAlias = "PLTR-CR",
-                            GroupName = "Sales"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("aca9caf1-ea9b-4602-bb60-6c354eac5ce6"),
-                            GroupAlias = "LB",
-                            GroupName = "Current liabilities & Provisions"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("9bbc2c1f-ffa4-44b8-9916-6edf0a47d8db"),
-                            GroupAlias = "PL-DR",
-                            GroupName = "Capital A/c"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("bdcf2ee2-8aab-44f6-bd1e-77b53074389a"),
-                            GroupAlias = "PLTR-DR",
-                            GroupName = "Opening Stock"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("2fc89e45-7365-46b7-933c-9abae2e5967a"),
-                            GroupAlias = "AS",
-                            GroupName = "Current Assets"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("68eeffe7-02f7-4ffc-81b3-aeb0cadc764b"),
-                            GroupAlias = "LB",
-                            GroupName = "Duties & Taxes"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("345b0d2a-8fca-414f-a6f2-c5f7fd9246ac"),
-                            GroupAlias = "PL-CR",
-                            GroupName = "Indirect Income"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"),
-                            GroupAlias = "PLTR-DR",
-                            GroupName = "Direct Expenses"
-                        },
-                        new
-                        {
-                            LedgerGroupId = new Guid("84a336c6-e48a-43e8-984e-f45b0bf2984f"),
-                            GroupAlias = "LB",
-                            GroupName = "Secured Loan"
-                        });
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerSubGroup", b =>
-                {
-                    b.Property<Guid>("LedgerSubGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid?>("Fk_BranchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Fk_LedgerGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("SubGroupName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("LedgerSubGroupId");
-
-                    b.HasIndex("Fk_BranchId");
-
-                    b.HasIndex("Fk_LedgerGroupId");
-
-                    b.ToTable("LedgerSubGroups", "public");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerSubGroupDev", b =>
-                {
-                    b.Property<Guid>("LedgerSubGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<Guid?>("BranchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("Fk_LedgerGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("ModifyBy")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamptz")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("SubGroupName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("LedgerSubGroupId");
-
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("Fk_LedgerGroupId");
-
-                    b.ToTable("LedgerSubGroupDevs", "public");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Product", b =>
@@ -1630,9 +1216,9 @@ namespace FMS.Db.Migrations
                             UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                             RoleId = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2024, 12, 28, 19, 30, 17, 439, DateTimeKind.Utc).AddTicks(4988),
+                            CreatedDate = new DateTime(2024, 12, 28, 18, 42, 4, 971, DateTimeKind.Utc).AddTicks(2403),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2024, 12, 28, 19, 30, 17, 439, DateTimeKind.Utc).AddTicks(6900)
+                            ModifyDate = new DateTime(2024, 12, 28, 18, 42, 4, 971, DateTimeKind.Utc).AddTicks(3506)
                         });
                 });
 
@@ -1728,77 +1314,6 @@ namespace FMS.Db.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("ProductType");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.Ledger", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.LedgerGroup", "LedgerGroup")
-                        .WithMany("Ledgers")
-                        .HasForeignKey("Fk_LedgerGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.LedgerSubGroup", "LedgerSubGroup")
-                        .WithMany("Ledgers")
-                        .HasForeignKey("Fk_LedgerSubGroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("LedgerGroup");
-
-                    b.Navigation("LedgerSubGroup");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerDev", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.LedgerGroup", "LedgerGroup")
-                        .WithMany("LedgersDev")
-                        .HasForeignKey("Fk_LedgerGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FMS.Db.Entity.LedgerSubGroupDev", "LedgerSubGroup")
-                        .WithMany("LedgersDev")
-                        .HasForeignKey("Fk_LedgerSubGroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("LedgerGroup");
-
-                    b.Navigation("LedgerSubGroup");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerSubGroup", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.Branch", "Branch")
-                        .WithMany("LedgerSubGroup")
-                        .HasForeignKey("Fk_BranchId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FMS.Db.Entity.LedgerGroup", "LedgerGroup")
-                        .WithMany("LedgerSubGroups")
-                        .HasForeignKey("Fk_LedgerGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("LedgerGroup");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerSubGroupDev", b =>
-                {
-                    b.HasOne("FMS.Db.Entity.Branch", "Branch")
-                        .WithMany("LedgerSubGroupDev")
-                        .HasForeignKey("BranchId");
-
-                    b.HasOne("FMS.Db.Entity.LedgerGroup", "LedgerGroup")
-                        .WithMany("LedgerSubGroupsDev")
-                        .HasForeignKey("Fk_LedgerGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("LedgerGroup");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Product", b =>
@@ -2000,10 +1515,6 @@ namespace FMS.Db.Migrations
 
                     b.Navigation("LabourRates");
 
-                    b.Navigation("LedgerSubGroup");
-
-                    b.Navigation("LedgerSubGroupDev");
-
                     b.Navigation("UserBranch");
                 });
 
@@ -2012,27 +1523,6 @@ namespace FMS.Db.Migrations
                     b.Navigation("BranchFinancialYears");
 
                     b.Navigation("LabourRates");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerGroup", b =>
-                {
-                    b.Navigation("LedgerSubGroups");
-
-                    b.Navigation("LedgerSubGroupsDev");
-
-                    b.Navigation("Ledgers");
-
-                    b.Navigation("LedgersDev");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerSubGroup", b =>
-                {
-                    b.Navigation("Ledgers");
-                });
-
-            modelBuilder.Entity("FMS.Db.Entity.LedgerSubGroupDev", b =>
-                {
-                    b.Navigation("LedgersDev");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Product", b =>

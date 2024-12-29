@@ -1,8 +1,8 @@
 ﻿using FMS.Db.Entity;
 
-namespace FMS.Svcs.Transaction.Production
+namespace FMS.Svcs.Transaction.ProductionLabour
 {
-    public interface IProductionSvcs
+    public interface IProductionLabourSvcs
     {
         #region Production
        // Task<SvcsBase> GetLastProductionTransactionNo();

@@ -1,6 +1,7 @@
 ﻿using FMS.Db.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 namespace FMS.Db
 {
     public partial class Context : IdentityDbContext<AppUser, AppRole, string>
@@ -15,7 +16,7 @@ namespace FMS.Db
         }
         #region Entity
         //Account
-        public DbSet<RegisterToken> RegisterTokens { get; set; }
+       
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<AppUserRole> AppUserRoles { get; set; }
@@ -25,6 +26,7 @@ namespace FMS.Db
         public DbSet<Branch> Branches { get; set; }
         public DbSet<BranchFinancialYear> BranchFinancialYears { get; set; }
         //Admin
+        public DbSet<RegisterToken> RegisterTokens { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<UserBranch> UserBranches { get; set; }
         public DbSet<ProductGroup> ProductGroups { get; set; }
@@ -34,25 +36,28 @@ namespace FMS.Db
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<LabourRate> LabourRates { get; set; }
-
+        public DbSet<ProductionOrder> ProductionOrders { get; set; }
+        public DbSet<ProductionTransaction> ProductionTransactions { get; set; }
+        public DbSet<SalesOrderSetup> SalesOrderSetups { get; set; }
+        public DbSet<SalesTransactionSetup> SalesTransactionSetups { get; set; }
+        public DbSet<LedgerGroup> LedgerGroups { get; set; }
+        public DbSet<LedgerSubGroup> LedgerSubGroups { get; set; }
+        public DbSet<LedgerSubGroupDev> LedgerSubGroupDevs { get; set; }
+        public DbSet<Ledger> Ledgers { get; set; }
+        public DbSet<LedgerDev> LedgersDev { get; set; }
         //Common
         //public DbSet<Address> Addresses { get; set; }
         //public DbSet<Country> Countries { get; set; }
         //public DbSet<State> States { get; set; }
         //public DbSet<Dist> Dists { get; set; }
 
-        // public DbSet<ProductionOrder> ProductionOrders { get; set; }
-        // public DbSet<ProductionTransaction> ProductionTransactions { get; set; }
+
         // public DbSet<LabourOrder> LabourOrders { get; set; }
         // public DbSet<LabourTransaction> LabourTransactions { get; set; }
         // public DbSet<Stock> Stocks { get; set; }
         // public DbSet<Labour> Labours { get; set; }
         // public DbSet<LabourType> LabourTypes { get; set; }
-        // public DbSet<LedgerGroup> LedgerGroups { get; set; }
-        // public DbSet<LedgerSubGroup> LedgerSubGroups { get; set; }
-        // public DbSet<LedgerSubGroupDev> LedgerSubGroupDevs { get; set; }
-        // public DbSet<Ledger> Ledgers { get; set; }
-        // public DbSet<LedgerDev> LedgersDev { get; set; }
+
         // public DbSet<LedgerBalance> LedgerBalances { get; set; }
         // public DbSet<SubLedger> SubLedgers { get; set; }
         // public DbSet<SubLedgerBalance> SubLedgerBalances { get; set; }
@@ -77,8 +82,7 @@ namespace FMS.Db
         // public DbSet<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
         // public DbSet<DamageOrder> DamageOrders { get; set; }
         // public DbSet<DamageTransaction> DamageTransactions { get; set; }
-        // public DbSet<SalesOrderSetup> SalesOrderSetups { get; set; }
-        // public DbSet<SalesTransactionSetup> SalesTransactionSetups { get; set; }
+
         #endregion
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -86,13 +90,13 @@ namespace FMS.Db
             {
                 optionsBuilder.UseNpgsql("Host=localhost; Port=5432; Database=postgres; Username=postgres; Password=Devloper@1234");
             }
+            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("public");
             #region EntityConfig
             /*---------------------------Account----------------------------------*/
-            new RegisterTokenConfig().Configure(modelBuilder.Entity<RegisterToken>());
             new AppUserConfig().Configure(modelBuilder.Entity<AppUser>());
             new AppRoleConfig().Configure(modelBuilder.Entity<AppRole>());
             new AppUserRoleConfig().Configure(modelBuilder.Entity<AppUserRole>());
@@ -102,6 +106,7 @@ namespace FMS.Db
             new BranchConfig().Configure(modelBuilder.Entity<Branch>());
             new BranchFinancialYearConfig().Configure(modelBuilder.Entity<BranchFinancialYear>());
             /*----------------------------Admin-------------------------------*/
+            new RegisterTokenConfig().Configure(modelBuilder.Entity<RegisterToken>());
             new CompanyConfig().Configure(modelBuilder.Entity<Company>());
             new UserBranchConfig().Configure(modelBuilder.Entity<UserBranch>());
             new ProductTypeConfig().Configure(modelBuilder.Entity<ProductType>());
@@ -111,6 +116,15 @@ namespace FMS.Db
             new AlternateUnitConfig().Configure(modelBuilder.Entity<AlternateUnit>());
             new ProductConfig().Configure(modelBuilder.Entity<Product>());
             new LabourRateConfig().Configure(modelBuilder.Entity<LabourRate>());
+            new ProductionOrderConfig().Configure(modelBuilder.Entity<ProductionOrder>());
+            new ProductionTransactionConfig().Configure(modelBuilder.Entity<ProductionTransaction>());
+            new SalesOrderSetupConfig().Configure(modelBuilder.Entity<SalesOrderSetup>());
+            new SalesTransactionSetupConfig().Configure(modelBuilder.Entity<SalesTransactionSetup>());
+            new LedgerGroupConfig().Configure(modelBuilder.Entity<LedgerGroup>());
+            new LedgerSubGroupConfig().Configure(modelBuilder.Entity<LedgerSubGroup>());
+            new LedgerSubGroupDevConfig().Configure(modelBuilder.Entity<LedgerSubGroupDev>());
+            new LedgerConfig().Configure(modelBuilder.Entity<Ledger>());
+            new LedgersDevConfig().Configure(modelBuilder.Entity<LedgerDev>());
             /*--------------------------------User--------------------------------------*/
             //Stock
             //new StockConfig().Configure(modelBuilder.Entity<Stock>());
@@ -129,8 +143,7 @@ namespace FMS.Db
             //new OutwardSupplyOrderConfig().Configure(modelBuilder.Entity<OutwardSupplyOrder>());
             //new OutwardSupplyTransactionConfig().Configure(modelBuilder.Entity<OutwardSupplyTransaction>());
             /*------------------------------production---------------------------*/
-            //new ProductionOrderConfig().Configure(modelBuilder.Entity<ProductionOrder>());
-            //new ProductionTransactionConfig().Configure(modelBuilder.Entity<ProductionTransaction>());
+
             /*--------------------------------Labour-----------------------------*/
 
             //new LabourTypeConfig().Configure(modelBuilder.Entity<LabourType>());
@@ -143,12 +156,9 @@ namespace FMS.Db
             //new DamageTransactionConfig().Configure(modelBuilder.Entity<DamageTransaction>());
             /*-----------------------------------Ledger----------------------------------*/
             //Group
-            //new LedgerGroupConfig().Configure(modelBuilder.Entity<LedgerGroup>());
-            //new LedgerSubGroupConfig().Configure(modelBuilder.Entity<LedgerSubGroup>());
-            //new LedgerSubGroupDevConfig().Configure(modelBuilder.Entity<LedgerSubGroupDev>());
+
             //Ledger
-            //new LedgerConfig().Configure(modelBuilder.Entity<Ledger>());
-            //new LedgersDevConfig().Configure(modelBuilder.Entity<LedgerDev>());
+
             //new LedgerBalanceConfig().Configure(modelBuilder.Entity<LedgerBalance>());
             //Sub Ledger
             //new SubLedgerConfig().Configure(modelBuilder.Entity<SubLedger>());
@@ -161,8 +171,7 @@ namespace FMS.Db
             //new PurchaseReturnOrderConfig().Configure(modelBuilder.Entity<PurchaseReturnOrder>());
             //new PurchaseReturnTransactionConfig().Configure(modelBuilder.Entity<PurchaseReturnTransaction>());
             //Sales & Sales Return
-            //new SalesOrderSetupConfig().Configure(modelBuilder.Entity<SalesOrderSetup>());
-            //new SalesTransactionSetupConfig().Configure(modelBuilder.Entity<SalesTransactionSetup>());
+
             //new SalesOrderConfig().Configure(modelBuilder.Entity<SalesOrder>());
             //new SalesTransactionConfig().Configure(modelBuilder.Entity<SalesTransaction>());
             //new SalesReturnOrderConfig().Configure(modelBuilder.Entity<SalesReturnOrder>());

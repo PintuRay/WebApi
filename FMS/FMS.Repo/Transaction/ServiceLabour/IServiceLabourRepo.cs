@@ -1,8 +1,8 @@
 ﻿using FMS.Db.Entity;
 
-namespace FMS.Repo.Transaction.Service
+namespace FMS.Repo.Transaction.ServiceLabour
 {
-    public interface IServiceRepo
+    public interface IServiceLabourRepo
     {
         #region Service
         //Task<RepoBase> GetLastServiceTransactionNo();

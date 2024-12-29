@@ -75,10 +75,11 @@ namespace FMS.Db.Entity
         public ICollection<Company> Companies { get; set; }
         public ICollection<UserBranch> UserBranch { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
+        public ICollection<LedgerSubGroup> LedgerSubGroup { get; set; }
+        public ICollection<LedgerSubGroupDev> LedgerSubGroupDev { get; set; }
         //public ICollection<Labour> Labours { get; set; }
         //public ICollection<Stock> Stocks { get; set; }
-        //public ICollection<LedgerSubGroup> LedgerSubGroup { get; set; }
-        //public ICollection<LedgerSubGroupDev> LedgerSubGroupDev { get; set; }
+
         //public ICollection<LedgerBalance> LedgerBalances { get; set; }
         //public ICollection<SubLedger> SubLedgers { get; set; }
         //public ICollection<SubLedgerBalance> SubLedgerBalances { get; set; }

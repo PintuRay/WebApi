@@ -2,9 +2,9 @@
 using FMS.Db;
 using FMS.Db.Entity;
 
-namespace FMS.Repo.Transaction.Service
+namespace FMS.Repo.Transaction.ServiceLabour
 {
-    public class ServiceRepo(Context ctx, IMapper mapper, IRedisCache cache) : IServiceRepo
+    public class ServiceLabourRepo(Context ctx, IMapper mapper, IRedisCache cache) : IServiceLabourRepo
     {
 
         #region Dependancy

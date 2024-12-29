@@ -1,13 +1,12 @@
-﻿using FMS.Db.Entity;
-using FMS.Repo.Transaction.Service;
+﻿using FMS.Repo.Transaction.ServiceLabour;
 using FMS.Svcs.Email;
 
-namespace FMS.Svcs.Transaction.Service
+namespace FMS.Svcs.Transaction.ServiceLabour
 {
-    public class ServiceSvcs(IServiceRepo serviceRepo, IEmailSvcs emailSvc) : IServiceSvcs
+    public class ServiceLabourSvcs(IServiceLabourRepo serviceRepo, IEmailSvcs emailSvc) : IServiceLabourSvcs
     {
         #region Dependancy
-        private readonly IServiceRepo _serviceRepo = serviceRepo;
+        private readonly IServiceLabourRepo _serviceRepo = serviceRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
         #region Service

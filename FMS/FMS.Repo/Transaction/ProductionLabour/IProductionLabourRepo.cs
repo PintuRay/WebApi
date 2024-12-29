@@ -1,8 +1,8 @@
 ﻿using FMS.Db.Entity;
 
-namespace FMS.Repo.Transaction.Production
+namespace FMS.Repo.Transaction.ProductionLabour
 {
-    public interface IProductionRepo
+    public interface IProductionLabourRepo
     {
         #region Production
         //Task<RepoBase> GetLastProductionTransactionNo();
