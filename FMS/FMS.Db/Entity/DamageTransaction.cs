@@ -11,6 +11,7 @@ namespace FMS.Db.Entity
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
         public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
         public decimal Rate { get; set; }
         public decimal Amount { get; set; }
     }
@@ -27,6 +28,7 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public DamageOrder DamageOrder { get; set; }
         public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
     }
@@ -50,6 +52,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Quantity).HasColumnType("decimal(18,2)").IsRequired(true);
+            builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Rate).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.Amount).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
@@ -61,6 +64,7 @@ namespace FMS.Db.Entity
             builder.HasOne(p => p.Product).WithMany(po => po.DamageTransactions).HasForeignKey(po => po.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Branch).WithMany(po => po.DamageTransactions).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.FinancialYear).WithMany(po => po.DamageTransactions).HasForeignKey(po => po.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.AlternateUnit).WithMany(s => s.DamageTransactions).HasForeignKey(e => e.Fk_AlternateUnitId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

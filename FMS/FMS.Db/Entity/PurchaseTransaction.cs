@@ -11,6 +11,7 @@ namespace FMS.Db.Entity
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
         public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
         public decimal Rate { get; set; }
         public decimal Discount { get; set; }
         public decimal DiscountAmount { get; set; }
@@ -33,7 +34,7 @@ namespace FMS.Db.Entity
         public FinancialYear FinancialYear { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
         public Product Product { get; set; }
-      //  public AlternateUnit AlternateUnit { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
     }
     public class PurchaseTransactionValidator : AbstractValidator<PurchaseTransactionModel>
     {
@@ -51,7 +52,7 @@ namespace FMS.Db.Entity
             builder.HasKey(e => e.PurchaseId);
             builder.Property(e => e.PurchaseId).ValueGeneratedOnAdd().HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_PurchaseOrderId).HasColumnType("uuid").IsRequired(true);
-           // builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_ProductId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
@@ -64,11 +65,11 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Amount).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(p => p.PurchaseOrder).WithMany(po => po.PurchaseTransactions).HasForeignKey(po => po.Fk_PurchaseOrderId).OnDelete(DeleteBehavior.Cascade);
-           // builder.HasOne(p => p.AlternateUnit).WithMany(po => po.PurchaseTransactions).HasForeignKey(po => po.Fk_AlternateUnitId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.AlternateUnit).WithMany(po => po.PurchaseTransactions).HasForeignKey(po => po.Fk_AlternateUnitId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Product).WithMany(po => po.PurchaseTransactions).HasForeignKey(po => po.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Branch).WithMany(po => po.PurchaseTransactions).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.FinancialYear).WithMany(po => po.PurchaseTransactions).HasForeignKey(po => po.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);

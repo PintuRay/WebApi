@@ -11,7 +11,7 @@ namespace FMS.Db.Entity
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
         public decimal AlternateQuantity { get; set; }
-      //  public Guid Fk_AlternateUnitId { get; set; }
+      public Guid Fk_AlternateUnitId { get; set; }
         public decimal UnitQuantity { get; set; }
         public decimal Rate { get; set; }
         public decimal Discount { get; set; }
@@ -26,7 +26,7 @@ namespace FMS.Db.Entity
     }
     public class PurchaseReturnTransaction: PurchaseReturnTransactionUpdateModel
     {
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -35,7 +35,7 @@ namespace FMS.Db.Entity
         public FinancialYear FinancialYear { get; set; }
         public PurchaseReturnOrder PurchaseReturnOrder { get; set; }
         public Product Product { get; set; }
-      //  public AlternateUnit AlternateUnit { get; set; }
+       public AlternateUnit AlternateUnit { get; set; }
     }
     public class PurchaseReturnTransactionValidator : AbstractValidator<PurchaseReturnTransactionModel>
     {
@@ -53,7 +53,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.PurchaseReturnId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_PurchaseReturnOrderId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_ProductId).HasColumnType("uuid").IsRequired(true);
-            // builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.AlternateQuantity).HasColumnType("decimal(18, 5)").HasDefaultValue(0);
@@ -70,7 +70,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.HasOne(p => p.PurchaseReturnOrder).WithMany(po => po.PurchaseReturnTransactions).HasForeignKey(po => po.Fk_PurchaseReturnOrderId).OnDelete(DeleteBehavior.Cascade);
-            //builder.HasOne(p => p.AlternateUnit).WithMany(po => po.PurchaseReturnTransactions).HasForeignKey(po => po.Fk_AlternateUnitId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.AlternateUnit).WithMany(po => po.PurchaseReturnTransactions).HasForeignKey(po => po.Fk_AlternateUnitId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Product).WithMany(po => po.PurchaseReturnTransactions).HasForeignKey(po => po.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Branch).WithMany(po => po.PurchaseReturnTransactions).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.FinancialYear).WithMany(po => po.PurchaseReturnTransactions).HasForeignKey(po => po.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);

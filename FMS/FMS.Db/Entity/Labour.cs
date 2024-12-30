@@ -28,7 +28,7 @@ namespace FMS.Db.Entity
         public LabourType LabourType { get; set; }
         public Branch Branch { get; set; }
         public SubLedger SubLedger { get; set; }
-       public ICollection<LabourOrder> LabourOrders { get; set; }
+       public ICollection<ProductionOrder> ProductionOrders { get; set; }
       public ICollection<DamageOrder> DamageOrders { get; set; }
     }
     public class LabourValidator : AbstractValidator<LabourModel>

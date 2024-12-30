@@ -12,7 +12,7 @@ namespace FMS.Db.Entity
         public decimal WholeSalePrice { get; set; }
         public decimal GST { get; set; }
         public Guid Fk_ProductTypeId { get; set; }
-        public Guid Fk_UnitId { get; set; }
+        public Guid Fk_ProductStockUnitId { get; set; }
         public Guid Fk_ProductGroupId { get; set; }
         public Guid? Fk_ProductSubGroupId { get; set; }
         [NotMapped]
@@ -35,15 +35,14 @@ namespace FMS.Db.Entity
         public Unit Unit { get; set; }
         public ICollection<AlternateUnit> AlternateUnits { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
-        public ICollection<ProductionOrder> ProductionOrders { get; set; }
-        public ICollection<ProductionTransaction> ProductionTransactions { get; set; }
+        public ICollection<ProductionOrderSetup> ProductionOrderSetups { get; set; }
+        public ICollection<ProductionTransactionSetup> ProductionTransactionSetups { get; set; }
         public ICollection<SalesOrderSetup> SalesOrderSetups { get; set; }
         public ICollection<SalesTransactionSetup> SalesTransactionSetups { get; set; }
         public ICollection<Stock> Stocks { get; set; }
         public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
         public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
-        public ICollection<LabourOrder> LabourOrders { get; set; }
-        public ICollection<LabourTransaction> LabourTransactions { get; set; }
+        public ICollection<ProductionTransaction> ProductionTransactions { get; set; }
         public ICollection<DamageTransaction> DamageTransactions { get; set; }
         public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
         public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
@@ -71,7 +70,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_ProductGroupId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_ProductSubGroupId).HasColumnType("uuid").IsRequired(false);
             builder.Property(e => e.Fk_ProductTypeId).HasColumnType("uuid").IsRequired(true);
-            builder.Property(e => e.Fk_UnitId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_ProductStockUnitId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
             builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
@@ -80,7 +79,7 @@ namespace FMS.Db.Entity
             builder.HasOne(d => d.ProductGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductGroupId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.ProductSubGroup).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductSubGroupId).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
             builder.HasOne(d => d.ProductType).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductTypeId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(d => d.Unit).WithMany(e => e.Products).HasForeignKey(d => d.Fk_UnitId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Unit).WithMany(e => e.Products).HasForeignKey(d => d.Fk_ProductStockUnitId).OnDelete(DeleteBehavior.Cascade);
 
         }
     }

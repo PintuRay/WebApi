@@ -10,15 +10,14 @@ namespace FMS.Db.Entity
         public Guid Fk_SalesOrderSetupId {  get; set; }
         public Guid Fk_SubFinishedGoodId { get; set; }
         public decimal Quantity { get; set; }
-        public string Unit { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
     }
     public class SalesTransactionSetupUpdateModel : SalesTransactionSetupModel
     {
-        public Guid LedgerId { get; set; }
-    }
-    public class SalesTransactionSetup : SalesTransactionSetupModel
-    {
         public Guid SalesTransactionSetupId { get; set; }
+    }
+    public class SalesTransactionSetup : SalesTransactionSetupUpdateModel
+    {
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
@@ -28,6 +27,7 @@ namespace FMS.Db.Entity
         [NotMapped]
         public string SubFinishedGoodName { get; set; }
         public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
     }
     public class SalesTransactionSetupValidator : AbstractValidator<SalesTransactionSetupModel>
     {
@@ -50,9 +50,10 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.Quantity).HasColumnType("decimal(18, 5)").IsRequired(true);
-            builder.Property(e => e.Unit).HasMaxLength(100).IsRequired(true);
+            builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").IsRequired(true);
             builder.HasOne(s=>s.SalesOrderSetup).WithMany(s=>s.SalesTransactionSetups).HasForeignKey(d => d.Fk_SalesOrderSetupId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(e => e.Product).WithMany(s => s.SalesTransactionSetups).HasForeignKey(e => e.Fk_SubFinishedGoodId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.AlternateUnit).WithMany(s => s.SalesTransactionSetups).HasForeignKey(e => e.Fk_AlternateUnitId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

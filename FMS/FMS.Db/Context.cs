@@ -35,8 +35,8 @@ namespace FMS.Db
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<LabourRate> LabourRates { get; set; }
-        public DbSet<ProductionOrder> ProductionOrders { get; set; }
-        public DbSet<ProductionTransaction> ProductionTransactions { get; set; }
+        public DbSet<ProductionOrderSetup> ProductionOrderSetups { get; set; }
+        public DbSet<ProductionTransactionSetup> ProductionTransactionSetups { get; set; }
         public DbSet<SalesOrderSetup> SalesOrderSetups { get; set; }
         public DbSet<SalesTransactionSetup> SalesTransactionSetups { get; set; }
         public DbSet<LedgerGroup> LedgerGroups { get; set; }
@@ -62,8 +62,8 @@ namespace FMS.Db
         public DbSet<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
         public DbSet<OutwardSupplyOrder> OutwardSupplyOrders { get; set; }
         public DbSet<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
-        public DbSet<LabourOrder> LabourOrders { get; set; }
-        public DbSet<LabourTransaction> LabourTransactions { get; set; }
+        public DbSet<ProductionOrder> ProductionOrders { get; set; }
+        public DbSet<ProductionTransaction> ProductionTransactions { get; set; }
         public DbSet<DamageOrder> DamageOrders { get; set; }
         public DbSet<DamageTransaction> DamageTransactions { get; set; }
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
@@ -115,8 +115,8 @@ namespace FMS.Db
             new AlternateUnitConfig().Configure(modelBuilder.Entity<AlternateUnit>());
             new ProductConfig().Configure(modelBuilder.Entity<Product>());
             new LabourRateConfig().Configure(modelBuilder.Entity<LabourRate>());
-            new ProductionOrderConfig().Configure(modelBuilder.Entity<ProductionOrder>());
-            new ProductionTransactionConfig().Configure(modelBuilder.Entity<ProductionTransaction>());
+            new ProductionOrderSetupConfig().Configure(modelBuilder.Entity<ProductionOrderSetup>());
+            new ProductionTransactionSetupConfig().Configure(modelBuilder.Entity<ProductionTransactionSetup>());
             new SalesOrderSetupConfig().Configure(modelBuilder.Entity<SalesOrderSetup>());
             new SalesTransactionSetupConfig().Configure(modelBuilder.Entity<SalesTransactionSetup>());
             new LedgerGroupConfig().Configure(modelBuilder.Entity<LedgerGroup>());
@@ -142,8 +142,8 @@ namespace FMS.Db
             new InwardSupplyTransactionConfig().Configure(modelBuilder.Entity<InwardSupplyTransaction>());
             new OutwardSupplyOrderConfig().Configure(modelBuilder.Entity<OutwardSupplyOrder>());
             new OutwardSupplyTransactionConfig().Configure(modelBuilder.Entity<OutwardSupplyTransaction>());
-            new LabourOrderConfig().Configure(modelBuilder.Entity<LabourOrder>());
-            new LabourTransactionConfig().Configure(modelBuilder.Entity<LabourTransaction>());
+            new ProductionOrderConfig().Configure(modelBuilder.Entity<ProductionOrder>());
+            new LabourTransactionConfig().Configure(modelBuilder.Entity<ProductionTransaction>());
             new DamageOrderConfig().Configure(modelBuilder.Entity<DamageOrder>());
             new DamageTransactionConfig().Configure(modelBuilder.Entity<DamageTransaction>());
             new PurchaseOrderConfig().Configure(modelBuilder.Entity<PurchaseOrder>());

@@ -10,6 +10,7 @@ namespace FMS.Db.Entity
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_FinancialYearId { get; set; }
         public decimal Quantity { get; set; }
+        public Guid Fk_UnitId {  get; set; }
         public decimal Rate { get; set; }
         public decimal Amount { get; set; }
     }
@@ -26,6 +27,7 @@ namespace FMS.Db.Entity
         public string ModifyBy { get; set; } = null;
         public InwardSupplyOrder InwardSupplyOrder { get; set; }
         public Product Product { get; set; }
+        public Unit Unit { get; set; }
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
     }

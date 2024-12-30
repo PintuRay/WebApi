@@ -42,8 +42,8 @@ namespace FMS.Db.Entity
         public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
         public ICollection<OutwardSupplyOrder> OutwardSupplyOrders { get; set; }
         public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
-        public ICollection<LabourOrder> LabourOrders { get; set; }
-        public ICollection<LabourTransaction> LabourTransactions { get; set; }
+        public ICollection<ProductionOrder> ProductionOrders { get; set; }
+        public ICollection<ProductionTransaction> ProductionTransactions { get; set; }
         public ICollection<DamageOrder> DamageOrders { get; set; }
         public ICollection<DamageTransaction> DamageTransactions { get; set; }
         public ICollection<PurchaseOrder> PurchaseOrders { get; set; }
