@@ -54,7 +54,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Quantity).HasColumnType("decimal(18,2)").IsRequired(true);
-            builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").HasDefaultValue(0);
+            builder.Property(e => e.Fk_AlternateUnitId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Rate).HasColumnType("decimal(18, 4)").HasDefaultValue(0);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
