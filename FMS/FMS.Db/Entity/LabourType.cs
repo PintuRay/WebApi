@@ -11,7 +11,7 @@ namespace FMS.Db.Entity
     {
         public Guid LabourTypeId { get; set; }
         public ICollection<Labour> Labours { get; set; }
-       // public ICollection<LabourOrder> LabourOrders { get; set; }
+       public ICollection<LabourOrder> LabourOrders { get; set; }
     }
     public class LabourTypeConfig : IEntityTypeConfiguration<LabourType>
     {

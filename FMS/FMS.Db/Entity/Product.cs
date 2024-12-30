@@ -40,15 +40,15 @@ namespace FMS.Db.Entity
         public ICollection<SalesOrderSetup> SalesOrderSetups { get; set; }
         public ICollection<SalesTransactionSetup> SalesTransactionSetups { get; set; }
         public ICollection<Stock> Stocks { get; set; }
-        //public ICollection<LabourOrder> LabourOrders { get; set; }
-        //public ICollection<LabourTransaction> LabourTransactions { get; set; }
-        //public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
-        //public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
-        //public ICollection<SalesTransaction> SalesTransactions { get; set; }
-        //public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
-        //public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
-        //public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
-        //public ICollection<DamageTransaction> DamageTransactions { get; set; }
+        public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
+        public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
+        public ICollection<LabourOrder> LabourOrders { get; set; }
+        public ICollection<LabourTransaction> LabourTransactions { get; set; }
+        public ICollection<DamageTransaction> DamageTransactions { get; set; }
+        public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
+        public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
+        public ICollection<SalesTransaction> SalesTransactions { get; set; }
+        public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
     }
     public class ProductValidator : AbstractValidator<ProductModel>
     {

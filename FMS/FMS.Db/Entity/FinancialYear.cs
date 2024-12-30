@@ -27,30 +27,28 @@ namespace FMS.Db.Entity
         public ICollection<LabourRate> LabourRates { get; set; }
         public ICollection<LedgerBalance> LedgerBalances { get; set; }
         public ICollection<SubLedgerBalance> SubLedgerBalances { get; set; }
-
-        //public ICollection<LabourOrder> LabourOrders { get; set; }
-        //public ICollection<LabourTransaction> LabourTransactions { get; set; }
-
+        public ICollection<InwardSupplyOrder> InwardSupplyOrders { get; set; }
+        public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
+        public ICollection<OutwardSupplyOrder> OutwardSupplyOrders { get; set; }
+        public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
+        public ICollection<LabourOrder> LabourOrders { get; set; }
+        public ICollection<LabourTransaction> LabourTransactions { get; set; }
+        public ICollection<DamageOrder> DamageOrders { get; set; }
+        public ICollection<DamageTransaction> DamageTransactions { get; set; }
+        public ICollection<PurchaseOrder> PurchaseOrders { get; set; }
+        public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
+        public ICollection<PurchaseReturnOrder> PurchaseReturnOrders { get; set; }
+        public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
+        public ICollection<SalesOrder> SalesOrders { get; set; }
+        public ICollection<SalesTransaction> SalesTransactions { get; set; }
+        public ICollection<SalesReturnOrder> SalesReturnOrders { get; set; }
+        public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
         //public ICollection<JournalOrder> JournalOrders { get; set; }
         //public ICollection<JournalTransaction> JournalTransactions { get; set; }
         //public ICollection<PaymentOrder> PaymentOrders { get; set; }
         //public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         //public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         //public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
-        //public ICollection<PurchaseOrder> PurchaseOrders { get; set; }
-        //public ICollection<SalesOrder> SalesOrders { get; set; }
-        //public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
-        //public ICollection<SalesTransaction> SalesTransactions { get; set; }
-        //public ICollection<SalesReturnOrder> SalesReturnOrders { get; set; }
-        //public ICollection<PurchaseReturnOrder> PurchaseReturnOrders { get; set; }
-        //public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
-        //public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
-        //public ICollection<InwardSupplyOrder> InwardSupplyOrders { get; set; }
-        //public ICollection<OutwardSupplyOrder> OutwardSupplyOrders { get; set; }
-        //public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
-        //public ICollection<OutwardSupplyTransaction> OutwardSupplyTransactions { get; set; }
-        //public ICollection<DamageOrder> DamageOrders { get; set; }
-        //public ICollection<DamageTransaction> DamageTransactions { get; set; }
     }
     public class FinancialYearValidator : AbstractValidator<CompanyModel>
     {

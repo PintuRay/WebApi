@@ -27,13 +27,14 @@ namespace FMS.Db.Entity
         public ICollection<SubLedgerBalance> SubLedgerBalances { get; set; }
         public ICollection<Labour> Labours { get; set; }
         public ICollection<Party> Parties { get; set; }
-       // public ICollection<JournalTransaction> JournalTransactions { get; set; }
-       // public ICollection<PaymentTransaction> PaymentTransaction { get; set; }
-       // public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
-        //public ICollection<SalesOrder> SalesOrders { get; set; }
-        //public ICollection<PurchaseOrder> PurchaseOrders { get; set; }
-        //public ICollection<SalesReturnOrder> SalesReturnOrders { get; set; }
-        //public ICollection<PurchaseReturnOrder> PurchaseReturnOrders { get; set; }
+        public ICollection<PurchaseOrder> PurchaseOrders { get; set; }
+        public ICollection<PurchaseReturnOrder> PurchaseReturnOrders { get; set; }
+        public ICollection<SalesOrder> SalesOrders { get; set; }
+        public ICollection<SalesReturnOrder> SalesReturnOrders { get; set; }
+        // public ICollection<JournalTransaction> JournalTransactions { get; set; }
+        // public ICollection<PaymentTransaction> PaymentTransaction { get; set; }
+        // public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+
     }
     public class SubLedgerValidator : AbstractValidator<SubLedgerModel>
     {
