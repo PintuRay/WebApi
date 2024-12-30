@@ -49,18 +49,17 @@ namespace FMS.Db
         public DbSet<Country> Countries { get; set; }
         public DbSet<State> States { get; set; }
         public DbSet<Dist> Dists { get; set; }
-
+        //Master
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<LabourType> LabourTypes { get; set; }
+        public DbSet<Labour> Labours { get; set; }
+        public DbSet<Party> Parties { get; set; }
+        public DbSet<LedgerBalance> LedgerBalances { get; set; }
+        public DbSet<SubLedger> SubLedgers { get; set; }
+        public DbSet<SubLedgerBalance> SubLedgerBalances { get; set; }
 
         // public DbSet<LabourOrder> LabourOrders { get; set; }
         // public DbSet<LabourTransaction> LabourTransactions { get; set; }
-        // public DbSet<Stock> Stocks { get; set; }
-        // public DbSet<Labour> Labours { get; set; }
-        // public DbSet<LabourType> LabourTypes { get; set; }
-
-        // public DbSet<LedgerBalance> LedgerBalances { get; set; }
-        // public DbSet<SubLedger> SubLedgers { get; set; }
-        // public DbSet<SubLedgerBalance> SubLedgerBalances { get; set; }
-        // public DbSet<Party> Parties { get; set; }
         // public DbSet<JournalOrder> JournalOrders { get; set; }
         // public DbSet<JournalTransaction> JournalTransactions { get; set; }
         // public DbSet<PaymentOrder> PaymentOrders { get; set; }
@@ -129,53 +128,36 @@ namespace FMS.Db
             new CountryConfig().Configure(modelBuilder.Entity<Country>());
             new StateConfig().Configure(modelBuilder.Entity<State>());
             new DistConfig().Configure(modelBuilder.Entity<Dist>());
-            /*--------------------------------User--------------------------------------*/
-            //Stock
-            //new StockConfig().Configure(modelBuilder.Entity<Stock>());
-
-            /*------------------------------Company--------------------------------------*/
-
-            /*------------------------------product---------------------------*/
-
-            //Inward & OutWard Transaction
-            //new InwardSupplyOrderConfig().Configure(modelBuilder.Entity<InwardSupplyOrder>());
-            //new InwardSupplyTransactionConfig().Configure(modelBuilder.Entity<InwardSupplyTransaction>());
-            //new OutwardSupplyOrderConfig().Configure(modelBuilder.Entity<OutwardSupplyOrder>());
-            //new OutwardSupplyTransactionConfig().Configure(modelBuilder.Entity<OutwardSupplyTransaction>());
-            /*------------------------------production---------------------------*/
-
-            /*--------------------------------Labour-----------------------------*/
-
-            //new LabourTypeConfig().Configure(modelBuilder.Entity<LabourType>());
-            //new LabourConfig().Configure(modelBuilder.Entity<Labour>());
-            //Production & Service Transaction
-            //new LabourOrderConfig().Configure(modelBuilder.Entity<LabourOrder>());
-            //new LabourTransactionConfig().Configure(modelBuilder.Entity<LabourTransaction>());
-            //Damage Transaction
-            //new DamageOrderConfig().Configure(modelBuilder.Entity<DamageOrder>());
-            //new DamageTransactionConfig().Configure(modelBuilder.Entity<DamageTransaction>());
-            /*-----------------------------------Ledger----------------------------------*/
-            //Group
-
-            //Ledger
-
-            //new LedgerBalanceConfig().Configure(modelBuilder.Entity<LedgerBalance>());
-            //Sub Ledger
-            //new SubLedgerConfig().Configure(modelBuilder.Entity<SubLedger>());
-            //new SubLedgerBalanceConfig().Configure(modelBuilder.Entity<SubLedgerBalance>());
-            /*-----------------------------------Party----------------------------------*/
-            //new PartyConfig().Configure(modelBuilder.Entity<Party>());
+            /*--------------------------------Master--------------------------------------*/
+            new StockConfig().Configure(modelBuilder.Entity<Stock>());
+            new LabourTypeConfig().Configure(modelBuilder.Entity<LabourType>());
+            new LabourConfig().Configure(modelBuilder.Entity<Labour>());
+            new PartyConfig().Configure(modelBuilder.Entity<Party>());
+            new LedgerBalanceConfig().Configure(modelBuilder.Entity<LedgerBalance>());
+            new SubLedgerConfig().Configure(modelBuilder.Entity<SubLedger>());
+            new SubLedgerBalanceConfig().Configure(modelBuilder.Entity<SubLedgerBalance>());
+            /*--------------------------------Transaction-----------------------------*/
             //Purchase & Purchase Return
             //new PurchaseOrderConfig().Configure(modelBuilder.Entity<PurchaseOrder>());
             //new PurchaseTransactionConfig().Configure(modelBuilder.Entity<PurchaseTransaction>());          
             //new PurchaseReturnOrderConfig().Configure(modelBuilder.Entity<PurchaseReturnOrder>());
             //new PurchaseReturnTransactionConfig().Configure(modelBuilder.Entity<PurchaseReturnTransaction>());
             //Sales & Sales Return
-
             //new SalesOrderConfig().Configure(modelBuilder.Entity<SalesOrder>());
             //new SalesTransactionConfig().Configure(modelBuilder.Entity<SalesTransaction>());
             //new SalesReturnOrderConfig().Configure(modelBuilder.Entity<SalesReturnOrder>());
             //new SalesReturnTransactionConfig().Configure(modelBuilder.Entity<SalesReturnTransaction>());
+            //Production & Service Transaction
+            //new LabourOrderConfig().Configure(modelBuilder.Entity<LabourOrder>());
+            //new LabourTransactionConfig().Configure(modelBuilder.Entity<LabourTransaction>());
+            //Damage Transaction
+            //new DamageOrderConfig().Configure(modelBuilder.Entity<DamageOrder>());
+            //new DamageTransactionConfig().Configure(modelBuilder.Entity<DamageTransaction>());
+            //Inward & OutWard Transaction
+            //new InwardSupplyOrderConfig().Configure(modelBuilder.Entity<InwardSupplyOrder>());
+            //new InwardSupplyTransactionConfig().Configure(modelBuilder.Entity<InwardSupplyTransaction>());
+            //new OutwardSupplyOrderConfig().Configure(modelBuilder.Entity<OutwardSupplyOrder>());
+            //new OutwardSupplyTransactionConfig().Configure(modelBuilder.Entity<OutwardSupplyTransaction>());
             /*-----------------------------------Accounting----------------------------------*/
             //new JournalOrderConfig().Configure(modelBuilder.Entity<JournalOrder>());
             //new JournalTransactionConfig().Configure(modelBuilder.Entity<JournalTransaction>());

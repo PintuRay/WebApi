@@ -19,7 +19,7 @@
             }
             return _instance;
         }
-        public Dictionary<string, string> GetGender()
+        public static Dictionary<string, string> GetGenders()
         {
             var gender = new Dictionary<string, string>
             {
@@ -29,7 +29,7 @@
             };
             return gender;
         }
-        public Dictionary<string, string> MaratialStatus()
+        public static Dictionary<string, string> MaratialStatus()
         {
             var maratialStatus = new Dictionary<string, string>
             {
@@ -39,7 +39,7 @@
             };
             return maratialStatus;
         }
-        public Dictionary<string, string> GetSalesType()
+        public static Dictionary<string, string> GetSalesType()
         {
             var salesType = new Dictionary<string, string>
             {
@@ -48,14 +48,23 @@
             };
             return salesType;
         }
-        public Dictionary<string, string> GetRateType()
+        public static Dictionary<string, string> GetRateType()
         {
             var rateType = new Dictionary<string, string>
             {
-                { "wholesalerate", "Wholesale Rate" },
-                { "normalrate", "Normal Rate" },
+                { "wholesale", "Wholesale" },
+                { "regular", "Regular" },
             };
             return rateType;
+        }
+        public static Dictionary<string, string> BalanceType()
+        {
+            var balanceType = new Dictionary<string, string>
+            {
+                { "dr", "Dr" },
+                { "cr", "Cr" },
+            };
+            return balanceType;
         }
     }
 }

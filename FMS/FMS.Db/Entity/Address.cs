@@ -30,6 +30,8 @@ namespace FMS.Db.Entity
         public State State { get; set; }
         public Dist Dist { get; set; }
         public AppUser User { get; set; }
+        public Labour Labour { get; set; }
+        public Party Party { get; set; }
     }
     internal class AddressConfig : IEntityTypeConfiguration<Address>
     {
@@ -53,6 +55,8 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow);
             //One-To-One Relationship
             builder.HasOne(d => d.User).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Labour).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Party).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
             //One-To-Many Relationship
             builder.HasOne(d => d.Country).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_CountryId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.State).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_StateId).OnDelete(DeleteBehavior.Cascade);

@@ -16,9 +16,10 @@ namespace FMS.Db.Entity
         public Guid LedgerId { get; set; }
         public LedgerGroup LedgerGroup { get; set; }
         public LedgerSubGroupDev LedgerSubGroup { get; set; } = null;
-       // public ICollection<SubLedger> SubLedgers { get; set; }
-       // public ICollection<LedgerBalance> LedgerBalances { get; set; }
-       // public ICollection<Party> Parties { get; set; }
+        public ICollection<SubLedger> SubLedgers { get; set; }
+        public ICollection<LedgerBalance> LedgerBalances { get; set; }
+       public ICollection<Party> Parties { get; set; }
+
        // public ICollection<JournalTransaction> Journals { get; set; }
        // public ICollection<PaymentTransaction> Payments { get; set; }
        // public ICollection<ReceiptTransaction> Receipts { get; set; }

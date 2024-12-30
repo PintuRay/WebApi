@@ -39,7 +39,7 @@ namespace FMS.Db.Entity
         public ICollection<ProductionTransaction> ProductionTransactions { get; set; }
         public ICollection<SalesOrderSetup> SalesOrderSetups { get; set; }
         public ICollection<SalesTransactionSetup> SalesTransactionSetups { get; set; }
-        //public ICollection<Stock> Stocks { get; set; }
+        public ICollection<Stock> Stocks { get; set; }
         //public ICollection<LabourOrder> LabourOrders { get; set; }
         //public ICollection<LabourTransaction> LabourTransactions { get; set; }
         //public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }

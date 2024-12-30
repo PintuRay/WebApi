@@ -32,8 +32,8 @@ namespace FMS.Model.Account.Authentication
         [Required]
         public string RouteUls { get; set; }
         public string PhotoPath { get; set; }
-        //[Required]
-        //public AddressModel Address { get; set; }
+        [Required]
+        public AddressModel Address { get; set; }
     }
     public class RegisterValidator : AbstractValidator<RegisterModel>
     {
