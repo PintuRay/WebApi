@@ -76,6 +76,10 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
+        public Task<SvcsBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<SvcsBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
         {
             SvcsBase Obj;
@@ -108,6 +112,10 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
+        public Task<SvcsBase> BulkUpdateFinancialYear(List<FinancialYearUpdateModel> dataList, AppUser user)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<SvcsBase> RemoveFinancialYear(Guid Id, AppUser user)
         {
             SvcsBase Obj;
@@ -139,6 +147,10 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveFinancialYear", _Exception.ToString());
             }
             return Obj;
+        }
+        public Task<SvcsBase> BulkRemoveFinancialYear(List<Guid> Ids, AppUser user)
+        {
+            throw new NotImplementedException();
         }
         #endregion
         #region Recover
@@ -237,12 +249,12 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRecoverFinancialYear(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.RecoverAllFinancialYear(Ids, user);
+                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -269,12 +281,12 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteAllFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> BulkDeleteFinancialYear(List<string> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.DeleteAllFinancialYear(Ids, user);
+                var repoResult = await _financialYearRepo.BulkDeleteFinancialYear(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()

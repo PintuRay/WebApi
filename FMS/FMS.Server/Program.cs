@@ -93,7 +93,6 @@ builder.Services.AddDbContext<Context>(option =>
     var connectionString = builder.Configuration.GetConnectionString("DBCS");
     option.UseNpgsql(connectionString, pgSqlAction =>
     {
-        pgSqlAction.EnableRetryOnFailure(3);
         pgSqlAction.CommandTimeout(30);
     })
     .EnableSensitiveDataLogging(builder.Environment.IsDevelopment())

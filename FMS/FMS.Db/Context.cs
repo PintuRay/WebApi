@@ -1,4 +1,5 @@
-﻿using FMS.Db.Entity;
+﻿using EFCore.BulkExtensions;
+using FMS.Db.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -6,13 +7,14 @@ namespace FMS.Db
 {
     public partial class Context : IdentityDbContext<AppUser, AppRole, string>
     {
+        private readonly BulkConfig _defaultBulkConfig;
         public Context()
         {
 
         }
         public Context(DbContextOptions<Context> options) : base(options)
         {
-
+            _defaultBulkConfig = BulkConfigurationSetup.DefaultConfig;
         }
         #region Entity
         /*-------------------------------Account---------------------------------*/

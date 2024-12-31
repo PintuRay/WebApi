@@ -120,14 +120,14 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> RecoverAll(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _financialYearSvcs.RecoverAllFinancialYear(Ids, user);
+            var result = await _financialYearSvcs.BulkRecoverFinancialYear(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteAll(List<string> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
-            var result = await _financialYearSvcs.DeleteAllFinancialYear(Ids, user);
+            var result = await _financialYearSvcs.BulkDeleteFinancialYear(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         #endregion

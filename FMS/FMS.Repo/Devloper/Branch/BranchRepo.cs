@@ -63,7 +63,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.CollectionObjData = Query;
                         _Result.Count = _Result.CollectionObjData.Count;
                         _Result.IsSucess = true;
-                       _cache.Set(cacheKey, _Result, _cacheExpiration);
+                        _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
@@ -96,7 +96,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Id = newBranch.BranchId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                       _cache.RemoveByPrefix("Branches");
+                        _cache.RemoveByPrefix("Branches");
                     }
                 }
             }
@@ -124,15 +124,15 @@ namespace FMS.Repo.Devloper.Branch
                         branch.CreatedBy = user.Name;
                         return branch;
                     }).ToList();
-                    await _ctx.Branches.AddRangeAsync(newBranches);
-                    int Count = await _ctx.SaveChangesAsync();
+                    await _ctx.BulkInsert(newBranches);
+                    int Count = newBranches.Select(s => s.BranchId).ToList().Count;
                     if (Count > 0)
                     {
                         _Result.Ids = newBranches.Select(b => b.BranchId.ToString()).ToList();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
-                       _cache.RemoveByPrefix("Branches");
+                        _cache.RemoveByPrefix("Branches");
                     }
                 }
                 else
@@ -165,7 +165,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Id = data.BranchId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                       _cache.RemoveByPrefix("Branches");
+                        _cache.RemoveByPrefix("Branches");
                     }
                 }
             }
@@ -182,28 +182,26 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var branchIds = listdata.Select(s=> s.BranchId).ToList();
+                var branchIds = listdata.Select(s => s.BranchId).ToList();
                 var existingBranchIds = await _ctx.Branches.Where(b => b.IsActive == true && branchIds.Contains(b.BranchId)).Select(b => b.BranchId).ToListAsync();
                 var notFoundBranchIds = branchIds.Except(existingBranchIds).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
                     var branchesToUpdate = await _ctx.Branches.Where(b => b.IsActive == true && branchIds.Contains(b.BranchId)).ToListAsync();
-                    foreach (var branch in branchesToUpdate)
+                    var updatedBranches = branchesToUpdate.Select(branch =>
                     {
                         var updateData = listdata.First(u => u.BranchId == branch.BranchId);
-                       _mapper.Map(updateData, branch);
+                        _mapper.Map(updateData, branch);
                         branch.ModifyDate = DateTime.UtcNow;
                         branch.ModifyBy = user.Name;
-                    }
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
-                    {
-                        _Result.Ids = branchIds.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        await transaction.CommitAsync();
-                       _cache.RemoveByPrefix("Branches");
-                    }
+                        return branch;
+                    }).ToList();
+                    await _ctx.BulkUpdate(updatedBranches);
+                    await transaction.CommitAsync();
+                    _Result.Ids = branchIds.Select(id => id.ToString()).ToList();
+                    _Result.Count = _Result.Ids.Count.ToString();
+                    _Result.IsSucess = true;
+                    _cache.RemoveByPrefix("Branches");
                 }
                 else
                 {
@@ -265,27 +263,37 @@ namespace FMS.Repo.Devloper.Branch
                 var notFoundBranchIds = Ids.Except(existingBranchIds).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
-                    int Count = await _ctx.Branches.Where(x => Ids.Contains(x.BranchId) && x.IsActive == true)
-                             .ExecuteUpdateAsync(s => s
-                                 .SetProperty(p => p.ModifyDate, DateTime.UtcNow)
-                                 .SetProperty(p => p.ModifyBy, user.Name)
-                                 .SetProperty(p => p.IsActive, false)
-                             );
-                    #region Update Related Entity
-                    await _ctx.BranchFinancialYears.Where(bf => Ids.Contains(bf.Fk_BranchId) && bf.IsActive == true).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
-                    await _ctx.Companies.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == true).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
-                    await _ctx.UserBranches.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == true).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
-                    await _ctx.LabourRates.Where(c => Ids.Contains((Guid)c.Fk_BranchId) && c.IsActive == true).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
-                    #endregion
-                    if (Count > 0)
+                    var branchesToUpdate = await _ctx.Branches.Where(x => Ids.Contains(x.BranchId) && x.IsActive == true).ToListAsync();
+                    var updatedBranches = branchesToUpdate.Select(branch =>
                     {
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
-                    }
+                        branch.ModifyDate = DateTime.UtcNow;
+                        branch.ModifyBy = user.Name;
+                        branch.IsActive = false;
+                        return branch;
+                    }).ToList();
+                    await _ctx.BulkUpdate(updatedBranches);
+                    #region Update Related Entity
+                    var branchFinancialYears = await _ctx.BranchFinancialYears.Where(bf => Ids.Contains(bf.Fk_BranchId) && bf.IsActive == true).ToListAsync();
+                    var companies = await _ctx.Companies.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == true).ToListAsync();
+                    var userBranches = await _ctx.UserBranches.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == true).ToListAsync();
+                    var labourRates = await _ctx.LabourRates.Where(c => Ids.Contains((Guid)c.Fk_BranchId) && c.IsActive == true).ToListAsync();
+                    branchFinancialYears.ForEach(bf => bf.IsActive = false);
+                    companies.ForEach(c => c.IsActive = false);
+                    userBranches.ForEach(ub => ub.IsActive = false);
+                    labourRates.ForEach(lr => lr.IsActive = false);
+                    await Task.WhenAll(
+                            _ctx.BulkUpdate(branchFinancialYears),
+                            _ctx.BulkUpdate(companies),
+                            _ctx.BulkUpdate(userBranches),
+                            _ctx.BulkUpdate(labourRates)
+                            );
+                    #endregion
+                    await transaction.CommitAsync();
+                    _Result.Ids = Ids.Select(id => id.ToString()).ToList();
+                    _Result.Count = _Result.Ids.Count.ToString();
+                    _Result.IsSucess = true;
+                    _cache.RemoveByPrefix("Branches");
+                    _cache.RemoveByPrefix("RemovedBranches");
                 }
                 else
                 {
@@ -407,31 +415,41 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranchIds = await _ctx.Branches.Where(b => b.IsActive == true && Ids.Contains(b.BranchId)).Select(b => b.BranchId).ToListAsync();
+                var existingBranchIds = await _ctx.Branches.Where(b => b.IsActive == false && Ids.Contains(b.BranchId)).Select(b => b.BranchId).ToListAsync();
                 var notFoundBranchIds = Ids.Except(existingBranchIds).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
-                    int Count = await _ctx.Branches.Where(x => Ids.Contains(x.BranchId) && x.IsActive == false).
-                       ExecuteUpdateAsync(s => s
-                       .SetProperty(p => p.ModifyDate, DateTime.UtcNow)
-                       .SetProperty(p => p.ModifyBy, user.Name)
-                       .SetProperty(p => p.IsActive, true)
-                       );
-                    #region Update Related Entity
-                    await _ctx.BranchFinancialYears.Where(bf => Ids.Contains(bf.Fk_BranchId) && bf.IsActive == false).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, true));
-                    await _ctx.Companies.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == false).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, true));
-                    await _ctx.UserBranches.Where(bf => Ids.Contains(bf.Fk_BranchId) && bf.IsActive == false).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, true));
-                    await _ctx.LabourRates.Where(c => Ids.Contains((Guid)c.Fk_BranchId) && c.IsActive == false).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, true));
-                    #endregion
-                    if (Count > 0)
+                    var branchesToUpdate = await _ctx.Branches.Where(x => Ids.Contains(x.BranchId) && x.IsActive == false).ToListAsync();
+                    var updatedBranches = branchesToUpdate.Select(branch =>
                     {
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
-                    }
+                        branch.ModifyDate = DateTime.UtcNow;
+                        branch.ModifyBy = user.Name;
+                        branch.IsActive = true;
+                        return branch;
+                    }).ToList();
+                    await _ctx.BulkUpdate(updatedBranches);
+                    #region Update Related Entity
+                    var branchFinancialYears = await _ctx.BranchFinancialYears.Where(bf => Ids.Contains(bf.Fk_BranchId) && bf.IsActive == false).ToListAsync();
+                    var companies = await _ctx.Companies.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == false).ToListAsync();
+                    var userBranches = await _ctx.UserBranches.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == false).ToListAsync();
+                    var labourRates = await _ctx.LabourRates.Where(c => Ids.Contains((Guid)c.Fk_BranchId) && c.IsActive == false).ToListAsync();
+                    branchFinancialYears.ForEach(bf => bf.IsActive = true);
+                    companies.ForEach(c => c.IsActive = true);
+                    userBranches.ForEach(ub => ub.IsActive = true);
+                    labourRates.ForEach(lr => lr.IsActive = true);
+                    await Task.WhenAll(
+                            _ctx.BulkUpdate(branchFinancialYears),
+                            _ctx.BulkUpdate(companies),
+                            _ctx.BulkUpdate(userBranches),
+                            _ctx.BulkUpdate(labourRates)
+                            );
+                    #endregion
+                    await transaction.CommitAsync();
+                    _Result.Ids = Ids.Select(id => id.ToString()).ToList();
+                    _Result.Count = _Result.Ids.Count.ToString();
+                    _Result.IsSucess = true;
+                    _cache.RemoveByPrefix("Branches");
+                    _cache.RemoveByPrefix("RemovedBranches");
                 }
                 else
                 {
@@ -451,12 +469,14 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.Branches
-                          .Include(x => x.BranchFinancialYears)
-                          .Include(x => x.Companies)
-                          .Include(x => x.UserBranch)
-                          .Include(x => x.LabourRates)
-                          .SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == false);
+                //if DeleteBehavior.Cascade not set then first you have to include related entities then delete
+                //var Query = await _ctx.Branches
+                //          .Include(x => x.BranchFinancialYears)
+                //          .Include(x => x.Companies)
+                //          .Include(x => x.UserBranch)
+                //          .Include(x => x.LabourRates)
+                //          .SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == false);
+                var Query = await _ctx.Branches.SingleOrDefaultAsync(x => x.BranchId == Id && x.IsActive == false);
                 if (Query != null)
                 {
                     _ctx.Branches.Remove(Query);
@@ -488,21 +508,26 @@ namespace FMS.Repo.Devloper.Branch
                 var notFoundBranchIds = Ids.Except(existingBranchIds).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
-                    int Count = await _ctx.Branches.Include(x => x.BranchFinancialYears)
-                                    .Include(x => x.Companies)
-                                    .Include(x => x.UserBranch)
-                                    .Include(x => x.LabourRates)
-                                    .Where(b => b.IsActive == false && Ids.Contains(b.BranchId))
-                                    .ExecuteDeleteAsync();
-                    if (Count > 0)
-                    {
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
-                    }
+                    //if DeleteBehavior.Cascade not set then first you have to Delete related entities first
+                    // var branchFinancialYears = await _ctx.BranchFinancialYears.Where(bf => Ids.Contains(bf.Fk_BranchId)).ToListAsync();
+                    // var companies = await _ctx.Companies.Where(c => Ids.Contains(c.Fk_BranchId)).ToListAsync();
+                    // var userBranches = await _ctx.UserBranches.Where(ub => Ids.Contains(ub.Fk_BranchId)).ToListAsync();
+                    // var labourRates = await _ctx.LabourRates.Where(lr => Ids.Contains((Guid)lr.Fk_BranchId)).ToListAsync();
+                    // await Task.WhenAll(
+                    //    _ctx.BulkDelete(branchFinancialYears),
+                    //    _ctx.BulkDelete(companies),
+                    //    _ctx.BulkDelete(userBranches),
+                    //    _ctx.BulkDelete(labourRates)
+                    //);
+                    // Delete branches
+                    var branchesToDelete = await _ctx.Branches.Where(b => b.IsActive == false && Ids.Contains(b.BranchId)).ToListAsync();
+                    await _ctx.BulkDelete(branchesToDelete);
+                    await transaction.CommitAsync();
+                    _Result.Ids = Ids.Select(id => id.ToString()).ToList();
+                    _Result.Count = _Result.Ids.Count.ToString();
+                    _Result.IsSucess = true;
+                    _cache.RemoveByPrefix("Branches");
+                    _cache.RemoveByPrefix("RemovedBranches");
                 }
                 else
                 {
