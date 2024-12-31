@@ -21,7 +21,7 @@ namespace FMS.Db.Entity
     }
     public class Company : CompanyUpdateModel
     {
-        public bool IsActive { get; set; } = true;
+        public bool? IsActive { get; set; } = true;
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; }

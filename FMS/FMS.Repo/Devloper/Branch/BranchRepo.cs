@@ -115,7 +115,7 @@ namespace FMS.Repo.Devloper.Branch
                 _Result.IsSucess = false;
                 var branchNames = dataList.Select(b => b.BranchName).ToList();
                 var existingBranchNames = await _ctx.Branches.Where(b => b.IsActive == true && branchNames.Contains(b.BranchName)).Select(b => b.BranchName).ToListAsync();
-                if (!existingBranchNames.Any())
+                if (existingBranchNames.Count == 0)
                 {
                     var newBranches = dataList.Select(data =>
                     {

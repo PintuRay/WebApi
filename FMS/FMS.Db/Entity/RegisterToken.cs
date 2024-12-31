@@ -12,7 +12,7 @@ namespace FMS.Db.Entity
     public class RegisterToken: RegisterTokenModel
     {
         public Guid TokenId { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         //Reference Navigation Property
         public AppUser User { get; set; }
     }

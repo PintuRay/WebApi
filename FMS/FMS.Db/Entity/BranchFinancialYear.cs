@@ -16,7 +16,7 @@ namespace FMS.Db.Entity
     }
     public class BranchFinancialYear: BranchFinancialYearUpdateModel
     {
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; }

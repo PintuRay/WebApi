@@ -89,11 +89,17 @@ builder.Services.AddControllers().AddNewtonsoftJson(
 builder.Services.AddEndpointsApiExplorer();
 //***************************************************Add Connection to Db**************************************//
 builder.Services.AddDbContext<Context>(option =>
-option.UseNpgsql(builder.Configuration.GetConnectionString("DBCS"))
-.EnableSensitiveDataLogging(builder.Environment.IsDevelopment())
-.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
-.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
-);
+{
+    var connectionString = builder.Configuration.GetConnectionString("DBCS");
+    option.UseNpgsql(connectionString, pgSqlAction =>
+    {
+        pgSqlAction.EnableRetryOnFailure(3);
+        pgSqlAction.CommandTimeout(30);
+    })
+    .EnableSensitiveDataLogging(builder.Environment.IsDevelopment())
+    .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+    .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+});
 
 //****************************************************Email & SMS setup************************************************//
 builder.Services.Configure<SMTPConfigModel>(builder.Configuration.GetSection("SMTPConfig"));

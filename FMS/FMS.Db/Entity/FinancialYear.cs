@@ -15,7 +15,7 @@ namespace FMS.Db.Entity
     }
     public class FinancialYear : FinancialYearUpdateModel
     {
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; }
@@ -43,12 +43,12 @@ namespace FMS.Db.Entity
         public ICollection<SalesTransaction> SalesTransactions { get; set; }
         public ICollection<SalesReturnOrder> SalesReturnOrders { get; set; }
         public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
-        //public ICollection<JournalOrder> JournalOrders { get; set; }
-        //public ICollection<JournalTransaction> JournalTransactions { get; set; }
-        //public ICollection<PaymentOrder> PaymentOrders { get; set; }
-        //public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
-        //public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
-        //public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+        public ICollection<JournalOrder> JournalOrders { get; set; }
+        public ICollection<JournalTransaction> JournalTransactions { get; set; }
+        public ICollection<PaymentOrder> PaymentOrders { get; set; }
+        public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+        public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
+        public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
     public class FinancialYearValidator : AbstractValidator<CompanyModel>
     {

@@ -16,7 +16,7 @@ namespace FMS.Db.Entity
     }
     public class SubLedger : SubLedgerUpdateModel
     {
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -31,9 +31,9 @@ namespace FMS.Db.Entity
         public ICollection<PurchaseReturnOrder> PurchaseReturnOrders { get; set; }
         public ICollection<SalesOrder> SalesOrders { get; set; }
         public ICollection<SalesReturnOrder> SalesReturnOrders { get; set; }
-        // public ICollection<JournalTransaction> JournalTransactions { get; set; }
-        // public ICollection<PaymentTransaction> PaymentTransaction { get; set; }
-        // public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+        public ICollection<JournalTransaction> JournalTransactions { get; set; }
+        public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+        public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
 
     }
     public class SubLedgerValidator : AbstractValidator<SubLedgerModel>

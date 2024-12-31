@@ -23,7 +23,7 @@ namespace FMS.Db.Entity
 
     public class ProductionOrder: ProductionOrderUpdateModel
     {
-        public bool  IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -39,7 +39,6 @@ namespace FMS.Db.Entity
 
         }
     }
-
     internal class ProductionOrderConfig : IEntityTypeConfiguration<ProductionOrder>
     {
         public void Configure(EntityTypeBuilder<ProductionOrder> builder)

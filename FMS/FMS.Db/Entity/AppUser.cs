@@ -12,7 +12,7 @@ namespace FMS.Db.Entity
         public string MaratialStatus { get; set; }
         public string Gender { get; set; }
         public string PhotoPath { get; set; }
-        public bool TermCondition { get; set; }
+        public bool? TermCondition { get; set; }
         //Reference Navigation Property
         public RegisterToken Token { get; set; }
         public Address Address { get; set; }

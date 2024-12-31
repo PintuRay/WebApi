@@ -18,7 +18,7 @@ namespace FMS.Db.Entity
     }
     public class Ledger : LedgerUpdateModel
     {
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
@@ -28,9 +28,9 @@ namespace FMS.Db.Entity
         public ICollection<LedgerBalance> LedgerBalances { get; set; }
         public ICollection<SubLedger> SubLedgers { get; set; }
         //public ICollection<Party> Parties { get; set; }
-        // public ICollection<JournalTransaction> Journals { get; set; }
-        //public ICollection<PaymentTransaction> Payments { get; set; }
-        // public ICollection<ReceiptTransaction> Receipts { get; set; }
+        public ICollection<JournalTransaction> JournalTransactions { get; set; }
+        public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+        public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
     public class LedgerValidator : AbstractValidator<LedgerModel>
     {

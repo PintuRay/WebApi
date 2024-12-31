@@ -75,21 +75,21 @@ namespace FMS.Db
         public DbSet<SalesReturnOrder> SalesReturnOrders { get; set; }
         public DbSet<SalesReturnTransaction> SalesReturnTransactions { get; set; }
         /*----------------------------------Accounting-------------------------------------*/
-        // public DbSet<JournalOrder> JournalOrders { get; set; }
-        // public DbSet<JournalTransaction> JournalTransactions { get; set; }
-        // public DbSet<PaymentOrder> PaymentOrders { get; set; }
-        // public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
-        // public DbSet<ReceiptOrder> ReceiptOrders { get; set; }
-        // public DbSet<ReceiptTransaction> ReceiptTransactions { get; set; }
+        public DbSet<JournalOrder> JournalOrders { get; set; }
+        public DbSet<JournalTransaction> JournalTransactions { get; set; }
+        public DbSet<PaymentOrder> PaymentOrders { get; set; }
+        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+        public DbSet<ReceiptOrder> ReceiptOrders { get; set; }
+        public DbSet<ReceiptTransaction> ReceiptTransactions { get; set; }
 
         #endregion
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseNpgsql("Host=localhost; Port=5432; Database=postgres; Username=postgres; Password=Devloper@1234");
-            }
-            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+            //if (!optionsBuilder.IsConfigured)
+            //{
+            //    optionsBuilder.UseNpgsql("Host=localhost; Port=5432; Database=postgres; Username=postgres; Password=Devloper@1234");
+            //}
+            //optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -155,12 +155,12 @@ namespace FMS.Db
             new SalesReturnOrderConfig().Configure(modelBuilder.Entity<SalesReturnOrder>());
             new SalesReturnTransactionConfig().Configure(modelBuilder.Entity<SalesReturnTransaction>());
             /*-----------------------------------Accounting----------------------------------*/
-            //new JournalOrderConfig().Configure(modelBuilder.Entity<JournalOrder>());
-            //new JournalTransactionConfig().Configure(modelBuilder.Entity<JournalTransaction>());
-            //new PaymentOrderConfig().Configure(modelBuilder.Entity<PaymentOrder>());
-            //new PaymentTransactionConfig().Configure(modelBuilder.Entity<PaymentTransaction>());
-            //new ReceiptOrderConfig().Configure(modelBuilder.Entity<ReceiptOrder>());
-            //new ReceiptTransactionConfig().Configure(modelBuilder.Entity<ReceiptTransaction>());
+            new JournalOrderConfig().Configure(modelBuilder.Entity<JournalOrder>());
+            new JournalTransactionConfig().Configure(modelBuilder.Entity<JournalTransaction>());
+            new PaymentOrderConfig().Configure(modelBuilder.Entity<PaymentOrder>());
+            new PaymentTransactionConfig().Configure(modelBuilder.Entity<PaymentTransaction>());
+            new ReceiptOrderConfig().Configure(modelBuilder.Entity<ReceiptOrder>());
+            new ReceiptTransactionConfig().Configure(modelBuilder.Entity<ReceiptTransaction>());
             #endregion
             base.OnModelCreating(modelBuilder);
         }

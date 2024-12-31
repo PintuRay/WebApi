@@ -15,9 +15,9 @@ namespace FMS.Db.Entity
         public ICollection<LedgerSubGroupDev> LedgerSubGroupsDev { get; set; }
         public ICollection<Ledger> Ledgers { get; set; }
         public ICollection<LedgerDev> LedgersDev { get; set; }
-        //public ICollection<JournalTransaction> JournalTransactions { get; set; }
-        //public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
-       // public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+        public ICollection<JournalTransaction> JournalTransactions { get; set; }
+        public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+        public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
     public class LedgerGroupConfig : IEntityTypeConfiguration<LedgerGroup>
     {
