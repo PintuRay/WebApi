@@ -40,7 +40,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAllBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetAllBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -72,7 +72,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -104,7 +104,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -136,7 +136,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -168,7 +168,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -200,7 +200,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -232,7 +232,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -265,7 +265,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedBranches", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedBranches", _Exception.ToString());
             }
             return Obj;
         }
@@ -297,7 +297,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -329,7 +329,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -361,7 +361,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -393,7 +393,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllBranch", _Exception.ToString());
             }
             return Obj;
         }

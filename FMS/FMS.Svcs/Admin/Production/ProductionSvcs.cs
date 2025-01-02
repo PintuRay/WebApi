@@ -40,7 +40,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -72,7 +72,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -104,7 +104,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -136,7 +136,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -169,7 +169,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -201,7 +201,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -233,7 +233,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -265,7 +265,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -297,7 +297,7 @@ namespace FMS.Svcs.Admin.Production
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllProduction", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllProduction", _Exception.ToString());
         //    }
         //    return Obj;
         //}

@@ -67,7 +67,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ValidateToken", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ValidateToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -196,7 +196,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SignUp", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignUp", _Exception.ToString());
             }
             return Obj;
         }
@@ -307,7 +307,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SignIn", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignIn", _Exception.ToString());
             }
             return Obj;
         }
@@ -383,7 +383,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "VerifyConfirmEmail", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "VerifyConfirmEmail", _Exception.ToString());
             }
             return Obj;
         }
@@ -462,7 +462,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ResendConfirmEmail", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ResendConfirmEmail", _Exception.ToString());
             }
             return Obj;
         }
@@ -512,7 +512,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SendConformationSms", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SendConformationSms", _Exception.ToString());
             }
             return Obj;
         }
@@ -560,7 +560,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "VerifyPhoneNumber", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "VerifyPhoneNumber", _Exception.ToString());
             }
             return Obj;
         }
@@ -625,7 +625,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SendTwoFactorToken", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SendTwoFactorToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -675,7 +675,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "VerifyTwoFactorToken", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "VerifyTwoFactorToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -740,7 +740,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "SignInWithOTP", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignInWithOTP", _Exception.ToString());
             }
             return Obj;
         }
@@ -807,7 +807,7 @@ namespace FMS.Svcs.Account.Authentication
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ReSendTwoFactorToken", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ReSendTwoFactorToken", _Exception.ToString());
             }
             return Obj;
         }
@@ -865,7 +865,7 @@ namespace FMS.Svcs.Account.Authentication
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                     Exception = _Exception
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ForgotPassword", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ForgotPassword", _Exception.ToString());
             }
             return Obj;
         }
@@ -899,7 +899,7 @@ namespace FMS.Svcs.Account.Authentication
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                     Exception = _Exception
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ResetPassword", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ResetPassword", _Exception.ToString());
             }
             return Obj;
         }
@@ -933,7 +933,7 @@ namespace FMS.Svcs.Account.Authentication
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                     Exception = _Exception
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "ChangePassword", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ChangePassword", _Exception.ToString());
             }
             return Obj;
         }

@@ -39,7 +39,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAllLabourRates", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetAllLabourRates", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -71,7 +71,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -103,7 +103,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -135,7 +135,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -168,7 +168,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -200,7 +200,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -232,7 +232,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -264,7 +264,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -296,7 +296,7 @@ namespace FMS.Svcs.Admin.LabourRate
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllLabourRate", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllLabourRate", _Exception.ToString());
         //    }
         //    return Obj;
         //}

@@ -40,7 +40,7 @@ namespace FMS.Svcs.Admin.Token
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateToken", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateToken", _Exception.ToString());
         //    }
         //    return Obj;
         //}

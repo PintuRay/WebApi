@@ -55,7 +55,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetUsers", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetUsers", _Exception.ToString());
             }
             return Obj;
         }
@@ -91,7 +91,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetUserByMail", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetUserByMail", _Exception.ToString());
             }
             return Obj;
         }
@@ -126,7 +126,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetUserById", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetUserById", _Exception.ToString());
             }
             return Obj;
         }
@@ -176,7 +176,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateUser", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateUser", _Exception.ToString());
             }
             return Obj;
         }
@@ -224,7 +224,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeletUser", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeletUser", _Exception.ToString());
             }
             return Obj;
         }
@@ -274,7 +274,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateRole", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateRole", _Exception.ToString());
             }
 
             return Obj;
@@ -309,7 +309,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRoles", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRoles", _Exception.ToString());
             }
 
             return Obj;
@@ -346,7 +346,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRoleById", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRoleById", _Exception.ToString());
             }
 
 
@@ -396,7 +396,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateRole", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateRole", _Exception.ToString());
             }
 
             return Obj;
@@ -444,7 +444,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteRole", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteRole", _Exception.ToString());
             }
             return Obj;
         }
@@ -507,7 +507,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetAllUserWithRolesAndClaims", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetAllUserWithRolesAndClaims", _Exception.ToString());
             }
             return Obj;
         }
@@ -575,7 +575,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetUserWithRolesAndClaims", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetUserWithRolesAndClaims", _Exception.ToString());
             }
 
             return Obj;
@@ -634,7 +634,7 @@ namespace FMS.Svcs.Account.Autherization
                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateUserRoleAndClaims", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateUserRoleAndClaims", _Exception.ToString());
             }
 
             return Obj;

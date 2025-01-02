@@ -39,7 +39,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetUserBranches", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetUserBranches", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -71,7 +71,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateUserBranch", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateUserBranch", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -103,7 +103,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateUserBranch", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateUserBranch", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -135,7 +135,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveUserBranch", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveUserBranch", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -168,7 +168,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedUserBranches", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedUserBranches", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -200,7 +200,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverUserBranch", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverUserBranch", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -232,7 +232,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteUserBranch", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteUserBranch", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -264,7 +264,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllUserBranches", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllUserBranches", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -296,7 +296,7 @@ namespace FMS.Svcs.Admin.UserBranch
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllUserBranches", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllUserBranches", _Exception.ToString());
         //    }
         //    return Obj;
         //}

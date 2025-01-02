@@ -40,7 +40,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
             }
             return Obj;
         }
@@ -71,7 +71,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
             }
             return Obj;
         }
@@ -103,7 +103,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateBranchFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -135,7 +135,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateBranchFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -167,7 +167,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveBranchFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -200,7 +200,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedBranchFinancialYears", _Exception.ToString());
             }
             return Obj;
         }
@@ -232,7 +232,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverBranchFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -264,7 +264,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteBranchFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -296,7 +296,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllBranchFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -328,7 +328,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllBranchFinancialYear", _Exception.ToString());
             }
             return Obj;
         }

@@ -19,9 +19,9 @@ namespace FMS.Svcs.Devloper.FinancialYear
         #region Recover
         Task<SvcsBase> GetRemovedFinancialYears(PaginationParams pagination);
         Task<SvcsBase> RecoverFinancialYear(Guid Id, AppUser user);
-        Task<SvcsBase> BulkRecoverFinancialYear(List<string> Ids, AppUser user);
+        Task<SvcsBase> BulkRecoverFinancialYear(List<Guid> Ids, AppUser user);
         Task<SvcsBase> DeleteFinancialYear(Guid Id, AppUser user);
-        Task<SvcsBase> BulkDeleteFinancialYear(List<string> Ids, AppUser user);
+        Task<SvcsBase> BulkDeleteFinancialYear(List<Guid> Ids, AppUser user);
         #endregion
         #endregion
     }

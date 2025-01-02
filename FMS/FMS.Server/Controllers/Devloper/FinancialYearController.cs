@@ -16,7 +16,7 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Crud
         [HttpGet]
-        public async Task<IActionResult> Get(PaginationParams pagination)
+        public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
             var result = await _financialYearSvcs.GetFinancialYears(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
@@ -117,14 +117,14 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverAll(List<string> Ids)
+        public async Task<IActionResult> BulkRecover(List<Guid> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _financialYearSvcs.BulkRecoverFinancialYear(Ids, user);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> DeleteAll(List<string> Ids)
+        public async Task<IActionResult> BulkDelete(List<Guid> Ids)
         {
             var user = await _userManager.GetUserAsync(User);
             var result = await _financialYearSvcs.BulkDeleteFinancialYear(Ids, user);

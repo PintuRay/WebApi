@@ -40,7 +40,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetCountries", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetCountries", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -72,7 +72,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateCountry", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateCountry", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -104,7 +104,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateCountry", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateCountry", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -136,7 +136,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveCountry", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveCountry", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -169,7 +169,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedCountries", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedCountries", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -201,7 +201,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverCountry", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverCountry", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -233,7 +233,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteCountry", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteCountry", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -265,7 +265,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllCountry", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllCountry", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -297,7 +297,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllCountry", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllCountry", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -332,7 +332,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetStates", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetStates", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -364,7 +364,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateState", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateState", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -396,7 +396,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateState", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateState", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -428,7 +428,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveState", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveState", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -461,7 +461,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedStates", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedStates", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -493,7 +493,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverState", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverState", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -525,7 +525,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteState", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteState", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -557,7 +557,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllStates", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllStates", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -589,7 +589,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllStates", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllStates", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -624,7 +624,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetDists", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetDists", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -656,7 +656,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateDist", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateDist", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -688,7 +688,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateDist", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateDist", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -720,7 +720,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveDist", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveDist", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -753,7 +753,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedDists", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedDists", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -785,7 +785,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverDist", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverDist", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -817,7 +817,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteDist", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteDist", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -849,7 +849,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllDists", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllDists", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -881,7 +881,7 @@ namespace FMS.Svcs.Common
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllDists", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllDists", _Exception.ToString());
         //    }
         //    return Obj;
         //}

@@ -40,7 +40,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetFinancialYears", _Exception.ToString());
             }
             return Obj;
         }
@@ -72,7 +72,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -108,7 +108,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -144,7 +144,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -181,7 +181,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedFinancialYears", _Exception.ToString());
             }
             return Obj;
         }
@@ -213,7 +213,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -245,11 +245,11 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRecoverFinancialYear(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
@@ -277,11 +277,11 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkDeleteFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> BulkDeleteFinancialYear(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
@@ -309,7 +309,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllFinancialYear", _Exception.ToString());
             }
             return Obj;
         }

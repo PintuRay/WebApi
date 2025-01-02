@@ -39,7 +39,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetGroups", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetGroups", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -73,7 +73,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetSubGroups", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetSubGroups", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -105,7 +105,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -137,7 +137,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -169,7 +169,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -202,7 +202,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -234,7 +234,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -266,7 +266,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -298,7 +298,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -330,7 +330,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllSubGroup", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllSubGroup", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -365,7 +365,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetLedgers", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetLedgers", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -397,7 +397,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "CreateLedger", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateLedger", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -429,7 +429,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "UpdateLedger", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateLedger", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -461,7 +461,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RemoveLedger", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveLedger", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -494,7 +494,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "GetRemovedLedgers", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedLedgers", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -526,7 +526,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverLedger", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverLedger", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -558,7 +558,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteLedger", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteLedger", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -590,7 +590,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "RecoverAllLedger", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllLedger", _Exception.ToString());
         //    }
         //    return Obj;
         //}
@@ -622,7 +622,7 @@ namespace FMS.Svcs.Admin.Accounting
         //            Message = _Exception.Message,
         //            ResponseCode = (int)ResponseCode.Status.BadRequest,
         //        };
-        //        await _emailSvcs.SendExceptionEmail("exception@gmail.com", "DeleteAllLedger", _Exception.ToString());
+        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllLedger", _Exception.ToString());
         //    }
         //    return Obj;
         //}

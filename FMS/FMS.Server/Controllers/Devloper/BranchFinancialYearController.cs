@@ -16,7 +16,7 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Crud
         [HttpGet]
-        public async Task<IActionResult> Get(PaginationParams pagination)
+        public async Task<IActionResult> Get([FromQuery]PaginationParams pagination)
         {
             var result = await _branchFinancialYearSvcs.GetBranchFinancialYears(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
@@ -75,7 +75,7 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemoved(PaginationParams pagination)
+        public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
             var result = await _branchFinancialYearSvcs.GetRemovedBranchFinancialYears(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);

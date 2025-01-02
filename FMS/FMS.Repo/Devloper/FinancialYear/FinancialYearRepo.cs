@@ -3,7 +3,6 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace FMS.Repo.Devloper.FinancialYear
 {
@@ -168,14 +167,15 @@ namespace FMS.Repo.Devloper.FinancialYear
                 var notFoundfinancialYearIds = financialYearIds.Except(financialYearDict.Keys).ToList();
                 if (notFoundfinancialYearIds.Count == 0)
                 {
-                    var financialYearToUpdate = await _ctx.FinancialYears.Where(b => b.IsActive == true && financialYearIds.Contains(b.FinancialYearId)).ToListAsync();
-                    foreach (var financialYear in financialYearToUpdate)
+                    var financialYears = await _ctx.FinancialYears.Where(b => b.IsActive == true && financialYearIds.Contains(b.FinancialYearId)).ToListAsync();
+                    var financialYearsToUpdate = financialYears.Select(financialYear =>
                     {
                         var updateData = dataList.First(u => u.FinancialYearId == financialYear.FinancialYearId);
                         _mapper.Map(updateData, financialYear);
                         financialYear.ModifyDate = DateTime.UtcNow;
                         financialYear.ModifyBy = user.Name;
-                    }
+                        return financialYear;
+                    }).ToList();
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
@@ -204,7 +204,12 @@ namespace FMS.Repo.Devloper.FinancialYear
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(x => x.FinancialYearId == Id && x.IsActive == true);
+                // Load FinancialYears with its related active entities
+                var Query = await _ctx.FinancialYears
+                    //.Include(s => s.Stocks.Where(s => s.IsActive == true))
+                    //.Include(lb => lb.LabourRates.Where(lb => lb.IsActive == true))
+                    .SingleOrDefaultAsync(x => x.FinancialYearId == Id && x.IsActive == true);
+                
                 if (Query != null)
                 {
                     Query.ModifyDate = DateTime.UtcNow;
@@ -242,21 +247,32 @@ namespace FMS.Repo.Devloper.FinancialYear
                     await _ctx.Companies.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == true).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
                     await _ctx.UserBranches.Where(c => Ids.Contains(c.Fk_BranchId) && c.IsActive == true).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
                     await _ctx.LabourRates.Where(c => Ids.Contains((Guid)c.Fk_BranchId) && c.IsActive == true).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false));
+                    await Task.WhenAll(
+
+                        );
                     #endregion
-                    int Count = await _ctx.FinancialYears.Where(x => Ids.Contains(x.FinancialYearId) && x.IsActive == true)
-                             .ExecuteUpdateAsync(s => s
-                                 .SetProperty(p => p.ModifyDate, DateTime.UtcNow)
-                                 .SetProperty(p => p.ModifyBy, user.Name)
-                                 .SetProperty(p => p.IsActive, false)
-                             );
-                    if (Count > 0)
+                    var branchesToUpdate = await _ctx.Branches.Where(x => Ids.Contains(x.BranchId) && x.IsActive == true).ToListAsync();
+                    var updatedBranches = branchesToUpdate.Select(branch =>
                     {
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("FinancialYears");
-                    }
+                        branch.ModifyDate = DateTime.UtcNow;
+                        branch.ModifyBy = user.Name;
+                        branch.IsActive = false;
+                        return branch;
+                    }).ToList();
+                    //int Count = await _ctx.FinancialYears.Where(x => Ids.Contains(x.FinancialYearId) && x.IsActive == true)
+                    //         .ExecuteUpdateAsync(s => s
+                    //             .SetProperty(p => p.ModifyDate, DateTime.UtcNow)
+                    //             .SetProperty(p => p.ModifyBy, user.Name)
+                    //             .SetProperty(p => p.IsActive, false)
+                    //         );
+                    //if (Count > 0)
+                    //{
+                    //    _Result.Ids = Ids.Select(id => id.ToString()).ToList();
+                    //    _Result.Count = Count.ToString();
+                    //    _Result.IsSucess = true;
+                    //    await transaction.CommitAsync();
+                    //    _cache.RemoveByPrefix("FinancialYears");
+                    //}
                 }
                 else
                 {
@@ -394,10 +410,11 @@ namespace FMS.Repo.Devloper.FinancialYear
                     labourRates.ForEach(lr => lr.IsActive = false);
                     #endregion
                     var financialYearToRecover = await _ctx.FinancialYears.Where(x => Ids.Contains(x.FinancialYearId) && x.IsActive == false).ToListAsync();
-                    financialYearToRecover.ForEach(financialyear => { 
-                        financialyear.ModifyDate = DateTime.UtcNow; 
-                        financialyear.ModifyBy = user.Name; 
-                        financialyear.IsActive = false; 
+                    financialYearToRecover.ForEach(financialyear =>
+                    {
+                        financialyear.ModifyDate = DateTime.UtcNow;
+                        financialyear.ModifyBy = user.Name;
+                        financialyear.IsActive = false;
                     });
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)

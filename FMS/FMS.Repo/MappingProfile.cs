@@ -13,7 +13,11 @@ namespace FMS.Repo
             //Devloper
             CreateMap<Branch, BranchModel>().ReverseMap();
             CreateMap<Branch, BranchUpdateModel>().ReverseMap();
-            CreateMap<FinancialYear, FinancialYearModel>().ReverseMap();
+            CreateMap<FinancialYear, FinancialYearModel>().ReverseMap()
+                .ForMember(dest => dest.StartDate, opt =>
+                    opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
+                .ForMember(dest => dest.EndDate, opt =>
+                    opt.MapFrom(src => DateTime.SpecifyKind(src.EndDate, DateTimeKind.Utc)));
             CreateMap<BranchFinancialYear, BranchFinancialYearModel>().ReverseMap();
             //admin
             CreateMap<Company, CompanyModel>().ReverseMap();
