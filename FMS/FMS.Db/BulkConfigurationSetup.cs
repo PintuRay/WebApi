@@ -120,5 +120,36 @@ namespace FMS.Db
 
             return result;
         }
+        public static async Task<BulkOperationResult> BulkUDeleteMultiple(this DbContext context, IDictionary<string, IList> entityGroups)
+        {
+            var result = new BulkOperationResult();
+            var startTime = DateTime.UtcNow;
+            try
+            {
+                foreach (var group in entityGroups)
+                {
+                    if (group.Value.Count != 0)
+                    {
+                        var entityType = group.Value.GetType().GetGenericArguments()[0];
+                        var method = typeof(DbContextBulkExtensions).GetMethods().FirstOrDefault(m => m.Name == "BulkDeleteAsync" && m.GetParameters().Length == 6 && m.GetParameters()[0].ParameterType == typeof(DbContext)) ?? throw new InvalidOperationException("Method 'BulkDeleteAsync' not found.");
+                        var genericMethod = method.MakeGenericMethod(entityType);
+                        var task = (Task)genericMethod.Invoke(null, new object[] { context, group.Value, BulkConfigurationSetup.DefaultConfig, null, null, CancellationToken.None });
+                        await task;
+                        result.AffectedRows += group.Value.Count;
+                    }
+                }
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                result.ExecutionTime = DateTime.UtcNow - startTime;
+            }
+            return result;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace FMS.Repo.Transaction.PurchaseReturn
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
         #region Purchase Return
        // public async Task<RepoBase> GetLastPurchaseReturnTransactionNo() { throw new NotImplementedException(); }

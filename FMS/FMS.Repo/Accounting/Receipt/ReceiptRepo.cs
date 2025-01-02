@@ -10,7 +10,7 @@ namespace FMS.Repo.Accounting.Receipt
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
         #region Receipt
         //public async Task<RepoBase> GetReceiptVoucherNo(string CashBank) { throw new NotImplementedException(); }

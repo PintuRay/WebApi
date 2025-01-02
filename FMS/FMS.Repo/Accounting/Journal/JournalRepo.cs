@@ -10,7 +10,7 @@ namespace FMS.Repo.Accounting.Journal
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
         #region Journal
         //public async Task<RepoBase> GetJournalVoucherNo() { throw new NotImplementedException(); }

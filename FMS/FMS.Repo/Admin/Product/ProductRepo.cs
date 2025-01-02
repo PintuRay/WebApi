@@ -11,7 +11,7 @@ namespace FMS.Repo.Admin.Product
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion     
         #region Product Type
         //public async Task<Result<ProductType>> GetProductTypes()

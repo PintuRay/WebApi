@@ -46,7 +46,7 @@ namespace FMS.Db
         public DbSet<LedgerSubGroupDev> LedgerSubGroupDevs { get; set; }
         public DbSet<Ledger> Ledgers { get; set; }
         public DbSet<LedgerDev> LedgersDev { get; set; }
-        /*/---------------------------------Common-----------------------------*/
+        /*---------------------------------Common-----------------------------*/
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<State> States { get; set; }

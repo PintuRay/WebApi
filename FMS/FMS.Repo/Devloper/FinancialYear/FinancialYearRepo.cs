@@ -12,7 +12,7 @@ namespace FMS.Repo.Devloper.FinancialYear
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
         #region Financial Year
         #region Crud
@@ -45,10 +45,10 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
-                    else
-                    {
-                        _Result = cacheData;
-                    }
+                }
+                else
+                {
+                    _Result = cacheData;
                 }
             }
             catch

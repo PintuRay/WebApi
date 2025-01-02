@@ -11,7 +11,7 @@ namespace FMS.Repo.Transaction.OutwardSupply
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
         #region Outward Supply
         //public async Task<RepoBase> GetLastOutwardSupplyTransactionNo() { throw new NotImplementedException(); }
