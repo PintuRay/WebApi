@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMS.Svcs", "FMS.Svcs\FMS.Sv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMS.Server", "FMS.Server\FMS.Server.csproj", "{148473A2-3602-4708-B9E4-AC8639053D18}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FF246241-975D-4D4F-A5E6-E610858C29FA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{148473A2-3602-4708-B9E4-AC8639053D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{148473A2-3602-4708-B9E4-AC8639053D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{148473A2-3602-4708-B9E4-AC8639053D18}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF246241-975D-4D4F-A5E6-E610858C29FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF246241-975D-4D4F-A5E6-E610858C29FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF246241-975D-4D4F-A5E6-E610858C29FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF246241-975D-4D4F-A5E6-E610858C29FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
