@@ -535,7 +535,7 @@ namespace FMS.Repo.Devloper.Branch
         }
         private async Task<List<Db.Entity.Branch>> GetBranchesWithRelations(List<Guid> ids, bool IsActive)
         {
-            return await _ctx.Branches.
+            var Query = await _ctx.Branches.
                 Include(s => s.BranchFinancialYears)
                 .Include(s => s.Companies)
                 .Include(s => s.UserBranch)
@@ -570,6 +570,7 @@ namespace FMS.Repo.Devloper.Branch
                 .Include(s => s.ReceiptOrders)
                 .Include(s => s.ReceiptTransactions)
                 .Where(b => b.IsActive == IsActive && ids.Contains(b.BranchId)).ToListAsync();
+            return Query;
         }
         private async Task<BulkOperationResult> BulkUpdateMultiple(Db.Entity.Branch branch, bool IsActive)
         {
