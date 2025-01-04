@@ -8,7 +8,7 @@ namespace FMS.Db.Entity
     {
         public Guid Fk_LedgerId { get; set; }
         public Guid Fk_BranchId { get; set; }
-        public Guid Fk_FinancialYear { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
         public decimal OpeningBalance { get; set; }
         public string OpeningBalanceType { get; set; }
         public decimal RunningBalance { get; set; }
@@ -48,7 +48,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.LedgerBalanceId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_LedgerId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
-            builder.Property(e => e.Fk_FinancialYear).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.OpeningBalance).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
             builder.Property(e => e.OpeningBalanceType).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.RunningBalance).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
@@ -61,7 +61,7 @@ namespace FMS.Db.Entity
             builder.HasOne(bs => bs.Ledger).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_LedgerId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(bs => bs.LedgerDev).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_LedgerId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(bs => bs.Branch).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_FinancialYear).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.LedgerBalances).HasForeignKey(bs => bs.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

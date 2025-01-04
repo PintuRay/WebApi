@@ -73,7 +73,7 @@ namespace FMS.Db
         public DbSet<PurchaseReturnOrder> PurchaseReturnOrders { get; set; }
         public DbSet<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
         public DbSet<SalesOrder> SalesOrders { get; set; }
-        public DbSet<SalesTransaction> SalesTransaction { get; set; }
+        public DbSet<SalesTransaction> SalesTransactions { get; set; }
         public DbSet<SalesReturnOrder> SalesReturnOrders { get; set; }
         public DbSet<SalesReturnTransaction> SalesReturnTransactions { get; set; }
         /*----------------------------------Accounting-------------------------------------*/

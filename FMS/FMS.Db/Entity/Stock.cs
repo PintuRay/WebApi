@@ -8,7 +8,7 @@ namespace FMS.Db.Entity
     {
         public Guid Fk_BranchId { get; set; }
         public Guid Fk_ProductId { get; set; }
-        public Guid Fk_FinancialYear { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
         public int MinQty { get; set; }
         public int MaxQty { get; set; }
         public decimal OpeningStock { get; set; }
@@ -47,7 +47,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.StockId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_ProductId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
-            builder.Property(e => e.Fk_FinancialYear).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.MinQty).HasColumnType("decimal(18, 5)").HasDefaultValue(0.00);
             builder.Property(e => e.MaxQty).HasColumnType("decimal(18, 5)").HasDefaultValue(0.00);
             builder.Property(e => e.OpeningStock).HasColumnType("decimal(18, 2)").HasDefaultValue(0.00);
@@ -61,7 +61,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.HasOne(bs => bs.Branch).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(bs => bs.Product).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_FinancialYear).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.Stocks).HasForeignKey(bs => bs.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

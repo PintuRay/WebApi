@@ -8,8 +8,9 @@
    docker-compose down -v
    docker-compose up --build
    ----------------------------------------------------------------------------
+   in docker-compose.yml
+   ---------------------------------------------------------------------------
    version: '3.8'
-
 services:
   fms.server:
     image: ${DOCKER_REGISTRY-}fmsserver
@@ -78,10 +79,45 @@ networks:
   fms-network:
     name: fms-network
     driver: bridge
+----------------------------------------------------------------------------
+   in docker-compose.yml
+---------------------------------------------------------------------------
+version: '3.8'
 
+services:
+  fms.server:
+    image: ${DOCKER_REGISTRY-}fmsserver
+    build:
+      context: .
+      dockerfile: FMS.Server/Dockerfile
+    ports:
+      - "7118:80" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DBCS=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=Devloper@1234
+      - ConnectionStrings__Redis=redis:6379,abortConnect=false
+    depends_on:
+      - postgres
+      - redis
 
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Devloper@1234
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+----------------------------
     in appsettings.json
+------------------------
       "ConnectionStrings": {
     "DBCS": "Host=postgres.db;Port=5432;Database=postgres;Username=postgres;Password=Devloper@1234",
     "Redis": "fms.cache:6379,abortConnect=false"

@@ -221,21 +221,19 @@ namespace FMS.Repo.Devloper.Branch
                 var Query = await GetBranchWithRelatedEntity(Id, true);
                 if (Query != null)
                 {
-                    var response = await BulkUpdateMultiple(Query, false);
-                    if (response.IsSuccess) {
-                        Query.ModifyDate = DateTime.UtcNow;
-                        Query.ModifyBy = user.Name;
-                        Query.IsActive = false;
-                        int Count = await _ctx.SaveChangesAsync() + response.AffectedRows;
-                        if (Count > 0)
-                        {
-                            await transaction.CommitAsync();
-                            _Result.Id = Id.ToString();
-                            _Result.Count = Count.ToString();
-                            _Result.IsSucess = true;
-                            _cache.RemoveByPrefix("Branches");
-                            _cache.RemoveByPrefix("RemovedBranches");
-                        }
+                    var IsActiveStatus = UpdateStatus(Query, false);
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    Query.IsActive = false;
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
+                    {
+                        await transaction.CommitAsync();
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        _cache.RemoveByPrefix("Branches");
+                        _cache.RemoveByPrefix("RemovedBranches");
                     }
                 }
             }
@@ -249,7 +247,6 @@ namespace FMS.Repo.Devloper.Branch
         public async Task<RepoBase> BulkRemoveBranch(List<Guid> Ids, AppUser user)
         {
             RepoBase _Result = new();
-            List<BulkOperationResult> bulkOperations = [];
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
@@ -260,21 +257,21 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     foreach (var branch in existingBranches)
                     {
-                        var response = await BulkUpdateMultiple(branch, false); 
-                        bulkOperations.Add(response);
+                       var IsActiveStatus = UpdateStatus(branch, false);
+                        await _ctx.BulkUpdateMultiple(IsActiveStatus);
                     }
-                    existingBranches.ForEach(branch => {
-                        branch.ModifyDate = DateTime.UtcNow; 
-                        branch.ModifyBy = user.Name; 
-                        branch.IsActive = false; 
+                    existingBranches.ForEach(branch =>
+                    {
+                        branch.ModifyDate = DateTime.UtcNow;
+                        branch.ModifyBy = user.Name;
+                        branch.IsActive = false;
                     });
-                    bulkOperations.Add(await _ctx.BulkUpdate(existingBranches));
-                    int Count = bulkOperations.Select(s => s.AffectedRows).Sum();
-                    if (Count > 0)
+                   var response = await _ctx.BulkUpdate(existingBranches);
+                    if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = response.AffectedRows.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("Branches");
                         _cache.RemoveByPrefix("RemovedBranches");
@@ -365,24 +362,22 @@ namespace FMS.Repo.Devloper.Branch
                 var Query = await GetBranchWithRelatedEntity(Id, false);
                 if (Query != null)
                 {
-                    var response = await BulkUpdateMultiple(Query, true);
-                    if (response.IsSuccess)
+                    var IsActiveStatus = UpdateStatus(Query, true);
+                    Query.ModifyDate = DateTime.UtcNow;
+                    Query.ModifyBy = user.Name;
+                    Query.IsActive = true;
+                    int Count = await _ctx.SaveChangesAsync();
+                    if (Count > 0)
                     {
-                        Query.ModifyDate = DateTime.UtcNow;
-                        Query.ModifyBy = user.Name;
-                        Query.IsActive = true;
-                        int Count = await _ctx.SaveChangesAsync() + response.AffectedRows;
-                        if (Count > 0)
-                        {
-                            await transaction.CommitAsync();
-                            _Result.Id = Id.ToString();
-                            _Result.Count = Count.ToString();
-                            _Result.IsSucess = true;
-                            _cache.RemoveByPrefix("Branches");
-                            _cache.RemoveByPrefix("RemovedBranches");
-                        }
+                        await transaction.CommitAsync();
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count.ToString();
+                        _Result.IsSucess = true;
+                        _cache.RemoveByPrefix("Branches");
+                        _cache.RemoveByPrefix("RemovedBranches");
                     }
                 }
+
             }
             catch
             {
@@ -394,7 +389,6 @@ namespace FMS.Repo.Devloper.Branch
         public async Task<RepoBase> BulkRecoverBranch(List<Guid> Ids, AppUser user)
         {
             RepoBase _Result = new();
-            List<BulkOperationResult> bulkOperations = [];
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
@@ -405,21 +399,21 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     foreach (var branch in existingBranches)
                     {
-                        var response = await BulkUpdateMultiple(branch, true);
-                        bulkOperations.Add(response);
+                        var IsActiveStatus = UpdateStatus(branch, true);
+                        await _ctx.BulkUpdateMultiple(IsActiveStatus);
                     }
-                    existingBranches.ForEach(branch => {
+                    existingBranches.ForEach(branch =>
+                    {
                         branch.ModifyDate = DateTime.UtcNow;
                         branch.ModifyBy = user.Name;
                         branch.IsActive = true;
                     });
-                    bulkOperations.Add(await _ctx.BulkUpdate(existingBranches));
-                    int Count = bulkOperations.Select(s => s.AffectedRows).Sum();
-                    if (Count > 0)
+                    var response = await _ctx.BulkUpdate(existingBranches);
+                    if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = response.AffectedRows.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("Branches");
                         _cache.RemoveByPrefix("RemovedBranches");
@@ -475,8 +469,9 @@ namespace FMS.Repo.Devloper.Branch
                 var notFoundBranchIds = Ids.Except(existingBranches.Select(s => s.BranchId)).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
-                   var response = await _ctx.BulkDelete(existingBranches);
-                    if (response.IsSuccess) {
+                    var response = await _ctx.BulkDelete(existingBranches);
+                    if (response.IsSuccess)
+                    {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.Count = response.AffectedRows.ToString();
@@ -576,7 +571,7 @@ namespace FMS.Repo.Devloper.Branch
                 .Where(b => b.IsActive == IsActive && ids.Contains(b.BranchId)).ToListAsync();
             return Query;
         }
-        private async Task<BulkOperationResult> BulkUpdateMultiple(Db.Entity.Branch branch, bool IsActive)
+        private Dictionary<string, IList> UpdateStatus(Db.Entity.Branch branch, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>
             {
@@ -614,7 +609,7 @@ namespace FMS.Repo.Devloper.Branch
                 ["ReceiptOrders"] = branch.ReceiptOrders?.ToList() ?? [],
                 ["ReceiptTransactions"] = branch.ReceiptTransactions?.ToList() ?? []
             };
-            foreach (var group in allRelatedData) 
+            foreach (var group in allRelatedData)
             {
                 if (group.Value.Count != 0)
                 {
@@ -628,7 +623,7 @@ namespace FMS.Repo.Devloper.Branch
                     }
                 }
             }
-            return await _ctx.BulkUpdateMultiple(allRelatedData);
+            return allRelatedData;
         }
         #endregion
     }
