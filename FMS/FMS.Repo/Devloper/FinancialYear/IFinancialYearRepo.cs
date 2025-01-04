@@ -10,7 +10,7 @@ namespace FMS.Repo.Devloper.FinancialYear
         Task<Result<Db.Entity.FinancialYear>> GetFinancialYears(PaginationParams pagination);
         Task<RepoBase> CreateFinancialYear(FinancialYearModel data, AppUser user);
         Task<RepoBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user);
-        Task<RepoBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user);
+        Task<RepoBase> UpdateFinancialYear(FinancialYearUpdateModel data, AppUser user);
         Task<RepoBase> BulkUpdateFinancialYear(List<FinancialYearUpdateModel> dataList, AppUser user);
         Task<RepoBase> RemoveFinancialYear(Guid Id, AppUser user);
         Task<RepoBase> BulkRemoveFinancialYear(List<Guid> Ids, AppUser user);

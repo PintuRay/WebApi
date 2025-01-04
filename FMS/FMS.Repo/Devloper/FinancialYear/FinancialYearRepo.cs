@@ -128,7 +128,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             }
             return _Result;
         }
-        public async Task<RepoBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
+        public async Task<RepoBase> UpdateFinancialYear(FinancialYearUpdateModel data, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -143,7 +143,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Id = Id.ToString();
+                        _Result.Id = data.FinancialYearId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("FinancialYears");

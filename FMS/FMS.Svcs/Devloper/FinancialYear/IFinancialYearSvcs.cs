@@ -11,7 +11,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
         Task<SvcsBase> GetFinancialYears(PaginationParams pagination);
         Task<SvcsBase> CreateFinancialYear(FinancialYearModel data, AppUser user);
         Task<SvcsBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user);
-        Task<SvcsBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user);
+        Task<SvcsBase> UpdateFinancialYear(FinancialYearUpdateModel data, AppUser user);
         Task<SvcsBase> BulkUpdateFinancialYear(List<FinancialYearUpdateModel> dataList, AppUser user);
         Task<SvcsBase> RemoveFinancialYear(Guid Id, AppUser user);
         Task<SvcsBase> BulkRemoveFinancialYear(List<Guid> Ids, AppUser user);

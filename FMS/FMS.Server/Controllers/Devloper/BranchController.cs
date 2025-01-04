@@ -57,7 +57,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkCreateBranch(listdata, user);
-                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
+                return result.ResponseCode == 201 ? Created(nameof(BulkCreate), result) : BadRequest(result);
             }
             else
             {
@@ -72,9 +72,17 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var validator = new BranchValidator();
                 var validationResult = validator.Validate(model);
-                var user = await _userManager.GetUserAsync(User);
-                var result = await _branchSvcs.UpdateBranch(model, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                if (validationResult.IsValid)
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    var result = await _branchSvcs.UpdateBranch(model, user);
+                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                }
+                else
+                {
+                    var errors = validationResult.Errors.ToArray();
+                    return BadRequest(errors);
+                }
             }
             else
             {
@@ -116,7 +124,7 @@ namespace FMS.Server.Controllers.Devloper
         [HttpPut, Authorize(policy: "Delete")]
         public async Task<IActionResult> BulkRemove([FromBody] List<Guid> Ids)
         {
-            if (Ids.Count !=0)
+            if (Ids.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkRemoveBranch(Ids, user);
@@ -140,17 +148,9 @@ namespace FMS.Server.Controllers.Devloper
         {
             if (id != Guid.Empty)
             {
-                if (ModelState.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _branchSvcs.RecoverBranch(id, user);
-                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-                }
-                else
-                {
-                    var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                    return BadRequest(errors);
-                }
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchSvcs.RecoverBranch(id, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {

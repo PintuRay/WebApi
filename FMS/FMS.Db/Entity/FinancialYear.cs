@@ -1,12 +1,16 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
     public class FinancialYearModel
     {
+        [Required]
         public string Financial_Year { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
+        [Required]
         public DateTime EndDate { get; set; }
     }
     public class FinancialYearUpdateModel : FinancialYearModel
@@ -50,7 +54,7 @@ namespace FMS.Db.Entity
         public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
-    public class FinancialYearValidator : AbstractValidator<CompanyModel>
+    public class FinancialYearValidator : AbstractValidator<FinancialYearModel>
     {
         public FinancialYearValidator()
         {

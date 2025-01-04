@@ -80,12 +80,12 @@ namespace FMS.Svcs.Devloper.FinancialYear
         {
             throw new NotImplementedException();
         }
-        public async Task<SvcsBase> UpdateFinancialYear(Guid Id, FinancialYearModel data, AppUser user)
+        public async Task<SvcsBase> UpdateFinancialYear(FinancialYearUpdateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.UpdateFinancialYear(Id, data, user);
+                var repoResult = await _financialYearRepo.UpdateFinancialYear(data, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -96,7 +96,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     },
                     false => new()
                     {
-                        Message = $"Financial Year '{Id}' Not Found",
+                        Message = $"Financial Year '{data.FinancialYearId}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };

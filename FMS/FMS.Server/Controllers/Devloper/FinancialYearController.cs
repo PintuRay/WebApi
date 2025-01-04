@@ -1,4 +1,5 @@
-﻿using FMS.Db.Entity;
+﻿using FluentValidation;
+using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Svcs.Devloper.FinancialYear;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
             var result = await _financialYearSvcs.GetFinancialYears(pagination);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
         }
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> Create([FromBody] FinancialYearModel model)
@@ -36,29 +37,66 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpPut("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> Update([FromRoute] Guid Id, [FromBody] FinancialYearModel model)
+        [HttpPost, Authorize(policy: "Create")]
+        public async Task<IActionResult> BulkCreate([FromBody] List<FinancialYearModel> listdata)
         {
-            if (Id != Guid.Empty)
+            var validator = new FinancialYearValidator();
+            var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
+            if (validationResults.All(r => r.IsValid))
             {
-                if (ModelState.IsValid)
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _financialYearSvcs.BulkCreateFinancialYear(listdata, user);
+                return result.ResponseCode == 201 ? Created(nameof(BulkCreate), result) : BadRequest(result);
+            }
+            else
+            {
+                var errors = validationResults.SelectMany(r => r.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(errors);
+            }
+        }
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromBody] FinancialYearUpdateModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var validator = new FinancialYearValidator();
+                var validationResult = validator.Validate(model);
+                if (validationResult.IsValid)
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    var result = await _financialYearSvcs.UpdateFinancialYear(Id, model, user);
+                    var result = await _financialYearSvcs.UpdateFinancialYear(model, user);
                     return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
                 }
                 else
                 {
-                    var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                    var errors = validationResult.Errors.ToArray();
                     return BadRequest(errors);
                 }
             }
             else
             {
-                return BadRequest("Plz Provide Valid Id");
+                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return BadRequest(errors);
             }
         }
-        [HttpDelete("{id}"), Authorize(policy: "Delete")]
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> BulkUpdate([FromBody] List<FinancialYearUpdateModel> listdata)
+        {
+            var validator = new FinancialYearValidator();
+            var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
+            if (validationResults.All(r => r.IsValid))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _financialYearSvcs.BulkUpdateFinancialYear(listdata, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                var errors = validationResults.SelectMany(r => r.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(errors);
+            }
+        }
+        [HttpPut("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -72,34 +110,53 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Invalid Id");
             }
         }
+        [HttpPut, Authorize(policy: "Delete")]
+        public async Task<IActionResult> BulkRemove([FromBody] List<Guid> Ids)
+        {
+            if (Ids.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _financialYearSvcs.BulkRemoveFinancialYear(Ids, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Invalid Ids");
+            }
+        }
         #endregion
         #region Recover
         [HttpGet]
-        public async Task<IActionResult> GetRemoved(PaginationParams pagination)
+        public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
             var result = await _financialYearSvcs.GetRemovedFinancialYears(pagination);
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
-        [HttpPatch("{id}"), Authorize(policy: "Update")]
+        [HttpPut("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> Recover([FromRoute] Guid Id)
         {
             if (Id != Guid.Empty)
             {
-                if (ModelState.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _financialYearSvcs.RecoverFinancialYear(Id, user);
-                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-                }
-                else
-                {
-                    var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                    return BadRequest(errors);
-                }
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _financialYearSvcs.RecoverFinancialYear(Id, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
                 return BadRequest("Plz Provide Valid Id");
+            }
+        }
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> BulkRecover([FromBody]  List<Guid> Ids)
+        {
+            if (Ids.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _financialYearSvcs.BulkRecoverFinancialYear(Ids, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else {
+                return BadRequest("Invalid Ids");
             }
         }
         [HttpDelete("{id}"), Authorize(policy: "Delete")]
@@ -116,19 +173,19 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpPost, Authorize(policy: "Update")]
-        public async Task<IActionResult> BulkRecover(List<Guid> Ids)
+        [HttpDelete, Authorize(policy: "Delete")]
+        public async Task<IActionResult> BulkDelete([FromBody] List<Guid> Ids)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _financialYearSvcs.BulkRecoverFinancialYear(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpPost, Authorize(policy: "Delete")]
-        public async Task<IActionResult> BulkDelete(List<Guid> Ids)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _financialYearSvcs.BulkDeleteFinancialYear(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            if (Ids.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _financialYearSvcs.BulkDeleteFinancialYear(Ids, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Invalid Ids");
+            }
         }
         #endregion
     }
