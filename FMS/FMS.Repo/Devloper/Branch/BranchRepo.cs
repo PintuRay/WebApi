@@ -27,9 +27,9 @@ namespace FMS.Repo.Devloper.Branch
                 _Result.IsSucess = false;
                 string cacheKey = (pagination.PageNumber > 0 && pagination.PageSize > 0) ? $"Branches_{pagination.PageNumber}_{pagination.PageSize}_{pagination.SearchTerm}" : "Branches";
                 var cacheData = _cache.Get<Result<Db.Entity.Branch>>(cacheKey);
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
                 if (cacheData == null)
                 {
-                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
                     if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                     {
                         Query = await _ctx.Branches.Where(s => s.IsActive == true)
@@ -49,7 +49,7 @@ namespace FMS.Repo.Devloper.Branch
                     else
                     {
                         string searchTerm = pagination.SearchTerm.Trim().ToLower();
-                        var branches = await _ctx.Branches.Where(s => s.IsActive == true)
+                        var branches = await _ctx.Branches.Where(s => s.IsActive == true /* && s.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)*/)
                             .Select(s => new Db.Entity.Branch()
                             {
                                 BranchId = s.BranchId,
@@ -57,7 +57,10 @@ namespace FMS.Repo.Devloper.Branch
                                 BranchCode = s.BranchCode,
                                 ContactNumber = s.ContactNumber,
                                 BranchAddress = s.BranchAddress
-                            }).ToListAsync();
+                            }).OrderBy(s => s.BranchName)
+                            .Skip(pagination.PageNumber * effectivePageSize)
+                            .Take(effectivePageSize)
+                            .ToListAsync();
                         Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
                     }
                     if (Query.Count > 0)
@@ -251,7 +254,7 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranches = await GetBranchesWithRelations(Ids, true);
+                var existingBranches = await GetBranchesWithRelatedEntity(Ids, true);
                 var notFoundBranchIds = Ids.Except(existingBranches.Select(s => s.BranchId)).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
@@ -396,7 +399,7 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranches = await GetBranchesWithRelations(Ids, false);
+                var existingBranches = await GetBranchesWithRelatedEntity(Ids, false);
                 var notFoundBranchIds = Ids.Except(existingBranches.Select(s => s.BranchId)).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
@@ -468,7 +471,7 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranches = await GetBranchesWithRelations(Ids, false);
+                var existingBranches = await GetBranchesWithRelatedEntity(Ids, false);
                 var notFoundBranchIds = Ids.Except(existingBranches.Select(s => s.BranchId)).ToList();
                 if (notFoundBranchIds.Count == 0)
                 {
@@ -497,7 +500,7 @@ namespace FMS.Repo.Devloper.Branch
         #endregion
         private async Task<Db.Entity.Branch> GetBranchWithRelatedEntity(Guid id, bool IsActive)
         {
-            return await _ctx.Branches
+            var Query = await _ctx.Branches
                    .Include(s => s.BranchFinancialYears)
                    .Include(s => s.Companies)
                    .Include(s => s.UserBranch)
@@ -532,8 +535,9 @@ namespace FMS.Repo.Devloper.Branch
                    .Include(s => s.ReceiptOrders)
                    .Include(s => s.ReceiptTransactions)
                   .SingleOrDefaultAsync(x => x.BranchId == id && x.IsActive == IsActive);
+            return Query;
         }
-        private async Task<List<Db.Entity.Branch>> GetBranchesWithRelations(List<Guid> ids, bool IsActive)
+        private async Task<List<Db.Entity.Branch>> GetBranchesWithRelatedEntity(List<Guid> ids, bool IsActive)
         {
             var Query = await _ctx.Branches.
                 Include(s => s.BranchFinancialYears)

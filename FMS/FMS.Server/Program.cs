@@ -281,7 +281,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MigrateDatabase<Context>();
+  //  app.MigrateDatabase<Context>();
     app.UseDeveloperExceptionPage();
 }
 //app.UseExceptionHandler();
