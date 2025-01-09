@@ -46,7 +46,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             return BadRequest();
         }
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> SignUp([FromBody] RegisterModel model)
+        public async Task<IActionResult> SignUp([FromForm] RegisterModel model)
         {
             if (ModelState.IsValid)
             {
