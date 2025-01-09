@@ -5,7 +5,7 @@ namespace FMS.Repo.Admin.Token
     public interface ITokenRepo
     {
         #region Generate SignUp Token
-        //Task<RepoBase> CreateToken(RegisterTokenModel model, AppUser user);
+        Task<RepoBase> CreateToken(RegisterTokenModel model, AppUser user);
         #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace FMS.Repo.Account.Authentication
 {
     public class AuthenticationRepo(
         Context ctx, IMapper mapper
-    ) : IAuthentication
+    ) : IAuthenticationRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
@@ -42,30 +42,30 @@ namespace FMS.Repo.Account.Authentication
         }
         #endregion
         #region Address
-        //public async Task<RepoBase> CreateUserAdress(AddressModel data, AppUser user)
-        //{
-        //    RepoBase _Result = new();
-        //    try
-        //    {
-        //        _Result.IsSucess = false;
-        //        var newAddress = _mapper.Map<Address>(data);
-        //        newAddress.UserId = Guid.Parse(user.Id);
-        //        newAddress.CreatedDate = DateTime.UtcNow;
-        //        newAddress.CreatedBy = user.Name;
-        //        await _ctx.Addresses.AddAsync(newAddress);
-        //        int Count = await _ctx.SaveChangesAsync();
-        //        if (Count > 0)
-        //        {
-        //            _Result.Id = newAddress.AddressId.ToString();
-        //            _Result.IsSucess = true;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //    return _Result;
-        //}
+        public async Task<RepoBase> CreateUserAdress(AddressModel data, AppUser user)
+        {
+            RepoBase _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                var newAddress = _mapper.Map<Address>(data);
+                newAddress.Fk_UserId = user.Id;
+                newAddress.CreatedDate = DateTime.UtcNow;
+                newAddress.CreatedBy = user.Name;
+                await _ctx.Addresses.AddAsync(newAddress);
+                int Count = await _ctx.SaveChangesAsync();
+                if (Count > 0)
+                {
+                    _Result.Id = newAddress.AddressId.ToString();
+                    _Result.IsSucess = true;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
+        }
         #endregion
     }
 }

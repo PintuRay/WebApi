@@ -116,7 +116,7 @@ builder.Services.AddTransient<IValidator<RegisterModel>, RegisterValidator>();
 //*************************************************Dependancy Injection***************************************// 
 builder.Services.AddScoped<ICommonRepo, CommonRepo>();
 builder.Services.AddScoped<ICommonSvcs, CommonSvcs>();
-builder.Services.AddScoped<IAuthentication, AuthenticationRepo>();
+builder.Services.AddScoped<IAuthenticationRepo, AuthenticationRepo>();
 builder.Services.AddScoped<IAuthenticationSvcs, AuthenticationSvcs>();
 builder.Services.AddScoped<IAutherizationRepo, AutherizationRepo>();
 builder.Services.AddScoped<IAutherizationSvcs, AutherizationSvcs>();

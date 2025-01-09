@@ -428,7 +428,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        transaction.Commit();
+                        await transaction.CommitAsync();
                         _cache.RemoveByPrefix("FinancialYears");
                         _cache.RemoveByPrefix("RecoverFinancialYears");
                     }
@@ -440,7 +440,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             }
             catch
             {
-                transaction.Rollback();
+               await transaction.RollbackAsync();
                 throw;
             }
             return _Result;

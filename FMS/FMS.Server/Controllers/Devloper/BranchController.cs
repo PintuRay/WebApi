@@ -76,7 +76,7 @@ namespace FMS.Server.Controllers.Devloper
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var result = await _branchSvcs.UpdateBranch(model, user);
-                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                    return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
                 }
                 else
                 {
@@ -99,7 +99,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkUpdateBranch(listdata, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
@@ -114,7 +114,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.RemoveBranch(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
@@ -128,7 +128,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkRemoveBranch(Ids, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
@@ -141,7 +141,7 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetRemovedBranches(pagination);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
         }
         [HttpPut("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> Recover([FromRoute] Guid id)
@@ -150,7 +150,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.RecoverBranch(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
@@ -164,7 +164,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkRecoverBranch(Ids, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
@@ -178,7 +178,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.DeleteBranch(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
@@ -192,7 +192,7 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkDeleteBranch(Ids, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {

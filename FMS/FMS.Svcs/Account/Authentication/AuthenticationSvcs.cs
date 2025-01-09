@@ -17,7 +17,7 @@ using System.Text;
 namespace FMS.Svcs.Account.Authentication
 {
     public class AuthenticationSvcs(
-        IAuthentication authenticationRepo,
+        IAuthenticationRepo authenticationRepo,
         SignInManager<AppUser> signInManager,
         UserManager<AppUser> userManager,
         RoleManager<AppRole> roleManager,
@@ -28,7 +28,7 @@ namespace FMS.Svcs.Account.Authentication
         IConfiguration configuration) : IAuthenticationSvcs
     {
         #region Dependancy
-        private readonly IAuthentication _authenticationRepo = authenticationRepo;
+        private readonly IAuthenticationRepo _authenticationRepo = authenticationRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvcs;
         private readonly ISmsSvcs _smsSvcs = smsSvcs;
         private readonly IConfiguration _configuration = configuration;
@@ -79,7 +79,6 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                    Data = user,
                     Message = $"Mail '{email}' Already In Use",
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
@@ -105,9 +104,9 @@ namespace FMS.Svcs.Account.Authentication
                 var identity = await _userManager.CreateAsync(user, data.Password);
                 if (identity.Succeeded)
                 {
-                   //var repoResult = await _authenticationRepo.CreateUserAdress(data.Address , user);
-                   // if (repoResult.IsSucess)
-                   // {
+                    var repoResult = await _authenticationRepo.CreateUserAdress(data.Address, user);
+                    if (repoResult.IsSucess)
+                    {
                         var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         if (!string.IsNullOrEmpty(regToken))
                         {
@@ -170,15 +169,15 @@ namespace FMS.Svcs.Account.Authentication
                                 ResponseCode = (int)ResponseCode.Status.BadRequest,
                             };
                         }
-                    //}
-                    //else
-                    //{
-                    //    Obj = new()
-                    //    {
-                    //        Message = "Registration Failed",
-                    //        ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    //    };
-                    //}
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Message = "Registration Failed",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        };
+                    }
                 }
                 else
                 {
