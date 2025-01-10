@@ -40,6 +40,24 @@ namespace FMS.Repo.Account.Authentication
             }
             return _Result;
         }
+        public async Task<bool> IsPhoneNumberInUse(string PhoneNumber)
+        {
+            Result<bool> _Result = new();
+            try
+            {
+                var Query = await _ctx.AppUsers.Where(s => s.PhoneNumber == PhoneNumber).Select(s => s.PhoneNumber).SingleOrDefaultAsync();
+                if (Query != null)
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return false;
+        }
+
         #endregion
         #region Address
         public async Task<RepoBase> CreateUserAdress(AddressModel data, AppUser user)

@@ -28,7 +28,6 @@ namespace FMS.Model.Account.Authentication
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
-        public bool TermCondition { get; set; }
         [Required]
         public string RouteUls { get; set; }
         public string PhotoPath { get; set; }
@@ -59,8 +58,8 @@ namespace FMS.Model.Account.Authentication
             // Validate BirthDate
             RuleFor(user => user.BirthDate)
                 .NotNull().WithMessage("Birth date is required.")
-                .NotEmpty().WithMessage("Birth date cannot be empty.")
-                .LessThanOrEqualTo(DateTime.Now.AddYears(-100)).WithMessage("Birth date cannot be earlier than 100 years ago.");
+                .NotEmpty().WithMessage("Birth date cannot be empty.");
+                //.LessThanOrEqualTo(DateTime.Now.AddYears(-100)).WithMessage("Birth date cannot be earlier than 100 years ago.");
 
             // Validate Marital Status
             RuleFor(user => user.MaratialStatus)
@@ -72,11 +71,19 @@ namespace FMS.Model.Account.Authentication
                 .NotNull().WithMessage("Gender is required.")
                 .NotEmpty().WithMessage("Gender cannot be empty.");
 
-            // Validate Profile Photo
+           // Validate Profile Photo
             RuleFor(user => user.ProfilePhoto)
-                .NotNull().WithMessage("Profile photo is required.")
-                .Must(file => file.ContentType.Contains("image/")).WithMessage("Only image files are allowed.");
-            
+                 .NotNull().WithMessage("Profile photo is required.")
+                 .Must(file => file != null &&
+                     (file.ContentType.Equals("image/jpeg") ||
+                      file.ContentType.Equals("image/jpg") ||
+                      file.ContentType.Equals("image/png") ||
+                      file.ContentType.Equals("image/gif") ||
+                      file.ContentType.Equals("image/webp")))
+                 .WithMessage("Only JPEG, JPG, PNG, GIF, or WebP images are allowed.")
+                 .Must(file => file != null && file.Length <= 5 * 1024 * 1024) // 5MB limit
+                 .WithMessage("Image size must be less than 5MB.");
+
             // Validate Email
             RuleFor(user => user.Email)
                 .NotNull().WithMessage("Email is required.")

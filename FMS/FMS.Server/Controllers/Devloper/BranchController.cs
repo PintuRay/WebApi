@@ -21,7 +21,12 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetAllBranch(pagination);
-            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+            return result.ResponseCode switch
+            {
+                204 => StatusCode(204, result),
+                200=> StatusCode(200, result),
+                _ => BadRequest(result)
+            };
         }
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> Create([FromBody] BranchModel data)

@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <Folder Include="EmailTemplate\" />
+    <Folder Include="wwwroot\images\ProfilePhoto\" />
   </ItemGroup>
 
 </Project>

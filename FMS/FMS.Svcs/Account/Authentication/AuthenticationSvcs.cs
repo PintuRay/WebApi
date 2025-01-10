@@ -51,7 +51,7 @@ namespace FMS.Svcs.Account.Authentication
                     {
                         Data = repoResult,
                         Message = $"Token '{Token}' Found",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
+                        ResponseCode = (int)ResponseCode.Status.Found,
                     },
                     false => new()
                     {
@@ -80,7 +80,7 @@ namespace FMS.Svcs.Account.Authentication
                 Obj = new()
                 {
                     Message = $"Mail '{email}' Already In Use",
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    ResponseCode = (int)ResponseCode.Status.Found,
                 };
             }
             else
@@ -88,11 +88,34 @@ namespace FMS.Svcs.Account.Authentication
                 Obj = new()
                 {
                     Message = $"No Such Mail '{email}' Exist",
-                    ResponseCode = (int)ResponseCode.Status.Ok,
+                    ResponseCode = (int)ResponseCode.Status.NotFound,
                 };
             }
             return Obj;
         }
+        public async Task<SvcsBase> IsPhoneNumberInUse(string phoneNumber)
+        {
+            SvcsBase Obj;
+            var isPhoneNuberInUse = await _authenticationRepo.IsPhoneNumberInUse(phoneNumber);
+            if (isPhoneNuberInUse)
+            {
+                Obj = new()
+                {
+                    Message = $"Phone Number '{phoneNumber}' Already In Use",
+                    ResponseCode = (int)ResponseCode.Status.Found,
+                };
+            }
+            else
+            {
+                Obj = new()
+                {
+                    Message = $"No Such Phone Number '{phoneNumber}' Exist",
+                    ResponseCode = (int)ResponseCode.Status.NotFound,
+                };
+            }
+            return Obj;
+        }
+        
         public async Task<SvcsBase> SignUp(RegisterModel data)
         {
             bool isMailSend = false;

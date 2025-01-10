@@ -1,10 +1,13 @@
-﻿using FMS.Db.Entity;
+﻿using FMS.Db.CustomVaidator;
+using FMS.Db.Entity;
 using FMS.Model.Account.Authentication;
 using FMS.Svcs.Account.Authentication;
 using FMS.Svcs.SMS;
+using FMS.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.Text.RegularExpressions;
 
 namespace FMS.Server.Controllers.Account.Authentication
@@ -12,11 +15,13 @@ namespace FMS.Server.Controllers.Account.Authentication
     [ApiController, Route("[controller]/[action]")]
     public class AuthController(
         IAuthenticationSvcs authenticationSvcs,
+        IWebHostEnvironment hostingEnvironment,
         UserManager<AppUser> userManager,
         ISmsSvcs smsSvcs) : ControllerBase
     {
         #region Dependancy
         private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly IWebHostEnvironment _hostingEnvironment = hostingEnvironment;
         private readonly IAuthenticationSvcs _authenticationSvcs = authenticationSvcs;
         private readonly ISmsSvcs _smsSvcs = smsSvcs;
         #endregion
@@ -24,34 +29,81 @@ namespace FMS.Server.Controllers.Account.Authentication
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> ValidateToken([FromQuery] string Token)
         {
-            string pattern = @"^\d{3}-\d{3}-\d{4}$";
-            if (Regex.IsMatch(Token, pattern))
+            if (!string.IsNullOrEmpty(Token))
             {
-                var result = await _authenticationSvcs.ValidateToken(Token);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                string pattern = @"^\d{3}-\d{3}-\d{4}$";
+                if (Regex.IsMatch(Token, pattern))
+                {
+                    var result = await _authenticationSvcs.ValidateToken(Token);
+                    return result.ResponseCode switch
+                    {
+                        302 => StatusCode(302, result),
+                        404 => StatusCode(404, result),
+                        _ => BadRequest(result)
+                    };
+                }
             }
-            else
-            {
-                return BadRequest("Invalid Token Format : Correct format : xxx-xxx-xxxx");
-            }
+            return BadRequest("Invalid Token");
         }
         [HttpGet, AllowAnonymous]
         public async Task<IActionResult> IsEmailInUse([FromQuery] string email)
         {
             if (!string.IsNullOrEmpty(email))
             {
-                var result = await _authenticationSvcs.IsEmailInUse(email);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                string emailRegex = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+                if (Regex.IsMatch(email, emailRegex))
+                {
+                    var result = await _authenticationSvcs.IsEmailInUse(email);
+                    return result.ResponseCode switch
+                    {
+                        302 => StatusCode(302, result),
+                        404 => StatusCode(404, result),
+                        _ => BadRequest(result)
+                    };
+                }
             }
-            return BadRequest();
+            return BadRequest("Invalid email");
         }
-        [HttpPost, AllowAnonymous]
+        public async Task<IActionResult> IsPhoneNumberInUse([FromQuery] string phoneNumber)
+        {
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                string phoneNoRegex = @"^\d{10}$";
+                if (Regex.IsMatch(phoneNumber, phoneNoRegex))
+                {
+                    var result = await _authenticationSvcs.IsPhoneNumberInUse(phoneNumber);
+                    return result.ResponseCode switch
+                    {
+                        302 => StatusCode(302, result),
+                        404 => StatusCode(404, result),
+                        _ => BadRequest(result)
+                    };
+                }
+            }
+            return BadRequest("Invalid data");
+        }
+        [HttpPost, Consumes("multipart/form-data"), AllowAnonymous]
         public async Task<IActionResult> SignUp([FromForm] RegisterModel model)
         {
             if (ModelState.IsValid)
             {
+                if (model.ProfilePhoto != null)
+                {
+                    string StorageLocation = "images/ProfilePhoto/";
+                    string path = PictureStorage.UploadPhoto(model.ProfilePhoto, StorageLocation);
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, path);
+                    await model.ProfilePhoto.CopyToAsync(new FileStream(uploadsFolder, FileMode.Create));
+                    if (path != null)
+                    {
+                        model.PhotoPath = path;
+                    }
+                }
                 var result = await _authenticationSvcs.SignUp(model);
-                return result.ResponseCode == 201 ? Created(nameof(SignUp), result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    201 => StatusCode(201, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {

@@ -5,6 +5,7 @@ namespace FMS.Repo.Account.Authentication
     {
         #region  SignUp Token
         Task<Result<RegisterToken>> ValidateToken(string data);
+        Task<bool> IsPhoneNumberInUse(string data);
         #endregion
         #region Address
         Task<RepoBase> CreateUserAdress(AddressModel data , AppUser user);
