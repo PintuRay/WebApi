@@ -37,7 +37,7 @@ namespace FMS.Server.Controllers.Account.Authentication
                     var result = await _authenticationSvcs.ValidateToken(Token);
                     return result.ResponseCode switch
                     {
-                        302 => StatusCode(302, result),
+                        200 => StatusCode(200, result),
                         404 => StatusCode(404, result),
                         _ => BadRequest(result)
                     };
@@ -56,7 +56,7 @@ namespace FMS.Server.Controllers.Account.Authentication
                     var result = await _authenticationSvcs.IsEmailInUse(email);
                     return result.ResponseCode switch
                     {
-                        302 => StatusCode(302, result),
+                        200 => StatusCode(200, result),
                         404 => StatusCode(404, result),
                         _ => BadRequest(result)
                     };
@@ -64,6 +64,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             }
             return BadRequest("Invalid email");
         }
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> IsPhoneNumberInUse([FromQuery] string phoneNumber)
         {
             if (!string.IsNullOrEmpty(phoneNumber))
@@ -74,7 +75,7 @@ namespace FMS.Server.Controllers.Account.Authentication
                     var result = await _authenticationSvcs.IsPhoneNumberInUse(phoneNumber);
                     return result.ResponseCode switch
                     {
-                        302 => StatusCode(302, result),
+                        200 => StatusCode(200, result),
                         404 => StatusCode(404, result),
                         _ => BadRequest(result)
                     };

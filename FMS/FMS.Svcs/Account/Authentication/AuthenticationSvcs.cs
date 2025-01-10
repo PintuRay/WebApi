@@ -51,7 +51,7 @@ namespace FMS.Svcs.Account.Authentication
                     {
                         Data = repoResult,
                         Message = $"Token '{Token}' Found",
-                        ResponseCode = (int)ResponseCode.Status.Found,
+                        ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
@@ -88,7 +88,7 @@ namespace FMS.Svcs.Account.Authentication
                 Obj = new()
                 {
                     Message = $"No Such Mail '{email}' Exist",
-                    ResponseCode = (int)ResponseCode.Status.NotFound,
+                    ResponseCode = (int)ResponseCode.Status.Ok,
                 };
             }
             return Obj;
@@ -110,7 +110,7 @@ namespace FMS.Svcs.Account.Authentication
                 Obj = new()
                 {
                     Message = $"No Such Phone Number '{phoneNumber}' Exist",
-                    ResponseCode = (int)ResponseCode.Status.NotFound,
+                    ResponseCode = (int)ResponseCode.Status.Ok,
                 };
             }
             return Obj;
