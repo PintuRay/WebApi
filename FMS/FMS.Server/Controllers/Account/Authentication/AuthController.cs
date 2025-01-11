@@ -83,6 +83,22 @@ namespace FMS.Server.Controllers.Account.Authentication
             }
             return BadRequest("Invalid data");
         }
+        [HttpGet, AllowAnonymous]
+        public async Task<IActionResult> IsUserNameExist([FromQuery] string userName)
+        {
+            if (!string.IsNullOrEmpty(userName))
+            {
+
+                var result = await _authenticationSvcs.IsUserNameExist(userName);
+                return result.ResponseCode switch
+                {
+                    200 => StatusCode(200, result),
+                    404 => StatusCode(404, result),
+                    _ => BadRequest(result)
+                };
+            }
+            return BadRequest("Invalid data");
+        }
         [HttpPost, Consumes("multipart/form-data"), AllowAnonymous]
         public async Task<IActionResult> SignUp([FromForm] RegisterModel model)
         {

@@ -64,7 +64,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ValidateToken", _Exception.ToString());
@@ -115,7 +115,28 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        
+        public async Task<SvcsBase> IsUserNameExist(string userName)
+        {
+            SvcsBase Obj;
+            var isPhoneNuberInUse = await _authenticationRepo.IsUserNameExist(userName);
+            if (isPhoneNuberInUse)
+            {
+                Obj = new()
+                {
+                    Message = $"user  '{userName}' Already Exist",
+                    ResponseCode = (int)ResponseCode.Status.Found,
+                };
+            }
+            else
+            {
+                Obj = new()
+                {
+                    Message = $"No Such User '{userName}' Exist",
+                    ResponseCode = (int)ResponseCode.Status.Ok,
+                };
+            }
+            return Obj;
+        }
         public async Task<SvcsBase> SignUp(RegisterModel data)
         {
             bool isMailSend = false;
@@ -215,7 +236,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignUp", _Exception.ToString());
@@ -271,7 +292,7 @@ namespace FMS.Svcs.Account.Authentication
                                     {
                                         Message = $"We Send An OTP To your registered mail",
                                         ResponseCode = (int)ResponseCode.Status.Ok,
-                                        Data = new { twoFactorEnable = true, userId = user.Id , OtpExpiredIn = tokenGenerationTime.AddMinutes(3)}
+                                        Data = new { twoFactorEnable = true, userId = user.Id, OtpExpiredIn = tokenGenerationTime.AddMinutes(3) }
                                     };
                                 }
                                 else
@@ -326,7 +347,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignIn", _Exception.ToString());
@@ -402,7 +423,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "VerifyConfirmEmail", _Exception.ToString());
@@ -481,7 +502,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ResendConfirmEmail", _Exception.ToString());
@@ -531,7 +552,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SendConformationSms", _Exception.ToString());
@@ -579,7 +600,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "VerifyPhoneNumber", _Exception.ToString());
@@ -644,7 +665,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SendTwoFactorToken", _Exception.ToString());
@@ -694,7 +715,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "VerifyTwoFactorToken", _Exception.ToString());
@@ -759,7 +780,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignInWithOTP", _Exception.ToString());
@@ -826,7 +847,7 @@ namespace FMS.Svcs.Account.Authentication
             {
                 Obj = new()
                 {
-                   Message = _Exception.Message,
+                    Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ReSendTwoFactorToken", _Exception.ToString());

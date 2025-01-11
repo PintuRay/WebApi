@@ -58,6 +58,23 @@ namespace FMS.Repo.Account.Authentication
             return false;
         }
 
+        public async Task<bool> IsUserNameExist(string userName)
+        {
+            Result<bool> _Result = new();
+            try
+            {
+                var Query = await _ctx.AppUsers.Where(s => s.UserName == userName).Select(s => s.UserName).SingleOrDefaultAsync();
+                if (Query != null)
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return false;
+        }
         #endregion
         #region Address
         public async Task<RepoBase> CreateUserAdress(AddressModel data, AppUser user)
