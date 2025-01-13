@@ -1,5 +1,4 @@
-﻿using FMS.Db.CustomVaidator;
-using FMS.Db.Entity;
+﻿using FMS.Db.Entity;
 using FMS.Model.Account.Authentication;
 using FMS.Svcs.Account.Authentication;
 using FMS.Svcs.SMS;
@@ -7,7 +6,6 @@ using FMS.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.Text.RegularExpressions;
 
 namespace FMS.Server.Controllers.Account.Authentication
