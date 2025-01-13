@@ -250,19 +250,12 @@ namespace FMS.Server.Controllers.Account.Authentication
             return BadRequest();
         }
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> ResetPassword([FromQuery] string uid, [FromQuery] string token, [FromBody] ResetPasswordModel model)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
         {
             if (ModelState.IsValid)
             {
-                if (!string.IsNullOrEmpty(uid) && !string.IsNullOrEmpty(token))
-                {
-                    var result = await _authenticationSvcs.ResetPassword(uid, token, model);
+                    var result = await _authenticationSvcs.ResetPassword(model);
                     return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-                }
-                else
-                {
-                    return BadRequest();
-                }
             }
             else
             {

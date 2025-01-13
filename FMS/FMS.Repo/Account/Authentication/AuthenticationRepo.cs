@@ -84,7 +84,6 @@ namespace FMS.Repo.Account.Authentication
             {
                 _Result.IsSucess = false;
                 var newAddress = _mapper.Map<Address>(data);
-                newAddress.Fk_UserId = user.Id;
                 newAddress.CreatedDate = DateTime.UtcNow;
                 newAddress.CreatedBy = user.Name;
                 await _ctx.Addresses.AddAsync(newAddress);

@@ -8,11 +8,11 @@ namespace FMS.Db.Entity
     {
         public Guid Fk_PartyType { get; set; }
         public Guid Fk_SubledgerId { get; set; }
+        public Guid Fk_AddressId { get; set; }
         public string PartyName { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public string GstNo { get; set; }
-        public Address Address { get; set; }
     }
     public class PartyUpdateModel : PartyModel
     {
@@ -25,6 +25,7 @@ namespace FMS.Db.Entity
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Address Address { get; set; }
         public LedgerDev LedgerDev { get; set; }
         public SubLedger SubLedger { get; set; }
     }
@@ -44,6 +45,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.PartyId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.Fk_PartyType).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_SubledgerId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_AddressId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.PartyName).HasMaxLength(200).IsRequired(true);
             builder.Property(e => e.Phone).HasMaxLength(20).IsRequired(true);
             builder.Property(e => e.Email).HasMaxLength(200).IsRequired(true);
@@ -54,6 +56,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             //One-To-Many Relationship
+            builder.HasOne(d => d.Address).WithMany(p => p.Parties).HasForeignKey(d => d.Fk_AddressId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.LedgerDev).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_PartyType).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.SubLedger).WithMany(s => s.Parties).HasForeignKey(p => p.Fk_SubledgerId).OnDelete(DeleteBehavior.Cascade);
         }

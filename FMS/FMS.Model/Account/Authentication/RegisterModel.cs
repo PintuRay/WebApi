@@ -9,7 +9,7 @@ namespace FMS.Model.Account.Authentication
     public class RegisterModel
     {
         [Required]
-        public Guid FkTokenId { get; set; }
+        public Guid Fk_TokenId { get; set; }
         [Required, StringLength(30, MinimumLength = 5)]
         public string Name { get; set; }
         [Required]
@@ -39,7 +39,7 @@ namespace FMS.Model.Account.Authentication
         public RegisterValidator(CustomValidation vaidator)
         {
             // Validate Token
-            RuleFor(user => user.FkTokenId)
+            RuleFor(user => user.Fk_TokenId)
             .NotNull().WithMessage("Token Id is required.")
             .NotEmpty().WithMessage("TokenId cannot be empty.");
             // Validate Name

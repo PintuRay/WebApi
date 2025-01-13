@@ -6,7 +6,6 @@ namespace FMS.Db.Entity
 {
     public class AddressModel
     {
-        public string Fk_UserId { get; set; }
         public Guid Fk_CountryId { get; set; }
         public Guid Fk_StateId { get; set; }
         public Guid Fk_DistId { get; set; }
@@ -26,12 +25,9 @@ namespace FMS.Db.Entity
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
-        public Country Country { get; set; }
-        public State State { get; set; }
-        public Dist Dist { get; set; }
-        public AppUser User { get; set; }
-        public Labour Labour { get; set; }
-        public Party Party { get; set; }
+        public ICollection<AppUser> Users { get; set; }
+        public ICollection<Labour> Labours { get; set; }
+        public ICollection<Party> Parties { get; set; }
     }
     internal class AddressConfig : IEntityTypeConfiguration<Address>
     {
@@ -44,23 +40,27 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Post).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.City).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.PinCode).HasMaxLength(6).IsRequired(true);
-            builder.Property(e => e.Fk_UserId).IsRequired(true);
             builder.Property(e => e.Fk_CountryId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_StateId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_DistId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow);
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow);
-            //One-To-One Relationship
-            builder.HasOne(d => d.User).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(d => d.Labour).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(d => d.Party).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
-            //One-To-Many Relationship
-            builder.HasOne(d => d.Country).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_CountryId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(d => d.State).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_StateId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(d => d.Dist).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_DistId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasData(
+              new Address
+              {
+                  AddressId = Guid.Parse("c9b62c55-1b06-485d-a71b-d92fee4f4428"),
+                  Fk_CountryId = Guid.Parse("e02eb064-def5-434a-8798-6f144a54003c"),
+                  Fk_StateId = Guid.Parse("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
+                  Fk_DistId = Guid.Parse("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"),
+                  At ="DHANAMANDAL",
+                  Post="BRAHMANSAILO",
+                  City ="CUTTACK",
+                  PinCode="754018"
+              }
+            );
         }
     }
     public class AddressValidator : AbstractValidator<AddressModel>

@@ -8,6 +8,7 @@ namespace FMS.Repo
         public MappingProfile()
         {
             CreateMap<AppUser, RegisterModel>().ReverseMap();
+            CreateMap<RegisterModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
             /*--------------------------------------------Devloper---------------------------------------------------*/
             CreateMap<Branch, BranchModel>().ReverseMap();
             CreateMap<Branch, BranchUpdateModel>().ReverseMap();

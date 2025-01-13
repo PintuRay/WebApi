@@ -22,7 +22,7 @@ namespace FMS.Svcs.Account.Authentication
         #endregion
         #region Forgot, Reset && Change Password
         Task<SvcsBase> ForgotPassword(string mail, string routeUrl);
-        Task<SvcsBase> ResetPassword(string uid, string token, ResetPasswordModel model);
+        Task<SvcsBase> ResetPassword(ResetPasswordModel model);
         Task<SvcsBase> ChangePassword(AppUser user, ChangePasswordModel model);
         #endregion
         #region Email 

@@ -145,11 +145,12 @@ namespace FMS.Svcs.Account.Authentication
             {
                 var user = _mapper.Map<AppUser>(data);
                 user.UserName = data.Email;
-                var identity = await _userManager.CreateAsync(user, data.Password);
-                if (identity.Succeeded)
+                var repoResult = await _authenticationRepo.CreateUserAdress(data.Address, user);
+                if (repoResult.IsSucess)
                 {
-                    var repoResult = await _authenticationRepo.CreateUserAdress(data.Address, user);
-                    if (repoResult.IsSucess)
+                    user.Fk_AddressId =Guid.Parse(repoResult.Id);
+                    var identity = await _userManager.CreateAsync(user, data.Password);
+                    if (identity.Succeeded)
                     {
                         var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         if (!string.IsNullOrEmpty(regToken))
@@ -912,12 +913,12 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<SvcsBase> ResetPassword(string uid, string token, ResetPasswordModel model)
+        public async Task<SvcsBase> ResetPassword(ResetPasswordModel model)
         {
             SvcsBase Obj;
             try
             {
-                var result = await _userManager.ResetPasswordAsync(await _userManager.FindByIdAsync(uid), Uri.UnescapeDataString(token), model.NewPassword);
+                var result = await _userManager.ResetPasswordAsync(await _userManager.FindByIdAsync(model.UserId), Uri.UnescapeDataString(model.Token), model.NewPassword);
                 if (result.Succeeded)
                 {
                     Obj = new()

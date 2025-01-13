@@ -1,4 +1,5 @@
 ﻿using FMS.Model.Email;
+using FMS.Repo;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
@@ -77,19 +78,20 @@ namespace FMS.Svcs.Email
         {
             try
             {
-                await SendEmailForResetPassword(options);
-                return true;
+                bool result = await SendEmailForResetPassword(options);
+                return result;
             }
             catch
             {
                 return false;
             }
         }
-        private async Task SendEmailForResetPassword(UserEmailOptions userEmailOptions)
+        private async Task<bool> SendEmailForResetPassword(UserEmailOptions userEmailOptions)
         {
             userEmailOptions.Subject = UpdatePlaceHolders("Hello {{UserName}}, reset your password.", userEmailOptions.PlaceHolders);
             userEmailOptions.Body = UpdatePlaceHolders(GetEmailBody("ForgotPassword"), userEmailOptions.PlaceHolders);
-            await SendEmail(userEmailOptions);
+           bool isMailSend =  await SendEmail(userEmailOptions);
+            return isMailSend;
         }
         public async Task SendExceptionEmail(string toEmail, string subject, string body)
         {
