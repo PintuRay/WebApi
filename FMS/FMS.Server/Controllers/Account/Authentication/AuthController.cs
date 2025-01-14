@@ -162,26 +162,6 @@ namespace FMS.Server.Controllers.Account.Authentication
                 return BadRequest(errors);
             }
         }
-        #endregion
-        #region 2FA
-        [HttpGet, Authorize]
-        public async Task<IActionResult> SendTwoFactorToken()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _authenticationSvcs.SendTwoFactorToken(user);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        }
-        [HttpGet, Authorize]
-        public async Task<IActionResult> VerifyTwoFactorToken([FromQuery] string Token)
-        {
-            if (!string.IsNullOrEmpty(Token))
-            {
-                var user = await _userManager.GetUserAsync(User);
-                var result = await _authenticationSvcs.VerifyTwoFactorToken(Token, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-            }
-            return BadRequest("invaild Token");
-        }
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> SignInWithOTP([FromBody] SignIn2faModel model)
         {
@@ -201,6 +181,29 @@ namespace FMS.Server.Controllers.Account.Authentication
                 return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             return BadRequest();
+        }
+        #endregion
+        #region 2FA
+        [HttpGet, Authorize]
+        public async Task<IActionResult> SendTwoFactorToken([FromQuery] string uid)
+        {
+            if (!string.IsNullOrEmpty(uid))
+            {
+                var result = await _authenticationSvcs.SendTwoFactorToken(uid);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest("invaild UserId");
+        }
+        [HttpGet, Authorize]
+        public async Task<IActionResult> VerifyTwoFactorToken([FromQuery] string Token)
+        {
+            if (!string.IsNullOrEmpty(Token))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _authenticationSvcs.VerifyTwoFactorToken(Token, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            return BadRequest("invaild Token");
         }
         #endregion
         #region ThiredParty SignIn

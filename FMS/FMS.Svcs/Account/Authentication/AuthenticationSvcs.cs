@@ -355,6 +355,71 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
+        public async Task<SvcsBase> SignInWithOTP(SignIn2faModel model)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var tokenCacheKey = $"TwoFactorToken_{model.OTP}";
+                    var tokenTimeCacheKey = $"TokenGenerationTime_{model.OTP}";
+                    var tokenGenerationTime = _cache.Get<DateTime>(tokenTimeCacheKey);
+                    var tokenValue = _cache.Get<string>(tokenCacheKey);
+                    if (tokenGenerationTime.AddMinutes(3) > DateTime.UtcNow && tokenValue == model.OTP)
+                    {
+                        _cache.Remove(tokenCacheKey);
+                        _cache.Remove(tokenTimeCacheKey);
+                        var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
+                            await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
+                        if (result)
+                        {
+                            var JwtToken = await GenerateJwtToken(user);
+                            Obj = new()
+                            {
+                                ResponseCode = (int)ResponseCode.Status.Ok,
+                                Data = new { JwtToken = JwtToken }
+                            };
+                        }
+                        else
+                        {
+                            Obj = new()
+                            {
+                                Message = "Login Failed",
+                                ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            };
+                        }
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Message = "Token Expired or Invalid Token",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        };
+                    }
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Message = "Invalid User",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignInWithOTP", _Exception.ToString());
+            }
+            return Obj;
+        }
         private async Task<string> GenerateJwtToken(AppUser data)
         {
             try
@@ -393,6 +458,73 @@ namespace FMS.Svcs.Account.Authentication
                 throw;
             }
 
+        }
+        public async Task<SvcsBase> ReSendTwoFactorToken(string mail)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(mail);
+                if (await _userManager.GetTwoFactorEnabledAsync(user))
+                {
+                    #region mail
+                    var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
+                    UserEmailOptions options = new()
+                    {
+                        ToEmail = user.Email,
+                        PlaceHolders =
+                            [
+                                new("{{UserName}}", user.Name),
+                                            new("{{OTP}}", code)
+                                ]
+                    };
+                    var Result = await _emailSvcs.SendTwoFactorToken(options);
+                    #endregion
+                    if (Result)
+                    {
+                        #region Caching
+                        var tokenGenerationTime = DateTime.UtcNow;
+                        var tokenCacheKey = $"TwoFactorToken_{code}";
+                        var tokenTimeCacheKey = $"TokenGenerationTime_{code}";
+                        _cache.Remove(tokenCacheKey);
+                        _cache.Remove(tokenTimeCacheKey);
+                        _cache.Set(tokenCacheKey, code);
+                        _cache.Set(tokenTimeCacheKey, tokenGenerationTime);
+                        #endregion
+                        Obj = new()
+                        {
+                            Message = $"We Send An OTP To your registered mail",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Message = "Failed To Send 2FA Token",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        };
+                    }
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Message = "Failed To Send 2FA Token",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ReSendTwoFactorToken", _Exception.ToString());
+            }
+            return Obj;
         }
         #endregion
         #region Email
@@ -610,13 +742,13 @@ namespace FMS.Svcs.Account.Authentication
         }
         #endregion
         #region 2FA
-        public async Task<SvcsBase> SendTwoFactorToken(AppUser user)
+        public async Task<SvcsBase> SendTwoFactorToken(string uid)
         {
             SvcsBase Obj;
             bool Result = false;
             try
             {
-
+                var user = await _userManager.FindByIdAsync(uid);
                 string Message = user.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA";
                 if (user.PhoneNumberConfirmed)
                 {
@@ -625,7 +757,7 @@ namespace FMS.Svcs.Account.Authentication
                     Result = await _smsSvcs.SendSmsAsync(user.PhoneNumber, $"Your Token To {Message} Is {TwoFactorToken}");
                     Obj = new()
                     {
-                        Message = $"We Send A Conformation Token To Your Registerd Phone Number",
+                        Message = $"We Send A Conformation Token To Your Registerd Phone Number for {Message}",
                         Data = new { email = user.Email },
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
@@ -645,12 +777,23 @@ namespace FMS.Svcs.Account.Authentication
                             ]
                     };
                     Result = await _emailSvcs.SendTwoFactorToken(options);
-                    Obj = new()
+                    if (Result)
                     {
-                        Message = $"We Send A Conformation Token To Your Registerd Mail ",
-                        Data = new { email = user.Email },
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    };
+                        Obj = new()
+                        {
+                            Message = $"We Send A Conformation Token To Your Registerd Mail To {Message} ",
+                            Data = new { email = user.Email },
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Message = "Failed To Send Conformation Token",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        };
+                    }
                     #endregion
                 }
                 else
@@ -720,138 +863,6 @@ namespace FMS.Svcs.Account.Authentication
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "VerifyTwoFactorToken", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> SignInWithOTP(SignIn2faModel model)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var tokenCacheKey = $"TwoFactorToken_{model.OTP}";
-                    var tokenTimeCacheKey = $"TokenGenerationTime_{model.OTP}";
-                    var tokenGenerationTime = _cache.Get<DateTime>(tokenTimeCacheKey);
-                    var tokenValue = _cache.Get<string>(tokenCacheKey);
-                    if (tokenGenerationTime.AddMinutes(3) > DateTime.UtcNow && tokenValue == model.OTP)
-                    {
-                        _cache.Remove(tokenCacheKey);
-                        _cache.Remove(tokenTimeCacheKey);
-                        var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
-                            await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
-                        if (result)
-                        {
-                            var JwtToken = await GenerateJwtToken(user);
-                            Obj = new()
-                            {
-                                ResponseCode = (int)ResponseCode.Status.Ok,
-                                Data = new { JwtToken = JwtToken }
-                            };
-                        }
-                        else
-                        {
-                            Obj = new()
-                            {
-                                Message = "Login Failed",
-                                ResponseCode = (int)ResponseCode.Status.BadRequest,
-                            };
-                        }
-                    }
-                    else
-                    {
-                        Obj = new()
-                        {
-                            Message = "Token Expired or Invalid Token",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
-                        };
-                    }
-                }
-                else
-                {
-                    Obj = new()
-                    {
-                        Message = "Invalid User",
-                        ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    };
-                }
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignInWithOTP", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> ReSendTwoFactorToken(string mail)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(mail);
-                if (await _userManager.GetTwoFactorEnabledAsync(user))
-                {
-                    #region mail
-                    var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
-                    UserEmailOptions options = new()
-                    {
-                        ToEmail = user.Email,
-                        PlaceHolders =
-                            [
-                                new("{{UserName}}", user.Name),
-                                            new("{{OTP}}", code)
-                                ]
-                    };
-                    var Result = await _emailSvcs.SendTwoFactorToken(options);
-                    #endregion
-                    if (Result)
-                    {
-                        #region Caching
-                        var tokenGenerationTime = DateTime.UtcNow;
-                        var tokenCacheKey = $"TwoFactorToken_{code}";
-                        var tokenTimeCacheKey = $"TokenGenerationTime_{code}";
-                        _cache.Remove(tokenCacheKey);
-                        _cache.Remove(tokenTimeCacheKey);
-                        _cache.Set(tokenCacheKey, code);
-                        _cache.Set(tokenTimeCacheKey, tokenGenerationTime);
-                        #endregion
-                        Obj = new()
-                        {
-                            Message = $"We Send An OTP To your registered mail",
-                            ResponseCode = (int)ResponseCode.Status.Ok,
-                        };
-                    }
-                    else
-                    {
-                        Obj = new()
-                        {
-                            Message = "Failed To Send 2FA Token",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
-                        };
-                    }
-                }
-                else
-                {
-                    Obj = new()
-                    {
-                        Message = "Failed To Send 2FA Token",
-                        ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    };
-                }
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ReSendTwoFactorToken", _Exception.ToString());
             }
             return Obj;
         }

@@ -17,6 +17,8 @@ namespace FMS.Svcs.Account.Authentication
         #endregion
         #region SignIn 
         Task<SvcsBase> SignIn(SignInModel data);
+        Task<SvcsBase> SignInWithOTP(SignIn2faModel model);
+        Task<SvcsBase> ReSendTwoFactorToken(string mail);
         #endregion
         #region ThiredParty SignIn
         #endregion
@@ -34,10 +36,8 @@ namespace FMS.Svcs.Account.Authentication
         Task<SvcsBase> VerifyPhoneNumber(AppUser User, string Token, string PhoneNo);
         #endregion
         #region 2FA
-         Task<SvcsBase> SendTwoFactorToken(AppUser user);
+         Task<SvcsBase> SendTwoFactorToken(string uid);
         Task<SvcsBase> VerifyTwoFactorToken(string Token, AppUser user);
-        Task<SvcsBase> SignInWithOTP(SignIn2faModel model);
-        Task<SvcsBase> ReSendTwoFactorToken(string mail);
         #endregion
         #region Logout
         SvcsBase LogOut();
