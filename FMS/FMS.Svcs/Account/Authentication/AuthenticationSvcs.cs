@@ -816,13 +816,14 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<SvcsBase> VerifyTwoFactorToken(string Token, AppUser user)
+        public async Task<SvcsBase> VerifyTwoFactorToken(SignIn2faModel model)
         {
             SvcsBase Obj;
             try
             {
-                var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, Token) ||
-                             await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, Token);
+                 var user = await _userManager.FindByEmailAsync(model.Email);
+                var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
+                             await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
                 if (result)
                 {
                     var Message = user.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA";

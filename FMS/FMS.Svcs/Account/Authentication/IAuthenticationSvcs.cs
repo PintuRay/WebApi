@@ -37,7 +37,7 @@ namespace FMS.Svcs.Account.Authentication
         #endregion
         #region 2FA
          Task<SvcsBase> SendTwoFactorToken(string uid);
-        Task<SvcsBase> VerifyTwoFactorToken(string Token, AppUser user);
+        Task<SvcsBase> VerifyTwoFactorToken(SignIn2faModel model);
         #endregion
         #region Logout
         SvcsBase LogOut();

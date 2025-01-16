@@ -194,16 +194,15 @@ namespace FMS.Server.Controllers.Account.Authentication
             }
             return BadRequest("invaild UserId");
         }
-        [HttpGet, Authorize]
-        public async Task<IActionResult> VerifyTwoFactorToken([FromQuery] string Token)
+        [HttpPost, Authorize]
+        public async Task<IActionResult> VerifyTwoFactorToken([FromBody] SignIn2faModel model)
         {
-            if (!string.IsNullOrEmpty(Token))
+            if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
-                var result = await _authenticationSvcs.VerifyTwoFactorToken(Token, user);
+                var result = await _authenticationSvcs.VerifyTwoFactorToken(model);
                 return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
-            return BadRequest("invaild Token");
+            return BadRequest("invaild OTP");
         }
         #endregion
         #region ThiredParty SignIn
