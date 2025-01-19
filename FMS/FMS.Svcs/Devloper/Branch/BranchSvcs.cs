@@ -92,7 +92,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message = $"Following Branches '{string.Join(", ", repoResult.Data)}' Already Exist",
+                        Message = $"Following Branches '{string.Join(", ", repoResult.Records)}' Already Exist",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };

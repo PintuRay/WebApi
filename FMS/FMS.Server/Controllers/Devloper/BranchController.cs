@@ -4,7 +4,6 @@ using FMS.Svcs.Devloper.Branch;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Server.Controllers.Devloper
 {

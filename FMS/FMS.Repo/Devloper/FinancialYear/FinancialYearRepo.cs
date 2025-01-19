@@ -118,7 +118,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                 }
                 else
                 {
-                    _Result.Data = existingfinancialYearNames;
+                    _Result.Records = existingfinancialYearNames;
                 }
             }
             catch
@@ -188,7 +188,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                 }
                 else
                 {
-                    _Result.Data = financialYears.Where(kvp => notFoundfinancialYearIds.Contains(kvp.FinancialYearId)).Select(s=> new Db.Entity.FinancialYear { FinancialYearId =s.FinancialYearId, Financial_Year = s.Financial_Year}).ToList();
+                    _Result.Records = financialYears.Where(kvp => notFoundfinancialYearIds.Contains(kvp.FinancialYearId)).Select(s=> new Db.Entity.FinancialYear { FinancialYearId =s.FinancialYearId, Financial_Year = s.Financial_Year}).ToList();
                 }
             }
             catch

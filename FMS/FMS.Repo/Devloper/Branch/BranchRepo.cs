@@ -131,12 +131,13 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Ids = newBranches.Select(b => b.BranchId.ToString()).ToList();
                         _Result.Count = response.AffectedRows.ToString();
                         _Result.IsSucess = true;
+                        _Result.Records = newBranches;
                         _cache.RemoveByPrefix("Branches");
                     }
                 }
                 else
                 {
-                    _Result.Data = existingBranchNames;
+                    _Result.Records = existingBranchNames;
                 }
             }
             catch
@@ -195,6 +196,7 @@ namespace FMS.Repo.Devloper.Branch
                         await transaction.CommitAsync();
                         _Result.Ids = branchIds.Select(id => id.ToString()).ToList();
                         _Result.Count = response.AffectedRows.ToString();
+                        _Result.Records = branchesToUpdate;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("Branches");
                     }
