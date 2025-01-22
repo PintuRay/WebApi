@@ -5,6 +5,8 @@ using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FMS.Repo.Devloper.Branch
 {
@@ -14,59 +16,35 @@ namespace FMS.Repo.Devloper.Branch
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
         #endregion
         #region Branch
         #region Crud
-        public async Task<Result<Db.Entity.Branch>> GetAllBranch(PaginationParams pagination)
+        public async Task<Result<Db.Entity.Branch>> GetAllBranch()
         {
             Result<Db.Entity.Branch> _Result = new();
-            List<Db.Entity.Branch> Query = [];
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = (pagination.PageNumber > 0 && pagination.PageSize > 0) ? $"Branches_{pagination.PageNumber}_{pagination.PageSize}_{pagination.SearchTerm}" : "Branches";
+                string cacheKey = $"Branches";
                 var cacheData = _cache.Get<Result<Db.Entity.Branch>>(cacheKey);
-                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
                 if (cacheData == null)
                 {
-                    if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
-                    {
-                        Query = await _ctx.Branches.Where(s => s.IsActive == true)
-                            .Select(s => new Db.Entity.Branch()
-                            {
-                                BranchId = s.BranchId,
-                                BranchName = s.BranchName,
-                                BranchCode = s.BranchCode,
-                                ContactNumber = s.ContactNumber,
-                                BranchAddress = s.BranchAddress
-                            })
-                            .OrderBy(s => s.BranchName)
-                            .Skip(pagination.PageNumber * effectivePageSize)
-                            .Take(effectivePageSize)
-                            .ToListAsync();
-                    }
-                    else
-                    {
-                        string searchTerm = pagination.SearchTerm.Trim().ToLower();
-                        var branches = await _ctx.Branches.Where(s => s.IsActive == true /* && s.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)*/)
-                            .Select(s => new Db.Entity.Branch()
-                            {
-                                BranchId = s.BranchId,
-                                BranchName = s.BranchName,
-                                BranchCode = s.BranchCode,
-                                ContactNumber = s.ContactNumber,
-                                BranchAddress = s.BranchAddress
-                            }).OrderBy(s => s.BranchName)
-                            .Skip(pagination.PageNumber * effectivePageSize)
-                            .Take(effectivePageSize)
-                            .ToListAsync();
-                        Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
-                    }
+                    var Query = await _ctx.Branches.Where(s => s.IsActive == true)
+                          .Select(s => new Db.Entity.Branch()
+                          {
+                              BranchId = s.BranchId,
+                              BranchName = s.BranchName,
+                              BranchCode = s.BranchCode,
+                              ContactNumber = s.ContactNumber,
+                              BranchAddress = s.BranchAddress
+                          })
+                          .OrderBy(s => s.BranchCode)
+                          .ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
-                        _Result.Count = _Result.CollectionObjData.Count;
+                        _Result.Count = Query.Count();
                         _Result.IsSucess = true;
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
@@ -74,6 +52,58 @@ namespace FMS.Repo.Devloper.Branch
                 else
                 {
                     _Result = cacheData;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<Result<Db.Entity.Branch>> GetAllBranch(PaginationParams pagination)
+        {
+            Result<Db.Entity.Branch> _Result = new();
+            List<Db.Entity.Branch> Query = [];
+            try
+            {
+                _Result.IsSucess = false;
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
+                {
+                    Query = await _ctx.Branches.Where(s => s.IsActive == true)
+                        .Select(s => new Db.Entity.Branch()
+                        {
+                            BranchId = s.BranchId,
+                            BranchName = s.BranchName,
+                            BranchCode = s.BranchCode,
+                            ContactNumber = s.ContactNumber,
+                            BranchAddress = s.BranchAddress
+                        })
+                        .OrderBy(s => s.BranchCode)
+                        .Skip(pagination.PageNumber * effectivePageSize)
+                        .Take(effectivePageSize)
+                        .ToListAsync();
+                }
+                else
+                {
+                    string searchTerm = pagination.SearchTerm.Trim().ToLower();
+                    var branches = await _ctx.Branches.Where(s => s.IsActive == true)
+                        .Select(s => new Db.Entity.Branch()
+                        {
+                            BranchId = s.BranchId,
+                            BranchName = s.BranchName,
+                            BranchCode = s.BranchCode,
+                            ContactNumber = s.ContactNumber,
+                            BranchAddress = s.BranchAddress
+                        }).OrderBy(s => s.BranchName)
+                        .ToListAsync();
+                    Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                }
+                if (Query.Count > 0)
+                {
+                    _Result.CollectionObjData = Query;
+                    _Result.Count = _ctx.Branches.Where(s => s.IsActive == true).Count();
+                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -101,7 +131,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Id = newBranch.BranchId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
+                        _cache.Remove("Branches");
                     }
                 }
             }
@@ -132,7 +162,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Count = response.AffectedRows.ToString();
                         _Result.IsSucess = true;
                         _Result.Records = newBranches;
-                        _cache.RemoveByPrefix("Branches");
+                        _cache.Remove("Branches");
                     }
                 }
                 else
@@ -165,7 +195,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Id = data.BranchId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
+                        _cache.Remove("Branches");
                     }
                 }
             }
@@ -198,7 +228,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Count = response.AffectedRows.ToString();
                         _Result.Records = branchesToUpdate;
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
+                        _cache.Remove("Branches");
                     }
                 }
                 else
@@ -234,8 +264,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
+                        _cache.Remove("Branches");
                     }
                 }
             }
@@ -259,7 +288,7 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     foreach (var branch in existingBranches)
                     {
-                       var IsActiveStatus = UpdateStatus(branch, false);
+                        var IsActiveStatus = UpdateStatus(branch, false);
                         await _ctx.BulkUpdateMultiple(IsActiveStatus);
                     }
                     existingBranches.ForEach(branch =>
@@ -268,15 +297,14 @@ namespace FMS.Repo.Devloper.Branch
                         branch.ModifyBy = user.Name;
                         branch.IsActive = false;
                     });
-                   var response = await _ctx.BulkUpdate(existingBranches);
+                    var response = await _ctx.BulkUpdate(existingBranches);
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.Count = response.AffectedRows.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
+                        _cache.Remove("Branches");
                     }
                 }
                 else
@@ -300,52 +328,42 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"RemovedBranches_{pagination.PageNumber}_{pagination.PageSize}_{pagination.SearchTerm}" : "RemovedBranches";
-                var cacheData = _cache.Get<Result<Db.Entity.Branch>>(cacheKey);
-                if (cacheData == null)
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                 {
-                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                    if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
-                    {
-                        Query = await _ctx.Branches.Where(s => s.IsActive == false)
-                             .Select(s => new Db.Entity.Branch()
-                             {
-                                 BranchId = s.BranchId,
-                                 BranchName = s.BranchName,
-                                 BranchCode = s.BranchCode,
-                                 ContactNumber = s.ContactNumber,
-                                 BranchAddress = s.BranchAddress
-                             })
-                             .OrderBy(s => s.BranchName)
-                             .Skip(pagination.PageNumber * effectivePageSize)
-                             .Take(effectivePageSize)
-                             .ToListAsync();
-                    }
-                    else
-                    {
-                        string searchTerm = pagination.SearchTerm.Trim().ToLower();
-                        var branches = await _ctx.Branches.Where(s => s.IsActive == false)
-                             .Select(s => new Db.Entity.Branch()
-                             {
-                                 BranchId = s.BranchId,
-                                 BranchName = s.BranchName,
-                                 BranchCode = s.BranchCode,
-                                 ContactNumber = s.ContactNumber,
-                                 BranchAddress = s.BranchAddress
-                             }).ToListAsync();
-                        Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
-                    }
-                    if (Query.Count > 0)
-                    {
-                        _Result.CollectionObjData = Query;
-                        _Result.Count = _Result.CollectionObjData.Count;
-                        _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
-                    }
+                    Query = await _ctx.Branches.Where(s => s.IsActive == false)
+                         .Select(s => new Db.Entity.Branch()
+                         {
+                             BranchId = s.BranchId,
+                             BranchName = s.BranchName,
+                             BranchCode = s.BranchCode,
+                             ContactNumber = s.ContactNumber,
+                             BranchAddress = s.BranchAddress
+                         })
+                         .OrderBy(s => s.BranchName)
+                         .Skip(pagination.PageNumber * effectivePageSize)
+                         .Take(effectivePageSize)
+                         .ToListAsync();
                 }
                 else
                 {
-                    _Result = cacheData;
+                    string searchTerm = pagination.SearchTerm.Trim().ToLower();
+                    var branches = await _ctx.Branches.Where(s => s.IsActive == false)
+                         .Select(s => new Db.Entity.Branch()
+                         {
+                             BranchId = s.BranchId,
+                             BranchName = s.BranchName,
+                             BranchCode = s.BranchCode,
+                             ContactNumber = s.ContactNumber,
+                             BranchAddress = s.BranchAddress
+                         }).ToListAsync();
+                    Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                }
+                if (Query.Count > 0)
+                {
+                    _Result.CollectionObjData = Query;
+                    _Result.Count = _Result.CollectionObjData.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -372,14 +390,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (Count > 0)
                     {
                         await transaction.CommitAsync();
+                        _Result.IsSucess = true;
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
+                        _Result.Records = Query;
+                        _cache.Remove("Branches");
                     }
                 }
-
             }
             catch
             {
@@ -417,8 +434,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.Count = response.AffectedRows.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
+                        _cache.Remove("Branches");
                     }
                 }
                 else
@@ -449,8 +465,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
+                        _cache.Remove("Branches");
                     }
                 }
             }
@@ -478,8 +493,7 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.Count = response.AffectedRows.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("Branches");
-                        _cache.RemoveByPrefix("RemovedBranches");
+                        _cache.Remove("Branches");
                     }
                 }
                 else

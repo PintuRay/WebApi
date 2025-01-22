@@ -14,6 +14,36 @@ namespace FMS.Svcs.Devloper.Branch
         #endregion
         #region Branch
         #region Crud
+        public async Task<SvcsBase> GetAllBranch()
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _branchRepo.GetAllBranch();
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetAllBranch", _Exception.ToString());
+            }
+            return Obj;
+        }
         public async Task<SvcsBase> GetAllBranch(PaginationParams pagination)
         {
             SvcsBase Obj;

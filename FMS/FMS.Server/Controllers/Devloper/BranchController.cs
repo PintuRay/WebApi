@@ -17,6 +17,17 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Crud
         [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _branchSvcs.GetAllBranch();
+            return result.ResponseCode switch
+            {
+                204 => StatusCode(204, result),
+                200 => StatusCode(200, result),
+                _ => BadRequest(result)
+            };
+        }
+        [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetAllBranch(pagination);

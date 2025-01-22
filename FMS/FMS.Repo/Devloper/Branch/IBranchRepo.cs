@@ -7,6 +7,7 @@ namespace FMS.Repo.Devloper.Branch
     {
         #region Branch
         #region Crud
+        Task<Result<Db.Entity.Branch>> GetAllBranch();
         Task<Result<Db.Entity.Branch>> GetAllBranch(PaginationParams pagination);
         Task<RepoBase> CreateBranch(BranchModel data, AppUser user);
         Task<RepoBase> BulkCreateBranch(List<BranchModel> dataList, AppUser user);

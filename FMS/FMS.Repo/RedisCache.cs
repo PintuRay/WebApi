@@ -37,6 +37,10 @@ namespace FMS.Repo
                 }
                 else
                 {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
                     return JsonSerializer.Deserialize<T>(value);
                 }  
             }
