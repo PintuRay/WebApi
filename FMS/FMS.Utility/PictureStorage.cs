@@ -10,5 +10,16 @@ namespace FMS.Utility
             folderPath += Guid.NewGuid().ToString() + "_" + model.FileName;
             return folderPath;
         }
+        public static string GetContentType(string path)
+        {
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return ext switch
+            {
+                ".png" => "image/png",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream"
+            };
+        }
     }
 }

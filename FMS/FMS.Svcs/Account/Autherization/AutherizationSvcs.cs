@@ -100,13 +100,12 @@ namespace FMS.Svcs.Account.Autherization
             SvcsBase Obj;
             try
             {
-                var repoResult = await _userManager.FindByIdAsync(Id);
+                var repoResult = await _autherizationRepo.GetUserById(Id); // _userManager.FindByIdAsync(Id);
                 if (repoResult != null)
                 {
                     Obj = new()
                     {
                         Data = repoResult,
-                        Message = "User Found",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                 }
@@ -130,12 +129,12 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateUser(string Id, AppUser User)
+        public async Task<SvcsBase> UpdateUser(UserModel User)
         {
             SvcsBase Obj;
             try
             {
-                var chkUser = await _userManager.FindByIdAsync(Id);
+                var chkUser = await _userManager.FindByIdAsync(User.Id);
                 if (chkUser != null)
                 {
                     var updateUser = _mapper.Map(User, chkUser);
@@ -144,7 +143,7 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         Obj = new()
                         {
-                            Data = new { Id = Id },
+                            Data = new { Id = updateUser.Id },
                             Message = "User Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         };
@@ -153,7 +152,7 @@ namespace FMS.Svcs.Account.Autherization
                     {
                         Obj = new()
                         {
-                            Data = new { Id = Id },
+                            Data = new { Id = User.Id },
                             Message = $"Failed To Update User",
                             ResponseCode = (int)ResponseCode.Status.BadRequest,
                         };
@@ -163,8 +162,7 @@ namespace FMS.Svcs.Account.Autherization
                 {
                     Obj = new()
                     {
-                        Data = new { Id = Id },
-                        Message = $"UserId '{Id}' Not Found",
+                        Message = $"UserId '{User.Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     };
                 }

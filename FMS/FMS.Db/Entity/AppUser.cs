@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
-
     public class AppUser : IdentityUser
     {
         public Guid Fk_TokenId { get; set; }
@@ -18,7 +19,7 @@ namespace FMS.Db.Entity
         public RegisterToken Token { get; set; }
         public Address Address { get; set; }
         //collection Navigation Property
-      public ICollection<UserBranch> UserBranch { get; set; }
+        public ICollection<UserBranch> UserBranch { get; set; }
     }
     internal class AppUserConfig : IEntityTypeConfiguration<AppUser>
     {
@@ -45,7 +46,7 @@ namespace FMS.Db.Entity
                 Gender = "male",
                 MaratialStatus = "unmarred",
                 BirthDate = DateTime.SpecifyKind(DateTime.Parse("1993-07-04"), DateTimeKind.Utc),
-                Email = "raypintu959@gmail.com", 
+                Email = "raypintu959@gmail.com",
                 UserName = "raypintu959@gmail.com",
                 PhoneNumber = "8249486590",
                 PhoneNumberConfirmed = true,
@@ -57,9 +58,22 @@ namespace FMS.Db.Entity
                 PasswordHash = "AQAAAAIAAYagAAAAEGCZJkRuuaN5s6jesxs7zm4NBR99KorCbeWBm6yVLgn2JCBVFEKr5ui4hLYFkhQWCA==",
                 SecurityStamp = "ZCKN4FWVQMFYYU3JWBLJN7UUN2CBOZMF",
                 ConcurrencyStamp = "65a37859-d054-4a68-a817-1669d83c598a",
-                TermCondition= true
+                TermCondition = true
             }
         );
         }
+    }
+    public class UserModel 
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string MaratialStatus { get; set; }
+        public string Gender { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public IFormFile ProfilePhoto { get; set; }
+        public string PhotoPath { get; set; }
+        public AddressModel Address { get; set; }
     }
 }
