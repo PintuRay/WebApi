@@ -62,10 +62,26 @@ namespace FMS.Server.Controllers.Account.Autherization
             return PhysicalFile(path, PictureStorage.GetContentType(path));
         }
         [HttpPatch, Authorize(Policy = "Update")]
-        public async Task<IActionResult> Update([FromBody] UserModel User)
+        public async Task<IActionResult> Update([FromForm] UserModel User)
         {
             if (ModelState.IsValid)
             {
+                if (User.ProfilePhoto != null)
+                {
+                    string StorageLocation = "images/ProfilePhoto/";
+                    string newPhotoPath = PictureStorage.UploadPhoto(User.ProfilePhoto, StorageLocation);
+                    string uploadsFolder = Path.Combine(_environment.WebRootPath, newPhotoPath);
+                    await User.ProfilePhoto.CopyToAsync(new FileStream(uploadsFolder, FileMode.Create));
+                    if (!string.IsNullOrEmpty(User.PhotoPath))
+                    {
+                        string existingPhotoPath = Path.Combine(_environment.WebRootPath, User.PhotoPath);
+                        if (System.IO.File.Exists(existingPhotoPath))
+                        {
+                            System.IO.File.Delete(existingPhotoPath);
+                        }
+                    }
+                    User.PhotoPath = newPhotoPath;
+                }
                 var result = await _autherizationSvcs.UpdateUser(User);
                 return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
             }
