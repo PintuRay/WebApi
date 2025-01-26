@@ -4,16 +4,22 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FMS.Db.Entity
 {
-    public class StateModel
+    public class StateDto  //For List Operation
+    {
+        public Guid StateId { get; set; }
+        public Guid Fk_CountryId { get; set; }
+        public string StateName { get; set; }
+    }
+    public class StateModel // For Insert Operation
     {
         public Guid Fk_CountryId { get; set; }
         public string StateName { get; set; }
     }
-    public class StateUpdateModel : StateModel
+    public class StateUpdateModel : StateModel //For Updtate Operation
     {
         public Guid StateId { get; set; }
     }
-    public class State : StateUpdateModel
+    public class State : StateUpdateModel // Db Entity
     {
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }

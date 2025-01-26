@@ -5,6 +5,13 @@ using System;
 
 namespace FMS.Db.Entity
 {
+    public class DistDto
+    {
+        public Guid DistId { get; set; }
+        public Guid Fk_CountryId { get; set; }
+        public Guid Fk_StateId { get; set; }
+        public string DistName { get; set; }
+    }
     public class DistModel
     {
         public Guid Fk_CountryId { get; set; }

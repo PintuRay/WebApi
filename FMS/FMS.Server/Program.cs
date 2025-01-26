@@ -4,7 +4,6 @@ using FluentValidation.AspNetCore;
 using FMS.Db;
 using FMS.Db.CustomVaidator;
 using FMS.Db.Entity;
-using FMS.Model.Account.Authentication;
 using FMS.Model.Email;
 using FMS.Model.SMS;
 using FMS.Repo;

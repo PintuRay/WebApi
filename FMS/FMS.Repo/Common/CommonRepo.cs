@@ -15,17 +15,24 @@ namespace FMS.Repo.Common
         #endregion
         #region Country
         #region Crud
-        public async Task<Result<Country>> GetCountries()
+        public async Task<Result<CountryDto>> GetCountries()
         {
-            Result<Country> _Result = new();
+            Result<CountryDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var cacheKey = "Country";
-                var cacheData = _cache.Get<Result<Country>>(cacheKey);
+                var cacheData = _cache.Get<Result<CountryDto>>(cacheKey);
                 if (cacheData == null)
                 {
-                    var Query = await (from s in _ctx.Countries where s.IsActive == true select s).OrderBy(s => s.CountryName).ToListAsync();
+                    var Query = await (from s in _ctx.Countries
+                                       where s.IsActive == true
+                                       select new CountryDto()
+                                       {
+                                           CountryId = s.CountryId,
+                                           CountryCode = s.CountryCode,
+                                           CountryName = s.CountryName
+                                       }).OrderBy(s => s.CountryName).ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
@@ -133,30 +140,26 @@ namespace FMS.Repo.Common
         }
         #endregion
         #region Recover
-        public async Task<Result<Country>> GetRemovedCountries()
+        public async Task<Result<CountryDto>> GetRemovedCountries()
         {
-            Result<Country> _Result = new();
+            Result<CountryDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                var cacheKey = "RemovedCountries";
-                var cacheData = _cache.Get<Result<Country>>(cacheKey);
-                if (cacheData == null)
+                var Query = await (from s in _ctx.Countries
+                                   where s.IsActive == false
+                                   select new CountryDto()
+                                   {
+                                       CountryId = s.CountryId,
+                                       CountryCode = s.CountryCode,
+                                       CountryName = s.CountryName
+                                   }).OrderBy(s => s.CountryName).ToListAsync();
+                if (Query.Count > 0)
                 {
-                    var Query = await (from s in _ctx.Countries where s.IsActive == false select s).OrderBy(s => s.CountryName).ToListAsync();
-                    if (Query.Count > 0)
-                    {
-                        _Result.CollectionObjData = Query;
-                        _Result.Count = Query.Count;
-                        _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
-                    }
+                    _Result.CollectionObjData = Query;
+                    _Result.Count = Query.Count;
+                    _Result.IsSucess = true;
                 }
-                else
-                {
-                    _Result = cacheData;
-                }
-
             }
             catch
             {
@@ -182,7 +185,6 @@ namespace FMS.Repo.Common
                     {
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
-                        _cache.Remove("RemovedCountries");
                     }
                 }
             }
@@ -218,7 +220,6 @@ namespace FMS.Repo.Common
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
-                        _cache.Remove("RemovedCountries");
                     }
                 }
                 else
@@ -249,7 +250,6 @@ namespace FMS.Repo.Common
                     {
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
-                        _cache.Remove("RemovedCountries");
                     }
                 }
             }
@@ -280,7 +280,6 @@ namespace FMS.Repo.Common
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
-                        _cache.Remove("RemovedCountries");
                     }
                 }
                 else
@@ -311,17 +310,24 @@ namespace FMS.Repo.Common
         #endregion
         #region State
         #region Crud
-        public async Task<Result<State>> GetStates(Guid CountryId)
+        public async Task<Result<StateDto>> GetStates(Guid CountryId)
         {
-            Result<State> _Result = new();
+            Result<StateDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var cacheKey = $"State_{CountryId}";
-                var cacheData = _cache.Get<Result<State>>(cacheKey);
+                var cacheData = _cache.Get<Result<StateDto>>(cacheKey);
                 if (cacheData == null)
                 {
-                    var Query = await (from s in _ctx.States where s.Fk_CountryId == CountryId && s.IsActive == true select s).OrderBy(s => s.StateName).ToListAsync();
+                    var Query = await (from s in _ctx.States
+                                       where s.Fk_CountryId == CountryId && s.IsActive == true
+                                       select new StateDto()
+                                       {
+                                           StateId = s.StateId,
+                                           Fk_CountryId = s.Fk_CountryId,
+                                           StateName = s.StateName
+                                       }).OrderBy(s => s.StateName).ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
@@ -426,28 +432,25 @@ namespace FMS.Repo.Common
         }
         #endregion
         #region Recover
-        public async Task<Result<State>> GetRemovedStates()
+        public async Task<Result<StateDto>> GetRemovedStates()
         {
-            Result<State> _Result = new();
+            Result<StateDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                var cacheKey = "RemovedState";
-                var cacheData = _cache.Get<Result<State>>(cacheKey);
-                if (cacheData == null)
+                var Query = await (from s in _ctx.States
+                                   where s.IsActive == false
+                                   select new StateDto()
+                                   {
+                                       StateId = s.StateId,
+                                       Fk_CountryId = s.Fk_CountryId,
+                                       StateName = s.StateName
+                                   }).OrderBy(s => s.StateName).ToListAsync();
+                if (Query.Count > 0)
                 {
-                    var Query = await (from s in _ctx.States where s.IsActive == false select s).OrderBy(s => s.StateName).ToListAsync();
-                    if (Query.Count > 0)
-                    {
-                        _Result.CollectionObjData = Query;
-                        _Result.Count = Query.Count;
-                        _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
-                    }
-                }
-                else
-                {
-                    _Result = cacheData;
+                    _Result.CollectionObjData = Query;
+                    _Result.Count = Query.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -474,7 +477,6 @@ namespace FMS.Repo.Common
                     {
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"State_");
-                        _cache.Remove("RemovedState");
                     }
                 }
             }
@@ -500,7 +502,6 @@ namespace FMS.Repo.Common
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"State_");
-                        _cache.Remove("RemovedState");
                     }
                 }
             }
@@ -535,7 +536,6 @@ namespace FMS.Repo.Common
                         _Result.IsSucess = true;
                         _Result.Count = Count.ToString();
                         _cache.RemoveByPrefix($"State_");
-                        _cache.Remove("RemovedState");
                     }
                 }
                 else
@@ -571,7 +571,6 @@ namespace FMS.Repo.Common
                         _Result.IsSucess = true;
                         _Result.Count = Count.ToString();
                         _cache.RemoveByPrefix($"State_");
-                        _cache.Remove("RemovedState");
                     }
                 }
                 else
@@ -600,17 +599,25 @@ namespace FMS.Repo.Common
         #endregion  
         #region Dist
         #region Crud
-        public async Task<Result<Dist>> GetDists(Guid StateId)
+        public async Task<Result<DistDto>> GetDists(Guid StateId)
         {
-            Result<Dist> _Result = new();
+            Result<DistDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var cacheKey = $"Dist_{StateId}";
-                var cacheData = _cache.Get<Result<Dist>>(cacheKey);
+                var cacheData = _cache.Get<Result<DistDto>>(cacheKey);
                 if (cacheData == null)
                 {
-                    var Query = await (from s in _ctx.Dists where s.Fk_StateId == StateId && s.IsActive == true select s).OrderBy(s => s.DistName).ToListAsync();
+                    var Query = await (from s in _ctx.Dists
+                                       where s.Fk_StateId == StateId && s.IsActive == true
+                                       select new DistDto()
+                                       {
+                                           DistId = s.DistId,
+                                           Fk_StateId = s.Fk_StateId,
+                                           Fk_CountryId = s.Fk_CountryId,
+                                           DistName = s.DistName
+                                       }).OrderBy(s => s.DistName).ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
@@ -718,30 +725,27 @@ namespace FMS.Repo.Common
         }
         #endregion
         #region Recover
-        public async Task<Result<Dist>> GetRemovedDists()
+        public async Task<Result<DistDto>> GetRemovedDists()
         {
-            Result<Dist> _Result = new();
+            Result<DistDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                var cacheKey = "RemovedDists";
-                var cacheData = _cache.Get<Result<Dist>>(cacheKey);
-                if (cacheData == null)
+                var Query = await (from s in _ctx.Dists
+                                   where s.IsActive == false
+                                   select new DistDto()
+                                   {
+                                       DistId = s.DistId,
+                                       Fk_StateId = s.Fk_StateId,
+                                       Fk_CountryId = s.Fk_CountryId,
+                                       DistName = s.DistName
+                                   }).OrderBy(s => s.DistName).ToListAsync();
+                if (Query.Count > 0)
                 {
-                    var Query = await (from s in _ctx.Dists where s.IsActive == false select s).OrderBy(s => s.DistName).ToListAsync();
-                    if (Query.Count > 0)
-                    {
-                        _Result.CollectionObjData = Query;
-                        _Result.Count = Query.Count;
-                        _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
-                    }
+                    _Result.CollectionObjData = Query;
+                    _Result.Count = Query.Count;
+                    _Result.IsSucess = true;
                 }
-                else
-                {
-                    _Result = cacheData;
-                }
-
             }
             catch
             {
@@ -769,7 +773,6 @@ namespace FMS.Repo.Common
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
-                        _cache.Remove("RemovedDists");
                     }
                 }
             }
@@ -796,7 +799,6 @@ namespace FMS.Repo.Common
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
-                        _cache.Remove("RemovedDists");
                     }
                 }
             }
@@ -827,11 +829,10 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         await transaction.CommitAsync();
-                        _Result.Ids = Ids.Select(id=> id.ToString()).ToList();
+                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
-                        _cache.Remove("RemovedDists");
                     }
                 }
                 else
@@ -867,7 +868,6 @@ namespace FMS.Repo.Common
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
-                        _cache.Remove("RemovedDists");
                     }
                 }
                 else

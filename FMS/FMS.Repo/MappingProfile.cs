@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FMS.Db.Entity;
-using FMS.Model.Account.Authentication;
 namespace FMS.Repo
 {
     public class MappingProfile : Profile
@@ -9,6 +8,8 @@ namespace FMS.Repo
         {
             CreateMap<AppUser, RegisterModel>().ReverseMap();
             CreateMap<RegisterModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
+            CreateMap<AppUser, UserModel>().ReverseMap();
+            CreateMap<UserModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
             /*--------------------------------------------Devloper---------------------------------------------------*/
             CreateMap<Branch, BranchModel>().ReverseMap();
             CreateMap<Branch, BranchUpdateModel>().ReverseMap();

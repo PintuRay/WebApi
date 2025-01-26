@@ -4,10 +4,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
+    public class BranchDto
+    {
+        public Guid BranchId { get; set; }
+        public string BranchName { get; set; }
+        public string BranchAddress { get; set; }
+        public string ContactNumber { get; set; }
+        public string BranchCode { get; set; }
+    }
     public class BranchModel
     {
         [Required]
         public string BranchName { get; set; }
+        [Required]
         public string BranchAddress { get; set; }
         [Required]
         public string ContactNumber { get; set; }

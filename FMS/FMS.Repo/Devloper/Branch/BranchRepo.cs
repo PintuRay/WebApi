@@ -20,18 +20,18 @@ namespace FMS.Repo.Devloper.Branch
         #endregion
         #region Branch
         #region Crud
-        public async Task<Result<Db.Entity.Branch>> GetAllBranch()
+        public async Task<Result<BranchDto>> GetAllBranch()
         {
-            Result<Db.Entity.Branch> _Result = new();
+            Result<BranchDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 string cacheKey = $"Branches";
-                var cacheData = _cache.Get<Result<Db.Entity.Branch>>(cacheKey);
+                var cacheData = _cache.Get<Result<BranchDto>>(cacheKey);
                 if (cacheData == null)
                 {
                     var Query = await _ctx.Branches.Where(s => s.IsActive == true)
-                          .Select(s => new Db.Entity.Branch()
+                          .Select(s => new BranchDto()
                           {
                               BranchId = s.BranchId,
                               BranchName = s.BranchName,
@@ -60,10 +60,10 @@ namespace FMS.Repo.Devloper.Branch
             }
             return _Result;
         }
-        public async Task<Result<Db.Entity.Branch>> GetAllBranch(PaginationParams pagination)
+        public async Task<Result<BranchDto>> GetAllBranch(PaginationParams pagination)
         {
-            Result<Db.Entity.Branch> _Result = new();
-            List<Db.Entity.Branch> Query = [];
+            Result<BranchDto> _Result = new();
+            List<BranchDto> Query = [];
             try
             {
                 _Result.IsSucess = false;
@@ -71,7 +71,7 @@ namespace FMS.Repo.Devloper.Branch
                 if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                 {
                     Query = await _ctx.Branches.Where(s => s.IsActive == true)
-                        .Select(s => new Db.Entity.Branch()
+                        .Select(s => new BranchDto()
                         {
                             BranchId = s.BranchId,
                             BranchName = s.BranchName,
@@ -88,7 +88,7 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     string searchTerm = pagination.SearchTerm.Trim().ToLower();
                     var branches = await _ctx.Branches.Where(s => s.IsActive == true)
-                        .Select(s => new Db.Entity.Branch()
+                        .Select(s => new BranchDto()
                         {
                             BranchId = s.BranchId,
                             BranchName = s.BranchName,
@@ -321,10 +321,10 @@ namespace FMS.Repo.Devloper.Branch
         }
         #endregion
         #region Recover
-        public async Task<Result<Db.Entity.Branch>> GetRemovedBranches(PaginationParams pagination)
+        public async Task<Result<BranchDto>> GetRemovedBranches(PaginationParams pagination)
         {
-            Result<Db.Entity.Branch> _Result = new();
-            List<Db.Entity.Branch> Query = [];
+            Result<BranchDto> _Result = new();
+            List<BranchDto> Query = [];
             try
             {
                 _Result.IsSucess = false;
@@ -332,7 +332,7 @@ namespace FMS.Repo.Devloper.Branch
                 if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                 {
                     Query = await _ctx.Branches.Where(s => s.IsActive == false)
-                         .Select(s => new Db.Entity.Branch()
+                         .Select(s => new BranchDto()
                          {
                              BranchId = s.BranchId,
                              BranchName = s.BranchName,
@@ -349,7 +349,7 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     string searchTerm = pagination.SearchTerm.Trim().ToLower();
                     var branches = await _ctx.Branches.Where(s => s.IsActive == false)
-                         .Select(s => new Db.Entity.Branch()
+                         .Select(s => new BranchDto()
                          {
                              BranchId = s.BranchId,
                              BranchName = s.BranchName,
