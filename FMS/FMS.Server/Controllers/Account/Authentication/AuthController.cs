@@ -98,7 +98,7 @@ namespace FMS.Server.Controllers.Account.Authentication
             return BadRequest("Invalid data");
         }
         [HttpPost, Consumes("multipart/form-data"), AllowAnonymous]
-        public async Task<IActionResult> SignUp([FromForm] RegisterModel model)
+        public async Task<IActionResult> SignUp([FromForm] UserModel model)
         {
             if (ModelState.IsValid)
             {

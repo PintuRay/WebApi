@@ -8,6 +8,7 @@ namespace FMS.Db.Entity
     {
         public Guid StateId { get; set; }
         public Guid Fk_CountryId { get; set; }
+        public string CountryName { get; set; }
         public string StateName { get; set; }
     }
     public class StateModel // For Insert Operation
@@ -47,9 +48,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.StateName).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(c => c.Country).WithMany(s => s.States).HasForeignKey(c => c.Fk_CountryId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
              new State { StateId = Guid.Parse("67C9F3A9-9235-428A-8463-A743F711A5A3"), Fk_CountryId = Guid.Parse("E02EB064-DEF5-434A-8798-6F144A54003C"), StateName = "Andhra Pradesh", IsActive = true, CreatedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc) },

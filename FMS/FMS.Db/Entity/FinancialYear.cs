@@ -4,6 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
+    public class FinancialYearDto
+    {
+        public Guid FinancialYearId { get; set; }
+        public string Financial_Year { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
     public class FinancialYearModel
     {
         [Required]

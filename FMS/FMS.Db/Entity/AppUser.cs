@@ -65,9 +65,23 @@ namespace FMS.Db.Entity
         );
         }
     }
-    public class UserModel 
+    public class UserDto
     {
         public string Id { get; set; }
+        public string Name { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string MaratialStatus { get; set; }
+        public string Gender { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PhotoPath { get; set; }
+        public Guid Fk_AddressId { get; set; }
+        public AddressDto Address { get; set; }
+    }
+    public class UserModel
+    {
+        [Required]
+        public Guid Fk_TokenId { get; set; }
         [Required, StringLength(30, MinimumLength = 5)]
         public string Name { get; set; }
         [Required]
@@ -80,26 +94,20 @@ namespace FMS.Db.Entity
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        [Required]
         public IFormFile ProfilePhoto { get; set; }
         public string PhotoPath { get; set; }
-        [Required]
-        public AddressModel Address { get; set; }
-    }
-    public class RegisterModel: UserModel
-    {
-        [Required]
-        public Guid Fk_TokenId { get; set; }
         [Required]
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
         [Required]
         public string RouteUls { get; set; }
+        public Guid Fk_AddressId { get; set; }
+        public AddressModel Address { get; set; }
     }
-    public class RegisterValidator : AbstractValidator<RegisterModel>
+    public class UserValidator : AbstractValidator<UserModel>
     {
-        public RegisterValidator(CustomValidation vaidator)
+        public UserValidator(CustomValidation vaidator)
         {
             // Validate Token
             RuleFor(user => user.Fk_TokenId)
@@ -189,5 +197,24 @@ namespace FMS.Db.Entity
             .NotNull().WithMessage("RouteUls is required.")
             .NotEmpty().WithMessage("RouteUls cannot be empty.");
         }
+    }
+    public class UserUpdateModel
+    {
+        public string Id { get; set; }
+        [Required, StringLength(30, MinimumLength = 5)]
+        public string Name { get; set; }
+        [Required]
+        public DateTime BirthDate { get; set; }
+        [Required]
+        public string MaratialStatus { get; set; }
+        [Required]
+        public string Gender { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string PhoneNumber { get; set; }
+        public IFormFile ProfilePhoto { get; set; }
+        public string PhotoPath { get; set; }
+        public AddressUpdateModel Address { get; set; }
     }
 }

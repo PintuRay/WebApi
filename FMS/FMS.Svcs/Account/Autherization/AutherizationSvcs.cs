@@ -129,7 +129,7 @@ namespace FMS.Svcs.Account.Autherization
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateUser(UserModel User)
+        public async Task<SvcsBase> UpdateUser(UserUpdateModel User)
         {
             SvcsBase Obj;
             try

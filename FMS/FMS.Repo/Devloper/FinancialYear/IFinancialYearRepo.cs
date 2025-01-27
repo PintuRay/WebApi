@@ -7,7 +7,8 @@ namespace FMS.Repo.Devloper.FinancialYear
     {
         #region Financial Year
         #region Crud
-        Task<Result<Db.Entity.FinancialYear>> GetFinancialYears(PaginationParams pagination);
+        Task<Result<FinancialYearDto>> GetFinancialYears();
+        Task<Result<FinancialYearDto>> GetFinancialYears(PaginationParams pagination);
         Task<RepoBase> CreateFinancialYear(FinancialYearModel data, AppUser user);
         Task<RepoBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user);
         Task<RepoBase> UpdateFinancialYear(FinancialYearUpdateModel data, AppUser user);
@@ -16,7 +17,7 @@ namespace FMS.Repo.Devloper.FinancialYear
         Task<RepoBase> BulkRemoveFinancialYear(List<Guid> Ids, AppUser user);
         #endregion
         #region Recover
-        Task<Result<Db.Entity.FinancialYear>> GetRemovedFinancialYears(PaginationParams pagination);
+        Task<Result<FinancialYearDto>> GetRemovedFinancialYears(PaginationParams pagination);
         Task<RepoBase> RecoverFinancialYear(Guid Id, AppUser user);
         Task<RepoBase> BulkRecoverFinancialYear(List<Guid> Ids, AppUser user);
         Task<RepoBase> DeleteFinancialYear(Guid Id, AppUser user);

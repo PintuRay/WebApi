@@ -16,31 +16,25 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
         #endregion
         #region Branch Financial Year
         #region Crud
-        public async Task<Result<Db.Entity.BranchFinancialYear>> GetBranchFinancialYears(PaginationParams pagination)
+        public async Task<Result<BranchFinancialYearDto>> GetBranchFinancialYears(Guid BranchId)
         {
-            Result<Db.Entity.BranchFinancialYear> _Result = new();
-            List<Db.Entity.BranchFinancialYear> Query = [];
+            Result<BranchFinancialYearDto> _Result = new();
+            List<BranchFinancialYearDto> Query = [];
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize> 0 ? $"BranchFinancialYear_{pagination.PageNumber}_{pagination.PageSize}" : "BranchFinancialYear";
-                var cacheData = _cache.Get<Result<Db.Entity.BranchFinancialYear>>(cacheKey);
+                var cacheKey = $"BranchFinancialYear_{BranchId}";
+                var cacheData = _cache.Get<Result<BranchFinancialYearDto>>(cacheKey);
                 if (cacheData == null)
                 {
-                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
                     Query = await _ctx.BranchFinancialYears.
-                                       Where(s => s.IsActive == true).
-                                       Select(s => new Db.Entity.BranchFinancialYear
-                                       {
-                                           BranchFinancialYearId = s.BranchFinancialYearId,
-                                           Fk_BranchId = s.Fk_BranchId,
-                                           Branch = s.Branch != null ? new Db.Entity.Branch { BranchName = s.Branch.BranchName } : null,
-                                           Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                           FinancialYear = s.FinancialYear != null ? new Db.Entity.FinancialYear { Financial_Year = s.FinancialYear.Financial_Year } : null,
-                                       }).OrderByDescending(s => s.FinancialYear.Financial_Year)
-                                       .Skip(pagination.PageNumber * effectivePageSize)
-                                       .Take(effectivePageSize)
-                                       .ToListAsync();
+                                    Where(s => s.Fk_BranchId == BranchId && s.IsActive == true).Select(s => new BranchFinancialYearDto()
+                                    {
+                                        Fk_BranchId = s.Fk_BranchId,
+                                        BranchName = s.Branch.BranchName,
+                                        Fk_FinancialYearId = s.Fk_FinancialYearId,
+                                        FinancialYearAlias = s.FinancialYear.Financial_Year,
+                                    }).ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
@@ -59,35 +53,31 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             }
             return _Result;
         }
-        public async Task<Result<Db.Entity.BranchFinancialYear>> GetBranchFinancialYears(Guid BranchId, PaginationParams pagination)
+        public async Task<Result<BranchFinancialYearDto>> GetBranchFinancialYears(PaginationParams pagination)
         {
-            Result<Db.Entity.BranchFinancialYear> _Result = new();
-            List<Db.Entity.BranchFinancialYear> Query =[];
+            Result<BranchFinancialYearDto> _Result = new();
+            List<BranchFinancialYearDto> Query = [];
             try
             {
                 _Result.IsSucess = false;
-                var cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"BranchFinancialYear_{BranchId}_{pagination.PageNumber}_{pagination.PageSize}" : $"BranchFinancialYear_{BranchId}";
-                var cacheData = _cache.Get<Result<Db.Entity.BranchFinancialYear>>(cacheKey);
-                if (cacheData == null)
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                Query = await _ctx.BranchFinancialYears.
+                                   Where(s => s.IsActive == true).
+                                   Select(s => new BranchFinancialYearDto()
+                                   {
+                                       Fk_BranchId = s.Fk_BranchId,
+                                       BranchName = s.Branch.BranchName,
+                                       Fk_FinancialYearId = s.Fk_FinancialYearId,
+                                       FinancialYearAlias = s.FinancialYear.Financial_Year,
+                                   }).OrderByDescending(s => s.FinancialYearAlias)
+                                   .Skip(pagination.PageNumber * effectivePageSize)
+                                   .Take(effectivePageSize)
+                                   .ToListAsync();
+                if (Query.Count > 0)
                 {
-                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                  
-                        Query = await _ctx.BranchFinancialYears.
-                                        Where(s => s.Fk_BranchId == BranchId && s.IsActive == true)
-                                       .OrderByDescending(s => s.FinancialYear.Financial_Year)
-                                        .Skip(pagination.PageNumber * effectivePageSize)
-                                        .Take(effectivePageSize)
-                                        .ToListAsync();
-                    if (Query.Count > 0)
-                    {
-                        _Result.CollectionObjData = Query;
-                        _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
-                    }
-                }
-                else
-                {
-                    _Result = cacheData;
+                    _Result.CollectionObjData = Query;
+                    _Result.IsSucess = true;
+                    _Result.Count = Query.Count;
                 }
             }
             catch
@@ -183,44 +173,31 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
         }
         #endregion
         #region Recover
-        public async Task<Result<Db.Entity.BranchFinancialYear>> GetRemovedBranchFinancialYears(PaginationParams pagination)
+        public async Task<Result<BranchFinancialYearDto>> GetRemovedBranchFinancialYears(PaginationParams pagination)
         {
-            Result<Db.Entity.BranchFinancialYear> _Result = new();
-            List<Db.Entity.BranchFinancialYear> Query = [];
+            Result<BranchFinancialYearDto> _Result = new();
+            List<BranchFinancialYearDto> Query = [];
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"RemovedBranchFinancialYears_{pagination.PageNumber}_{pagination.PageSize}" : "RemovedBranchFinancialYears";
-                var cacheData = _cache.Get<Result<Db.Entity.BranchFinancialYear>>(cacheKey);
-                if (cacheData == null)
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                Query = await _ctx.BranchFinancialYears.
+                                   Where(s => s.IsActive == false).
+                                   Select(s => new BranchFinancialYearDto()
+                                   {
+                                       Fk_BranchId = s.Fk_BranchId,
+                                       BranchName = s.Branch.BranchName,
+                                       Fk_FinancialYearId = s.Fk_FinancialYearId,
+                                       FinancialYearAlias = s.FinancialYear.Financial_Year,
+                                   }).OrderByDescending(s => s.FinancialYearAlias)
+                                   .Skip(pagination.PageNumber * effectivePageSize)
+                                   .Take(effectivePageSize)
+                                   .ToListAsync();
+                if (Query.Count > 0)
                 {
-                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                    Query = await _ctx.BranchFinancialYears.
-                                       Where(s => s.IsActive == false).
-                                       Select(s => new Db.Entity.BranchFinancialYear
-                                       {
-                                           BranchFinancialYearId = s.BranchFinancialYearId,
-                                           Fk_BranchId = s.Fk_BranchId,
-                                           Branch = s.Branch != null ? new Db.Entity.Branch { BranchName = s.Branch.BranchName } : null,
-                                           Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                           FinancialYear = s.FinancialYear != null ? new Db.Entity.FinancialYear { Financial_Year = s.FinancialYear.Financial_Year } : null,
-                                       }).OrderByDescending(s => s.FinancialYear.Financial_Year)
-                                       .Skip(pagination.PageNumber * effectivePageSize)
-                                       .Take(effectivePageSize)
-                                       .ToListAsync();
-                    
-                    
-
-                    if (Query.Count > 0)
-                    {
-                        _Result.CollectionObjData = Query;
-                        _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
-                    }
-                }
-                else
-                {
-                    _Result = cacheData;
+                    _Result.CollectionObjData = Query;
+                    _Result.IsSucess = true;
+                    _Result.Count = Query.Count;
                 }
             }
             catch

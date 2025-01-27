@@ -8,7 +8,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
         #region Branch Financial Year
         #region Crud
         Task<SvcsBase> GetBranchFinancialYears(PaginationParams pagination);
-        Task<SvcsBase> GetBranchFinancialYears(Guid BranchId, PaginationParams pagination);
+        Task<SvcsBase> GetBranchFinancialYears(Guid BranchId);
         Task<SvcsBase> CreateBranchFinancialYear(BranchFinancialYearModel data, AppUser user);
         Task<SvcsBase> UpdateBranchFinancialYear(Guid Id, BranchFinancialYearModel data, AppUser user);
         Task<SvcsBase> RemoveBranchFinancialYear(Guid Id, AppUser user);

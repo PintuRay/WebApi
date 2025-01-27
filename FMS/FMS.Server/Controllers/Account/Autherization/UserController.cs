@@ -62,7 +62,7 @@ namespace FMS.Server.Controllers.Account.Autherization
             return PhysicalFile(path, PictureStorage.GetContentType(path));
         }
         [HttpPatch, Authorize(Policy = "Update")]
-        public async Task<IActionResult> Update([FromForm] UserModel User)
+        public async Task<IActionResult> Update([FromForm] UserUpdateModel User)
         {
             if (ModelState.IsValid)
             {

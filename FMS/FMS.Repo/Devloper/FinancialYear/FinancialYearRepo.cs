@@ -17,28 +17,24 @@ namespace FMS.Repo.Devloper.FinancialYear
         #endregion
         #region Financial Year
         #region Crud
-        public async Task<Result<Db.Entity.FinancialYear>> GetFinancialYears(PaginationParams pagination)
+        public async Task<Result<FinancialYearDto>> GetFinancialYears()
         {
-            Result<Db.Entity.FinancialYear> _Result = new();
-
+            Result<FinancialYearDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"FinancialYears_{pagination.PageNumber}_{pagination.PageSize}" : "FinancialYears";
-                var cacheData = _cache.Get<Result<Db.Entity.FinancialYear>>(cacheKey);
+                string cacheKey = "FinancialYears";
+                var cacheData = _cache.Get<Result<FinancialYearDto>>(cacheKey);
                 if (cacheData == null)
                 {
-                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
                     var Query = await _ctx.FinancialYears.Where(s => s.IsActive == true).
-                                   Select(s => new Db.Entity.FinancialYear
+                                   Select(s => new FinancialYearDto()
                                    {
                                        FinancialYearId = s.FinancialYearId,
                                        Financial_Year = s.Financial_Year,
                                        StartDate = s.StartDate,
                                        EndDate = s.EndDate,
                                    }).OrderByDescending(s => s.Financial_Year)
-                                         .Skip(pagination.PageNumber * effectivePageSize)
-                                         .Take(effectivePageSize)
                                          .ToListAsync();
                     if (Query.Count > 0)
                     {
@@ -50,6 +46,37 @@ namespace FMS.Repo.Devloper.FinancialYear
                 else
                 {
                     _Result = cacheData;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<Result<FinancialYearDto>> GetFinancialYears(PaginationParams pagination)
+        {
+            Result<FinancialYearDto> _Result = new();
+            try
+            {
+                _Result.IsSucess = false;
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                var Query = await _ctx.FinancialYears.Where(s => s.IsActive == true).
+                               Select(s => new FinancialYearDto()
+                               {
+                                   FinancialYearId = s.FinancialYearId,
+                                   Financial_Year = s.Financial_Year,
+                                   StartDate = s.StartDate,
+                                   EndDate = s.EndDate,
+                               }).OrderByDescending(s => s.Financial_Year)
+                                     .Skip(pagination.PageNumber * effectivePageSize)
+                                     .Take(effectivePageSize)
+                                     .ToListAsync();
+                if (Query.Count > 0)
+                {
+                    _Result.CollectionObjData = Query;
+                    _Result.Count = Query.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -77,7 +104,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Id = newFinancialYear.FinancialYearId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("FinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -113,7 +140,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("FinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
                 else
@@ -146,7 +173,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Id = data.FinancialYearId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("FinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -165,7 +192,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                 _Result.IsSucess = false;
                 var financialYearIds = dataList.Select(s => s.FinancialYearId).ToList();
                 var financialYears = await _ctx.FinancialYears.Where(b => b.IsActive == true && financialYearIds.Contains(b.FinancialYearId)).ToListAsync();
-                var notFoundfinancialYearIds = financialYearIds.Except(financialYears.Select(s=>s.FinancialYearId)).ToList();
+                var notFoundfinancialYearIds = financialYearIds.Except(financialYears.Select(s => s.FinancialYearId)).ToList();
                 if (notFoundfinancialYearIds.Count == 0)
                 {
                     var financialYearsToUpdate = financialYears.Select(financialYear =>
@@ -183,12 +210,12 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("FinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
                 else
                 {
-                    _Result.Records = financialYears.Where(kvp => notFoundfinancialYearIds.Contains(kvp.FinancialYearId)).Select(s=> new Db.Entity.FinancialYear { FinancialYearId =s.FinancialYearId, Financial_Year = s.Financial_Year}).ToList();
+                    _Result.Records = financialYears.Where(kvp => notFoundfinancialYearIds.Contains(kvp.FinancialYearId)).Select(s => new Db.Entity.FinancialYear { FinancialYearId = s.FinancialYearId, Financial_Year = s.Financial_Year }).ToList();
                 }
             }
             catch
@@ -207,7 +234,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                 var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(x => x.FinancialYearId == Id && x.IsActive == true);
                 if (Query != null)
                 {
-                   await UpdateFinancialYearRelatedEntity(Id, false);
+                    await UpdateFinancialYearRelatedEntity(Id, false);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
@@ -217,7 +244,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("FinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -251,7 +278,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("FinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
                 else
@@ -268,42 +295,28 @@ namespace FMS.Repo.Devloper.FinancialYear
         }
         #endregion
         #region Recover
-        public async Task<Result<Db.Entity.FinancialYear>> GetRemovedFinancialYears(PaginationParams pagination)
+        public async Task<Result<FinancialYearDto>> GetRemovedFinancialYears(PaginationParams pagination)
         {
-            Result<Db.Entity.FinancialYear> _Result = new();
-            List<Db.Entity.FinancialYear> Query = new();
+            Result<FinancialYearDto> _Result = new();
+            List<FinancialYearDto> Query = [];
             try
             {
                 _Result.IsSucess = false;
-                string cacheKey = pagination.PageNumber > 0 && pagination.PageSize > 0 ? $"RecoverFinancialYears_{pagination.PageNumber}_{pagination.PageSize}" : "RecoverFinancialYears";
-                var cacheData = _cache.Get<Result<Db.Entity.FinancialYear>>(cacheKey);
-                if (cacheData == null)
+
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).Select(s =>
+                new FinancialYearDto()
                 {
-                    int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                    Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).
-                                   Select(s => new Db.Entity.FinancialYear
-                                   {
-                                       FinancialYearId = s.FinancialYearId,
-                                       Financial_Year = s.Financial_Year,
-                                       StartDate = s.StartDate,
-                                       EndDate = s.EndDate,
-                                   })
-                                         .OrderByDescending(s => s.Financial_Year)
-                                         .Skip(pagination.PageNumber * effectivePageSize)
-                                         .Take(effectivePageSize)
-                                         .ToListAsync();
-
-
-                    if (Query.Count > 0)
-                    {
-                        _Result.CollectionObjData = Query;
-                        _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
-                    }
-                    else
-                    {
-                        _Result = cacheData;
-                    }
+                    FinancialYearId = s.FinancialYearId,
+                    Financial_Year = s.Financial_Year,
+                    StartDate = s.StartDate,
+                    EndDate = s.EndDate,
+                }).OrderByDescending(s => s.Financial_Year).Skip(pagination.PageNumber * effectivePageSize).Take(effectivePageSize).ToListAsync();
+                if (Query.Count > 0)
+                {
+                    _Result.CollectionObjData = Query;
+                    _Result.Count = Query.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -331,8 +344,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("FinancialYears");
-                        _cache.RemoveByPrefix("RecoverFinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -366,8 +378,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("FinancialYears");
-                        _cache.RemoveByPrefix("RecoverFinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
                 else
@@ -398,8 +409,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("FinancialYears");
-                        _cache.RemoveByPrefix("RecoverFinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
             }
@@ -429,8 +439,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
-                        _cache.RemoveByPrefix("FinancialYears");
-                        _cache.RemoveByPrefix("RecoverFinancialYears");
+                        _cache.Remove("FinancialYears");
                     }
                 }
                 else
@@ -440,7 +449,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             }
             catch
             {
-               await transaction.RollbackAsync();
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;

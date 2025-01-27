@@ -65,6 +65,7 @@ namespace FMS.Svcs.Email
             catch (SmtpException ex)
             {
                 Console.WriteLine($"SMTP Exception: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
                 Console.WriteLine($"SMTP Server Response: {ex.StatusCode}");
                 return false;
             }

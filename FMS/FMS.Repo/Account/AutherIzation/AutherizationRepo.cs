@@ -15,14 +15,14 @@ namespace FMS.Repo.Account.AutherIzation
     {
         private readonly Context _ctx = ctx;
 
-        public async Task<Result<UserModel>> GetUserById(string Id)
+        public async Task<Result<UserDto>> GetUserById(string Id)
         {
-            Result<UserModel> _Result = new();
+            Result<UserDto> _Result = new();
             try
             {
                 _Result.IsSucess = false;
                 var Query = await _ctx.Users
-                      .Select(s => new UserModel()
+                      .Select(s => new UserDto()
                       {
                           Id = s.Id,
                           Name = s.Name,
@@ -32,8 +32,10 @@ namespace FMS.Repo.Account.AutherIzation
                           Gender = s.Gender,
                           PhotoPath = s.PhotoPath,
                           PhoneNumber = s.PhoneNumber,
-                          Address = new AddressModel()
+                          Fk_AddressId = s.Fk_AddressId,
+                          Address = new AddressDto()
                           {
+                              AddressId = s.Address.AddressId,
                               At = s.Address.At,
                               City = s.Address.City,
                               PinCode = s.Address.PinCode,
@@ -42,14 +44,12 @@ namespace FMS.Repo.Account.AutherIzation
                               Fk_StateId = s.Address.Fk_StateId,
                               Fk_CountryId = s.Address.Fk_CountryId,
                           },
-                      })
-                      .SingleOrDefaultAsync(s => s.Id == Id);
+                      }).SingleOrDefaultAsync(s => s.Id == Id);
                 if (Query != null)
                 {
                     _Result.SingleObjData = Query;
                     _Result.IsSucess = true;
                 }
-
             }
             catch
             {

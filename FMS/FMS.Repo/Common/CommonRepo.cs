@@ -326,6 +326,7 @@ namespace FMS.Repo.Common
                                        {
                                            StateId = s.StateId,
                                            Fk_CountryId = s.Fk_CountryId,
+                                           CountryName =s.Country.CountryName,
                                            StateName = s.StateName
                                        }).OrderBy(s => s.StateName).ToListAsync();
                     if (Query.Count > 0)
@@ -444,6 +445,7 @@ namespace FMS.Repo.Common
                                    {
                                        StateId = s.StateId,
                                        Fk_CountryId = s.Fk_CountryId,
+                                       CountryName = s.Country.CountryName,
                                        StateName = s.StateName
                                    }).OrderBy(s => s.StateName).ToListAsync();
                 if (Query.Count > 0)
@@ -615,7 +617,9 @@ namespace FMS.Repo.Common
                                        {
                                            DistId = s.DistId,
                                            Fk_StateId = s.Fk_StateId,
+                                           StateName = s.State.StateName,
                                            Fk_CountryId = s.Fk_CountryId,
+                                           CountryName = s.Country.CountryName,
                                            DistName = s.DistName
                                        }).OrderBy(s => s.DistName).ToListAsync();
                     if (Query.Count > 0)

@@ -111,7 +111,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddTransient<CustomValidation>();
 // Register Validators
 builder.Services.AddTransient<IValidator<RegisterTokenModel>, RegisterTokenValidator>();
-builder.Services.AddTransient<IValidator<RegisterModel>, RegisterValidator>();
+builder.Services.AddTransient<IValidator<UserModel>, UserValidator>();
 //*************************************************Dependancy Injection***************************************// 
 builder.Services.AddScoped<ICommonRepo, CommonRepo>();
 builder.Services.AddScoped<ICommonSvcs, CommonSvcs>();

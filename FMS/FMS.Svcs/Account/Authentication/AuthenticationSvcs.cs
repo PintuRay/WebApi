@@ -137,7 +137,7 @@ namespace FMS.Svcs.Account.Authentication
             }
             return Obj;
         }
-        public async Task<SvcsBase> SignUp(RegisterModel data)
+        public async Task<SvcsBase> SignUp(UserModel data)
         {
             bool isMailSend = false;
             SvcsBase Obj;

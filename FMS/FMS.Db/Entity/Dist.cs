@@ -9,7 +9,9 @@ namespace FMS.Db.Entity
     {
         public Guid DistId { get; set; }
         public Guid Fk_CountryId { get; set; }
+        public string CountryName { get; set; }
         public Guid Fk_StateId { get; set; }
+        public string StateName { get; set; }
         public string DistName { get; set; }
     }
     public class DistModel

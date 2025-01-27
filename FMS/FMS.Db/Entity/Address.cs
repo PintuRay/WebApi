@@ -1,17 +1,39 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
-    public class AddressModel
+    public class AddressDto
     {
+        public Guid AddressId { get; set; }
         public Guid Fk_CountryId { get; set; }
+        public string CountryName { get; set; }
         public Guid Fk_StateId { get; set; }
+        public string StateName { get; set; }
         public Guid Fk_DistId { get; set; }
+        public string DistName { get; set; }
         public string At { get; set; }
         public string Post { get; set; }
         public string City { get; set; }
+        public string PinCode { get; set; }
+    }
+    public class AddressModel
+    {
+        [Required]
+        public Guid Fk_CountryId { get; set; }
+        [Required]
+        public Guid Fk_StateId { get; set; }
+        [Required]
+        public Guid Fk_DistId { get; set; }
+        [Required]
+        public string At { get; set; }
+        [Required]
+        public string Post { get; set; }
+        [Required]
+        public string City { get; set; }
+        [Required]
         public string PinCode { get; set; }
     }
     public class AddressUpdateModel : AddressModel

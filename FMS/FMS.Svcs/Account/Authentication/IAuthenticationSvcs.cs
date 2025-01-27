@@ -13,7 +13,7 @@ namespace FMS.Svcs.Account.Authentication
         Task<SvcsBase> IsEmailInUse(string email);
         Task<SvcsBase> IsPhoneNumberInUse(string phoneNumber);
         Task<SvcsBase> IsUserNameExist(string userName);
-        Task<SvcsBase> SignUp(RegisterModel data);
+        Task<SvcsBase> SignUp(UserModel data);
         #endregion
         #region SignIn 
         Task<SvcsBase> SignIn(SignInModel data);

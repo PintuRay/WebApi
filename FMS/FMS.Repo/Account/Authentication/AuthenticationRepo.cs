@@ -57,7 +57,6 @@ namespace FMS.Repo.Account.Authentication
             }
             return false;
         }
-
         public async Task<bool> IsUserNameExist(string userName)
         {
             Result<bool> _Result = new();

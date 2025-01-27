@@ -5,6 +5,6 @@ namespace FMS.Repo.Account.AutherIzation
 {
     public interface IAutherizationRepo
     {
-        Task<Result<UserModel>> GetUserById(string Id);
+        Task<Result<UserDto>> GetUserById(string Id);
     }
 }

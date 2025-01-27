@@ -5,6 +5,13 @@ using System.Text.Json.Serialization;
 
 namespace FMS.Db.Entity
 {
+    public class BranchFinancialYearDto
+    {
+        public Guid Fk_FinancialYearId { get; set; }
+        public string FinancialYearAlias {  get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public string BranchName { get; set; }
+    }
     public class BranchFinancialYearModel
     {
         public Guid Fk_FinancialYearId { get; set; }

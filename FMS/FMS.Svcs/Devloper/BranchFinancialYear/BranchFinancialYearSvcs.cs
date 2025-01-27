@@ -44,12 +44,12 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> GetBranchFinancialYears(Guid BranchId, PaginationParams pagination)
+        public async Task<SvcsBase> GetBranchFinancialYears(Guid BranchId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.GetBranchFinancialYears(BranchId, pagination);
+                var repoResult = await _branchFinancialYearRepo.GetBranchFinancialYears(BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
