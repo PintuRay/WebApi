@@ -1,40 +1,41 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class SalesReturnTransactionModel
     {
+        [Required]
         public Guid Fk_SalesReturnOrderId { get; set; }
+        [Required]
         public Guid Fk_ProductId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal Quantity { get; set; }
+        [Required]
         public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
         public decimal Rate { get; set; }
+        [Required]
         public decimal Discount { get; set; }
+        [Required]
         public decimal DiscountAmount { get; set; }
+        [Required]
         public decimal Gst { get; set; }
+        [Required]
         public decimal GstAmount { get; set; }
+        [Required]
         public decimal Amount { get; set; }
     }
     public class SalesReturnTransactionUpdateModel : SalesReturnTransactionModel
     {
+        [Required]
         public Guid SalesReturnId { get; }
-    }
-    public class SalesReturnTransaction : SalesReturnTransactionUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public SalesReturnOrder SalesReturnOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
     }
     public class SalesReturnTransactionValidator : AbstractValidator<SalesReturnTransactionModel>
     {
@@ -43,6 +44,23 @@ namespace FMS.Db.Entity
 
         }
     }
+    public class SalesReturnTransactionDto : SalesReturnTransactionUpdateModel
+    {
+        public SalesReturnOrder SalesReturnOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+    }
+        public class SalesReturnTransaction : SalesReturnTransactionDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+    }
+
     internal class SalesReturnTransactionConfig : IEntityTypeConfiguration<SalesReturnTransaction>
     {
         public void Configure(EntityTypeBuilder<SalesReturnTransaction> builder)

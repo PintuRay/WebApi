@@ -1,36 +1,33 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class DamageTransactionModel
-    {     
+    {
+        [Required]
         public Guid Fk_DamageOrderId { get; set; }
+        [Required]
         public Guid Fk_ProductId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal Quantity { get; set; }
+        [Required]
         public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
         public decimal Rate { get; set; }
+        [Required]
         public decimal Amount { get; set; }
     }
     public class DamageTransactionUpdateModel : DamageTransactionModel
     {
+        [Required]
         public Guid DamageTransactionId { get; set; }
-    }
-    public class DamageTransaction : DamageTransactionUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public DamageOrder DamageOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
     }
     public class DamageTransactionValidator : AbstractValidator<DamageTransactionModel>
     {
@@ -39,7 +36,22 @@ namespace FMS.Db.Entity
 
         }
     }
-
+    public class DamageTransactionDto: DamageTransactionUpdateModel
+    {
+        public DamageOrder DamageOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+    }
+    public class DamageTransaction : DamageTransactionDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+    }
     internal class DamageTransactionConfig : IEntityTypeConfiguration<DamageTransaction>
     {
         public void Configure(EntityTypeBuilder<DamageTransaction> builder)
@@ -57,9 +69,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Amount).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(p => p.DamageOrder).WithMany(po => po.DamageTransactions).HasForeignKey(po => po.Fk_DamageOrderId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Product).WithMany(po => po.DamageTransactions).HasForeignKey(po => po.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Branch).WithMany(po => po.DamageTransactions).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);

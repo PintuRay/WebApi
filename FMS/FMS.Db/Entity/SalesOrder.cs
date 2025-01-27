@@ -1,34 +1,53 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class SalesOrderModel
     {
+        [Required]
         public string TransactionNo { get; set; }
+        [Required]
         public DateTime TransactionDate { get; set; }
+        [Required]
         public string TransactionType { get; set; }
+        [Required]
         public string PriceType { get; set; }
         public Guid? Fk_SubLedgerId { get; set; }
         public string CustomerName { get; set; } = null;
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public string OrderNo { get; set; }
+        [Required]
         public DateTime OrderDate { get; set; }
+        [Required]
         public decimal SubTotal { get; set; }
+        [Required]
         public decimal Discount { get; set; }
+        [Required]
         public decimal Gst { get; set; }
+        [Required]
         public decimal GrandTotal { get; set; }
+        [Required]
         public string TranspoterName { get; set; }
         public string VehicleNo { get; set; } = null;
         public string ReceivingPerson { get; set; } = null;
         public string Narration { get; set; } = null;
-        public ICollection<SalesTransaction> SalesTransactions { get; set; }
+        [NotMapped]
+        public List<SalesTransactionModel> SalesTransactions { get; set; }
     }
     public class SalesOrderUpdateModel : SalesOrderModel
     {
+        [Required]
         public Guid SalesOrderId { get; set; }
+        [NotMapped]
+        public new List<SalesTransactionUpdateModel> SalesTransactions { get; set; }
     }
     public class SalesOrderValidator : AbstractValidator<SalesOrderModel>
     {
@@ -37,17 +56,20 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class SalesOrder : SalesOrderUpdateModel
+    public class SalesOrderDto : SalesOrderUpdateModel
+    {
+        public SubLedger SubLedger { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public new ICollection<SalesTransaction> SalesTransactions { get; set; }
+    }
+        public class SalesOrder : SalesOrderDto
     {
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
-        public SubLedger SubLedger { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-
     }
     internal class SalesOrderConfig : IEntityTypeConfiguration<SalesOrder>
     {

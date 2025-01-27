@@ -1,38 +1,40 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class ReceiptOrderModel
     {
+        [Required]
         public string VouvherNo { get; set; }
+        [Required]
         public DateTime VoucherDate { get; set; }
+        [Required]
         public Guid Fk_CashBankLedgerId { get; set; }
         public string ChequeNo { get; set; } = null;
         public DateTime? ChequeDate { get; set; }
+        [Required]
         public string Narration { get; set; }
+        [Required]
         public decimal TotalAmount { get; set; }
+        [Required]
         public string DrCr { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
-        public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+        [NotMapped]
+        public List<ReceiptTransactionModel> ReceiptTransactions { get; set; }
     }
     public class ReceiptOrderUpdateModel : ReceiptOrderModel
     {
+        [Required]
         public Guid ReceiptOrderId { get; set; }
-    }
-
-    public class ReceiptOrder : ReceiptOrderUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public LedgerDev LedgerDev { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [NotMapped]
+        public new List<ReceiptTransactionUpdateModel> ReceiptTransactions { get; set; }
     }
     public class ReceiptOrderValidator : AbstractValidator<ReceiptOrderModel>
     {
@@ -41,6 +43,22 @@ namespace FMS.Db.Entity
 
         }
     }
+    public class ReceiptOrderDto : ReceiptOrderUpdateModel
+    {
+        public LedgerDev LedgerDev { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public new ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+    }
+        public class ReceiptOrder : ReceiptOrderDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+    }
+
 
     internal class ReceiptOrderConfig : IEntityTypeConfiguration<ReceiptOrder>
     {                                                                                                  

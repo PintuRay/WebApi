@@ -1,29 +1,38 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class ProductionOrderSetupModel
     {
+        [Required]
         public Guid Fk_FinishedGoodId { get; set; }
-        public ICollection<ProductionTransactionSetup> ProductionTransactionSetups { get; set; }
+        [NotMapped]
+        public List<ProductionTransactionSetUpModel> ProductionTransactionSetups { get; set; }
     }
     public class ProductionOrderSetupUpdateModel : ProductionOrderSetupModel
     {
+        [Required]
         public Guid ProductionOrderSetupId { get; set; }
+        [NotMapped]
+        public new ICollection<ProductionTransactionSetUpUpdateModel> ProductionTransactionSetups { get; set; }
     }
-
-    public class ProductionOrderSetup : ProductionOrderSetupUpdateModel
+    public class ProductionOrderSetupDto : ProductionOrderSetupUpdateModel
+    {
+        [NotMapped]
+        public string FinishedGoodName { get; set; }
+        public Product Product { get; set; }
+        public new ICollection<ProductionTransactionSetup> ProductionTransactionSetups { get; set; }
+    }
+        public class ProductionOrderSetup : ProductionOrderSetupDto
     {
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
-        [NotMapped]
-        public string FinishedGoodName { get; set; }
-        public Product Product { get; set; }
     }
     internal class ProductionOrderSetupConfig : IEntityTypeConfiguration<ProductionOrderSetup>
     {

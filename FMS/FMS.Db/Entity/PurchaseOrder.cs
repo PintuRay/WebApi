@@ -1,46 +1,52 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class PurchaseOrderModel
     {
+        [Required]
         public string TransactionNo { get; set; }
+        [Required]
         public Guid Fk_ProductTypeId { get; set; }
+        [Required]
         public Guid Fk_SubLedgerId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public DateTime TransactionDate { get; set; }
+        [Required]
         public string InvoiceNo { get; set; }
+        [Required]
         public DateTime InvoiceDate { get; set; }
+        [Required]
         public decimal SubTotal { get; set; }
+        [Required]
         public decimal Discount { get; set; }
+     
         public decimal? Gst { get; set; }
+        [Required]
         public decimal TransportationCharges { get; set; }
+        [Required]
         public decimal GrandTotal { get; set; }
+        [Required]
         public string TranspoterName { get; set; }
         public string VehicleNo { get; set; } = null;
         public string Narration { get; set; } = null;
         public string ReceivingPerson { get; set; } = null;
-        public ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
+        [NotMapped]
+        public List<PurchaseTransactionModel> PurchaseTransactions { get; set; }
     }
     public class PurchaseOrderUpdateModel : PurchaseOrderModel
     {
         public Guid PurchaseOrderId { get; set; }
-    }
-
-    public class PurchaseOrder: PurchaseOrderUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public SubLedger SubLedger { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public ProductType ProductType { get; set; }
+        [NotMapped]
+        public new List<PurchaseTransactionUpdateModel> PurchaseTransactions { get; set; }
     }
     public class PurchaseOrderValidator : AbstractValidator<PurchaseOrderModel>
     {
@@ -48,6 +54,22 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class PurchaseOrderDto : PurchaseOrderUpdateModel
+    {
+        public SubLedger SubLedger { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public ProductType ProductType { get; set; }
+        public new ICollection<PurchaseTransaction> PurchaseTransactions { get; set; }
+    }
+        public class PurchaseOrder: PurchaseOrderDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class PurchaseOrderConfig : IEntityTypeConfiguration<PurchaseOrder>
     {

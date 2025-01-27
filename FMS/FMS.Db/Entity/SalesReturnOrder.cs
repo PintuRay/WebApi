@@ -1,45 +1,53 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class SalesReturnOrderModel
     {
+        [Required]
         public string TransactionNo { get; set; }
+        [Required]
         public DateTime TransactionDate { get; set; }
+        [Required]
         public string TransactionType { get; set; }
+        [Required]
         public string PriceType { get; set; }
+        [Required]
         public Guid? Fk_SubLedgerId { get; set; }
         public string CustomerName { get; set; } = null;
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public string OrderNo { get; set; }
+        [Required]
         public DateTime OrderDate { get; set; }
+        [Required]
         public decimal SubTotal { get; set; }
+        [Required]
         public decimal Discount { get; set; }
+        [Required]
         public decimal GrandTotal { get; set; }
+        [Required]
         public decimal Gst { get; set; }
+        [Required]
         public string TranspoterName { get; set; }
         public string VehicleNo { get; set; } = null;
         public string ReceivingPerson { get; set; } = null;
         public string Narration { get; set; } = null;
-        public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
+        [NotMapped]
+        public List<SalesReturnTransactionModel> SalesReturnTransactions { get; set; }
     }
     public class SalesReturnOrderUpdateModel : SalesReturnOrderModel
     {
         public Guid SalesReturnOrderId { get; set; }
-    }
-    public class SalesReturnOrder : SalesReturnOrderUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public SubLedger SubLedger { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [NotMapped]
+        public new List<SalesReturnTransactionUpdateModel> SalesReturnTransactions { get; set; }
     }
     public class SalesReturnOrderValidator : AbstractValidator<SalesReturnOrderModel>
     {
@@ -48,6 +56,22 @@ namespace FMS.Db.Entity
 
         }
     }
+    public class SalesReturnOrderDto : SalesReturnOrderUpdateModel
+    {
+        public SubLedger SubLedger { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public new ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
+    }
+    public class SalesReturnOrder : SalesReturnOrderDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+    }
+
     internal class SalesReturnOrderConfig : IEntityTypeConfiguration<SalesReturnOrder>
     {
         public void Configure(EntityTypeBuilder<SalesReturnOrder> builder)
@@ -75,9 +99,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.GrandTotal).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(e => e.SubLedger).WithMany(s => s.SalesReturnOrders).HasForeignKey(e => e.Fk_SubLedgerId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(e => e.Branch).WithMany(s => s.SalesReturnOrders).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(e => e.FinancialYear).WithMany(s => s.SalesReturnOrders).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);

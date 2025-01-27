@@ -1,36 +1,23 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FMS.Db.Entity
 {
-    public class BranchFinancialYearDto
-    {
-        public Guid Fk_FinancialYearId { get; set; }
-        public string FinancialYearAlias {  get; set; }
-        public Guid Fk_BranchId { get; set; }
-        public string BranchName { get; set; }
-    }
     public class BranchFinancialYearModel
     {
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
     }
     public class BranchFinancialYearUpdateModel: BranchFinancialYearModel
     {
+        [Required]
         public Guid BranchFinancialYearId { get; set; }
-    }
-    public class BranchFinancialYear: BranchFinancialYearUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifyBy { get; set; }
-        //Reference Navigation Property
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
     }
     public class BranchFinancialYearValidator : AbstractValidator<BranchFinancialYearModel>
     {
@@ -38,6 +25,21 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class BranchFinancialYearDto: BranchFinancialYearUpdateModel
+    {
+        [NotMapped]
+        public string BranchName { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+    }
+    public class BranchFinancialYear: BranchFinancialYearDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifyBy { get; set; }
     }
     internal class BranchFinancialYearConfig : IEntityTypeConfiguration<BranchFinancialYear>
     {

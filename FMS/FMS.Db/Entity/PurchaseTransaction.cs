@@ -1,40 +1,41 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class PurchaseTransactionModel
     {
+        [Required]
         public Guid Fk_PurchaseOrderId { get; set; }
+        [Required]
         public Guid Fk_ProductId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal Quantity { get; set; }
+        [Required]
         public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
         public decimal Rate { get; set; }
+        [Required]
         public decimal Discount { get; set; }
+        [Required]
         public decimal DiscountAmount { get; set; }
+        [Required]
         public decimal Gst { get; set; }
+        [Required]
         public decimal GstAmount { get; set; }
+        [Required]
         public decimal Amount { get; set; }
     }
     public class PurchaseTransactionUpdateModel : PurchaseTransactionModel
     {
+        [Required]
         public Guid PurchaseId { get; }
-    }
-    public class PurchaseTransaction : PurchaseTransactionUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public PurchaseOrder PurchaseOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
     }
     public class PurchaseTransactionValidator : AbstractValidator<PurchaseTransactionModel>
     {
@@ -42,6 +43,22 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class PurchaseTransactionDto : PurchaseTransactionUpdateModel
+    {
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public PurchaseOrder PurchaseOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+    }
+        public class PurchaseTransaction : PurchaseTransactionDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
 
     internal class PurchaseTransactionConfig : IEntityTypeConfiguration<PurchaseTransaction>

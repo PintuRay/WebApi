@@ -1,35 +1,22 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
-    public class StateDto  //For List Operation
+
+    public class StateModel 
     {
-        public Guid StateId { get; set; }
+        [Required]
         public Guid Fk_CountryId { get; set; }
-        public string CountryName { get; set; }
+        [Required]
         public string StateName { get; set; }
     }
-    public class StateModel // For Insert Operation
+    public class StateUpdateModel : StateModel 
     {
-        public Guid Fk_CountryId { get; set; }
-        public string StateName { get; set; }
-    }
-    public class StateUpdateModel : StateModel //For Updtate Operation
-    {
+        [Required]
         public Guid StateId { get; set; }
-    }
-    public class State : StateUpdateModel // Db Entity
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public Country Country { get; set; }
-        public ICollection<Address> Addresses { get; set; }
-        public ICollection<Dist> Dists { get; set; }
     }
     public class StateValidator : AbstractValidator<StateModel>
     {
@@ -37,6 +24,20 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class StateDto : StateUpdateModel
+    {
+        public Country Country { get; set; }
+        public ICollection<Address> Addresses { get; set; }
+        public ICollection<Dist> Dists { get; set; }
+    }
+    public class State : StateDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class StateConfig : IEntityTypeConfiguration<State>
     {

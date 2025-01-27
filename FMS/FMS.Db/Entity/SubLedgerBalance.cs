@@ -1,35 +1,33 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class SubLedgerBalanceModel
     {
+        [Required]
         public Guid Fk_LedgerBalanceId { get; set; }
+        [Required]
         public Guid Fk_SubLedgerId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal OpeningBalance { get; set; }
+        [Required]
         public string OpeningBalanceType { get; set; }
+        [Required]
         public decimal RunningBalance { get; set; }
+        [Required]
         public string RunningBalanceType { get; set; }
     }
     public class SubLedgerBalanceUpdateModel : SubLedgerBalanceModel
     {
+        [Required]
         public Guid SubLedgerBalanceId { get; set; }
-    }
-    public class SubLedgerBalance : SubLedgerBalanceUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public SubLedger SubLedger { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public LedgerBalance LedgerBalance { get; set; }
     }
     public class SubLedgerBalanceValidator : AbstractValidator<SubLedgerBalanceModel>
     {
@@ -37,6 +35,21 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class SubLedgerBalanceDto : SubLedgerBalanceUpdateModel
+    {
+        public SubLedger SubLedger { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public LedgerBalance LedgerBalance { get; set; }
+    }
+        public class SubLedgerBalance : SubLedgerBalanceDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class SubLedgerBalanceConfig : IEntityTypeConfiguration<SubLedgerBalance>
     {
@@ -55,9 +68,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.RunningBalanceType).HasMaxLength(10).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-                       builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(bs => bs.SubLedger).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_SubLedgerId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(bs => bs.Branch).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(bs => bs.FinancialYear).WithMany(b => b.SubLedgerBalances).HasForeignKey(bs => bs.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);

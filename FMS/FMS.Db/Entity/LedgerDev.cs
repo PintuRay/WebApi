@@ -1,29 +1,47 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class LedgerDevModel
-    {     
+    {
+        [Required]
         public string LedgerName { get; set; }
+        [Required]
         public string LedgerType { get; set; }
+        [Required]
         public string HasSubLedger { get; set; }
+        [Required]
         public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
         public Guid? Fk_LedgerSubGroupId { get; set; }
     }
-    public class LedgerDev: LedgerDevModel
+    public class LedgerDevUpdateModel: LedgerDevModel
     {
+        [Required]
         public Guid LedgerId { get; set; }
+    }
+    public class LedgerDevDto : LedgerDevUpdateModel
+    {
         public LedgerGroup LedgerGroup { get; set; }
         public LedgerSubGroupDev LedgerSubGroup { get; set; } = null;
         public ICollection<SubLedger> SubLedgers { get; set; }
         public ICollection<LedgerBalance> LedgerBalances { get; set; }
-       public ICollection<Party> Parties { get; set; }
-       public ICollection<JournalTransaction> JournalTransactions { get; set; }
+        public ICollection<Party> Parties { get; set; }
+        public ICollection<JournalTransaction> JournalTransactions { get; set; }
         public ICollection<PaymentOrder> PaymentOrders { get; set; }
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+    }
+    public class LedgerDev: LedgerDevDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class LedgersDevConfig : IEntityTypeConfiguration<LedgerDev>
     {
@@ -37,6 +55,11 @@ namespace FMS.Db.Entity
             builder.Property(e => e.HasSubLedger).HasMaxLength(10).IsRequired(false);
             builder.Property(e => e.Fk_LedgerGroupId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_LedgerSubGroupId).HasColumnType("uuid").IsRequired(false);
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
+            builder.Property(e => e.CreatedBy).HasMaxLength(100);
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+            builder.Property(e => e.ModifyBy).HasMaxLength(100);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(l => l.LedgerGroup).WithMany(g => g.LedgersDev).HasForeignKey(l => l.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(l => l.LedgerSubGroup).WithMany(g => g.LedgersDev).HasForeignKey(l => l.Fk_LedgerSubGroupId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(

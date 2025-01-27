@@ -1,36 +1,33 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class OutwardSupplyTransactionModel
     {
+        [Required]
         public Guid Fk_OutwardSupplyOrderId { get; set; }
+        [Required]
         public Guid Fk_ProductId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal Quantity { get; set; }
+        [Required]
         public Guid Fk_UnitId { get; set; }
+        [Required]
         public decimal Rate { get; set; }
+        [Required]
         public decimal Amount { get; set; }
     }
     public class OutwardSupplyTransactionUpdateModel : OutwardSupplyTransactionModel
     {
+        [Required]
         public Guid OutwardSupplyTransactionId { get; set; }
-    }
-    public class OutwardSupplyTransaction : OutwardSupplyTransactionUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public OutwardSupplyOrder OutwardSupplyOrder { get; set; }
-        public Product Product { get; set; }
-        public Unit Unit { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
     }
     public class OutwardSupplyTransactionValidator : AbstractValidator<OutwardSupplyTransactionModel>
     {
@@ -39,7 +36,22 @@ namespace FMS.Db.Entity
 
         }
     }
-
+    public class OutwardSupplyTransactionDto : OutwardSupplyTransactionUpdateModel
+    {
+        public OutwardSupplyOrder OutwardSupplyOrder { get; set; }
+        public Product Product { get; set; }
+        public Unit Unit { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+    }
+    public class OutwardSupplyTransaction : OutwardSupplyTransactionDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+    }
     internal class OutwardSupplyTransactionConfig : IEntityTypeConfiguration<OutwardSupplyTransaction>
     {
         public void Configure(EntityTypeBuilder<OutwardSupplyTransaction> builder)
@@ -56,9 +68,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Amount).HasColumnType("decimal(18,2)").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(p => p.OutwardSupplyOrder).WithMany(po => po.OutwardSupplyTransactions).HasForeignKey(po => po.Fk_OutwardSupplyOrderId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Product).WithMany(po => po.OutwardSupplyTransactions).HasForeignKey(po => po.Fk_ProductId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(p => p.Branch).WithMany(po => po.OutwardSupplyTransactions).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);

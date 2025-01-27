@@ -4,14 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
-    public class BranchDto
-    {
-        public Guid BranchId { get; set; }
-        public string BranchName { get; set; }
-        public string BranchAddress { get; set; }
-        public string ContactNumber { get; set; }
-        public string BranchCode { get; set; }
-    }
     public class BranchModel
     {
         [Required]
@@ -27,15 +19,25 @@ namespace FMS.Db.Entity
     {
         [Required]
         public Guid BranchId { get; set; }
-    } 
-    public class Branch : BranchUpdateModel
+    }
+    public class BranchValidator : AbstractValidator<BranchModel>
     {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifyBy { get; set; }
-        //Collection Navigation Property
+        public BranchValidator()
+        {
+            RuleFor(branch => branch.BranchName)
+            .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
+            .Matches(@"^[a-zA-Z\s]+$").WithMessage("BranchName should only contain letters and spaces.");
+            
+            RuleFor(branch => branch.ContactNumber)
+            .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")
+            .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
+            
+            RuleFor(branch => branch.BranchCode)
+            .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a letter and followed by a combination of letters and numbers.");
+        }
+    }
+    public class BranchDto: BranchUpdateModel
+    {
         public ICollection<BranchFinancialYear> BranchFinancialYears { get; set; }
         public ICollection<Company> Companies { get; set; }
         public ICollection<UserBranch> UserBranch { get; set; }
@@ -70,25 +72,15 @@ namespace FMS.Db.Entity
         public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
-    public class BranchValidator : AbstractValidator<BranchModel>
+    public class Branch : BranchDto
     {
-        public BranchValidator()
-        {
-            RuleFor(branch => branch.BranchName)
-            .NotEmpty().WithMessage("BranchName is required.")
-            .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
-            .Matches(@"^[a-zA-Z\s]+$").WithMessage("BranchName should only contain letters and spaces.");
-
-            RuleFor(branch => branch.ContactNumber)
-            .NotEmpty().WithMessage("ContactNumber is required.")
-            .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")
-            .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
-
-            RuleFor(branch => branch.BranchCode)
-            .NotEmpty().WithMessage("BranchCode is required.")
-            .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a letter and followed by a combination of letters and numbers.");
-        }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifyBy { get; set; }
     }
+   
     internal class BranchConfig : IEntityTypeConfiguration<Branch>
     {
         public void Configure(EntityTypeBuilder<Branch> builder)

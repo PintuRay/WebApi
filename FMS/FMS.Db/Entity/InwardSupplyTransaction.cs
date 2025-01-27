@@ -1,35 +1,32 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
     public class InwardSupplyTransactionModel
     {
+        [Required]
         public Guid Fk_InwardSupplyOrderId { get; set; }
+        [Required]
         public Guid Fk_ProductId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal Quantity { get; set; }
+        [Required]
         public Guid Fk_UnitId {  get; set; }
+        [Required]
         public decimal Rate { get; set; }
+        [Required]
         public decimal Amount { get; set; }
     }
     public class InwardSupplyTransactionUpdateModel : InwardSupplyTransactionModel
     {
+        [Required]
         public Guid InwardSupplyTransactionId { get; set; }
-    }
-    public class InwardSupplyTransaction : InwardSupplyTransactionUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public InwardSupplyOrder InwardSupplyOrder { get; set; }
-        public Product Product { get; set; }
-        public Unit Unit { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
     }
     public class InwardSupplyTransactionValidator : AbstractValidator<InwardSupplyTransactionModel>
     {
@@ -38,7 +35,22 @@ namespace FMS.Db.Entity
 
         }
     }
-
+    public class InwardSupplyTransactionDto: InwardSupplyTransactionUpdateModel
+    {
+        public InwardSupplyOrder InwardSupplyOrder { get; set; }
+        public Product Product { get; set; }
+        public Unit Unit { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+    }
+    public class InwardSupplyTransaction : InwardSupplyTransactionDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+    }
     internal class InwardSupplyTransactionConfig : IEntityTypeConfiguration<InwardSupplyTransaction>
     {
         public void Configure(EntityTypeBuilder<InwardSupplyTransaction> builder)

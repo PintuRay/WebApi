@@ -1,33 +1,26 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class ProductionTransactionSetUpModel
     {
+        [Required]
         public Guid Fk_ProductionOrderSetupId {  get; set; }
+        [Required]
         public Guid Fk_RawMaterialId { get; set; }
+        [Required]
         public decimal Quantity { get; set; }
+        [Required]
         public Guid Fk_AlternateUnitId { get; set; }
     }
     public class ProductionTransactionSetUpUpdateModel : ProductionTransactionSetUpModel
     {
+        [Required]
         public Guid ProductionTransactionSetupId { get; set; }
-    }
-    public class ProductionTransactionSetup: ProductionTransactionSetUpUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public ProductionOrderSetup ProductionOrderSetup { get; set; }
-        [NotMapped]
-        public string RawMaterialName { get; set; }
-        public Product Product { get; set; }
-       public AlternateUnit AlternateUnit { get; set; }
     }
     public class ProductionTransactionSetupValidator : AbstractValidator<ProductionTransactionSetUpModel>
     {
@@ -35,6 +28,22 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class ProductionTransactionSetupDto : ProductionTransactionSetUpUpdateModel
+    {
+        [NotMapped]
+        public string RawMaterialName { get; set; }
+        public ProductionOrderSetup ProductionOrderSetup { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+    }
+        public class ProductionTransactionSetup: ProductionTransactionSetupDto
+        {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class ProductionTransactionSetupConfig : IEntityTypeConfiguration<ProductionTransactionSetup>
     {

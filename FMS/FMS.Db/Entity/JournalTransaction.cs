@@ -20,13 +20,15 @@ namespace FMS.Db.Entity
     {
         public Guid TransactionId { get; set; }
     }
-    public class JournalTransaction : JournalTransactionUpdateModel
+    public class JournalTransactionValidator : AbstractValidator<JournalTransactionModel>
     {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
+        public JournalTransactionValidator()
+        {
+
+        }
+    }
+    public class JournalTransactionDto: JournalTransactionUpdateModel
+    {
         public LedgerGroup LedgerGroup { get; set; }
         public Ledger Ledger { get; set; }
         public LedgerDev LedgerDev { get; set; }
@@ -35,14 +37,14 @@ namespace FMS.Db.Entity
         public FinancialYear FinancialYear { get; set; }
         public JournalOrder JournalOrder { get; set; }
     }
-    public class JournalTransactionValidator : AbstractValidator<JournalTransactionModel>
+    public class JournalTransaction : JournalTransactionDto
     {
-        public JournalTransactionValidator()
-        {
-
-        }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
-
     internal class JournalTransactionConfig : IEntityTypeConfiguration<JournalTransaction>
     {
         public void Configure(EntityTypeBuilder<JournalTransaction> builder)
@@ -60,9 +62,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(e => e.JournalOrder).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_JournalOrderId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(e => e.LedgerGroup).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_LedgerGroupId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(e => e.Ledger).WithMany(s => s.JournalTransactions).HasForeignKey(e => e.Fk_LedgerId).OnDelete(DeleteBehavior.Cascade);

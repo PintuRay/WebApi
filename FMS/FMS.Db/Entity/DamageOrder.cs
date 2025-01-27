@@ -1,36 +1,35 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
-{
+{ 
     public class DamageOrderModel
-    {    
+    {
+        [Required]
         public string TransactionNo { get; set; }
+        [Required]
         public DateTime TransactionDate { get; set; }
+        [Required]
         public Guid Fk_ProductTypeId { get; set; }
         public string Fk_LabourId { get; set; } = null;
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal TotalAmount { get; set; }
         public string Reason { get; set; } = null;
-        public ICollection<DamageTransaction> DamageTransactions { get; set; }
+        [NotMapped]
+        public List<DamageTransactionModel> DamageTransactions { get; set; }
     }
     public class DamageOrderUpdateModel : DamageOrderModel
     {
         public Guid DamageOrderId { get; set; }
-    }
-    public class DamageOrder: DamageOrderUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public ProductType ProductType { get; set; }
-        public Labour Labour { get; set; }
+        [NotMapped]
+        public new List<DamageTransactionUpdateModel> DamageTransactions { get; set; }
     }
     public class DamageOrderValidator : AbstractValidator<DamageOrderModel>
     {
@@ -38,6 +37,22 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class DamageOrderDto: DamageOrderUpdateModel
+    {
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public ProductType ProductType { get; set; }
+        public Labour Labour { get; set; }
+        public new ICollection<DamageTransaction> DamageTransactions { get; set; }
+    }
+    public class DamageOrder: DamageOrderDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class DamageOrderConfig : IEntityTypeConfiguration<DamageOrder>
     {

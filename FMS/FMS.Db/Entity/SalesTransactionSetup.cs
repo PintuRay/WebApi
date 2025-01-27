@@ -1,33 +1,26 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class SalesTransactionSetupModel
     {
+        [Required]
         public Guid Fk_SalesOrderSetupId {  get; set; }
+        [Required]
         public Guid Fk_SubFinishedGoodId { get; set; }
+        [Required]
         public decimal Quantity { get; set; }
+        [Required]
         public Guid Fk_AlternateUnitId { get; set; }
     }
     public class SalesTransactionSetupUpdateModel : SalesTransactionSetupModel
     {
+        [Required]
         public Guid SalesTransactionSetupId { get; set; }
-    }
-    public class SalesTransactionSetup : SalesTransactionSetupUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public SalesOrderSetup SalesOrderSetup { get; set; }
-        [NotMapped]
-        public string SubFinishedGoodName { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
     }
     public class SalesTransactionSetupValidator : AbstractValidator<SalesTransactionSetupModel>
     {
@@ -35,6 +28,22 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class SalesTransactionSetupDto : SalesTransactionSetupUpdateModel
+    {
+        [NotMapped]
+        public string SubFinishedGoodName { get; set; }
+        public SalesOrderSetup SalesOrderSetup { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+    }
+        public class SalesTransactionSetup : SalesTransactionSetupDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     public class SalesTransactionSetupConfig : IEntityTypeConfiguration<SalesTransactionSetup>
     {

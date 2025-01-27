@@ -2,23 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
-    public class AddressDto
-    {
-        public Guid AddressId { get; set; }
-        public Guid Fk_CountryId { get; set; }
-        public string CountryName { get; set; }
-        public Guid Fk_StateId { get; set; }
-        public string StateName { get; set; }
-        public Guid Fk_DistId { get; set; }
-        public string DistName { get; set; }
-        public string At { get; set; }
-        public string Post { get; set; }
-        public string City { get; set; }
-        public string PinCode { get; set; }
-    }
     public class AddressModel
     {
         [Required]
@@ -38,18 +25,30 @@ namespace FMS.Db.Entity
     }
     public class AddressUpdateModel : AddressModel
     {
+        [Required]
         public Guid AddressId { get; set; }
     }
-    public class Address : AddressUpdateModel
+    public class AddressValidator : AbstractValidator<AddressModel>
+    {
+        public AddressValidator()
+        {
+
+        }
+    }
+    public class AddressDto: AddressUpdateModel
+    {
+        public ICollection<AppUser> Users { get; set; }
+        public ICollection<Labour> Labours { get; set; }
+        public ICollection<Party> Parties { get; set; }
+        public ICollection<Company> Companies { get; set; }
+    }
+    public class Address : AddressDto
     {
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
-        public ICollection<AppUser> Users { get; set; }
-        public ICollection<Labour> Labours { get; set; }
-        public ICollection<Party> Parties { get; set; }
     }
     internal class AddressConfig : IEntityTypeConfiguration<Address>
     {
@@ -85,11 +84,5 @@ namespace FMS.Db.Entity
             );
         }
     }
-    public class AddressValidator : AbstractValidator<AddressModel>
-    {
-        public AddressValidator()
-        {
-
-        }
-    }
+   
 }

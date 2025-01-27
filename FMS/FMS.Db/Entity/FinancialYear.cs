@@ -4,13 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
-    public class FinancialYearDto
-    {
-        public Guid FinancialYearId { get; set; }
-        public string Financial_Year { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-    }
+  
     public class FinancialYearModel
     {
         [Required]
@@ -22,17 +16,18 @@ namespace FMS.Db.Entity
     }
     public class FinancialYearUpdateModel : FinancialYearModel
     {
+        [Required]
         public Guid FinancialYearId { get; set; }
     }
-    public class FinancialYear : FinancialYearUpdateModel
+    public class FinancialYearValidator : AbstractValidator<FinancialYearModel>
     {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifyBy { get; set; }
+        public FinancialYearValidator()
+        {
 
-        //collection Navigation Property
+        }
+    }
+    public class FinancialYearDto: FinancialYearUpdateModel
+    {
         public ICollection<BranchFinancialYear> BranchFinancialYears { get; set; }
         public ICollection<Stock> Stocks { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
@@ -61,12 +56,13 @@ namespace FMS.Db.Entity
         public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
-    public class FinancialYearValidator : AbstractValidator<FinancialYearModel>
+    public class FinancialYear : FinancialYearDto
     {
-        public FinancialYearValidator()
-        {
-
-        }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifyBy { get; set; }
     }
     internal class FinancialYearConfig : IEntityTypeConfiguration<FinancialYear>
     {

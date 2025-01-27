@@ -1,27 +1,21 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class ProductSubGroupModel
     {
+        [Required]
         public Guid Fk_ProductGroupId { get; set; }
+        [Required]
         public string ProductSubGroupName { get; set; }
     }
     public class ProductSubGroupUpdateModel : ProductSubGroupModel
     {
+        [Required]
         public Guid ProductSubGroupId { get; set; }
-    }
-    public class ProductSubGroup : ProductSubGroupUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public ProductGroup ProductGroup { get; set; }
-        public ICollection<Product> Products { get; set; }
     }
     public class ProductSubGroupValidator : AbstractValidator<ProductSubGroupModel>
     {
@@ -29,6 +23,19 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class ProductSubGroupDto : ProductSubGroupUpdateModel
+    {
+        public ProductGroup ProductGroup { get; set; }
+        public ICollection<Product> Products { get; set; }
+    }
+        public class ProductSubGroup : ProductSubGroupDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class ProductSubGroupConfig : IEntityTypeConfiguration<ProductSubGroup>
     {

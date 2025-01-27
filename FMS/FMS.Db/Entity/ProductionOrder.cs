@@ -1,36 +1,38 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
     public class ProductionOrderModel
     {
+        [Required]
         public string TransactionNo { get; set; }
+        [Required]
         public DateTime TransactionDate { get; set; }
+        [Required]
         public string Fk_LabourId { get; set; }
+        [Required]
         public decimal OTAmount { get; set; }
+        [Required]
         public decimal TotalAmount { get; set; }
+        [Required]
         public string Narration { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public Guid FK_BranchId { get; set; }
-        public ICollection<ProductionTransaction> ProductionTransactions { get; set; }
+        [NotMapped]
+        public List<ProductionTransactionModel> ProductionTransactions { get; set; }
     }
     public class ProductionOrderUpdateModel : ProductionOrderModel
     {
+        [Required]
         public Guid ProductionOrderId { get; set; }
-    }
-
-    public class ProductionOrder: ProductionOrderUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public Labour Labour { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public Branch Branch { get; set; }
+        [NotMapped]
+        public new List<ProductionTransactionModel> ProductionTransactions { get; set; }
     }
     public class LabourOrderValidator : AbstractValidator<ProductionOrderModel>
     {
@@ -39,6 +41,22 @@ namespace FMS.Db.Entity
 
         }
     }
+    public class ProductionOrderDto : ProductionOrderUpdateModel
+    {
+        public Labour Labour { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public Branch Branch { get; set; }
+        public new ICollection<ProductionTransaction> ProductionTransactions { get; set; }
+    }
+        public class ProductionOrder: ProductionOrderDto
+        {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+    }
+
     internal class ProductionOrderConfig : IEntityTypeConfiguration<ProductionOrder>
     {
         public void Configure(EntityTypeBuilder<ProductionOrder> builder)

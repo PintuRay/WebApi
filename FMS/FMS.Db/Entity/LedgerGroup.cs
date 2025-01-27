@@ -1,16 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class LedgerGroupModel
     {
+        [Required]
         public string GroupName { get; set; }
+        [Required]
         public string GroupAlias { get; set; }
     }
-    public class LedgerGroup : LedgerGroupModel
+    public class LedgerGroupUpdateModel : LedgerGroupModel
     {
+        [Required]
         public Guid LedgerGroupId { get; set; }
+    }
+    public class LedgerGroupDto : LedgerGroupUpdateModel
+    {
         public ICollection<LedgerSubGroup> LedgerSubGroups { get; set; }
         public ICollection<LedgerSubGroupDev> LedgerSubGroupsDev { get; set; }
         public ICollection<Ledger> Ledgers { get; set; }
@@ -18,6 +25,15 @@ namespace FMS.Db.Entity
         public ICollection<JournalTransaction> JournalTransactions { get; set; }
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
+    }
+    public class LedgerGroup : LedgerGroupDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+
     }
     public class LedgerGroupConfig : IEntityTypeConfiguration<LedgerGroup>
     {
@@ -28,6 +44,11 @@ namespace FMS.Db.Entity
             builder.Property(e => e.LedgerGroupId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.GroupName).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.GroupAlias).HasMaxLength(100).IsRequired(false);
+            builder.Property(e => e.IsActive).HasDefaultValueSql("true");
+            builder.Property(e => e.CreatedBy).HasMaxLength(100);
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+            builder.Property(e => e.ModifyBy).HasMaxLength(100);
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasData(
                     new LedgerGroup() { LedgerGroupId = Guid.Parse("4458BCE5-4546-4120-A7DE-03ACEFD07B85"), GroupName = "Purchase", GroupAlias = "PLTR-DR" },
                     new LedgerGroup() { LedgerGroupId = Guid.Parse("39B5514A-9359-46F3-8C3E-0EABD6880CF6"), GroupName = "Unsecured Loan", GroupAlias = "LB" },

@@ -1,36 +1,31 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class LedgerBalanceModel
     {
+        [Required]
         public Guid Fk_LedgerId { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
+        [Required]
         public decimal OpeningBalance { get; set; }
+        [Required]
         public string OpeningBalanceType { get; set; }
+        [Required]
         public decimal RunningBalance { get; set; }
+        [Required]
         public string RunningBalanceType { get; set; }
-        public ICollection<SubLedgerBalance> SubLedgerBalances { get; set; }
     }
     public class LedgerBalanceUpdateModel : LedgerBalanceModel
     {
+        [Required]
         public Guid LedgerBalanceId { get; set; }
-    }
-    public class LedgerBalance: LedgerBalanceUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public Ledger Ledger { get; set; }
-        public LedgerDev LedgerDev { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-
     }
     public class LedgerBalanceValidator : AbstractValidator<LedgerBalanceModel>
     {
@@ -38,6 +33,22 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class LedgerBalanceDto: LedgerBalanceUpdateModel
+    {
+        public Ledger Ledger { get; set; }
+        public LedgerDev LedgerDev { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public ICollection<SubLedgerBalance> SubLedgerBalances {  get; set; }
+    }
+    public class LedgerBalance: LedgerBalanceDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class LedgerBalanceConfig : IEntityTypeConfiguration<LedgerBalance>
     {

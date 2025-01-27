@@ -1,34 +1,37 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
+   
     public class JournalOrderModel
     {
+        [Required]
         public string VouvherNo { get; set; }
+        [Required]
         public DateTime VoucherDate { get; set; }
+        [Required]
         public string Narration { get; set; }
+        [Required]
         public decimal TotalAmount { get; set; }
-        public string DrCr {  get; set; }
+        [Required]
+        public string DrCr { get; set; }
+        [Required]
         public Guid Fk_BranchId { get; set; }
+        [Required]
         public Guid Fk_FinancialYearId { get; set; }
-        public ICollection<JournalTransaction> JournalTransactions { get; set; }
+        [NotMapped]
+        public List<JournalTransactionModel> JournalTransactions { get; set; }
     }
     public class JournalOrderUpdateModel : JournalOrderModel
     {
+        [Required]
         public Guid JournalOrderId { get; set; }
-    }
-
-    public class JournalOrder: JournalOrderUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [NotMapped]
+        public new List<JournalTransactionUpdateModel> JournalTransactions { get; set; }
     }
     public class JournalOrderValidator : AbstractValidator<JournalOrderModel>
     {
@@ -36,6 +39,20 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class JournalOrderDto: JournalOrderUpdateModel
+    {
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public new ICollection<JournalTransaction> JournalTransactions { get; set; }
+    }
+    public class JournalOrder : JournalOrderDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class JournalOrderConfig : IEntityTypeConfiguration<JournalOrder>
     {
@@ -53,9 +70,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-           builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(e => e.Branch).WithMany(s => s.JournalOrders).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(e => e.FinancialYear).WithMany(s => s.JournalOrders).HasForeignKey(e => e.Fk_FinancialYearId).OnDelete(DeleteBehavior.Cascade);
         }

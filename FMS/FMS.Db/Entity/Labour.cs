@@ -1,36 +1,30 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class LabourModel
     {
+        [Required]
         public string LabourName { get; set; }
+        [Required]
         public Guid Fk_AddressId { get; set; }
-        public Guid? Fk_Labour_TypeId { get; set; }
-        public Guid Fk_SubLedgerId { get; set; }
+        [Required]
+        public Guid Fk_Labour_TypeId { get; set; }
+        [Required]
+        public Guid Fk_SubLedgerId { get; set; } 
         public Guid? Fk_BranchId { get; set; }
+        [Required]
         public string Phone { get; set; }
+        [Required]
         public string Reference { get; set; }
     }
     public class LabourUpdateModel : LabourModel
     {
+        [Required]
         public string LabourId { get; set; }
-    }
-    public class Labour : LabourUpdateModel
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-        public Address Address { get; set; }
-        public LabourType LabourType { get; set; }
-        public Branch Branch { get; set; }
-        public SubLedger SubLedger { get; set; }
-       public ICollection<ProductionOrder> ProductionOrders { get; set; }
-      public ICollection<DamageOrder> DamageOrders { get; set; }
     }
     public class LabourValidator : AbstractValidator<LabourModel>
     {
@@ -38,6 +32,23 @@ namespace FMS.Db.Entity
         {
 
         }
+    }
+    public class LabourDto : LabourUpdateModel
+    {
+        public Address Address { get; set; }
+        public LabourType LabourType { get; set; }
+        public Branch Branch { get; set; }
+        public SubLedger SubLedger { get; set; }
+        public ICollection<ProductionOrder> ProductionOrders { get; set; }
+        public ICollection<DamageOrder> DamageOrders { get; set; }
+    }
+    public class Labour : LabourDto
+    {
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
     }
     internal class LabourConfig : IEntityTypeConfiguration<Labour>
     {
@@ -55,7 +66,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Reference).HasMaxLength(100).IsRequired(false);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             //One-To-Many Relationship

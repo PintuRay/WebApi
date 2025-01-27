@@ -33,7 +33,7 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
                                         Fk_BranchId = s.Fk_BranchId,
                                         BranchName = s.Branch.BranchName,
                                         Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                        FinancialYearAlias = s.FinancialYear.Financial_Year,
+                                      
                                     }).ToListAsync();
                     if (Query.Count > 0)
                     {
@@ -68,8 +68,8 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
                                        Fk_BranchId = s.Fk_BranchId,
                                        BranchName = s.Branch.BranchName,
                                        Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                       FinancialYearAlias = s.FinancialYear.Financial_Year,
-                                   }).OrderByDescending(s => s.FinancialYearAlias)
+                                      
+                                   }).OrderByDescending(s => s.Fk_FinancialYearId)
                                    .Skip(pagination.PageNumber * effectivePageSize)
                                    .Take(effectivePageSize)
                                    .ToListAsync();
@@ -188,8 +188,8 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
                                        Fk_BranchId = s.Fk_BranchId,
                                        BranchName = s.Branch.BranchName,
                                        Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                       FinancialYearAlias = s.FinancialYear.Financial_Year,
-                                   }).OrderByDescending(s => s.FinancialYearAlias)
+                                      
+                                   }).OrderByDescending(s => s.Fk_FinancialYearId)
                                    .Skip(pagination.PageNumber * effectivePageSize)
                                    .Take(effectivePageSize)
                                    .ToListAsync();
