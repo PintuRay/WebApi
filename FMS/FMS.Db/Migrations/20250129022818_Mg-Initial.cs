@@ -98,6 +98,11 @@ namespace FMS.Db.Migrations
                 columns: table => new
                 {
                     LabourTypeId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
+                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Labour_Type = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -111,6 +116,11 @@ namespace FMS.Db.Migrations
                 columns: table => new
                 {
                     LedgerGroupId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
+                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     GroupName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     GroupAlias = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },
@@ -125,6 +135,11 @@ namespace FMS.Db.Migrations
                 columns: table => new
                 {
                     ProductTypeId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
+                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Product_Type = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
@@ -198,14 +213,12 @@ namespace FMS.Db.Migrations
                     ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CompanyName = table.Column<string>(type: "text", maxLength: 200, nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PhoneNo = table.Column<string>(type: "text", nullable: false),
                     GSTIN = table.Column<string>(type: "text", nullable: false),
-                    Logo = table.Column<string>(type: "text", nullable: false)
+                    LogoPath = table.Column<string>(type: "text", nullable: false),
+                    Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -327,9 +340,9 @@ namespace FMS.Db.Migrations
                     ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    BranchId = table.Column<Guid>(type: "uuid", nullable: true),
                     Fk_LedgerGroupId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SubGroupName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
+                    SubGroupName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    BranchId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -361,8 +374,8 @@ namespace FMS.Db.Migrations
                     CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Fk_LedgerGroupId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SubGroupName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
+                    SubGroupName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -500,6 +513,46 @@ namespace FMS.Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                schema: "public",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Fk_TokenId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "timestamptz", nullable: false),
+                    MaratialStatus = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Gender = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    PhotoPath = table.Column<string>(type: "text", nullable: true),
+                    TermCondition = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_RegisterTokens_Fk_TokenId",
+                        column: x => x.Fk_TokenId,
+                        principalSchema: "public",
+                        principalTable: "RegisterTokens",
+                        principalColumn: "TokenId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Dists",
                 schema: "public",
                 columns: table => new
@@ -539,6 +592,11 @@ namespace FMS.Db.Migrations
                 columns: table => new
                 {
                     LedgerId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
+                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     LedgerName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     LedgerType = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
                     HasSubLedger = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
@@ -627,48 +685,136 @@ namespace FMS.Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Address",
+                name: "AspNetUserClaims",
                 schema: "public",
                 columns: table => new
                 {
-                    AddressId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
-                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValue: new DateTime(2025, 1, 13, 5, 9, 49, 126, DateTimeKind.Utc).AddTicks(2433)),
-                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValue: new DateTime(2025, 1, 13, 5, 9, 49, 126, DateTimeKind.Utc).AddTicks(4516)),
-                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    CountryId = table.Column<Guid>(type: "uuid", nullable: true),
-                    DistId = table.Column<Guid>(type: "uuid", nullable: true),
-                    StateId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Fk_CountryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Fk_StateId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Fk_DistId = table.Column<Guid>(type: "uuid", nullable: false),
-                    At = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Post = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    City = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    PinCode = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true),
+                    Discriminator = table.Column<string>(type: "character varying(34)", maxLength: 34, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Address", x => x.AddressId);
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Address_Country_CountryId",
-                        column: x => x.CountryId,
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalSchema: "public",
-                        principalTable: "Country",
-                        principalColumn: "CountryId");
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                schema: "public",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_Address_Dists_DistId",
-                        column: x => x.DistId,
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalSchema: "public",
-                        principalTable: "Dists",
-                        principalColumn: "DistId");
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                schema: "public",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    Discriminator = table.Column<string>(type: "character varying(34)", maxLength: 34, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_Address_States_StateId",
-                        column: x => x.StateId,
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
                         principalSchema: "public",
-                        principalTable: "States",
-                        principalColumn: "StateId");
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "public",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                schema: "public",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "public",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserBranches",
+                schema: "public",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
+                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
+                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Fk_UserId = table.Column<string>(type: "text", nullable: false),
+                    Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserBranches", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserBranches_AspNetUsers_Fk_UserId",
+                        column: x => x.Fk_UserId,
+                        principalSchema: "public",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserBranches_Branches_Fk_BranchId",
+                        column: x => x.Fk_BranchId,
+                        principalSchema: "public",
+                        principalTable: "Branches",
+                        principalColumn: "BranchId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -914,54 +1060,6 @@ namespace FMS.Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                schema: "public",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Fk_TokenId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Fk_AddressId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "timestamptz", nullable: false),
-                    MaratialStatus = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    Gender = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    PhotoPath = table.Column<string>(type: "text", nullable: true),
-                    TermCondition = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
-                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Address_Fk_AddressId",
-                        column: x => x.Fk_AddressId,
-                        principalSchema: "public",
-                        principalTable: "Address",
-                        principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_RegisterTokens_Fk_TokenId",
-                        column: x => x.Fk_TokenId,
-                        principalSchema: "public",
-                        principalTable: "RegisterTokens",
-                        principalColumn: "TokenId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "JournalTransactions",
                 schema: "public",
                 columns: table => new
@@ -1041,14 +1139,13 @@ namespace FMS.Db.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    LabourId = table.Column<string>(type: "text", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    LabourId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
                     CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
                     ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     LabourName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Fk_AddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_Labour_TypeId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_SubLedgerId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -1058,13 +1155,6 @@ namespace FMS.Db.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Labours", x => x.LabourId);
-                    table.ForeignKey(
-                        name: "FK_Labours_Address_Fk_AddressId",
-                        column: x => x.Fk_AddressId,
-                        principalSchema: "public",
-                        principalTable: "Address",
-                        principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Labours_Branches_Fk_BranchId",
                         column: x => x.Fk_BranchId,
@@ -1093,7 +1183,7 @@ namespace FMS.Db.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    PartyId = table.Column<string>(type: "text", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    PartyId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
                     CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
                     ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
@@ -1101,7 +1191,6 @@ namespace FMS.Db.Migrations
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Fk_PartyType = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_SubledgerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Fk_AddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     PartyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     Email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
@@ -1110,13 +1199,6 @@ namespace FMS.Db.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Parties", x => x.PartyId);
-                    table.ForeignKey(
-                        name: "FK_Parties_Address_Fk_AddressId",
-                        column: x => x.Fk_AddressId,
-                        principalSchema: "public",
-                        principalTable: "Address",
-                        principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Parties_LedgersDev_Fk_PartyType",
                         column: x => x.Fk_PartyType,
@@ -1582,10 +1664,10 @@ namespace FMS.Db.Migrations
                     CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     FK_ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UnitQuantity = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    AlternateUnitName = table.Column<string>(type: "text", nullable: false),
                     Fk_UnitId = table.Column<Guid>(type: "uuid", nullable: false),
-                    AlternateQuantity = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    Fk_ProductStockUnitId = table.Column<string>(type: "text", nullable: true)
+                    UnitQuantity = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    AlternateQuantity = table.Column<decimal>(type: "numeric(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1617,7 +1699,6 @@ namespace FMS.Db.Migrations
                     ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    UnitId = table.Column<Guid>(type: "uuid", nullable: true),
                     Fk_InwardSupplyOrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -1625,7 +1706,8 @@ namespace FMS.Db.Migrations
                     Quantity = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     Fk_UnitId = table.Column<Guid>(type: "uuid", nullable: false),
                     Rate = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false)
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    UnitId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1728,7 +1810,6 @@ namespace FMS.Db.Migrations
                     ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
                     CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    UnitId = table.Column<Guid>(type: "uuid", nullable: true),
                     Fk_OutwardSupplyOrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -1736,7 +1817,8 @@ namespace FMS.Db.Migrations
                     Quantity = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     Fk_UnitId = table.Column<Guid>(type: "uuid", nullable: false),
                     Rate = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false)
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    UnitId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1875,139 +1957,6 @@ namespace FMS.Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                schema: "public",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true),
-                    Discriminator = table.Column<string>(type: "character varying(34)", maxLength: 34, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "public",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                schema: "public",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    ProviderKey = table.Column<string>(type: "text", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "public",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                schema: "public",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    RoleId = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(34)", maxLength: 34, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
-                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalSchema: "public",
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "public",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                schema: "public",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "public",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserBranches",
-                schema: "public",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
-                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
-                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"),
-                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Fk_UserId = table.Column<string>(type: "text", nullable: false),
-                    Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserBranches", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserBranches_AspNetUsers_Fk_UserId",
-                        column: x => x.Fk_UserId,
-                        principalSchema: "public",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserBranches_Branches_Fk_BranchId",
-                        column: x => x.Fk_BranchId,
-                        principalSchema: "public",
-                        principalTable: "Branches",
-                        principalColumn: "BranchId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DamageOrders",
                 schema: "public",
                 columns: table => new
@@ -2021,7 +1970,7 @@ namespace FMS.Db.Migrations
                     TransactionNo = table.Column<string>(type: "text", nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     Fk_ProductTypeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Fk_LabourId = table.Column<string>(type: "text", nullable: true),
+                    Fk_LabourId = table.Column<Guid>(type: "uuid", nullable: true),
                     Fk_BranchId = table.Column<Guid>(type: "uuid", nullable: false),
                     Fk_FinancialYearId = table.Column<Guid>(type: "uuid", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
@@ -2073,7 +2022,7 @@ namespace FMS.Db.Migrations
                     ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     TransactionNo = table.Column<string>(type: "text", nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "timestamptz", nullable: false),
-                    Fk_LabourId = table.Column<string>(type: "text", nullable: false),
+                    Fk_LabourId = table.Column<Guid>(type: "uuid", nullable: false),
                     OTAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false, defaultValue: 0m),
                     TotalAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false, defaultValue: 0m),
                     Narration = table.Column<string>(type: "text", nullable: true),
@@ -2104,6 +2053,83 @@ namespace FMS.Db.Migrations
                         principalTable: "Labours",
                         principalColumn: "LabourId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Address",
+                schema: "public",
+                columns: table => new
+                {
+                    AddressId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
+                    CreatedDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValue: new DateTime(2025, 1, 29, 2, 28, 15, 888, DateTimeKind.Utc).AddTicks(3730)),
+                    ModifyDate = table.Column<DateTime>(type: "timestamptz", nullable: true, defaultValue: new DateTime(2025, 1, 29, 2, 28, 15, 888, DateTimeKind.Utc).AddTicks(7417)),
+                    CreatedBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ModifyBy = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CountryId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DistId = table.Column<Guid>(type: "uuid", nullable: true),
+                    StateId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Fk_CountryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Fk_UserId = table.Column<string>(type: "text", nullable: true),
+                    Fk_CompanyId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Fk_LabourId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Fk_PartyId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Fk_StateId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Fk_DistId = table.Column<Guid>(type: "uuid", nullable: false),
+                    At = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Post = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    City = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PinCode = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Address", x => x.AddressId);
+                    table.ForeignKey(
+                        name: "FK_Address_AspNetUsers_Fk_UserId",
+                        column: x => x.Fk_UserId,
+                        principalSchema: "public",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Address_Company_Fk_CompanyId",
+                        column: x => x.Fk_CompanyId,
+                        principalSchema: "public",
+                        principalTable: "Company",
+                        principalColumn: "CompanyId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Address_Country_CountryId",
+                        column: x => x.CountryId,
+                        principalSchema: "public",
+                        principalTable: "Country",
+                        principalColumn: "CountryId");
+                    table.ForeignKey(
+                        name: "FK_Address_Dists_DistId",
+                        column: x => x.DistId,
+                        principalSchema: "public",
+                        principalTable: "Dists",
+                        principalColumn: "DistId");
+                    table.ForeignKey(
+                        name: "FK_Address_Labours_Fk_LabourId",
+                        column: x => x.Fk_LabourId,
+                        principalSchema: "public",
+                        principalTable: "Labours",
+                        principalColumn: "LabourId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Address_Parties_Fk_PartyId",
+                        column: x => x.Fk_PartyId,
+                        principalSchema: "public",
+                        principalTable: "Parties",
+                        principalColumn: "PartyId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Address_States_StateId",
+                        column: x => x.StateId,
+                        principalSchema: "public",
+                        principalTable: "States",
+                        principalColumn: "StateId");
                 });
 
             migrationBuilder.CreateTable(
@@ -2569,12 +2595,6 @@ namespace FMS.Db.Migrations
 
             migrationBuilder.InsertData(
                 schema: "public",
-                table: "Address",
-                columns: new[] { "AddressId", "At", "City", "CountryId", "CreatedBy", "DistId", "Fk_CountryId", "Fk_DistId", "Fk_StateId", "ModifyBy", "PinCode", "Post", "StateId" },
-                values: new object[] { new Guid("c9b62c55-1b06-485d-a71b-d92fee4f4428"), "DHANAMANDAL", "CUTTACK", null, null, null, new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), null, "754018", "BRAHMANSAILO", null });
-
-            migrationBuilder.InsertData(
-                schema: "public",
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
@@ -2588,53 +2608,53 @@ namespace FMS.Db.Migrations
                 schema: "public",
                 table: "Country",
                 columns: new[] { "CountryId", "CountryCode", "CountryName", "CreatedBy", "CreatedDate", "IsActive", "ModifyBy" },
-                values: new object[] { new Guid("e02eb064-def5-434a-8798-6f144a54003c"), "IN", "India", null, new DateTime(2025, 1, 13, 5, 9, 49, 129, DateTimeKind.Utc).AddTicks(6556), true, null });
+                values: new object[] { new Guid("e02eb064-def5-434a-8798-6f144a54003c"), "IN", "India", null, new DateTime(2025, 1, 29, 2, 28, 15, 906, DateTimeKind.Utc).AddTicks(6938), true, null });
 
             migrationBuilder.InsertData(
                 schema: "public",
                 table: "LabourTypes",
-                columns: new[] { "LabourTypeId", "Labour_Type" },
+                columns: new[] { "LabourTypeId", "CreatedBy", "Labour_Type", "ModifyBy" },
                 values: new object[,]
                 {
-                    { new Guid("5e514855-55a0-459c-8b8b-def7696d9ad0"), "PRODUCTION" },
-                    { new Guid("6c2758a2-79b5-43a6-8851-c6f975433b0f"), "SERVICE" }
+                    { new Guid("5e514855-55a0-459c-8b8b-def7696d9ad0"), null, "PRODUCTION", null },
+                    { new Guid("6c2758a2-79b5-43a6-8851-c6f975433b0f"), null, "SERVICE", null }
                 });
 
             migrationBuilder.InsertData(
                 schema: "public",
                 table: "LedgerGroups",
-                columns: new[] { "LedgerGroupId", "GroupAlias", "GroupName" },
+                columns: new[] { "LedgerGroupId", "CreatedBy", "GroupAlias", "GroupName", "ModifyBy" },
                 values: new object[,]
                 {
-                    { new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"), "PLTR-DR", "Direct Expenses" },
-                    { new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), "PLTR-CR", "Sales" },
-                    { new Guid("23d58228-db08-4c3d-9177-343b1cfdcf7a"), "LB", "Liability for Expenses" },
-                    { new Guid("2fc89e45-7365-46b7-933c-9abae2e5967a"), "AS", "Current Assets" },
-                    { new Guid("345b0d2a-8fca-414f-a6f2-c5f7fd9246ac"), "PL-CR", "Indirect Income" },
-                    { new Guid("39b5514a-9359-46f3-8c3e-0eabd6880cf6"), "LB", "Unsecured Loan" },
-                    { new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), "PLTR-DR", "Purchase" },
-                    { new Guid("4d80e68f-ff00-486a-945a-3941761441d9"), "AS", "Fixed Assets" },
-                    { new Guid("58639324-2180-4e0b-932d-33024aa3fc5f"), "PL-DR", "Indirect Expenses" },
-                    { new Guid("68eeffe7-02f7-4ffc-81b3-aeb0cadc764b"), "LB", "Duties & Taxes" },
-                    { new Guid("84a336c6-e48a-43e8-984e-f45b0bf2984f"), "LB", "Secured Loan" },
-                    { new Guid("9bbc2c1f-ffa4-44b8-9916-6edf0a47d8db"), "PL-DR", "Capital A/c" },
-                    { new Guid("aca9caf1-ea9b-4602-bb60-6c354eac5ce6"), "LB", "Current liabilities & Provisions" },
-                    { new Guid("bdcf2ee2-8aab-44f6-bd1e-77b53074389a"), "PLTR-DR", "Opening Stock" },
-                    { new Guid("c3c725d0-a502-4275-b0f9-1585ab6edcc7"), "PL-DR", "Depreciation" },
-                    { new Guid("ea3f21ad-b0d4-4c27-9f9d-3c36a7a585c2"), "PLTR-CR", "Direct Income" },
-                    { new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"), "AS", "Cash & Bank Balance" }
+                    { new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"), null, "PLTR-DR", "Direct Expenses", null },
+                    { new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), null, "PLTR-CR", "Sales", null },
+                    { new Guid("23d58228-db08-4c3d-9177-343b1cfdcf7a"), null, "LB", "Liability for Expenses", null },
+                    { new Guid("2fc89e45-7365-46b7-933c-9abae2e5967a"), null, "AS", "Current Assets", null },
+                    { new Guid("345b0d2a-8fca-414f-a6f2-c5f7fd9246ac"), null, "PL-CR", "Indirect Income", null },
+                    { new Guid("39b5514a-9359-46f3-8c3e-0eabd6880cf6"), null, "LB", "Unsecured Loan", null },
+                    { new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), null, "PLTR-DR", "Purchase", null },
+                    { new Guid("4d80e68f-ff00-486a-945a-3941761441d9"), null, "AS", "Fixed Assets", null },
+                    { new Guid("58639324-2180-4e0b-932d-33024aa3fc5f"), null, "PL-DR", "Indirect Expenses", null },
+                    { new Guid("68eeffe7-02f7-4ffc-81b3-aeb0cadc764b"), null, "LB", "Duties & Taxes", null },
+                    { new Guid("84a336c6-e48a-43e8-984e-f45b0bf2984f"), null, "LB", "Secured Loan", null },
+                    { new Guid("9bbc2c1f-ffa4-44b8-9916-6edf0a47d8db"), null, "PL-DR", "Capital A/c", null },
+                    { new Guid("aca9caf1-ea9b-4602-bb60-6c354eac5ce6"), null, "LB", "Current liabilities & Provisions", null },
+                    { new Guid("bdcf2ee2-8aab-44f6-bd1e-77b53074389a"), null, "PLTR-DR", "Opening Stock", null },
+                    { new Guid("c3c725d0-a502-4275-b0f9-1585ab6edcc7"), null, "PL-DR", "Depreciation", null },
+                    { new Guid("ea3f21ad-b0d4-4c27-9f9d-3c36a7a585c2"), null, "PLTR-CR", "Direct Income", null },
+                    { new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"), null, "AS", "Cash & Bank Balance", null }
                 });
 
             migrationBuilder.InsertData(
                 schema: "public",
                 table: "ProductTypes",
-                columns: new[] { "ProductTypeId", "Product_Type" },
+                columns: new[] { "ProductTypeId", "CreatedBy", "ModifyBy", "Product_Type" },
                 values: new object[,]
                 {
-                    { new Guid("66ada405-1229-45df-9598-90b602078933"), "MOULD & MECHINARY" },
-                    { new Guid("a4ab180b-acc7-44ce-aef7-c588d41edd5c"), "FINISHED GOODS" },
-                    { new Guid("b504237f-af5f-485a-bec9-0906c50df3c6"), "SERVICE GOODS" },
-                    { new Guid("b524f4a7-1bb2-4347-84ae-e0da56eb4a31"), "RAW MATERIALS" }
+                    { new Guid("66ada405-1229-45df-9598-90b602078933"), null, null, "MOULD & MECHINARY" },
+                    { new Guid("a4ab180b-acc7-44ce-aef7-c588d41edd5c"), null, null, "FINISHED GOODS" },
+                    { new Guid("b504237f-af5f-485a-bec9-0906c50df3c6"), null, null, "SERVICE GOODS" },
+                    { new Guid("b524f4a7-1bb2-4347-84ae-e0da56eb4a31"), null, null, "RAW MATERIALS" }
                 });
 
             migrationBuilder.InsertData(
@@ -2646,27 +2666,27 @@ namespace FMS.Db.Migrations
             migrationBuilder.InsertData(
                 schema: "public",
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "BirthDate", "ConcurrencyStamp", "Email", "EmailConfirmed", "Fk_AddressId", "Fk_TokenId", "Gender", "LockoutEnabled", "LockoutEnd", "MaratialStatus", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PhotoPath", "SecurityStamp", "TermCondition", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "4431f16a-6bc7-4e9b-bada-c491fcc81a58", 0, new DateTime(1993, 7, 4, 0, 0, 0, 0, DateTimeKind.Utc), "65a37859-d054-4a68-a817-1669d83c598a", "raypintu959@gmail.com", true, new Guid("c9b62c55-1b06-485d-a71b-d92fee4f4428"), new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"), "male", true, null, "unmarred", "Pintu Ray", "RAYPINTU959@GMAIL.COM", "RAYPINTU959@GMAIL.COM", "AQAAAAIAAYagAAAAEGCZJkRuuaN5s6jesxs7zm4NBR99KorCbeWBm6yVLgn2JCBVFEKr5ui4hLYFkhQWCA==", "8249486590", true, null, "ZCKN4FWVQMFYYU3JWBLJN7UUN2CBOZMF", true, true, "raypintu959@gmail.com" });
+                columns: new[] { "Id", "AccessFailedCount", "BirthDate", "ConcurrencyStamp", "Email", "EmailConfirmed", "Fk_TokenId", "Gender", "LockoutEnabled", "LockoutEnd", "MaratialStatus", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PhotoPath", "SecurityStamp", "TermCondition", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "4431f16a-6bc7-4e9b-bada-c491fcc81a58", 0, new DateTime(1993, 7, 4, 0, 0, 0, 0, DateTimeKind.Utc), "65a37859-d054-4a68-a817-1669d83c598a", "raypintu959@gmail.com", true, new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"), "male", true, null, "unmarred", "Pintu Ray", "RAYPINTU959@GMAIL.COM", "RAYPINTU959@GMAIL.COM", "AQAAAAIAAYagAAAAEGCZJkRuuaN5s6jesxs7zm4NBR99KorCbeWBm6yVLgn2JCBVFEKr5ui4hLYFkhQWCA==", "8249486590", true, null, "ZCKN4FWVQMFYYU3JWBLJN7UUN2CBOZMF", true, true, "raypintu959@gmail.com" });
 
             migrationBuilder.InsertData(
                 schema: "public",
                 table: "LedgersDev",
-                columns: new[] { "LedgerId", "Fk_LedgerGroupId", "Fk_LedgerSubGroupId", "HasSubLedger", "LedgerName", "LedgerType" },
+                columns: new[] { "LedgerId", "CreatedBy", "Fk_LedgerGroupId", "Fk_LedgerSubGroupId", "HasSubLedger", "LedgerName", "LedgerType", "ModifyBy" },
                 values: new object[,]
                 {
-                    { new Guid("1ecff7d8-702b-4dcd-93c5-b95a67e36fc9"), new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), null, "No", "Sales A/c", "None" },
-                    { new Guid("701c663e-dac3-4a39-8d2a-36eb68426b54"), new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"), null, "No", "Cash A/c", "None" },
-                    { new Guid("712d600b-dfd6-4704-9e32-317fe62499a9"), new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), null, "No", "Purchase Return A/c", "None" },
-                    { new Guid("75e1fe3d-047d-41ad-a138-f0bb5bbc8b1f"), new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), null, "No", "Purchase A/c", "None" },
-                    { new Guid("7f740148-ed36-48ad-b194-031bc717842c"), new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"), null, "No", "Labour Charges", "None" },
-                    { new Guid("80025398-c02f-4a1a-9db7-8a21f9efd9ef"), new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), null, "No", "Sales Return A/c", "None" },
-                    { new Guid("9bfa6931-977f-4a3d-a582-da5f1f4ab773"), new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"), null, "No", "Bank A/c", "None" },
-                    { new Guid("9efd7830-125a-40e3-8f44-68ab03f52591"), new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), null, "No", "Transporting Charges Recive", "None" },
-                    { new Guid("d281cbfb-3cac-4c6a-8ce1-7b51973b8ca4"), new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), null, "No", "Transporting Charges Payment", "None" },
-                    { new Guid("d982b189-3326-430d-acde-13c12bba7992"), new Guid("aca9caf1-ea9b-4602-bb60-6c354eac5ce6"), null, "Yes", "Sundry Creditors", "None" },
-                    { new Guid("f07a3165-d63b-4dae-a820-ec79d83363b1"), new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"), null, "Yes", "Labour A/c", "None" },
-                    { new Guid("fbf4a6c7-c33d-4ad0-b7a5-abb319cc1b93"), new Guid("2fc89e45-7365-46b7-933c-9abae2e5967a"), null, "Yes", "Sundry Debtors", "None" }
+                    { new Guid("1ecff7d8-702b-4dcd-93c5-b95a67e36fc9"), null, new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), null, "No", "Sales A/c", "None", null },
+                    { new Guid("701c663e-dac3-4a39-8d2a-36eb68426b54"), null, new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"), null, "No", "Cash A/c", "None", null },
+                    { new Guid("712d600b-dfd6-4704-9e32-317fe62499a9"), null, new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), null, "No", "Purchase Return A/c", "None", null },
+                    { new Guid("75e1fe3d-047d-41ad-a138-f0bb5bbc8b1f"), null, new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), null, "No", "Purchase A/c", "None", null },
+                    { new Guid("7f740148-ed36-48ad-b194-031bc717842c"), null, new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"), null, "No", "Labour Charges", "None", null },
+                    { new Guid("80025398-c02f-4a1a-9db7-8a21f9efd9ef"), null, new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), null, "No", "Sales Return A/c", "None", null },
+                    { new Guid("9bfa6931-977f-4a3d-a582-da5f1f4ab773"), null, new Guid("f3eef2dd-09bb-4e21-b036-1e5bba920efe"), null, "No", "Bank A/c", "None", null },
+                    { new Guid("9efd7830-125a-40e3-8f44-68ab03f52591"), null, new Guid("15fe2512-d922-45c5-9e03-64c32b903a5b"), null, "No", "Transporting Charges Recive", "None", null },
+                    { new Guid("d281cbfb-3cac-4c6a-8ce1-7b51973b8ca4"), null, new Guid("4458bce5-4546-4120-a7de-03acefd07b85"), null, "No", "Transporting Charges Payment", "None", null },
+                    { new Guid("d982b189-3326-430d-acde-13c12bba7992"), null, new Guid("aca9caf1-ea9b-4602-bb60-6c354eac5ce6"), null, "Yes", "Sundry Creditors", "None", null },
+                    { new Guid("f07a3165-d63b-4dae-a820-ec79d83363b1"), null, new Guid("01548ef6-3fe2-4c0f-9a5f-ceed35066136"), null, "Yes", "Labour A/c", "None", null },
+                    { new Guid("fbf4a6c7-c33d-4ad0-b7a5-abb319cc1b93"), null, new Guid("2fc89e45-7365-46b7-933c-9abae2e5967a"), null, "Yes", "Sundry Debtors", "None", null }
                 });
 
             migrationBuilder.InsertData(
@@ -2675,44 +2695,50 @@ namespace FMS.Db.Migrations
                 columns: new[] { "StateId", "CreatedBy", "CreatedDate", "Fk_CountryId", "IsActive", "ModifyBy", "StateName" },
                 values: new object[,]
                 {
-                    { new Guid("022df470-aaa9-4f6d-895a-75f41906f76a"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9995), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Delhi (UT)" },
-                    { new Guid("188ab651-af96-41d2-adc4-0af044e6d056"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9823), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Chhattisgarh" },
-                    { new Guid("1f2ad09e-7095-4050-b653-ae2d5693fb22"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9886), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Manipur" },
-                    { new Guid("2316471c-4fc5-43ee-b20c-94e5c5775514"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9832), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Gujarat" },
-                    { new Guid("2898a196-c192-40b6-9865-f7aa4018681c"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9956), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Tripura" },
-                    { new Guid("2b525373-afcc-4fb1-9525-495db02029f8"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9910), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Rajasthan" },
-                    { new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9903), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Odisha" },
-                    { new Guid("43d58903-126e-4aca-8289-b3d09c7a1e14"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9922), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Telangana" },
-                    { new Guid("4a49b1dc-6f18-4de7-85ec-46563a4b5b56"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9964), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Uttarakhand" },
-                    { new Guid("4ecafa26-9eb1-47a6-a927-a23f8f3c4833"), null, new DateTime(2025, 1, 13, 5, 9, 49, 136, DateTimeKind.Utc).AddTicks(3), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Lakshadweep (UT)" },
-                    { new Guid("559b5985-bdd4-4dab-8aa7-1887ef7b2c98"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9968), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "West Bengal" },
-                    { new Guid("5ed4f9b3-f38a-4ae9-a738-6f1b3ee50a88"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9855), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Madhya Pradesh" },
-                    { new Guid("65afd736-c385-4f57-b667-de4e77f4c9d5"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9907), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Punjab" },
-                    { new Guid("67c9f3a9-9235-428a-8463-a743f711a5a3"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9387), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Andhra Pradesh" },
-                    { new Guid("6ad24792-a695-43ba-89e3-eda8c1fd7a20"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9899), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Nagaland" },
-                    { new Guid("77536c53-345c-48f5-a175-07a7b4044754"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9981), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Jammu & Kashmir (UT)" },
-                    { new Guid("802047bc-496c-4a69-a786-5ba566f8b06b"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9882), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Maharashtra" },
-                    { new Guid("970ec112-ce5e-4f5b-9707-be75c379d803"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9779), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Assam" },
-                    { new Guid("9a41572b-ac7a-4234-af77-6d6e426e88ef"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9895), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Mizoram" },
-                    { new Guid("9f0240ba-79fa-47c5-86f6-e4f3d2ee10d8"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9819), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Bihar" },
-                    { new Guid("a14644a8-9c2f-4aa6-8332-9cb576c4dc8c"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9892), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Meghalaya" },
-                    { new Guid("abe258b7-a358-42cc-8cce-657dfe4d6644"), null, new DateTime(2025, 1, 13, 5, 9, 49, 136, DateTimeKind.Utc).AddTicks(6), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Andaman and Nicobar Islands (UT)" },
-                    { new Guid("ad98660a-f208-4194-82fa-9e74747b2a02"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9914), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Sikkim" },
-                    { new Guid("b176f1fe-daba-406f-9256-e6ee6ecd52ed"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9844), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Jharkhand" },
-                    { new Guid("b2d8b019-f729-4bac-8006-9b46a307153c"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9848), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Karnataka" },
-                    { new Guid("b4b9acf3-87a2-4f5f-95a0-872c0680fb1e"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9827), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Goa" },
-                    { new Guid("c2d0c6c5-6954-4921-9d64-90261de50f5e"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9918), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Tamil Nadu" },
-                    { new Guid("c9fbd62c-a7fc-4f5e-a44e-2c9fffe94c8f"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9985), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Ladakh (UT)" },
-                    { new Guid("d1459e60-a200-440a-9862-6a6c26bf37ea"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9837), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Haryana" },
-                    { new Guid("d84eaae8-09fb-4d80-9303-d166529bde20"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9851), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Kerala" },
-                    { new Guid("db5157fd-b616-418b-82e9-3d5f109d69f8"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9991), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Chandigarh (UT)" },
-                    { new Guid("df18be70-0ba6-4918-8351-bf992e4ee17a"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9998), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Puducherry (UT)" },
-                    { new Guid("e691660f-bb06-416a-a79c-9ef41e67ad11"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9774), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Arunachal Pradesh" },
-                    { new Guid("e7c6a407-a7f8-4711-b8ff-e57d7b93cafa"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9840), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Himachal Pradesh" },
-                    { new Guid("eaf9a3cc-a650-429e-bcc5-406257614dfa"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9977), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Daman & Diu (UT)" },
-                    { new Guid("f20c53dc-ba9a-4fd6-82cd-63c76fb11cc5"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9961), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Uttar Pradesh" },
-                    { new Guid("fc5486fe-aa06-46f0-9d93-b6a4f71429a2"), null, new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9972), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Dadra and Nagar Haveli (UT)" }
+                    { new Guid("022df470-aaa9-4f6d-895a-75f41906f76a"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6341), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Delhi (UT)" },
+                    { new Guid("188ab651-af96-41d2-adc4-0af044e6d056"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6156), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Chhattisgarh" },
+                    { new Guid("1f2ad09e-7095-4050-b653-ae2d5693fb22"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6235), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Manipur" },
+                    { new Guid("2316471c-4fc5-43ee-b20c-94e5c5775514"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6164), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Gujarat" },
+                    { new Guid("2898a196-c192-40b6-9865-f7aa4018681c"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6307), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Tripura" },
+                    { new Guid("2b525373-afcc-4fb1-9525-495db02029f8"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6283), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Rajasthan" },
+                    { new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6252), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Odisha" },
+                    { new Guid("43d58903-126e-4aca-8289-b3d09c7a1e14"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6295), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Telangana" },
+                    { new Guid("4a49b1dc-6f18-4de7-85ec-46563a4b5b56"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6315), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Uttarakhand" },
+                    { new Guid("4ecafa26-9eb1-47a6-a927-a23f8f3c4833"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6349), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Lakshadweep (UT)" },
+                    { new Guid("559b5985-bdd4-4dab-8aa7-1887ef7b2c98"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6319), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "West Bengal" },
+                    { new Guid("5ed4f9b3-f38a-4ae9-a738-6f1b3ee50a88"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6227), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Madhya Pradesh" },
+                    { new Guid("65afd736-c385-4f57-b667-de4e77f4c9d5"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6256), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Punjab" },
+                    { new Guid("67c9f3a9-9235-428a-8463-a743f711a5a3"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(5739), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Andhra Pradesh" },
+                    { new Guid("6ad24792-a695-43ba-89e3-eda8c1fd7a20"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6248), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Nagaland" },
+                    { new Guid("77536c53-345c-48f5-a175-07a7b4044754"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6330), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Jammu & Kashmir (UT)" },
+                    { new Guid("802047bc-496c-4a69-a786-5ba566f8b06b"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6231), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Maharashtra" },
+                    { new Guid("970ec112-ce5e-4f5b-9707-be75c379d803"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6148), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Assam" },
+                    { new Guid("9a41572b-ac7a-4234-af77-6d6e426e88ef"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6244), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Mizoram" },
+                    { new Guid("9f0240ba-79fa-47c5-86f6-e4f3d2ee10d8"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6152), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Bihar" },
+                    { new Guid("a14644a8-9c2f-4aa6-8332-9cb576c4dc8c"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6238), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Meghalaya" },
+                    { new Guid("abe258b7-a358-42cc-8cce-657dfe4d6644"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6353), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Andaman and Nicobar Islands (UT)" },
+                    { new Guid("ad98660a-f208-4194-82fa-9e74747b2a02"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6287), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Sikkim" },
+                    { new Guid("b176f1fe-daba-406f-9256-e6ee6ecd52ed"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6175), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Jharkhand" },
+                    { new Guid("b2d8b019-f729-4bac-8006-9b46a307153c"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6219), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Karnataka" },
+                    { new Guid("b4b9acf3-87a2-4f5f-95a0-872c0680fb1e"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6160), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Goa" },
+                    { new Guid("c2d0c6c5-6954-4921-9d64-90261de50f5e"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6291), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Tamil Nadu" },
+                    { new Guid("c9fbd62c-a7fc-4f5e-a44e-2c9fffe94c8f"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6334), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Ladakh (UT)" },
+                    { new Guid("d1459e60-a200-440a-9862-6a6c26bf37ea"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6167), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Haryana" },
+                    { new Guid("d84eaae8-09fb-4d80-9303-d166529bde20"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6223), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Kerala" },
+                    { new Guid("db5157fd-b616-418b-82e9-3d5f109d69f8"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6338), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Chandigarh (UT)" },
+                    { new Guid("df18be70-0ba6-4918-8351-bf992e4ee17a"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6345), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Puducherry (UT)" },
+                    { new Guid("e691660f-bb06-416a-a79c-9ef41e67ad11"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6142), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Arunachal Pradesh" },
+                    { new Guid("e7c6a407-a7f8-4711-b8ff-e57d7b93cafa"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6171), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Himachal Pradesh" },
+                    { new Guid("eaf9a3cc-a650-429e-bcc5-406257614dfa"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6326), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Daman & Diu (UT)" },
+                    { new Guid("f20c53dc-ba9a-4fd6-82cd-63c76fb11cc5"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6311), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Uttar Pradesh" },
+                    { new Guid("fc5486fe-aa06-46f0-9d93-b6a4f71429a2"), null, new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6322), new Guid("e02eb064-def5-434a-8798-6f144a54003c"), true, null, "Dadra and Nagar Haveli (UT)" }
                 });
+
+            migrationBuilder.InsertData(
+                schema: "public",
+                table: "Address",
+                columns: new[] { "AddressId", "At", "City", "CountryId", "CreatedBy", "DistId", "Fk_CompanyId", "Fk_CountryId", "Fk_DistId", "Fk_LabourId", "Fk_PartyId", "Fk_StateId", "Fk_UserId", "ModifyBy", "PinCode", "Post", "StateId" },
+                values: new object[] { new Guid("c9b62c55-1b06-485d-a71b-d92fee4f4428"), "DHANAMANDAL", "CUTTACK", null, null, null, null, new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"), null, null, new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), "4431f16a-6bc7-4e9b-bada-c491fcc81a58", null, "754018", "BRAHMANSAILO", null });
 
             migrationBuilder.InsertData(
                 schema: "public",
@@ -2729,7 +2755,7 @@ namespace FMS.Db.Migrations
                 schema: "public",
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId", "CreatedBy", "CreatedDate", "Discriminator", "ModifyBy", "ModifyDate" },
-                values: new object[] { "71f97dea-8c5f-4f51-84c7-6d7a16e64651", "4431f16a-6bc7-4e9b-bada-c491fcc81a58", "System", new DateTime(2025, 1, 13, 5, 9, 49, 7, DateTimeKind.Utc).AddTicks(4746), "AppUserRole", "System", new DateTime(2025, 1, 13, 5, 9, 49, 7, DateTimeKind.Utc).AddTicks(5849) });
+                values: new object[] { "71f97dea-8c5f-4f51-84c7-6d7a16e64651", "4431f16a-6bc7-4e9b-bada-c491fcc81a58", "System", new DateTime(2025, 1, 29, 2, 28, 15, 752, DateTimeKind.Utc).AddTicks(2116), "AppUserRole", "System", new DateTime(2025, 1, 29, 2, 28, 15, 752, DateTimeKind.Utc).AddTicks(3162) });
 
             migrationBuilder.InsertData(
                 schema: "public",
@@ -2737,36 +2763,36 @@ namespace FMS.Db.Migrations
                 columns: new[] { "DistId", "CreatedBy", "CreatedDate", "DistName", "Fk_CountryId", "Fk_StateId", "IsActive", "ModifyBy" },
                 values: new object[,]
                 {
-                    { new Guid("00191050-6e42-4aec-8df4-5a4dda8479ee"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(3951), "Angul", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("05111caa-801f-4201-8169-ceaa54a74e51"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4360), "Balangir", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("061206dc-39d7-4d0e-a72a-3c058014347b"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4368), "Balasore", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("1aaf6c72-3308-4c01-8caf-b9fdfb79e964"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4374), "Bargarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("2cc4b79c-ea4c-4433-86a5-f8d1ca1b22d3"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4378), "Bhadrak", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("2f95b1ff-8ddc-415e-9617-b7ccecfaf595"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4383), "Boudh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4388), "Cuttack", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("4f6f5c1f-8cd9-4cfa-9fbc-4cf2baf9af37"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4392), "Debagarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("545de00f-a0d8-4e26-a028-b871849523a0"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4397), "Dhenkanal", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("5b458db9-4fb2-47fd-b22f-e931b5c403fc"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4402), "Gajapati", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("5d7bd772-5210-4790-8ab2-45b1282b8b70"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4501), "Ganjam", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("5e9856e9-f413-4bfc-b18c-33d2d95bee8f"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4506), "Jagatsinghapur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("63ed7f68-2550-4f5a-b5f8-edd290ff4a43"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4511), "Jajpur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("651b4906-a3c0-4085-a995-d95557ce4fe9"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4515), "Jharsuguda", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("655f35d9-d2aa-4c62-95b2-eb95cf5480e4"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4520), "Kalahandi", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("6fa770a9-5ba3-4cee-9b9d-67f4d70c558c"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4524), "Kandhamal", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("7244c798-e695-4edc-9894-87e5ff4944e2"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4613), "Sundargarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("a00b3a52-cdb5-4e6e-afc5-474f66614a8c"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4609), "Subarnapur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("a266f1cb-cbd1-4d3e-9c09-2c13cd85c19a"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4604), "Sambalpur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("b4e62c5b-42db-4eb6-b120-cb0d15ca8f48"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4600), "Rayagada", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("ca257efa-7b94-4e20-8938-bbb810185d8e"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4595), "Puri", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("d4b11083-8f76-4ff9-86c6-56719c6762f0"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4589), "Nuapada", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("d71bbbc0-f66c-4951-b27b-5b6536f03fa8"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4584), "Nayagarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("d77c8178-6678-4f4b-961e-a167a3681efd"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4579), "Nabarangpur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("d979569b-cf54-4861-b9fd-7c36921237d4"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4575), "Mayurbhanj", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("dd205972-117a-4a46-9727-6cad22ce7ebe"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4570), "Malkangiri", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("e1e34023-313b-4c1b-a72d-e0895a9ce87a"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4542), "Koraput", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("f25f937c-30e3-4d30-b54e-fc4377257987"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4538), "Khordha", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("f270c1c1-82c5-4171-a491-6c89eec056ec"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4533), "Kendujhar", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
-                    { new Guid("f4a67a44-27b9-44f9-9f29-f75a3bf6c625"), null, new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4529), "Kendrapara", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null }
+                    { new Guid("00191050-6e42-4aec-8df4-5a4dda8479ee"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3047), "Angul", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("05111caa-801f-4201-8169-ceaa54a74e51"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3744), "Balangir", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("061206dc-39d7-4d0e-a72a-3c058014347b"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3753), "Balasore", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("1aaf6c72-3308-4c01-8caf-b9fdfb79e964"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3757), "Bargarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("2cc4b79c-ea4c-4433-86a5-f8d1ca1b22d3"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3762), "Bhadrak", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("2f95b1ff-8ddc-415e-9617-b7ccecfaf595"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3767), "Boudh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3772), "Cuttack", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("4f6f5c1f-8cd9-4cfa-9fbc-4cf2baf9af37"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3831), "Debagarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("545de00f-a0d8-4e26-a028-b871849523a0"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3837), "Dhenkanal", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("5b458db9-4fb2-47fd-b22f-e931b5c403fc"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3842), "Gajapati", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("5d7bd772-5210-4790-8ab2-45b1282b8b70"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3847), "Ganjam", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("5e9856e9-f413-4bfc-b18c-33d2d95bee8f"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3851), "Jagatsinghapur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("63ed7f68-2550-4f5a-b5f8-edd290ff4a43"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3856), "Jajpur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("651b4906-a3c0-4085-a995-d95557ce4fe9"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3860), "Jharsuguda", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("655f35d9-d2aa-4c62-95b2-eb95cf5480e4"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3865), "Kalahandi", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("6fa770a9-5ba3-4cee-9b9d-67f4d70c558c"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3869), "Kandhamal", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("7244c798-e695-4edc-9894-87e5ff4944e2"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3979), "Sundargarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("a00b3a52-cdb5-4e6e-afc5-474f66614a8c"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3974), "Subarnapur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("a266f1cb-cbd1-4d3e-9c09-2c13cd85c19a"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3950), "Sambalpur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("b4e62c5b-42db-4eb6-b120-cb0d15ca8f48"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3945), "Rayagada", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("ca257efa-7b94-4e20-8938-bbb810185d8e"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3941), "Puri", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("d4b11083-8f76-4ff9-86c6-56719c6762f0"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3935), "Nuapada", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("d71bbbc0-f66c-4951-b27b-5b6536f03fa8"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3931), "Nayagarh", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("d77c8178-6678-4f4b-961e-a167a3681efd"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3926), "Nabarangpur", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("d979569b-cf54-4861-b9fd-7c36921237d4"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3922), "Mayurbhanj", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("dd205972-117a-4a46-9727-6cad22ce7ebe"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3917), "Malkangiri", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("e1e34023-313b-4c1b-a72d-e0895a9ce87a"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3913), "Koraput", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("f25f937c-30e3-4d30-b54e-fc4377257987"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3908), "Khordha", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("f270c1c1-82c5-4171-a491-6c89eec056ec"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3903), "Kendujhar", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null },
+                    { new Guid("f4a67a44-27b9-44f9-9f29-f75a3bf6c625"), null, new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3898), "Kendrapara", new Guid("e02eb064-def5-434a-8798-6f144a54003c"), new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"), true, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -2780,6 +2806,34 @@ namespace FMS.Db.Migrations
                 schema: "public",
                 table: "Address",
                 column: "DistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_Fk_CompanyId",
+                schema: "public",
+                table: "Address",
+                column: "Fk_CompanyId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_Fk_LabourId",
+                schema: "public",
+                table: "Address",
+                column: "Fk_LabourId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_Fk_PartyId",
+                schema: "public",
+                table: "Address",
+                column: "Fk_PartyId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_Fk_UserId",
+                schema: "public",
+                table: "Address",
+                column: "Fk_UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Address_StateId",
@@ -2835,12 +2889,6 @@ namespace FMS.Db.Migrations
                 schema: "public",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_Fk_AddressId",
-                schema: "public",
-                table: "AspNetUsers",
-                column: "Fk_AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_Fk_TokenId",
@@ -3061,12 +3109,6 @@ namespace FMS.Db.Migrations
                 column: "Fk_ProductTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Labours_Fk_AddressId",
-                schema: "public",
-                table: "Labours",
-                column: "Fk_AddressId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Labours_Fk_BranchId",
                 schema: "public",
                 table: "Labours",
@@ -3227,12 +3269,6 @@ namespace FMS.Db.Migrations
                 schema: "public",
                 table: "OutwardSupplyTransactions",
                 column: "UnitId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Parties_Fk_AddressId",
-                schema: "public",
-                table: "Parties",
-                column: "Fk_AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Parties_Fk_PartyType",
@@ -3737,6 +3773,10 @@ namespace FMS.Db.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Address",
+                schema: "public");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims",
                 schema: "public");
 
@@ -3761,10 +3801,6 @@ namespace FMS.Db.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Company",
-                schema: "public");
-
-            migrationBuilder.DropTable(
                 name: "DamageTransactions",
                 schema: "public");
 
@@ -3786,10 +3822,6 @@ namespace FMS.Db.Migrations
 
             migrationBuilder.DropTable(
                 name: "OutwardSupplyTransactions",
-                schema: "public");
-
-            migrationBuilder.DropTable(
-                name: "Parties",
                 schema: "public");
 
             migrationBuilder.DropTable(
@@ -3834,6 +3866,18 @@ namespace FMS.Db.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserBranches",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "Company",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "Dists",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "Parties",
                 schema: "public");
 
             migrationBuilder.DropTable(
@@ -3905,6 +3949,10 @@ namespace FMS.Db.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
+                name: "States",
+                schema: "public");
+
+            migrationBuilder.DropTable(
                 name: "Labours",
                 schema: "public");
 
@@ -3921,7 +3969,7 @@ namespace FMS.Db.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Address",
+                name: "Country",
                 schema: "public");
 
             migrationBuilder.DropTable(
@@ -3941,10 +3989,6 @@ namespace FMS.Db.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "Dists",
-                schema: "public");
-
-            migrationBuilder.DropTable(
                 name: "LedgersDev",
                 schema: "public");
 
@@ -3957,10 +4001,6 @@ namespace FMS.Db.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "States",
-                schema: "public");
-
-            migrationBuilder.DropTable(
                 name: "LedgerSubGroupDevs",
                 schema: "public");
 
@@ -3970,10 +4010,6 @@ namespace FMS.Db.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductTypes",
-                schema: "public");
-
-            migrationBuilder.DropTable(
-                name: "Country",
                 schema: "public");
 
             migrationBuilder.DropTable(

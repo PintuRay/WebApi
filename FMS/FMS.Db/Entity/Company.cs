@@ -18,16 +18,17 @@ namespace FMS.Db.Entity
         [Required]
         public string GSTIN { get; set; }
         [Required]
+        [NotMapped]
         public IFormFile Logo { get; set; }
         public string LogoPath { get; set; }
         [Required]
         public Guid Fk_BranchId { get; set; }
-        public Guid Fk_AddressId { get; set; }
         [NotMapped]
         public AddressModel Address { get; set; }
     }
     public class CompanyUpdateModel : CompanyModel
     {
+        [Required]
         public Guid CompanyId { get; set; }
         [NotMapped]
         public new AddressUpdateModel Address { get; set; }
@@ -59,10 +60,9 @@ namespace FMS.Db.Entity
             builder.ToTable("Company", "public");
             builder.HasKey(e => e.CompanyId);
             builder.Property(e => e.CompanyId).HasDefaultValueSql("gen_random_uuid()");
-            builder.Property(e => e.CompanyName).HasMaxLength(200).IsRequired(true);
+            builder.Property(e => e.CompanyName).HasColumnType("text").HasMaxLength(200).IsRequired(true);
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.LogoPath).IsRequired(true);
-            builder.Property(e => e.Address).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.GSTIN).IsRequired(true);
             builder.Property(e => e.Email).IsRequired(true);
             builder.Property(e => e.PhoneNo).IsRequired(true);
@@ -72,7 +72,6 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.HasOne(s => s.Branch).WithMany(e => e.Companies).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(d => d.Address).WithMany(p => p.Companies).HasForeignKey(d => d.Fk_AddressId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

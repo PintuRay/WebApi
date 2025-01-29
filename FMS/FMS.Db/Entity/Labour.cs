@@ -10,8 +10,6 @@ namespace FMS.Db.Entity
         [Required]
         public string LabourName { get; set; }
         [Required]
-        public Guid Fk_AddressId { get; set; }
-        [Required]
         public Guid Fk_Labour_TypeId { get; set; }
         [Required]
         public Guid Fk_SubLedgerId { get; set; } 
@@ -24,7 +22,7 @@ namespace FMS.Db.Entity
     public class LabourUpdateModel : LabourModel
     {
         [Required]
-        public string LabourId { get; set; }
+        public Guid LabourId { get; set; }
     }
     public class LabourValidator : AbstractValidator<LabourModel>
     {
@@ -60,7 +58,6 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_Labour_TypeId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_SubLedgerId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(false);
-            builder.Property(e => e.Fk_AddressId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.LabourName).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.Phone).HasMaxLength(100).IsRequired(true);
             builder.Property(e => e.Reference).HasMaxLength(100).IsRequired(false);
@@ -70,7 +67,6 @@ namespace FMS.Db.Entity
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             //One-To-Many Relationship
-            builder.HasOne(d => d.Address).WithMany(p => p.Labours).HasForeignKey(d => d.Fk_AddressId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.SubLedger).WithMany(e => e.Labours).HasForeignKey(d => d.Fk_SubLedgerId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.LabourType).WithMany(e => e.Labours).HasForeignKey(d => d.Fk_Labour_TypeId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.Branch).WithMany(e => e.Labours).HasForeignKey(d => d.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);

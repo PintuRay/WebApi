@@ -10,6 +10,10 @@ namespace FMS.Db.Entity
     {
         [Required]
         public Guid Fk_CountryId { get; set; }
+        public string Fk_UserId { get; set; } = string.Empty;
+        public Guid? Fk_CompanyId { get; set; }
+        public Guid? Fk_LabourId { get; set; }
+        public Guid? Fk_PartyId { get; set; }
         [Required]
         public Guid Fk_StateId { get; set; }
         [Required]
@@ -37,10 +41,10 @@ namespace FMS.Db.Entity
     }
     public class AddressDto: AddressUpdateModel
     {
-        public ICollection<AppUser> Users { get; set; }
-        public ICollection<Labour> Labours { get; set; }
-        public ICollection<Party> Parties { get; set; }
-        public ICollection<Company> Companies { get; set; }
+        public AppUser User{ get; set; }
+        public Labour Labour { get; set; }
+        public Party Party { get; set; }
+        public Company Company { get; set; }
     }
     public class Address : AddressDto
     {
@@ -57,6 +61,10 @@ namespace FMS.Db.Entity
             builder.ToTable("Address", "public");
             builder.HasKey(e => e.AddressId);
             builder.Property(e => e.AddressId).HasDefaultValueSql("gen_random_uuid()");
+            builder.Property(e => e.Fk_UserId).HasColumnType("text").IsRequired(false);
+            builder.Property(e => e.Fk_LabourId).HasColumnType("uuid").IsRequired(false);
+            builder.Property(e => e.Fk_PartyId).HasColumnType("uuid").IsRequired(false);
+            builder.Property(e => e.Fk_CompanyId).HasColumnType("uuid").IsRequired(false);
             builder.Property(e => e.At).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.Post).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.City).HasMaxLength(50).IsRequired(true);
@@ -69,10 +77,16 @@ namespace FMS.Db.Entity
             builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow);
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValue(DateTime.UtcNow);
+            //One-To-One Relationship
+            builder.HasOne(d => d.User).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_UserId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Labour).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_LabourId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Party).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_PartyId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Company).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_CompanyId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
               new Address
               {
                   AddressId = Guid.Parse("c9b62c55-1b06-485d-a71b-d92fee4f4428"),
+                  Fk_UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                   Fk_CountryId = Guid.Parse("e02eb064-def5-434a-8798-6f144a54003c"),
                   Fk_StateId = Guid.Parse("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
                   Fk_DistId = Guid.Parse("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"),

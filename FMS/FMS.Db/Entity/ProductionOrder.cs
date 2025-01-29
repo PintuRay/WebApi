@@ -13,7 +13,7 @@ namespace FMS.Db.Entity
         [Required]
         public DateTime TransactionDate { get; set; }
         [Required]
-        public string Fk_LabourId { get; set; }
+        public Guid Fk_LabourId { get; set; }
         [Required]
         public decimal OTAmount { get; set; }
         [Required]
@@ -65,7 +65,7 @@ namespace FMS.Db.Entity
             builder.HasKey(e => e.ProductionOrderId);
             builder.Property(e => e.ProductionOrderId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.TransactionNo).IsRequired(true);
-            builder.Property(e => e.Fk_LabourId).IsRequired(true);
+            builder.Property(e => e.Fk_LabourId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Fk_FinancialYearId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.FK_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.TransactionDate).HasColumnType("timestamptz").IsRequired(true);

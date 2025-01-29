@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FMS.Db.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250113050951_Mg-Initial")]
+    [Migration("20250129022818_Mg-Initial")]
     partial class MgInitial
     {
         /// <inheritdoc />
@@ -53,9 +53,12 @@ namespace FMS.Db.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamptz")
-                        .HasDefaultValue(new DateTime(2025, 1, 13, 5, 9, 49, 126, DateTimeKind.Utc).AddTicks(2433));
+                        .HasDefaultValue(new DateTime(2025, 1, 29, 2, 28, 15, 888, DateTimeKind.Utc).AddTicks(3730));
 
                     b.Property<Guid?>("DistId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("Fk_CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("Fk_CountryId")
@@ -64,8 +67,17 @@ namespace FMS.Db.Migrations
                     b.Property<Guid>("Fk_DistId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("Fk_LabourId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("Fk_PartyId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("Fk_StateId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Fk_UserId")
+                        .HasColumnType("text");
 
                     b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -79,7 +91,7 @@ namespace FMS.Db.Migrations
                     b.Property<DateTime?>("ModifyDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamptz")
-                        .HasDefaultValue(new DateTime(2025, 1, 13, 5, 9, 49, 126, DateTimeKind.Utc).AddTicks(4516));
+                        .HasDefaultValue(new DateTime(2025, 1, 29, 2, 28, 15, 888, DateTimeKind.Utc).AddTicks(7417));
 
                     b.Property<string>("PinCode")
                         .IsRequired()
@@ -100,6 +112,18 @@ namespace FMS.Db.Migrations
 
                     b.HasIndex("DistId");
 
+                    b.HasIndex("Fk_CompanyId")
+                        .IsUnique();
+
+                    b.HasIndex("Fk_LabourId")
+                        .IsUnique();
+
+                    b.HasIndex("Fk_PartyId")
+                        .IsUnique();
+
+                    b.HasIndex("Fk_UserId")
+                        .IsUnique();
+
                     b.HasIndex("StateId");
 
                     b.ToTable("Address", "public");
@@ -113,6 +137,7 @@ namespace FMS.Db.Migrations
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_DistId = new Guid("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
+                            Fk_UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                             PinCode = "754018",
                             Post = "BRAHMANSAILO"
                         });
@@ -128,6 +153,10 @@ namespace FMS.Db.Migrations
                     b.Property<decimal>("AlternateQuantity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("AlternateUnitName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -139,9 +168,6 @@ namespace FMS.Db.Migrations
 
                     b.Property<Guid>("FK_ProductId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Fk_ProductStockUnitId")
-                        .HasColumnType("text");
 
                     b.Property<Guid>("Fk_UnitId")
                         .HasColumnType("uuid");
@@ -240,9 +266,6 @@ namespace FMS.Db.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("Fk_AddressId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("Fk_TokenId")
                         .HasColumnType("uuid");
 
@@ -304,8 +327,6 @@ namespace FMS.Db.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Fk_AddressId");
-
                     b.HasIndex("Fk_TokenId")
                         .IsUnique();
 
@@ -327,7 +348,6 @@ namespace FMS.Db.Migrations
                             ConcurrencyStamp = "65a37859-d054-4a68-a817-1669d83c598a",
                             Email = "raypintu959@gmail.com",
                             EmailConfirmed = true,
-                            Fk_AddressId = new Guid("c9b62c55-1b06-485d-a71b-d92fee4f4428"),
                             Fk_TokenId = new Guid("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
                             Gender = "male",
                             LockoutEnabled = true,
@@ -452,15 +472,10 @@ namespace FMS.Db.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
@@ -487,7 +502,7 @@ namespace FMS.Db.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValueSql("true");
 
-                    b.Property<string>("Logo")
+                    b.Property<string>("LogoPath")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -501,10 +516,6 @@ namespace FMS.Db.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
 
                     b.Property<string>("PhoneNo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -565,7 +576,7 @@ namespace FMS.Db.Migrations
                             CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             CountryCode = "IN",
                             CountryName = "India",
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 129, DateTimeKind.Utc).AddTicks(6556),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 906, DateTimeKind.Utc).AddTicks(6938),
                             IsActive = true
                         });
                 });
@@ -592,8 +603,8 @@ namespace FMS.Db.Migrations
                     b.Property<Guid>("Fk_FinancialYearId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Fk_LabourId")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("Fk_LabourId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("Fk_ProductTypeId")
                         .HasColumnType("uuid");
@@ -761,7 +772,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("00191050-6e42-4aec-8df4-5a4dda8479ee"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(3951),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3047),
                             DistName = "Angul",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -770,7 +781,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("05111caa-801f-4201-8169-ceaa54a74e51"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4360),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3744),
                             DistName = "Balangir",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -779,7 +790,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("061206dc-39d7-4d0e-a72a-3c058014347b"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4368),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3753),
                             DistName = "Balasore",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -788,7 +799,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("1aaf6c72-3308-4c01-8caf-b9fdfb79e964"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4374),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3757),
                             DistName = "Bargarh",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -797,7 +808,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("2cc4b79c-ea4c-4433-86a5-f8d1ca1b22d3"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4378),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3762),
                             DistName = "Bhadrak",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -806,7 +817,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("2f95b1ff-8ddc-415e-9617-b7ccecfaf595"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4383),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3767),
                             DistName = "Boudh",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -815,7 +826,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("40d9d1a4-ad94-4f14-a23f-d4ec3317d8f9"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4388),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3772),
                             DistName = "Cuttack",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -824,7 +835,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("4f6f5c1f-8cd9-4cfa-9fbc-4cf2baf9af37"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4392),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3831),
                             DistName = "Debagarh",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -833,7 +844,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("545de00f-a0d8-4e26-a028-b871849523a0"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4397),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3837),
                             DistName = "Dhenkanal",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -842,7 +853,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("5b458db9-4fb2-47fd-b22f-e931b5c403fc"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4402),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3842),
                             DistName = "Gajapati",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -851,7 +862,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("5d7bd772-5210-4790-8ab2-45b1282b8b70"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4501),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3847),
                             DistName = "Ganjam",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -860,7 +871,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("5e9856e9-f413-4bfc-b18c-33d2d95bee8f"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4506),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3851),
                             DistName = "Jagatsinghapur",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -869,7 +880,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("63ed7f68-2550-4f5a-b5f8-edd290ff4a43"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4511),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3856),
                             DistName = "Jajpur",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -878,7 +889,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("651b4906-a3c0-4085-a995-d95557ce4fe9"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4515),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3860),
                             DistName = "Jharsuguda",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -887,7 +898,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("655f35d9-d2aa-4c62-95b2-eb95cf5480e4"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4520),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3865),
                             DistName = "Kalahandi",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -896,7 +907,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("6fa770a9-5ba3-4cee-9b9d-67f4d70c558c"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4524),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3869),
                             DistName = "Kandhamal",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -905,7 +916,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("f4a67a44-27b9-44f9-9f29-f75a3bf6c625"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4529),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3898),
                             DistName = "Kendrapara",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -914,7 +925,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("f270c1c1-82c5-4171-a491-6c89eec056ec"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4533),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3903),
                             DistName = "Kendujhar",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -923,7 +934,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("f25f937c-30e3-4d30-b54e-fc4377257987"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4538),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3908),
                             DistName = "Khordha",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -932,7 +943,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("e1e34023-313b-4c1b-a72d-e0895a9ce87a"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4542),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3913),
                             DistName = "Koraput",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -941,7 +952,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("dd205972-117a-4a46-9727-6cad22ce7ebe"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4570),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3917),
                             DistName = "Malkangiri",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -950,7 +961,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("d979569b-cf54-4861-b9fd-7c36921237d4"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4575),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3922),
                             DistName = "Mayurbhanj",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -959,7 +970,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("d77c8178-6678-4f4b-961e-a167a3681efd"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4579),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3926),
                             DistName = "Nabarangpur",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -968,7 +979,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("d71bbbc0-f66c-4951-b27b-5b6536f03fa8"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4584),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3931),
                             DistName = "Nayagarh",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -977,7 +988,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("d4b11083-8f76-4ff9-86c6-56719c6762f0"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4589),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3935),
                             DistName = "Nuapada",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -986,7 +997,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("ca257efa-7b94-4e20-8938-bbb810185d8e"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4595),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3941),
                             DistName = "Puri",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -995,7 +1006,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("b4e62c5b-42db-4eb6-b120-cb0d15ca8f48"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4600),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3945),
                             DistName = "Rayagada",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -1004,7 +1015,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("a266f1cb-cbd1-4d3e-9c09-2c13cd85c19a"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4604),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3950),
                             DistName = "Sambalpur",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -1013,7 +1024,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("a00b3a52-cdb5-4e6e-afc5-474f66614a8c"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4609),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3974),
                             DistName = "Subarnapur",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -1022,7 +1033,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             DistId = new Guid("7244c798-e695-4edc-9894-87e5ff4944e2"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 143, DateTimeKind.Utc).AddTicks(4613),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 924, DateTimeKind.Utc).AddTicks(3979),
                             DistName = "Sundargarh",
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             Fk_StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
@@ -1358,9 +1369,9 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.Labour", b =>
                 {
-                    b.Property<string>("LabourId")
+                    b.Property<Guid>("LabourId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
+                        .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("CreatedBy")
@@ -1371,9 +1382,6 @@ namespace FMS.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamptz")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
-
-                    b.Property<Guid>("Fk_AddressId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("Fk_BranchId")
                         .HasColumnType("uuid");
@@ -1413,8 +1421,6 @@ namespace FMS.Db.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("LabourId");
-
-                    b.HasIndex("Fk_AddressId");
 
                     b.HasIndex("Fk_BranchId");
 
@@ -1495,10 +1501,33 @@ namespace FMS.Db.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+                    b.Property<bool?>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValueSql("true");
+
                     b.Property<string>("Labour_Type")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ModifyBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
 
                     b.HasKey("LabourTypeId");
 
@@ -1653,6 +1682,15 @@ namespace FMS.Db.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
                     b.Property<Guid>("Fk_LedgerGroupId")
                         .HasColumnType("uuid");
 
@@ -1663,6 +1701,11 @@ namespace FMS.Db.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
+                    b.Property<bool?>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValueSql("true");
+
                     b.Property<string>("LedgerName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1671,6 +1714,15 @@ namespace FMS.Db.Migrations
                     b.Property<string>("LedgerType")
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
+
+                    b.Property<string>("ModifyBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
 
                     b.HasKey("LedgerId");
 
@@ -1786,6 +1838,15 @@ namespace FMS.Db.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
                     b.Property<string>("GroupAlias")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -1794,6 +1855,20 @@ namespace FMS.Db.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<bool?>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<string>("ModifyBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
 
                     b.HasKey("LedgerGroupId");
 
@@ -2141,9 +2216,9 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.Party", b =>
                 {
-                    b.Property<string>("PartyId")
+                    b.Property<Guid>("PartyId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
+                        .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("CreatedBy")
@@ -2159,9 +2234,6 @@ namespace FMS.Db.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
-
-                    b.Property<Guid>("Fk_AddressId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid>("Fk_PartyType")
                         .HasColumnType("uuid");
@@ -2198,8 +2270,6 @@ namespace FMS.Db.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasKey("PartyId");
-
-                    b.HasIndex("Fk_AddressId");
 
                     b.HasIndex("Fk_PartyType");
 
@@ -2534,6 +2604,29 @@ namespace FMS.Db.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
+                    b.Property<bool?>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<string>("ModifyBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+
                     b.Property<string>("Product_Type")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -2588,9 +2681,8 @@ namespace FMS.Db.Migrations
                     b.Property<Guid>("Fk_FinancialYearId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Fk_LabourId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("Fk_LabourId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -3918,7 +4010,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("67c9f3a9-9235-428a-8463-a743f711a5a3"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9387),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(5739),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Andhra Pradesh"
@@ -3926,7 +4018,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("e691660f-bb06-416a-a79c-9ef41e67ad11"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9774),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6142),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Arunachal Pradesh"
@@ -3934,7 +4026,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("970ec112-ce5e-4f5b-9707-be75c379d803"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9779),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6148),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Assam"
@@ -3942,7 +4034,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("9f0240ba-79fa-47c5-86f6-e4f3d2ee10d8"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9819),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6152),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Bihar"
@@ -3950,7 +4042,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("188ab651-af96-41d2-adc4-0af044e6d056"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9823),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6156),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Chhattisgarh"
@@ -3958,7 +4050,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("b4b9acf3-87a2-4f5f-95a0-872c0680fb1e"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9827),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6160),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Goa"
@@ -3966,7 +4058,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("2316471c-4fc5-43ee-b20c-94e5c5775514"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9832),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6164),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Gujarat"
@@ -3974,7 +4066,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("d1459e60-a200-440a-9862-6a6c26bf37ea"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9837),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6167),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Haryana"
@@ -3982,7 +4074,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("e7c6a407-a7f8-4711-b8ff-e57d7b93cafa"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9840),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6171),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Himachal Pradesh"
@@ -3990,7 +4082,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("b176f1fe-daba-406f-9256-e6ee6ecd52ed"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9844),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6175),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Jharkhand"
@@ -3998,7 +4090,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("b2d8b019-f729-4bac-8006-9b46a307153c"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9848),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6219),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Karnataka"
@@ -4006,7 +4098,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("d84eaae8-09fb-4d80-9303-d166529bde20"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9851),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6223),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Kerala"
@@ -4014,7 +4106,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("5ed4f9b3-f38a-4ae9-a738-6f1b3ee50a88"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9855),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6227),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Madhya Pradesh"
@@ -4022,7 +4114,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("802047bc-496c-4a69-a786-5ba566f8b06b"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9882),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6231),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Maharashtra"
@@ -4030,7 +4122,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("1f2ad09e-7095-4050-b653-ae2d5693fb22"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9886),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6235),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Manipur"
@@ -4038,7 +4130,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("a14644a8-9c2f-4aa6-8332-9cb576c4dc8c"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9892),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6238),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Meghalaya"
@@ -4046,7 +4138,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("9a41572b-ac7a-4234-af77-6d6e426e88ef"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9895),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6244),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Mizoram"
@@ -4054,7 +4146,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("6ad24792-a695-43ba-89e3-eda8c1fd7a20"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9899),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6248),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Nagaland"
@@ -4062,7 +4154,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("2d1ea7cb-cf85-4be6-bdda-422e99bea59e"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9903),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6252),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Odisha"
@@ -4070,7 +4162,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("65afd736-c385-4f57-b667-de4e77f4c9d5"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9907),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6256),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Punjab"
@@ -4078,7 +4170,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("2b525373-afcc-4fb1-9525-495db02029f8"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9910),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6283),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Rajasthan"
@@ -4086,7 +4178,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("ad98660a-f208-4194-82fa-9e74747b2a02"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9914),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6287),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Sikkim"
@@ -4094,7 +4186,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("c2d0c6c5-6954-4921-9d64-90261de50f5e"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9918),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6291),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Tamil Nadu"
@@ -4102,7 +4194,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("43d58903-126e-4aca-8289-b3d09c7a1e14"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9922),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6295),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Telangana"
@@ -4110,7 +4202,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("2898a196-c192-40b6-9865-f7aa4018681c"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9956),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6307),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Tripura"
@@ -4118,7 +4210,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("f20c53dc-ba9a-4fd6-82cd-63c76fb11cc5"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9961),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6311),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Uttar Pradesh"
@@ -4126,7 +4218,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("4a49b1dc-6f18-4de7-85ec-46563a4b5b56"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9964),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6315),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Uttarakhand"
@@ -4134,7 +4226,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("559b5985-bdd4-4dab-8aa7-1887ef7b2c98"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9968),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6319),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "West Bengal"
@@ -4142,7 +4234,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("fc5486fe-aa06-46f0-9d93-b6a4f71429a2"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9972),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6322),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Dadra and Nagar Haveli (UT)"
@@ -4150,7 +4242,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("eaf9a3cc-a650-429e-bcc5-406257614dfa"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9977),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6326),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Daman & Diu (UT)"
@@ -4158,7 +4250,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("77536c53-345c-48f5-a175-07a7b4044754"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9981),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6330),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Jammu & Kashmir (UT)"
@@ -4166,7 +4258,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("c9fbd62c-a7fc-4f5e-a44e-2c9fffe94c8f"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9985),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6334),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Ladakh (UT)"
@@ -4174,7 +4266,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("db5157fd-b616-418b-82e9-3d5f109d69f8"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9991),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6338),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Chandigarh (UT)"
@@ -4182,7 +4274,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("022df470-aaa9-4f6d-895a-75f41906f76a"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9995),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6341),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Delhi (UT)"
@@ -4190,7 +4282,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("df18be70-0ba6-4918-8351-bf992e4ee17a"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 135, DateTimeKind.Utc).AddTicks(9998),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6345),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Puducherry (UT)"
@@ -4198,7 +4290,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("4ecafa26-9eb1-47a6-a927-a23f8f3c4833"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 136, DateTimeKind.Utc).AddTicks(3),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6349),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Lakshadweep (UT)"
@@ -4206,7 +4298,7 @@ namespace FMS.Db.Migrations
                         new
                         {
                             StateId = new Guid("abe258b7-a358-42cc-8cce-657dfe4d6644"),
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 136, DateTimeKind.Utc).AddTicks(6),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 914, DateTimeKind.Utc).AddTicks(6353),
                             Fk_CountryId = new Guid("e02eb064-def5-434a-8798-6f144a54003c"),
                             IsActive = true,
                             StateName = "Andaman and Nicobar Islands (UT)"
@@ -4688,9 +4780,9 @@ namespace FMS.Db.Migrations
                             UserId = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                             RoleId = "71f97dea-8c5f-4f51-84c7-6d7a16e64651",
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2025, 1, 13, 5, 9, 49, 7, DateTimeKind.Utc).AddTicks(4746),
+                            CreatedDate = new DateTime(2025, 1, 29, 2, 28, 15, 752, DateTimeKind.Utc).AddTicks(2116),
                             ModifyBy = "System",
-                            ModifyDate = new DateTime(2025, 1, 13, 5, 9, 49, 7, DateTimeKind.Utc).AddTicks(5849)
+                            ModifyDate = new DateTime(2025, 1, 29, 2, 28, 15, 752, DateTimeKind.Utc).AddTicks(3162)
                         });
                 });
 
@@ -4704,9 +4796,37 @@ namespace FMS.Db.Migrations
                         .WithMany("Addresses")
                         .HasForeignKey("DistId");
 
+                    b.HasOne("FMS.Db.Entity.Company", "Company")
+                        .WithOne("Address")
+                        .HasForeignKey("FMS.Db.Entity.Address", "Fk_CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FMS.Db.Entity.Labour", "Labour")
+                        .WithOne("Address")
+                        .HasForeignKey("FMS.Db.Entity.Address", "Fk_LabourId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FMS.Db.Entity.Party", "Party")
+                        .WithOne("Address")
+                        .HasForeignKey("FMS.Db.Entity.Address", "Fk_PartyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FMS.Db.Entity.AppUser", "User")
+                        .WithOne("Address")
+                        .HasForeignKey("FMS.Db.Entity.Address", "Fk_UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("FMS.Db.Entity.State", null)
                         .WithMany("Addresses")
                         .HasForeignKey("StateId");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Labour");
+
+                    b.Navigation("Party");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.AlternateUnit", b =>
@@ -4730,19 +4850,11 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.AppUser", b =>
                 {
-                    b.HasOne("FMS.Db.Entity.Address", "Address")
-                        .WithMany("Users")
-                        .HasForeignKey("Fk_AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FMS.Db.Entity.RegisterToken", "Token")
                         .WithOne("User")
                         .HasForeignKey("FMS.Db.Entity.AppUser", "Fk_TokenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
 
                     b.Navigation("Token");
                 });
@@ -5020,12 +5132,6 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.Labour", b =>
                 {
-                    b.HasOne("FMS.Db.Entity.Address", "Address")
-                        .WithMany("Labours")
-                        .HasForeignKey("Fk_AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FMS.Db.Entity.Branch", "Branch")
                         .WithMany("Labours")
                         .HasForeignKey("Fk_BranchId")
@@ -5042,8 +5148,6 @@ namespace FMS.Db.Migrations
                         .HasForeignKey("Fk_SubLedgerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
 
                     b.Navigation("Branch");
 
@@ -5262,12 +5366,6 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.Party", b =>
                 {
-                    b.HasOne("FMS.Db.Entity.Address", "Address")
-                        .WithMany("Parties")
-                        .HasForeignKey("Fk_AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FMS.Db.Entity.LedgerDev", "LedgerDev")
                         .WithMany("Parties")
                         .HasForeignKey("Fk_PartyType")
@@ -5279,8 +5377,6 @@ namespace FMS.Db.Migrations
                         .HasForeignKey("Fk_SubledgerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
 
                     b.Navigation("LedgerDev");
 
@@ -6122,15 +6218,6 @@ namespace FMS.Db.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FMS.Db.Entity.Address", b =>
-                {
-                    b.Navigation("Labours");
-
-                    b.Navigation("Parties");
-
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("FMS.Db.Entity.AlternateUnit", b =>
                 {
                     b.Navigation("DamageTransactions");
@@ -6152,6 +6239,8 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.AppUser", b =>
                 {
+                    b.Navigation("Address");
+
                     b.Navigation("UserBranch");
                 });
 
@@ -6222,6 +6311,11 @@ namespace FMS.Db.Migrations
                     b.Navigation("SubLedgers");
 
                     b.Navigation("UserBranch");
+                });
+
+            modelBuilder.Entity("FMS.Db.Entity.Company", b =>
+                {
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.Country", b =>
@@ -6312,6 +6406,8 @@ namespace FMS.Db.Migrations
 
             modelBuilder.Entity("FMS.Db.Entity.Labour", b =>
                 {
+                    b.Navigation("Address");
+
                     b.Navigation("DamageOrders");
 
                     b.Navigation("ProductionOrders");
@@ -6389,6 +6485,11 @@ namespace FMS.Db.Migrations
             modelBuilder.Entity("FMS.Db.Entity.OutwardSupplyOrder", b =>
                 {
                     b.Navigation("OutwardSupplyTransactions");
+                });
+
+            modelBuilder.Entity("FMS.Db.Entity.Party", b =>
+                {
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("FMS.Db.Entity.PaymentOrder", b =>

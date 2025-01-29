@@ -10,7 +10,6 @@ namespace FMS.Db.Entity
     public class AppUser : IdentityUser
     {
         public Guid Fk_TokenId { get; set; }
-        public Guid Fk_AddressId { get; set; }
         public string Name { get; set; }
         public DateTime BirthDate { get; set; }
         public string MaratialStatus { get; set; }
@@ -28,7 +27,6 @@ namespace FMS.Db.Entity
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.Property(e => e.Fk_TokenId).HasColumnType("uuid").IsRequired(true);
-            builder.Property(e => e.Fk_AddressId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Name).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.BirthDate).HasColumnType("timestamptz").IsRequired(true);
             builder.Property(e => e.MaratialStatus).HasMaxLength(10).IsRequired(true);
@@ -37,13 +35,11 @@ namespace FMS.Db.Entity
             builder.Property(e => e.TermCondition).HasDefaultValueSql("true");
             //One-To-One Relationship
             builder.HasOne(d => d.Token).WithOne(p => p.User).HasForeignKey<AppUser>(d => d.Fk_TokenId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(d => d.Address).WithMany(p => p.Users).HasForeignKey(d => d.Fk_AddressId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
             new AppUser
             {
                 Id = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                 Fk_TokenId = Guid.Parse("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
-                Fk_AddressId = Guid.Parse("c9b62c55-1b06-485d-a71b-d92fee4f4428"),
                 Name = "Pintu Ray",
                 Gender = "male",
                 MaratialStatus = "unmarred",
@@ -65,23 +61,8 @@ namespace FMS.Db.Entity
         );
         }
     }
-    public class UserDto
+    public class UserBase
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-        public string MaratialStatus { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string PhotoPath { get; set; }
-        public Guid Fk_AddressId { get; set; }
-        public AddressDto Address { get; set; }
-    }
-    public class UserModel
-    {
-        [Required]
-        public Guid Fk_TokenId { get; set; }
         [Required, StringLength(30, MinimumLength = 5)]
         public string Name { get; set; }
         [Required]
@@ -91,19 +72,35 @@ namespace FMS.Db.Entity
         [Required]
         public string Gender { get; set; }
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        public IFormFile ProfilePhoto { get; set; }
         public string PhotoPath { get; set; }
+       
+    }
+    public class UserModel : UserBase
+    {
+        [Required]
+        public Guid Fk_TokenId { get; set; }
+
         [Required]
         public string Password { get; set; }
         [Required]
+        [Compare("Password")]
         public string ConfirmPassword { get; set; }
         [Required]
         public string RouteUls { get; set; }
+        public IFormFile ProfilePhoto { get; set; }
         public Guid Fk_AddressId { get; set; }
         public AddressModel Address { get; set; }
+    }
+    public class UserUpdateModel : UserBase
+    {
+        [Required]
+        public string Id { get; set; }
+        public IFormFile ProfilePhoto { get; set; }
+        public AddressUpdateModel Address { get; set; }
     }
     public class UserValidator : AbstractValidator<UserModel>
     {
@@ -198,23 +195,9 @@ namespace FMS.Db.Entity
             .NotEmpty().WithMessage("RouteUls cannot be empty.");
         }
     }
-    public class UserUpdateModel
+    public class UserDto : UserBase
     {
         public string Id { get; set; }
-        [Required, StringLength(30, MinimumLength = 5)]
-        public string Name { get; set; }
-        [Required]
-        public DateTime BirthDate { get; set; }
-        [Required]
-        public string MaratialStatus { get; set; }
-        [Required]
-        public string Gender { get; set; }
-        [Required]
-        public string Email { get; set; }
-        [Required]
-        public string PhoneNumber { get; set; }
-        public IFormFile ProfilePhoto { get; set; }
-        public string PhotoPath { get; set; }
-        public AddressUpdateModel Address { get; set; }
+        public AddressDto Address { get; set; }
     }
 }

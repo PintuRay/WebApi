@@ -14,7 +14,7 @@ namespace FMS.Db.Entity
         public DateTime TransactionDate { get; set; }
         [Required]
         public Guid Fk_ProductTypeId { get; set; }
-        public string Fk_LabourId { get; set; } = null;
+        public Guid? Fk_LabourId { get; set; }
         [Required]
         public Guid Fk_BranchId { get; set; }
         [Required]

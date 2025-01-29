@@ -326,7 +326,6 @@ namespace FMS.Repo.Common
                                        {
                                            StateId = s.StateId,
                                            Fk_CountryId = s.Fk_CountryId,
-                                           CountryName =s.Country.CountryName,
                                            StateName = s.StateName
                                        }).OrderBy(s => s.StateName).ToListAsync();
                     if (Query.Count > 0)
@@ -445,7 +444,6 @@ namespace FMS.Repo.Common
                                    {
                                        StateId = s.StateId,
                                        Fk_CountryId = s.Fk_CountryId,
-                                       CountryName = s.Country.CountryName,
                                        StateName = s.StateName
                                    }).OrderBy(s => s.StateName).ToListAsync();
                 if (Query.Count > 0)

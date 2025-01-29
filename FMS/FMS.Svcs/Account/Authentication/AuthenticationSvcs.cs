@@ -145,12 +145,11 @@ namespace FMS.Svcs.Account.Authentication
             {
                 var user = _mapper.Map<AppUser>(data);
                 user.UserName = data.Email;
-                var repoResult = await _authenticationRepo.CreateUserAdress(data.Address, user);
-                if (repoResult.IsSucess)
+                var identity = await _userManager.CreateAsync(user, data.Password);
+                if (identity.Succeeded)
                 {
-                    user.Fk_AddressId =Guid.Parse(repoResult.Id);
-                    var identity = await _userManager.CreateAsync(user, data.Password);
-                    if (identity.Succeeded)
+                    var repoResult = await _authenticationRepo.CreateUserAdress(data.Address, user);
+                    if (repoResult.IsSucess)
                     {
                         var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         if (!string.IsNullOrEmpty(regToken))
@@ -821,7 +820,7 @@ namespace FMS.Svcs.Account.Authentication
             SvcsBase Obj;
             try
             {
-                 var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 var result = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider, model.OTP) ||
                              await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider, model.OTP);
                 if (result)
