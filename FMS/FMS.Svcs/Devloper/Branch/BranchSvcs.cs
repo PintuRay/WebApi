@@ -1,15 +1,17 @@
-﻿using FMS.Db.Entity;
+﻿using FluentValidation.Results;
+using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Repo.Devloper.Branch;
 using FMS.Svcs.Email;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Svcs.Devloper.Branch
 {
-    public class BranchSvcs(IBranchRepo branchRepo, IEmailSvcs emailSvc) : IBranchSvcs
+    public class BranchSvcs(IBranchRepo branchRepo, BranchValidator branchValidator, IEmailSvcs emailSvc) : IBranchSvcs
     {
         #region Dependancy
         private readonly IBranchRepo _branchRepo = branchRepo;
+        private readonly BranchValidator _branchValidator = branchValidator;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
         #region Branch
@@ -79,21 +81,33 @@ namespace FMS.Svcs.Devloper.Branch
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.CreateBranch(data, user);
-                Obj = repoResult.IsSucess switch
+                var validationResult = await _branchValidator.ValidateAsync(data);
+                if (validationResult.IsValid)
                 {
-                    true => new()
+                    var repoResult = await _branchRepo.CreateBranch(data, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "Branch Created Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Created,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "Branch Created Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Created,
+                        },
+                        false => new()
+                        {
+                            Message = $"Branch '{data.BranchName}' Already Exist",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"Branch '{data.BranchName}' Already Exist",
+                        Data = validationResult.Errors.ToArray(),
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    },
-                };
+                    };
+                }   
             }
             catch (Exception _Exception)
             {
@@ -111,21 +125,34 @@ namespace FMS.Svcs.Devloper.Branch
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.BulkCreateBranch(listdata, user);
-                Obj = repoResult.IsSucess switch
+                var validationTasks = listdata.Select(b => _branchValidator.ValidateAsync(b));
+                var validationResults = await Task.WhenAll(validationTasks);
+                if (validationResults.All(r => r.IsValid))
                 {
-                    true => new()
+                    var repoResult = await _branchRepo.BulkCreateBranch(listdata, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "Branchs Created Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Created,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "Branchs Created Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Created,
+                        },
+                        false => new()
+                        {
+                            Message = $"Following Branches '{string.Join(", ", repoResult.Records)}' Already Exist",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"Following Branches '{string.Join(", ", repoResult.Records)}' Already Exist",
+                        Data = validationResults.SelectMany(r => r.Errors).ToArray(),
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    },
-                };
+                    };
+                }
             }
             catch (Exception _Exception)
             {
@@ -143,21 +170,34 @@ namespace FMS.Svcs.Devloper.Branch
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.UpdateBranch(data, user);
-                Obj = repoResult.IsSucess switch
+                var validationResult = await _branchValidator.ValidateAsync(data);
+                if (validationResult.IsValid)
                 {
-                    true => new()
+                    var repoResult = await _branchRepo.UpdateBranch(data, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "Branch Updated Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "Branch Updated Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        },
+                        false => new()
+                        {
+                            Message = $"BranchId '{data.BranchId}' Not Found",
+                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"BranchId '{data.BranchId}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
+                        Data = validationResult.Errors.ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+               
             }
             catch (Exception _Exception)
             {
@@ -175,21 +215,34 @@ namespace FMS.Svcs.Devloper.Branch
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.BulkUpdateBranch(listdata, user);
-                Obj = repoResult.IsSucess switch
+                var validationTasks = listdata.Select(b => _branchValidator.ValidateAsync(b));
+                var validationResults = await Task.WhenAll(validationTasks);
+                if (validationResults.All(r => r.IsValid))
                 {
-                    true => new()
+                    var repoResult = await _branchRepo.BulkUpdateBranch(listdata, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "Branches Updated Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "Branches Updated Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        },
+                        false => new()
+                        {
+                            Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
+                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
+                        Data = validationResults.SelectMany(r => r.Errors).ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
             }
             catch (Exception _Exception)
             {

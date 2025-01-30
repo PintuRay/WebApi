@@ -5,14 +5,46 @@ using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Devloper.FinancialYear
 {
-    public class FinancialYearSvcs(IFinancialYearRepo financialYearRepo, IEmailSvcs emailSvc) : IFinancialYearSvcs
+    public class FinancialYearSvcs(IFinancialYearRepo financialYearRepo, FinancialYearValidator financialYearValidator, IEmailSvcs emailSvc) : IFinancialYearSvcs
     {
         #region Dependancy
         private readonly IFinancialYearRepo _financialYearRepo = financialYearRepo;
+        private readonly FinancialYearValidator _financialYearValidator = financialYearValidator;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
         #region Financial Year
         #region Crud
+        public async Task<SvcsBase> GetFinancialYears()
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _financialYearRepo.GetFinancialYears();
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "No Record Exist",
+                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetFinancialYears", _Exception.ToString());
+            }
+            return Obj;
+        }
         public async Task<SvcsBase> GetFinancialYears(PaginationParams pagination)
         {
             SvcsBase Obj;
@@ -49,21 +81,34 @@ namespace FMS.Svcs.Devloper.FinancialYear
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.CreateFinancialYear(data, user);
-                Obj = repoResult.IsSucess switch
+                var validationResult = await _financialYearValidator.ValidateAsync(data);
+                if (validationResult.IsValid)
                 {
-                    true => new()
+                    var repoResult = await _financialYearRepo.CreateFinancialYear(data, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "Financial Year Created Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Created,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "Financial Year Created Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Created,
+                        },
+                        false => new()
+                        {
+                            Message = $"Financial Year {data.Financial_Year} Already Exist",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"Financial Year {data.Financial_Year} Already Exist",
+                        Data = validationResult.Errors.ToArray(),
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    },
-                };
+                    };
+                }
+
             }
             catch (Exception _Exception)
             {
@@ -76,9 +121,50 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public Task<SvcsBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user)
+        public async Task<SvcsBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user)
         {
-            throw new NotImplementedException();
+            SvcsBase Obj;
+            try
+            {
+                var validationTasks = dataList.Select(b => _financialYearValidator.ValidateAsync(b));
+                var validationResults = await Task.WhenAll(validationTasks);
+                if (validationResults.All(r => r.IsValid))
+                {
+                    var repoResult = await _financialYearRepo.BulkCreateFinancialYear(dataList, user);
+                    Obj = repoResult.IsSucess switch
+                    {
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "financial Years Created Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Created,
+                        },
+                        false => new()
+                        {
+                            Message = $"Following Financial years '{string.Join(", ", repoResult.Records)}' Already Exist",
+                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Data = validationResults.SelectMany(r => r.Errors).ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateFinancialYear", _Exception.ToString());
+            }
+            return Obj;
         }
         public async Task<SvcsBase> UpdateFinancialYear(FinancialYearUpdateModel data, AppUser user)
         {
@@ -112,9 +198,50 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public Task<SvcsBase> BulkUpdateFinancialYear(List<FinancialYearUpdateModel> dataList, AppUser user)
+        public async Task<SvcsBase> BulkUpdateFinancialYear(List<FinancialYearUpdateModel> dataList, AppUser user)
         {
-            throw new NotImplementedException();
+            SvcsBase Obj;
+            try
+            {
+                var validationTasks = dataList.Select(b => _financialYearValidator.ValidateAsync(b));
+                var validationResults = await Task.WhenAll(validationTasks);
+                if (validationResults.All(r => r.IsValid))
+                {
+                    var repoResult = await _financialYearRepo.BulkUpdateFinancialYear(dataList, user);
+                    Obj = repoResult.IsSucess switch
+                    {
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "Financial years Updated Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        },
+                        false => new()
+                        {
+                            Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
+                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Data = validationResults.SelectMany(r => r.Errors).ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateFinancialYear", _Exception.ToString());
+            }
+            return Obj;
         }
         public async Task<SvcsBase> RemoveFinancialYear(Guid Id, AppUser user)
         {
@@ -148,9 +275,37 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public Task<SvcsBase> BulkRemoveFinancialYear(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRemoveFinancialYear(List<Guid> Ids, AppUser user)
         {
-            throw new NotImplementedException();
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(Ids, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = "Financial Years Removed Successfully",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = $"Following Financial Years  '{string.Join(", ", repoResult.Ids)}' Not Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkRemoveFinancialYear", _Exception.ToString());
+            }
+            return Obj;
         }
         #endregion
         #region Recover

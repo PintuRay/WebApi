@@ -34,7 +34,7 @@ namespace FMS.Server.Controllers.Devloper
             return result.ResponseCode switch
             {
                 204 => StatusCode(204, result),
-                200=> StatusCode(200, result),
+                200 => StatusCode(200, result),
                 _ => BadRequest(result)
             };
         }
@@ -43,19 +43,9 @@ namespace FMS.Server.Controllers.Devloper
         {
             if (ModelState.IsValid)
             {
-                var validator = new BranchValidator();
-                var validationResult = validator.Validate(data);
-                if (validationResult.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _branchSvcs.CreateBranch(data, user);
-                    return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
-                }
-                else
-                {
-                    var errors = validationResult.Errors.ToArray();
-                    return BadRequest(errors);
-                }
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchSvcs.CreateBranch(data, user);
+                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
             }
             else
             {
@@ -66,9 +56,7 @@ namespace FMS.Server.Controllers.Devloper
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> BulkCreate([FromBody] List<BranchModel> listdata)
         {
-            var validator = new BranchValidator();
-            var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
-            if (validationResults.All(r => r.IsValid))
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkCreateBranch(listdata, user);
@@ -76,7 +64,7 @@ namespace FMS.Server.Controllers.Devloper
             }
             else
             {
-                var errors = validationResults.SelectMany(r => r.Errors).Select(e => e.ErrorMessage).ToList();
+                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
                 return BadRequest(errors);
             }
         }
@@ -85,19 +73,9 @@ namespace FMS.Server.Controllers.Devloper
         {
             if (ModelState.IsValid)
             {
-                var validator = new BranchValidator();
-                var validationResult = validator.Validate(model);
-                if (validationResult.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _branchSvcs.UpdateBranch(model, user);
-                    return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
-                }
-                else
-                {
-                    var errors = validationResult.Errors.ToArray();
-                    return BadRequest(errors);
-                }
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchSvcs.UpdateBranch(model, user);
+                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
@@ -108,17 +86,15 @@ namespace FMS.Server.Controllers.Devloper
         [HttpPatch, Authorize(policy: "Update")]
         public async Task<IActionResult> BulkUpdate([FromBody] List<BranchUpdateModel> listdata)
         {
-            var validator = new BranchValidator();
-            var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
-            if (validationResults.All(r => r.IsValid))
-            {
+            if (ModelState.IsValid)
+            { 
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkUpdateBranch(listdata, user);
                 return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
             }
             else
             {
-                var errors = validationResults.SelectMany(r => r.Errors).Select(e => e.ErrorMessage).ToList();
+                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
                 return BadRequest(errors);
             }
         }

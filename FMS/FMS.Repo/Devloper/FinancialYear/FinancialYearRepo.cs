@@ -234,11 +234,11 @@ namespace FMS.Repo.Devloper.FinancialYear
                 var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(x => x.FinancialYearId == Id && x.IsActive == true);
                 if (Query != null)
                 {
-                    await UpdateFinancialYearRelatedEntity(Id, false);
+                    int Count = await UpdateFinancialYearRelatedEntity(Id, false);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
-                    int Count = await _ctx.SaveChangesAsync();
+                    Count += await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
@@ -265,8 +265,8 @@ namespace FMS.Repo.Devloper.FinancialYear
                 var notFoundFinancialYearIds = Ids.Except(existingFinancialYearIds).ToList();
                 if (notFoundFinancialYearIds.Count == 0)
                 {
-                    await UpdateFinancialYearsRelatedEntity(Ids, false);
-                    int Count = await _ctx.FinancialYears.Where(x => Ids.Contains(x.FinancialYearId) && x.IsActive == true)
+                    int Count = await UpdateFinancialYearsRelatedEntity(Ids, false);
+                    Count += await _ctx.FinancialYears.Where(x => Ids.Contains(x.FinancialYearId) && x.IsActive == true)
                              .ExecuteUpdateAsync(s => s
                                  .SetProperty(p => p.ModifyDate, DateTime.UtcNow)
                                  .SetProperty(p => p.ModifyBy, user.Name)
@@ -334,11 +334,11 @@ namespace FMS.Repo.Devloper.FinancialYear
                 var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(x => x.FinancialYearId == Id && x.IsActive == false);
                 if (Query != null)
                 {
-                    await UpdateFinancialYearRelatedEntity(Id, true);
+                    int Count = await UpdateFinancialYearRelatedEntity(Id, true);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = true;
-                    int Count = await _ctx.SaveChangesAsync();
+                    Count += await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
@@ -365,8 +365,8 @@ namespace FMS.Repo.Devloper.FinancialYear
                 var notFoundFinancialYearIds = Ids.Except(existingFinancialYearIds).ToList();
                 if (notFoundFinancialYearIds.Count == 0)
                 {
-                    await UpdateFinancialYearsRelatedEntity(Ids, true);
-                    int Count = await _ctx.FinancialYears.Where(x => Ids.Contains(x.FinancialYearId) && x.IsActive == false)
+                    int Count = await UpdateFinancialYearsRelatedEntity(Ids, true);
+                    Count += await _ctx.FinancialYears.Where(x => Ids.Contains(x.FinancialYearId) && x.IsActive == false)
                              .ExecuteUpdateAsync(s => s
                                  .SetProperty(p => p.ModifyDate, DateTime.UtcNow)
                                  .SetProperty(p => p.ModifyBy, user.Name)
@@ -455,65 +455,69 @@ namespace FMS.Repo.Devloper.FinancialYear
             return _Result;
         }
         #endregion
-        private async Task UpdateFinancialYearRelatedEntity(Guid Id, bool IsActive)
+        private async Task<int> UpdateFinancialYearRelatedEntity(Guid Id, bool IsActive)
         {
-            await _ctx.BranchFinancialYears.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.Stocks.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.LabourRates.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.LedgerBalances.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SubLedgerBalances.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.InwardSupplyOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.InwardSupplyTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.OutwardSupplyOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.OutwardSupplyTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ProductionOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ProductionTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.DamageOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.DamageTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseReturnOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseReturnTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesReturnOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesReturnTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.JournalOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.JournalTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PaymentOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PaymentTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ReceiptOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ReceiptTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            int count = 0;
+            count += await _ctx.BranchFinancialYears.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.Stocks.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.LabourRates.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.LedgerBalances.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SubLedgerBalances.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.InwardSupplyOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.InwardSupplyTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.OutwardSupplyOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.OutwardSupplyTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ProductionOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ProductionTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.DamageOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.DamageTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseReturnOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseReturnTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesReturnOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesReturnTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.JournalOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.JournalTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PaymentOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PaymentTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ReceiptOrders.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ReceiptTransactions.Where(bf => bf.Fk_FinancialYearId == Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            return count;
         }
-        private async Task UpdateFinancialYearsRelatedEntity(List<Guid> Ids, bool IsActive)
+        private async Task<int> UpdateFinancialYearsRelatedEntity(List<Guid> Ids, bool IsActive)
         {
-            await _ctx.BranchFinancialYears.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.Stocks.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.LabourRates.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.LedgerBalances.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SubLedgerBalances.Where(bf => Ids.Contains(bf.Fk_BranchId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.InwardSupplyOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.InwardSupplyTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.OutwardSupplyOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.OutwardSupplyTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ProductionOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ProductionTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.DamageOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.DamageTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseReturnOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PurchaseReturnTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesReturnOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.SalesReturnTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.JournalOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.JournalTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PaymentOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.PaymentTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ReceiptOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
-            await _ctx.ReceiptTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            int count = 0;
+            count += await _ctx.BranchFinancialYears.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.Stocks.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.LabourRates.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.LedgerBalances.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SubLedgerBalances.Where(bf => Ids.Contains(bf.Fk_BranchId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.InwardSupplyOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.InwardSupplyTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.OutwardSupplyOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.OutwardSupplyTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ProductionOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ProductionTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.DamageOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.DamageTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseReturnOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PurchaseReturnTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesReturnOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.SalesReturnTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.JournalOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.JournalTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PaymentOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.PaymentTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ReceiptOrders.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            count += await _ctx.ReceiptTransactions.Where(bf => Ids.Contains(bf.Fk_FinancialYearId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            return count;
         }
         #endregion
     }

@@ -8,6 +8,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
     {
         #region Financial Year
         #region Crud
+        Task<SvcsBase> GetFinancialYears();
         Task<SvcsBase> GetFinancialYears(PaginationParams pagination);
         Task<SvcsBase> CreateFinancialYear(FinancialYearModel data, AppUser user);
         Task<SvcsBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user);

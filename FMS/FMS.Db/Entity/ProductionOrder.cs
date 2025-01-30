@@ -34,9 +34,9 @@ namespace FMS.Db.Entity
         [NotMapped]
         public new List<ProductionTransactionModel> ProductionTransactions { get; set; }
     }
-    public class LabourOrderValidator : AbstractValidator<ProductionOrderModel>
+    public class ProductionOrderValidator : AbstractValidator<ProductionOrderModel>
     {
-        public LabourOrderValidator()
+        public ProductionOrderValidator()
         {
 
         }

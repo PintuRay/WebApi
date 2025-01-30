@@ -104,14 +104,6 @@ builder.Services.Configure<SMTPConfigModel>(builder.Configuration.GetSection("SM
 builder.Services.Configure<SmsConfigModel>(builder.Configuration.GetSection("TwilioSMS"));
 builder.Services.AddScoped<IEmailSvcs, EmailSvcs>();
 builder.Services.AddScoped<ISmsSvcs, SmsSvcs>();
-//**************************************************** Model Validation ************************************************//
-// Register FluentValidation services
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddFluentValidationClientsideAdapters();
-builder.Services.AddTransient<CustomValidation>();
-// Register Validators
-builder.Services.AddTransient<IValidator<RegisterTokenModel>, RegisterTokenValidator>();
-builder.Services.AddTransient<IValidator<UserModel>, UserValidator>();
 //*************************************************Dependancy Injection***************************************// 
 builder.Services.AddScoped<ICommonRepo, CommonRepo>();
 builder.Services.AddScoped<ICommonSvcs, CommonSvcs>();
@@ -182,6 +174,61 @@ builder.Services.AddScoped<IPaymentSvcs, PaymentSvcs>();
 builder.Services.AddScoped<IPaymentRepo, PaymentRepo>();
 builder.Services.AddScoped<IReceiptSvcs, ReceiptSvcs>();
 builder.Services.AddScoped<IReceiptRepo, ReceiptRepo>();
+//**************************************************** Model Validation ************************************************//
+// Register FluentValidation services
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddScoped<CustomValidation>();
+// Register Validators
+builder.Services.AddScoped<RegisterTokenValidator>();
+builder.Services.AddScoped<UserValidator>();
+builder.Services.AddScoped<AddressValidator>();
+builder.Services.AddScoped<AlternateUnitValidator>();
+builder.Services.AddScoped<BranchValidator>();
+builder.Services.AddScoped<BranchFinancialYearValidator>();
+builder.Services.AddScoped<CompanyValidator>();
+builder.Services.AddScoped<CountryValidator>();
+builder.Services.AddScoped<DamageOrderValidator>();
+builder.Services.AddScoped<DamageTransactionValidator>();
+builder.Services.AddScoped<DistValidator>();
+builder.Services.AddScoped<FinancialYearValidator>();
+builder.Services.AddScoped<InwardSupplyOrderValidator>();
+builder.Services.AddScoped<InwardSupplyTransactionValidator>();
+builder.Services.AddScoped<JournalOrderValidator>();
+builder.Services.AddScoped<JournalTransactionValidator>();
+builder.Services.AddScoped<LabourValidator>();
+builder.Services.AddScoped<LabourRateValidator>();
+builder.Services.AddScoped<LedgerValidator>();
+builder.Services.AddScoped<LedgerBalanceValidator>();
+builder.Services.AddScoped<LedgerSubGroupValidator>();
+builder.Services.AddScoped<LedgerSubGroupDevValidator>();
+builder.Services.AddScoped<OutwardSupplyOrderValidator>();
+builder.Services.AddScoped<OutwardSupplyTransactionValidator>();
+builder.Services.AddScoped<PartyValidator>();
+builder.Services.AddScoped<PaymentOrderValidator>();
+builder.Services.AddScoped<PaymentTransactionValidator>();
+builder.Services.AddScoped<ProductValidator>();
+builder.Services.AddScoped<ProductGroupValidator>();
+builder.Services.AddScoped<ProductionOrderValidator>();
+builder.Services.AddScoped<ProductionTransactionValidator>();
+builder.Services.AddScoped<ProductionTransactionSetupValidator>();
+builder.Services.AddScoped<ProductSubGroupValidator>();
+builder.Services.AddScoped<PurchaseOrderValidator>();
+builder.Services.AddScoped<PurchaseReturnOrderValidator>();
+builder.Services.AddScoped<PurchaseReturnTransactionValidator>();
+builder.Services.AddScoped<PurchaseTransactionValidator>();
+builder.Services.AddScoped<ReceiptOrderValidator>();
+builder.Services.AddScoped<ReceiptTransactionValidator>();
+builder.Services.AddScoped<SalesOrderValidator>();
+builder.Services.AddScoped<SalesReturnOrderValidator>();
+builder.Services.AddScoped<SalesReturnTransactionValidator>();
+builder.Services.AddScoped<SalesTransactionValidator>();
+builder.Services.AddScoped<SalesTransactionSetupValidator>();
+builder.Services.AddScoped<StateValidator>();
+builder.Services.AddScoped<StockValidator>();
+builder.Services.AddScoped<SubLedgerBalanceValidator>();
+builder.Services.AddScoped<UnitValidator>();
+builder.Services.AddScoped<UserBranchValidator>();
 //*****************************************************AutoMapper*****************************************//
 var automapper = new MapperConfiguration(option => option.AddProfile(new MappingProfile()));
 IMapper mapper = automapper.CreateMapper();

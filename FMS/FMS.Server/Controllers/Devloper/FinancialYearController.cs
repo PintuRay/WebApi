@@ -17,6 +17,12 @@ namespace FMS.Server.Controllers.Devloper
         #endregion
         #region Crud
         [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _financialYearSvcs.GetFinancialYears();
+            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+        }
+        [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
             var result = await _financialYearSvcs.GetFinancialYears(pagination);
@@ -40,9 +46,7 @@ namespace FMS.Server.Controllers.Devloper
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> BulkCreate([FromBody] List<FinancialYearModel> listdata)
         {
-            var validator = new FinancialYearValidator();
-            var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
-            if (validationResults.All(r => r.IsValid))
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.BulkCreateFinancialYear(listdata, user);
@@ -50,7 +54,7 @@ namespace FMS.Server.Controllers.Devloper
             }
             else
             {
-                var errors = validationResults.SelectMany(r => r.Errors).Select(e => e.ErrorMessage).ToList();
+                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
                 return BadRequest(errors);
             }
         }
@@ -59,19 +63,9 @@ namespace FMS.Server.Controllers.Devloper
         {
             if (ModelState.IsValid)
             {
-                var validator = new FinancialYearValidator();
-                var validationResult = validator.Validate(model);
-                if (validationResult.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _financialYearSvcs.UpdateFinancialYear(model, user);
-                    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-                }
-                else
-                {
-                    var errors = validationResult.Errors.ToArray();
-                    return BadRequest(errors);
-                }
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _financialYearSvcs.UpdateFinancialYear(model, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
@@ -82,9 +76,7 @@ namespace FMS.Server.Controllers.Devloper
         [HttpPatch, Authorize(policy: "Update")]
         public async Task<IActionResult> BulkUpdate([FromBody] List<FinancialYearUpdateModel> listdata)
         {
-            var validator = new FinancialYearValidator();
-            var validationResults = listdata.Select(b => validator.Validate(b)).ToList();
-            if (validationResults.All(r => r.IsValid))
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.BulkUpdateFinancialYear(listdata, user);
@@ -92,7 +84,7 @@ namespace FMS.Server.Controllers.Devloper
             }
             else
             {
-                var errors = validationResults.SelectMany(r => r.Errors).Select(e => e.ErrorMessage).ToList();
+                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
                 return BadRequest(errors);
             }
         }
@@ -147,7 +139,7 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> BulkRecover([FromBody]  List<Guid> Ids)
+        public async Task<IActionResult> BulkRecover([FromBody] List<Guid> Ids)
         {
             if (Ids.Count != 0)
             {
@@ -155,7 +147,8 @@ namespace FMS.Server.Controllers.Devloper
                 var result = await _financialYearSvcs.BulkRecoverFinancialYear(Ids, user);
                 return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
-            else {
+            else
+            {
                 return BadRequest("Invalid Ids");
             }
         }

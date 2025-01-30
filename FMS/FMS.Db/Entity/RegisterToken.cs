@@ -2,11 +2,13 @@
 using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class RegisterTokenModel
     {
+        [Required]
         public string TokenValue { get; set; }
     }
     public class RegisterToken: RegisterTokenModel
@@ -18,12 +20,10 @@ namespace FMS.Db.Entity
     }
     public class RegisterTokenValidator : AbstractValidator<RegisterTokenModel>
     {
-        public RegisterTokenValidator(CustomValidation vaidator)
+        public RegisterTokenValidator()
         {
             // Validate Token
             RuleFor(tregkoken => tregkoken.TokenValue)
-             .NotNull().WithMessage(" Registration Token is required.")
-             .NotEmpty().WithMessage("Registration Token cannot be empty.")
              .Matches(@"^\d{3}-\d{3}-\d{4}$").WithMessage("Registration Token Format Mismatch");
         }
     }

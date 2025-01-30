@@ -63,7 +63,7 @@ namespace FMS.Db.Entity
     }
     public class UserBase
     {
-        [Required, StringLength(30, MinimumLength = 5)]
+        [Required]
         public string Name { get; set; }
         [Required]
         public DateTime BirthDate { get; set; }
@@ -83,7 +83,6 @@ namespace FMS.Db.Entity
     {
         [Required]
         public Guid Fk_TokenId { get; set; }
-
         [Required]
         public string Password { get; set; }
         [Required]
@@ -92,7 +91,6 @@ namespace FMS.Db.Entity
         [Required]
         public string RouteUls { get; set; }
         public IFormFile ProfilePhoto { get; set; }
-        public Guid Fk_AddressId { get; set; }
         public AddressModel Address { get; set; }
     }
     public class UserUpdateModel : UserBase
@@ -106,14 +104,8 @@ namespace FMS.Db.Entity
     {
         public UserValidator(CustomValidation vaidator)
         {
-            // Validate Token
-            RuleFor(user => user.Fk_TokenId)
-            .NotNull().WithMessage("Token Id is required.")
-            .NotEmpty().WithMessage("TokenId cannot be empty.");
-            // Validate Name
+            // Validate Name           
             RuleFor(user => user.Name)
-             .NotNull().WithMessage("Username is required.")
-             .NotEmpty().WithMessage("Username cannot be empty.")
              .Length(5, 30).WithMessage("Username must be between 5 and 30 characters.")
              .Custom((name, context) =>
              {
@@ -123,22 +115,6 @@ namespace FMS.Db.Entity
                      context.AddFailure($"User Name{name} already Taken");
                  }
              });
-            // Validate BirthDate
-            RuleFor(user => user.BirthDate)
-                .NotNull().WithMessage("Birth date is required.")
-                .NotEmpty().WithMessage("Birth date cannot be empty.");
-            //.LessThanOrEqualTo(DateTime.Now.AddYears(-100)).WithMessage("Birth date cannot be earlier than 100 years ago.");
-
-            // Validate Marital Status
-            RuleFor(user => user.MaratialStatus)
-                .NotNull().WithMessage("Marital status is required.")
-                .NotEmpty().WithMessage("Marital status cannot be empty.");
-
-            // Validate Gender
-            RuleFor(user => user.Gender)
-                .NotNull().WithMessage("Gender is required.")
-                .NotEmpty().WithMessage("Gender cannot be empty.");
-
             // Validate Profile Photo
             RuleFor(user => user.ProfilePhoto)
                  .NotNull().WithMessage("Profile photo is required.")
@@ -180,19 +156,11 @@ namespace FMS.Db.Entity
                 });
             // Validate Password
             RuleFor(user => user.Password)
-                  .NotNull().WithMessage("Password is required.")
-                  .NotEmpty().WithMessage("Password cannot be empty.")
                   .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{8,}$")
                   .WithMessage("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
             // Validate Confirm Password
             RuleFor(user => user.ConfirmPassword)
-                .NotNull().WithMessage("Confirmation password is required.")
-                .NotEmpty().WithMessage("Confirmation password cannot be empty.")
                 .Equal(user => user.Password).WithMessage("The password and confirmation password do not match.");
-            // Validate routeUrl
-            RuleFor(user => user.RouteUls)
-            .NotNull().WithMessage("RouteUls is required.")
-            .NotEmpty().WithMessage("RouteUls cannot be empty.");
         }
     }
     public class UserDto : UserBase
