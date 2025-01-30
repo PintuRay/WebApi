@@ -3,6 +3,7 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace FMS.Repo.Devloper.BranchFinancialYear
 {
@@ -27,14 +28,14 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
                 var cacheData = _cache.Get<Result<BranchFinancialYearDto>>(cacheKey);
                 if (cacheData == null)
                 {
-                    Query = await _ctx.BranchFinancialYears.
-                                    Where(s => s.Fk_BranchId == BranchId && s.IsActive == true).Select(s => new BranchFinancialYearDto()
-                                    {
-                                        Fk_BranchId = s.Fk_BranchId,
-                                        BranchName = s.Branch.BranchName,
-                                        Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                      
-                                    }).ToListAsync();
+                    string sql = @" SELECT b.Fk_BranchId, br.BranchName, b.Fk_FinancialYearId, f.Financial_Year
+                                        FROM BranchFinancialYears b
+                                        INNER JOIN Branches br ON b.Fk_BranchId = br.BranchId
+                                        INNER JOIN FinancialYears f ON b.Fk_FinancialYearId = f.FinancialYearId
+                                    WHERE b.Fk_BranchId = @BranchId AND b.IsActive = true";
+                    Query = await _ctx.Set<BranchFinancialYearDto>()
+                        .FromSqlRaw(sql, new NpgsqlParameter("@BranchId", BranchId))
+                        .ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.CollectionObjData = Query;
@@ -61,18 +62,19 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             {
                 _Result.IsSucess = false;
                 int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                Query = await _ctx.BranchFinancialYears.
-                                   Where(s => s.IsActive == true).
-                                   Select(s => new BranchFinancialYearDto()
-                                   {
-                                       Fk_BranchId = s.Fk_BranchId,
-                                       BranchName = s.Branch.BranchName,
-                                       Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                      
-                                   }).OrderByDescending(s => s.Fk_FinancialYearId)
-                                   .Skip(pagination.PageNumber * effectivePageSize)
-                                   .Take(effectivePageSize)
-                                   .ToListAsync();
+                int skip = pagination.PageNumber * effectivePageSize;
+                string sql = @" SELECT b.Fk_BranchId, br.BranchName, b.Fk_FinancialYearId, f.Financial_Year
+                                    FROM BranchFinancialYears b
+                                    INNER JOIN Branches br ON b.Fk_BranchId = br.BranchId
+                                    INNER JOIN FinancialYears f ON b.Fk_FinancialYearId = f.FinancialYearId
+                                    WHERE  b.IsActive = true""
+                                ORDER BY br.BranchName DESC
+                                LIMIT @PageSize OFFSET @Skip";
+                Query = await _ctx.Set<BranchFinancialYearDto>()
+                             .FromSqlRaw(sql,
+                                 new NpgsqlParameter("@Skip", skip),
+                                 new NpgsqlParameter("@PageSize", effectivePageSize))
+                              .ToListAsync();
                 if (Query.Count > 0)
                 {
                     _Result.CollectionObjData = Query;
@@ -92,17 +94,24 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.BranchFinancialYears where s.Fk_FinancialYearId == data.Fk_FinancialYearId && s.Fk_BranchId == data.Fk_BranchId select s).SingleOrDefaultAsync();
-                if (Query == null)
+                string checkSql = @" SELECT COUNT(1) FROM BranchFinancialYears 
+                                     WHERE Fk_FinancialYearId = @FinancialYearId AND Fk_BranchId = @BranchId";
+                var exists = await _ctx.Database.ExecuteSqlRawAsync(checkSql,new NpgsqlParameter("@FinancialYearId", data.Fk_FinancialYearId),new NpgsqlParameter("@BranchId", data.Fk_BranchId));
+                if (exists == 0)
                 {
-                    var newYear = _mapper.Map<Db.Entity.BranchFinancialYear>(data);
-                    newYear.CreatedDate = DateTime.UtcNow;
-                    newYear.CreatedBy = user.Name;
-                    await _ctx.BranchFinancialYears.AddAsync(newYear);
-                    int Count = await _ctx.SaveChangesAsync();
+                    string insertSql = @" INSERT INTO BranchFinancialYears 
+                                        (BranchFinancialYearId, Fk_BranchId, Fk_FinancialYearId, CreatedDate, CreatedBy, IsActive)
+                                        VALUES (@Id, @BranchId, @FinancialYearId, @CreatedDate, @CreatedBy, true)";
+                    var id = Guid.NewGuid();
+                    int Count = await _ctx.Database.ExecuteSqlRawAsync(insertSql,
+                        new NpgsqlParameter("@Id", id),
+                        new NpgsqlParameter("@BranchId", data.Fk_BranchId),
+                        new NpgsqlParameter("@FinancialYearId", data.Fk_FinancialYearId),
+                        new NpgsqlParameter("@CreatedDate", DateTime.UtcNow),
+                        new NpgsqlParameter("@CreatedBy", user.Name));
                     if (Count > 0)
                     {
-                        _Result.Id = newYear.BranchFinancialYearId.ToString();
+                        _Result.Id = id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("BranchFinancialYear");
@@ -121,21 +130,25 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(s => s.BranchFinancialYearId == Id && s.IsActive == true);
-                if (Query != null)
-                {
-                    _mapper.Map(data, Query);
-                    Query.ModifyDate = DateTime.UtcNow;
-                    Query.ModifyBy = user.Name;
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
+                string updateSql = @"UPDATE BranchFinancialYears
+                                     SET Fk_BranchId = @BranchId,
+                                        Fk_FinancialYearId = @FinancialYearId,
+                                        ModifyDate = @ModifyDate,
+                                        ModifyBy = @ModifyBy
+                                     WHERE BranchFinancialYearId = @Id AND IsActive = true";
+                int Count = await _ctx.Database.ExecuteSqlRawAsync(updateSql,
+                    new NpgsqlParameter("@Id", Id),
+                    new NpgsqlParameter("@BranchId", data.Fk_BranchId),
+                    new NpgsqlParameter("@FinancialYearId", data.Fk_FinancialYearId),
+                    new NpgsqlParameter("@ModifyDate", DateTime.UtcNow),
+                    new NpgsqlParameter("@ModifyBy", user.Name));
+                if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("BranchFinancialYear");
                     }
-                }
             }
             catch
             {
@@ -149,21 +162,20 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(x => x.BranchFinancialYearId == Id && x.IsActive == true);
-                if (Query != null)
-                {
-                    Query.ModifyDate = DateTime.UtcNow;
-                    Query.ModifyBy = user.Name;
-                    Query.IsActive = false;
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
+                string deleteSql = @" UPDATE BranchFinancialYears
+                                        SET IsActive = false, ModifyDate = @ModifyDate, ModifyBy = @ModifyBy
+                                       WHERE BranchFinancialYearId = @Id  AND IsActive = true";
+                int Count = await _ctx.Database.ExecuteSqlRawAsync(deleteSql,
+                    new NpgsqlParameter("@Id", Id),
+                    new NpgsqlParameter("@ModifyDate", DateTime.UtcNow),
+                    new NpgsqlParameter("@ModifyBy", user.Name));
+                if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("BranchFinancialYear");
-                    }
-                }
+                    } 
             }
             catch
             {
@@ -181,18 +193,21 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             {
                 _Result.IsSucess = false;
                 int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                Query = await _ctx.BranchFinancialYears.
-                                   Where(s => s.IsActive == false).
-                                   Select(s => new BranchFinancialYearDto()
-                                   {
-                                       Fk_BranchId = s.Fk_BranchId,
-                                       BranchName = s.Branch.BranchName,
-                                       Fk_FinancialYearId = s.Fk_FinancialYearId,
-                                      
-                                   }).OrderByDescending(s => s.Fk_FinancialYearId)
-                                   .Skip(pagination.PageNumber * effectivePageSize)
-                                   .Take(effectivePageSize)
-                                   .ToListAsync();
+                int skip = pagination.PageNumber * effectivePageSize;
+
+                string sql = @"SELECT b.Fk_BranchId, br.BranchName, b.Fk_FinancialYearId, f.Financial_Year
+                                  FROM BranchFinancialYears b
+                                  INNER JOIN Branches br ON b.Fk_BranchId = br.BranchId
+                                  INNER JOIN FinancialYears f ON b.Fk_FinancialYearId = f.FinancialYearId
+                            WHERE b.IsActive = false
+                            ORDER BY br.BranchName DESC
+                            LIMIT @PageSize OFFSET @Skip";
+                Query = await _ctx.Set<BranchFinancialYearDto>()
+                    .FromSqlRaw(sql,
+                        new NpgsqlParameter("@Skip", skip),
+                        new NpgsqlParameter("@PageSize", effectivePageSize))
+                    .ToListAsync();
+
                 if (Query.Count > 0)
                 {
                     _Result.CollectionObjData = Query;
@@ -212,21 +227,19 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(x => x.BranchFinancialYearId == Id && x.IsActive == false);
-                if (Query != null)
+                string updateSql = @" UPDATE BranchFinancialYears
+                                        SET IsActive = true, ModifyDate = @ModifyDate, ModifyBy = @ModifyBy
+                                       WHERE BranchFinancialYearId = @Id AND IsActive = false";
+                int Count = await _ctx.Database.ExecuteSqlRawAsync(updateSql,
+                    new NpgsqlParameter("@Id", Id),
+                    new NpgsqlParameter("@ModifyDate", DateTime.UtcNow),
+                    new NpgsqlParameter("@ModifyBy", user.Name));
+                if (Count > 0)
                 {
-                    Query.ModifyDate = DateTime.UtcNow;
-                    Query.ModifyBy = user.Name;
-                    Query.IsActive = true;
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
-                    {
-                        _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("BranchFinancialYear");
-                        _cache.RemoveByPrefix("RemovedBranchFinancialYears");
-                    }
+                    _Result.Id = Id.ToString();
+                    _Result.Count = Count.ToString();
+                    _Result.IsSucess = true;
+                    _cache.RemoveByPrefix("BranchFinancialYear");
                 }
             }
             catch
@@ -241,19 +254,14 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.BranchFinancialYears.SingleOrDefaultAsync(x => x.BranchFinancialYearId == Id && x.IsActive == false);
-                if (Query != null)
+                string deleteSql = @" DELETE FROM BranchFinancialYears WHERE BranchFinancialYearId = @Id AND IsActive = false";
+                int Count = await _ctx.Database.ExecuteSqlRawAsync(deleteSql, new NpgsqlParameter("@Id", Id));
+                if (Count > 0)
                 {
-                    _ctx.BranchFinancialYears.Remove(Query);
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
-                    {
-                        _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        _cache.RemoveByPrefix("BranchFinancialYear");
-                        _cache.RemoveByPrefix("RemovedBranchFinancialYears");
-                    }
+                    _Result.Id = Id.ToString();
+                    _Result.Count = Count.ToString();
+                    _Result.IsSucess = true;
+                    _cache.RemoveByPrefix("BranchFinancialYear");
                 }
             }
             catch
@@ -265,35 +273,31 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
         public async Task<RepoBase> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
-            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            await using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var branchFinancialYearIds = Ids.Select(id => Guid.Parse(id)).ToList();
-                var branchFinancialYearToRecover = await _ctx.BranchFinancialYears.Where(x => branchFinancialYearIds.Contains(x.BranchFinancialYearId) && x.IsActive == false).ToListAsync();
-                if (branchFinancialYearToRecover.Any())
+
+                string updateSql = @"UPDATE BranchFinancialYears
+                                    SET IsActive = true, ModifyDate = @ModifyDate, ModifyBy = @ModifyBy
+                                    WHERE BranchFinancialYearId = ANY(@Ids) AND IsActive = false";
+                var guidIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                int Count = await _ctx.Database.ExecuteSqlRawAsync(updateSql,
+                    new NpgsqlParameter("@Ids", guidIds),
+                    new NpgsqlParameter("@ModifyDate", DateTime.UtcNow),
+                    new NpgsqlParameter("@ModifyBy", user.Name));
+                if (Count > 0)
                 {
-                    foreach (var branchFinancialYear in branchFinancialYearToRecover)
-                    {
-                        branchFinancialYear.ModifyDate = DateTime.UtcNow;
-                        branchFinancialYear.ModifyBy = user.Name;
-                        branchFinancialYear.IsActive = true;
-                    }
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
-                    {
-                        _Result.Ids = Ids;
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        transaction.Commit();
-                        _cache.RemoveByPrefix("BranchFinancialYear");
-                        _cache.RemoveByPrefix("RemovedBranchFinancialYears");
-                    }
+                    _Result.Ids = Ids;
+                    _Result.Count = Count.ToString();
+                    _Result.IsSucess = true;
+                    await transaction.CommitAsync();
+                    _cache.RemoveByPrefix("BranchFinancialYear");
                 }
             }
             catch
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
@@ -301,30 +305,25 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
         public async Task<RepoBase> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
-            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            await using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var branchFinancialYearIds = Ids.Select(id => Guid.Parse(id)).ToList();
-                var branchFinancialYearToDelete = await _ctx.BranchFinancialYears.Where(x => branchFinancialYearIds.Contains(x.BranchFinancialYearId) && x.IsActive == false).ToListAsync();
-                if (branchFinancialYearToDelete.Any())
+                string deleteSql = @"DELETE FROM BranchFinancialYears WHERE BranchFinancialYearId = ANY(@Ids) AND IsActive = false";
+                var guidIds = Ids.Select(id => Guid.Parse(id)).ToList();
+                int Count = await _ctx.Database.ExecuteSqlRawAsync(deleteSql, new NpgsqlParameter("@Ids", guidIds));
+                if (Count > 0)
                 {
-                    _ctx.BranchFinancialYears.RemoveRange(branchFinancialYearToDelete);
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
-                    {
-                        _Result.Ids = Ids;
-                        _Result.Count = Count.ToString();
-                        _Result.IsSucess = true;
-                        transaction.Commit();
-                        _cache.RemoveByPrefix("BranchFinancialYear");
-                        _cache.RemoveByPrefix("RemovedBranchFinancialYears");
-                    }
+                    _Result.Ids = Ids;
+                    _Result.Count = Count.ToString();
+                    _Result.IsSucess = true;
+                    await transaction.CommitAsync();
+                    _cache.RemoveByPrefix("BranchFinancialYear");
                 }
             }
             catch
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;

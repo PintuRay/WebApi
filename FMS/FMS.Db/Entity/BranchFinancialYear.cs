@@ -30,6 +30,8 @@ namespace FMS.Db.Entity
     {
         [NotMapped]
         public string BranchName { get; set; }
+        [NotMapped]
+        public string Financial_Year { get; set; }
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
     }
