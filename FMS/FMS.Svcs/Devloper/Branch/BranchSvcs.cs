@@ -339,7 +339,7 @@ namespace FMS.Svcs.Devloper.Branch
                     false => new()
                     {
                         Message = "No Record Found",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }

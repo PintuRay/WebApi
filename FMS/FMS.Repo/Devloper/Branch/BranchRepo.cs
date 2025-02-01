@@ -97,7 +97,7 @@ namespace FMS.Repo.Devloper.Branch
                             BranchCode = s.BranchCode,
                             ContactNumber = s.ContactNumber,
                             BranchAddress = s.BranchAddress
-                        }).OrderBy(s => s.BranchName)
+                        }).OrderBy(s => s.BranchCode)
                         .ToListAsync();
                     Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
                     Count = Query.Count();
@@ -328,6 +328,7 @@ namespace FMS.Repo.Devloper.Branch
         {
             Result<BranchDto> _Result = new();
             List<BranchDto> Query = [];
+            int Count = 0;
             try
             {
                 _Result.IsSucess = false;
@@ -343,10 +344,11 @@ namespace FMS.Repo.Devloper.Branch
                              ContactNumber = s.ContactNumber,
                              BranchAddress = s.BranchAddress
                          })
-                         .OrderBy(s => s.BranchName)
+                         .OrderBy(s => s.BranchCode)
                          .Skip(pagination.PageNumber * effectivePageSize)
                          .Take(effectivePageSize)
                          .ToListAsync();
+                    Count = _ctx.Branches.Where(s => s.IsActive == false).Count();
                 }
                 else
                 {
@@ -361,11 +363,12 @@ namespace FMS.Repo.Devloper.Branch
                              BranchAddress = s.BranchAddress
                          }).ToListAsync();
                     Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                    Count = Query.Count();
                 }
                 if (Query.Count > 0)
                 {
                     _Result.CollectionObjData = Query;
-                    _Result.Count = _Result.CollectionObjData.Count;
+                    _Result.Count = Count;
                     _Result.IsSucess = true;
                 }
             }

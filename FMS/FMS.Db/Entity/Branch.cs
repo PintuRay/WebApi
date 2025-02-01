@@ -33,7 +33,7 @@ namespace FMS.Db.Entity
             .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
             
             RuleFor(branch => branch.BranchCode)
-            .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a letter and followed by a combination of letters and numbers.");
+            .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a upper case letter and followed by a combination of letters and numbers.");
         }
     }
     public class BranchDto: BranchUpdateModel
@@ -80,7 +80,6 @@ namespace FMS.Db.Entity
         public string CreatedBy { get; set; }
         public string ModifyBy { get; set; }
     }
-   
     internal class BranchConfig : IEntityTypeConfiguration<Branch>
     {
         public void Configure(EntityTypeBuilder<Branch> builder)
