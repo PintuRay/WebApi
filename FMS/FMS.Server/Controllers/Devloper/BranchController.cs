@@ -2,6 +2,7 @@
 using FMS.Model;
 using FMS.Svcs.Devloper.Branch;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace FMS.Server.Controllers.Devloper
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+           // await Task.Delay(3000);
             var result = await _branchSvcs.GetAllBranch();
             return result.ResponseCode switch
             {
@@ -30,10 +32,11 @@ namespace FMS.Server.Controllers.Devloper
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
+            //await Task.Delay(3000);
             var result = await _branchSvcs.GetAllBranch(pagination);
             return result.ResponseCode switch
             {
-                204 => StatusCode(204, result),
+                404 => StatusCode(404, result),
                 200 => StatusCode(200, result),
                 _ => BadRequest(result)
             };

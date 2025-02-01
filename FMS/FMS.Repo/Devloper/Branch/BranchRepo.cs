@@ -64,6 +64,7 @@ namespace FMS.Repo.Devloper.Branch
         {
             Result<BranchDto> _Result = new();
             List<BranchDto> Query = [];
+            int Count = 0;
             try
             {
                 _Result.IsSucess = false;
@@ -83,6 +84,7 @@ namespace FMS.Repo.Devloper.Branch
                         .Skip(pagination.PageNumber * effectivePageSize)
                         .Take(effectivePageSize)
                         .ToListAsync();
+                    Count = _ctx.Branches.Where(s => s.IsActive == true).Count();
                 }
                 else
                 {
@@ -98,11 +100,12 @@ namespace FMS.Repo.Devloper.Branch
                         }).OrderBy(s => s.BranchName)
                         .ToListAsync();
                     Query = branches.Where(b => b.BranchName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || b.BranchCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                    Count = Query.Count();
                 }
                 if (Query.Count > 0)
                 {
                     _Result.CollectionObjData = Query;
-                    _Result.Count = _ctx.Branches.Where(s => s.IsActive == true).Count();
+                    _Result.Count = Count;
                     _Result.IsSucess = true;
                 }
             }

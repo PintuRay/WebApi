@@ -161,7 +161,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(s => s.Financial_Year == data.Financial_Year && s.IsActive == true);
+                var Query = await _ctx.FinancialYears.SingleOrDefaultAsync(s => s.FinancialYearId == data.FinancialYearId && s.IsActive == true);
                 if (Query != null)
                 {
                     _mapper.Map(data, Query);

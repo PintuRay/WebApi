@@ -1,19 +1,23 @@
 ﻿using FluentValidation;
 using FMS.Db.Entity;
 using FMS.Svcs.CommonSvcs;
+using FMS.Svcs.Devloper.BranchFinancialYear;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FMS.Server.Controllers.Common
 {
-    [Produces("application/json")]
+    [Produces("application/json")] 
     [ApiController, Route("Common")]
-    public class CommonController(ICommonSvcs commonSvcs, UserManager<AppUser> userManager) : ControllerBase
+    public class CommonController(
+        ICommonSvcs commonSvcs,
+        IBranchFinancialYearSvcs branchFinancialYearSvcs,
+        UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
         private readonly ICommonSvcs _commonSvcs = commonSvcs;
+        private readonly IBranchFinancialYearSvcs _branchFinancialYearSvcs = branchFinancialYearSvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Country
@@ -429,6 +433,14 @@ namespace FMS.Server.Controllers.Common
             }
         }
         #endregion
+        #endregion
+        #region Branch Financial Year
+        [HttpGet("BranchFinancialYear/Get/{BranchId}"), AllowAnonymous]
+        public async Task<IActionResult> GetBranchFinancialYear([FromRoute] Guid BranchId)
+        {
+            var result = await _branchFinancialYearSvcs.GetBranchFinancialYears(BranchId);
+            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+        }
         #endregion
     }
 }

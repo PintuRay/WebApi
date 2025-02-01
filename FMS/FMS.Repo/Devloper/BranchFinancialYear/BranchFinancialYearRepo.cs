@@ -17,6 +17,31 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
         #endregion
         #region Branch Financial Year
         #region Crud
+        public async Task<Result<BranchFinancialYearDto>> GetBranchFinancialYears()
+        {
+            Result<BranchFinancialYearDto> _Result = new();
+            List<BranchFinancialYearDto> Query = [];
+            try
+            {
+                _Result.IsSucess = false;
+                    string sql = @"SELECT b.Fk_BranchId, br.BranchName, b.Fk_FinancialYearId, f.Financial_Year
+                                        FROM BranchFinancialYears b
+                                        INNER JOIN Branches br ON b.Fk_BranchId = br.BranchId
+                                        INNER JOIN FinancialYears f ON b.Fk_FinancialYearId = f.FinancialYearId
+                                    WHERE b.IsActive = true";
+                    Query = await _ctx.Set<BranchFinancialYearDto>().FromSqlRaw(sql).ToListAsync();
+                    if (Query.Count > 0)
+                    {
+                        _Result.CollectionObjData = Query;
+                        _Result.IsSucess = true;
+                    }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
+        }
         public async Task<Result<BranchFinancialYearDto>> GetBranchFinancialYears(Guid BranchId)
         {
             Result<BranchFinancialYearDto> _Result = new();
@@ -28,7 +53,7 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
                 var cacheData = _cache.Get<Result<BranchFinancialYearDto>>(cacheKey);
                 if (cacheData == null)
                 {
-                    string sql = @" SELECT b.Fk_BranchId, br.BranchName, b.Fk_FinancialYearId, f.Financial_Year
+                    string sql = @"SELECT b.Fk_BranchId, br.BranchName, b.Fk_FinancialYearId, f.Financial_Year
                                         FROM BranchFinancialYears b
                                         INNER JOIN Branches br ON b.Fk_BranchId = br.BranchId
                                         INNER JOIN FinancialYears f ON b.Fk_FinancialYearId = f.FinancialYearId
@@ -124,7 +149,23 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             }
             return _Result;
         }
-        public async Task<RepoBase> UpdateBranchFinancialYear(Guid Id, BranchFinancialYearModel data, AppUser user)
+        public async Task<RepoBase> BulkCreateBranchFinancialYear(List<BranchFinancialYearModel> data, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+               
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> UpdateBranchFinancialYear(BranchFinancialYearUpdateModel data, AppUser user)
         {
             RepoBase _Result = new();
             try
@@ -137,14 +178,14 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
                                         ModifyBy = @ModifyBy
                                      WHERE BranchFinancialYearId = @Id AND IsActive = true";
                 int Count = await _ctx.Database.ExecuteSqlRawAsync(updateSql,
-                    new NpgsqlParameter("@Id", Id),
+                    new NpgsqlParameter("@Id", data.BranchFinancialYearId),
                     new NpgsqlParameter("@BranchId", data.Fk_BranchId),
                     new NpgsqlParameter("@FinancialYearId", data.Fk_FinancialYearId),
                     new NpgsqlParameter("@ModifyDate", DateTime.UtcNow),
                     new NpgsqlParameter("@ModifyBy", user.Name));
                 if (Count > 0)
                     {
-                        _Result.Id = Id.ToString();
+                        _Result.Id = data.BranchFinancialYearId.ToString();
                         _Result.Count = Count.ToString();
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix("BranchFinancialYear");
@@ -152,6 +193,22 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             }
             catch
             {
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> BulkUpdateBranchFinancialYear(List<BranchFinancialYearUpdateModel> data, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+              
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
@@ -179,6 +236,23 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             }
             catch
             {
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> BulkRemoveBranchFinancialYear(List<Guid> Ids, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+             
+              
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
@@ -270,7 +344,7 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             }
             return _Result;
         }
-        public async Task<RepoBase> RecoverAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<RepoBase> BulkRecoverBranchFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
             await using var transaction = await _ctx.Database.BeginTransactionAsync();
@@ -302,7 +376,7 @@ namespace FMS.Repo.Devloper.BranchFinancialYear
             }
             return _Result;
         }
-        public async Task<RepoBase> DeleteAllBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<RepoBase> BulkDeleteBranchFinancialYear(List<string> Ids, AppUser user)
         {
             RepoBase _Result = new();
             await using var transaction = await _ctx.Database.BeginTransactionAsync();

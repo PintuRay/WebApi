@@ -171,21 +171,33 @@ namespace FMS.Svcs.Devloper.FinancialYear
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.UpdateFinancialYear(data, user);
-                Obj = repoResult.IsSucess switch
+                var validationResult = await _financialYearValidator.ValidateAsync(data);
+                if (validationResult.IsValid)
                 {
-                    true => new()
+                    var repoResult = await _financialYearRepo.UpdateFinancialYear(data, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "Financial Year Updated Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "Financial Year Updated Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        },
+                        false => new()
+                        {
+                            Message = $"Financial Year '{data.FinancialYearId}' Not Found",
+                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"Financial Year '{data.FinancialYearId}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
+                        Data = validationResult.Errors.ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
             }
             catch (Exception _Exception)
             {

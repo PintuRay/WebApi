@@ -26,7 +26,7 @@ namespace FMS.Db.Entity
         {
             RuleFor(branch => branch.BranchName)
             .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
-            .Matches(@"^[a-zA-Z\s]+$").WithMessage("BranchName should only contain letters and spaces.");
+            .Matches(@"^[A-Z\s]+$").WithMessage("BranchName should only contain uppercase letter and spaces.");
             
             RuleFor(branch => branch.ContactNumber)
             .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")

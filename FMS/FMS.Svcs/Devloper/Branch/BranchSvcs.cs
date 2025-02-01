@@ -31,6 +31,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
+                        Message ="No Record Found",
                         ResponseCode = (int)ResponseCode.Status.NoContent,
                     },
                 };
@@ -61,7 +62,8 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        Message = "No Record Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -336,7 +338,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
+                        Message = "No Record Found",
                         ResponseCode = (int)ResponseCode.Status.NoContent,
                     },
                 };
