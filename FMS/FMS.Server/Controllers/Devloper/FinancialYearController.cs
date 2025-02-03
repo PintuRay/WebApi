@@ -20,13 +20,24 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetAll()
         {
             var result = await _financialYearSvcs.GetFinancialYears();
-            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+            return result.ResponseCode switch
+            {
+                404 => NotFound(result),
+                200 => Ok(result),
+                _ => BadRequest(result)
+            };
         }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
+           
             var result = await _financialYearSvcs.GetFinancialYears(pagination);
-            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+            return result.ResponseCode switch
+            {
+                404 => NotFound(result),
+                200 => Ok(result),
+                _ => BadRequest(result)
+            };
         }
         [HttpPost, Authorize(policy: "Create")]
         public async Task<IActionResult> Create([FromBody] FinancialYearModel model)
@@ -35,7 +46,11 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.CreateFinancialYear(model, user);
-                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    201 => Created(nameof(Create), result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -50,7 +65,11 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.BulkCreateFinancialYear(listdata, user);
-                return result.ResponseCode == 201 ? Created(nameof(BulkCreate), result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    201 => Created(nameof(BulkCreate), result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -65,7 +84,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.UpdateFinancialYear(model, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -80,7 +104,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.BulkUpdateFinancialYear(listdata, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -95,7 +124,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.RemoveFinancialYear(id, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -109,7 +143,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.BulkRemoveFinancialYear(Ids, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -122,7 +161,12 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
             var result = await _financialYearSvcs.GetRemovedFinancialYears(pagination);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            return result.ResponseCode switch
+            {
+                404 => NotFound(result),
+                200 => Ok(result),
+                _ => BadRequest(result)
+            };
         }
         [HttpPut("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> Recover([FromRoute] Guid Id)
@@ -131,7 +175,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.RecoverFinancialYear(Id, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -145,7 +194,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.BulkRecoverFinancialYear(Ids, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -159,7 +213,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.DeleteFinancialYear(Id, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -173,7 +232,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _financialYearSvcs.BulkDeleteFinancialYear(Ids, user);
-                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {

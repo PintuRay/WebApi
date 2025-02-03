@@ -40,6 +40,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     {
                         _Result.CollectionObjData = Query;
                         _Result.IsSucess = true;
+                        _Result.Count = Query.Count();
                         _cache.Set(cacheKey, _Result, _cacheExpiration);
                     }
                 }
@@ -57,11 +58,15 @@ namespace FMS.Repo.Devloper.FinancialYear
         public async Task<Result<FinancialYearDto>> GetFinancialYears(PaginationParams pagination)
         {
             Result<FinancialYearDto> _Result = new();
+            List<FinancialYearDto> Query = [];
+            int Count = 0;
             try
             {
                 _Result.IsSucess = false;
                 int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                var Query = await _ctx.FinancialYears.Where(s => s.IsActive == true).
+                if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
+                {
+                    Query = await _ctx.FinancialYears.Where(s => s.IsActive == true).
                                Select(s => new FinancialYearDto()
                                {
                                    FinancialYearId = s.FinancialYearId,
@@ -72,10 +77,27 @@ namespace FMS.Repo.Devloper.FinancialYear
                                      .Skip(pagination.PageNumber * effectivePageSize)
                                      .Take(effectivePageSize)
                                      .ToListAsync();
+                    Count = _ctx.FinancialYears.Where(s => s.IsActive == true).Count();
+                }
+                else
+                {
+                    string searchTerm = pagination.SearchTerm.Trim().ToLower();
+                    var financialyears = await _ctx.FinancialYears.Where(s => s.IsActive == true).
+                               Select(s => new FinancialYearDto()
+                               {
+                                   FinancialYearId = s.FinancialYearId,
+                                   Financial_Year = s.Financial_Year,
+                                   StartDate = s.StartDate,
+                                   EndDate = s.EndDate,
+                               }).OrderByDescending(s => s.Financial_Year)
+                               .ToListAsync();
+                    Query = financialyears.Where(b => b.Financial_Year.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                    Count = Query.Count();
+                }
                 if (Query.Count > 0)
                 {
                     _Result.CollectionObjData = Query;
-                    _Result.Count = Query.Count;
+                    _Result.Count = Count;
                     _Result.IsSucess = true;
                 }
             }
@@ -299,23 +321,45 @@ namespace FMS.Repo.Devloper.FinancialYear
         {
             Result<FinancialYearDto> _Result = new();
             List<FinancialYearDto> Query = [];
+            int Count = 0;
             try
             {
                 _Result.IsSucess = false;
 
                 int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).Select(s =>
-                new FinancialYearDto()
+                if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                 {
-                    FinancialYearId = s.FinancialYearId,
-                    Financial_Year = s.Financial_Year,
-                    StartDate = s.StartDate,
-                    EndDate = s.EndDate,
-                }).OrderByDescending(s => s.Financial_Year).Skip(pagination.PageNumber * effectivePageSize).Take(effectivePageSize).ToListAsync();
+                    Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).Select(s =>
+                               new FinancialYearDto()
+                               {
+                                   FinancialYearId = s.FinancialYearId,
+                                   Financial_Year = s.Financial_Year,
+                                   StartDate = s.StartDate,
+                                   EndDate = s.EndDate,
+                               }).OrderByDescending(s => s.Financial_Year)
+                               .Skip(pagination.PageNumber * effectivePageSize)
+                               .Take(effectivePageSize)
+                               .ToListAsync();
+                    Count = _ctx.FinancialYears.Where(s => s.IsActive == false).Count();
+                }
+                else
+                {
+                    string searchTerm = pagination.SearchTerm.Trim().ToLower();
+                    var Financialyears = await _ctx.FinancialYears.Where(s => s.IsActive == false).Select(s =>
+                              new FinancialYearDto()
+                              {
+                                  FinancialYearId = s.FinancialYearId,
+                                  Financial_Year = s.Financial_Year,
+                                  StartDate = s.StartDate,
+                                  EndDate = s.EndDate,
+                              }).ToListAsync();
+                    Query = Financialyears.Where(b => b.Financial_Year.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)).ToList();
+                    Count = Query.Count();
+                }
                 if (Query.Count > 0)
                 {
                     _Result.CollectionObjData = Query;
-                    _Result.Count = Query.Count;
+                    _Result.Count = Count;
                     _Result.IsSucess = true;
                 }
             }

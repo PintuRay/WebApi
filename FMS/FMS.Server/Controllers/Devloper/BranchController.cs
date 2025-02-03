@@ -2,7 +2,6 @@
 using FMS.Model;
 using FMS.Svcs.Devloper.Branch;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,11 +19,12 @@ namespace FMS.Server.Controllers.Devloper
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-           // await Task.Delay(3000);
+
             var result = await _branchSvcs.GetAllBranch();
+            // await Task.Delay(3000);
             return result.ResponseCode switch
             {
-                204 => StatusCode(204, result),
+                404 => StatusCode(404, result),
                 200 => StatusCode(200, result),
                 _ => BadRequest(result)
             };
@@ -32,8 +32,9 @@ namespace FMS.Server.Controllers.Devloper
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
-            //await Task.Delay(3000);
+
             var result = await _branchSvcs.GetAllBranch(pagination);
+            //await Task.Delay(3000);
             return result.ResponseCode switch
             {
                 404 => StatusCode(404, result),
@@ -48,7 +49,11 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.CreateBranch(data, user);
-                return result.ResponseCode == 201 ? Created(nameof(Create), result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    201 => StatusCode(201, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -63,7 +68,11 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkCreateBranch(listdata, user);
-                return result.ResponseCode == 201 ? Created(nameof(BulkCreate), result) : BadRequest(result);
+                return result.ResponseCode switch
+                {
+                    201 => StatusCode(201, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -78,7 +87,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.UpdateBranch(model, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -90,10 +104,15 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> BulkUpdate([FromBody] List<BranchUpdateModel> listdata)
         {
             if (ModelState.IsValid)
-            { 
+            {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkUpdateBranch(listdata, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -108,7 +127,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.RemoveBranch(id, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -122,7 +146,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkRemoveBranch(Ids, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -135,7 +164,12 @@ namespace FMS.Server.Controllers.Devloper
         public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
             var result = await _branchSvcs.GetRemovedBranches(pagination);
-            return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+            return result.ResponseCode switch
+            {
+                404 => StatusCode(404, result),
+                200 => StatusCode(200, result),
+                _ => BadRequest(result)
+            };
         }
         [HttpPut("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> Recover([FromRoute] Guid id)
@@ -144,7 +178,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.RecoverBranch(id, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -158,7 +197,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkRecoverBranch(Ids, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -172,7 +216,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.DeleteBranch(id, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -186,7 +235,12 @@ namespace FMS.Server.Controllers.Devloper
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _branchSvcs.BulkDeleteBranch(Ids, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {

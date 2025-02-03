@@ -29,8 +29,8 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        Message = "No Record Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -60,8 +60,8 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        Message = "No Record Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -336,8 +336,8 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        Message = "No Record Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
