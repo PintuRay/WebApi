@@ -2,6 +2,7 @@
 using FMS.Model;
 using FMS.Repo.Devloper.BranchFinancialYear;
 using FMS.Svcs.Email;
+using Twilio.TwiML.Messaging;
 
 namespace FMS.Svcs.Devloper.BranchFinancialYear
 {
@@ -14,12 +15,12 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
         #endregion
         #region Branch Financial Year
         #region Crud
-        public async Task<SvcsBase> GetBranchFinancialYears()
+        public async Task<SvcsBase> GetAllBranchFinancialYears()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.GetBranchFinancialYears();
+                var repoResult = await _branchFinancialYearRepo.GetAllBranchFinancialYears();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -30,7 +31,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     false => new()
                     {
                         Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -61,7 +62,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     false => new()
                     {
                         Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -92,7 +93,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     false => new()
                     {
                         Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -127,7 +128,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                         false => new()
                         {
                             Message = $"Branch FinancialYear Already Exist",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -166,13 +167,14 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "branch financial Years Created Successfully",
+                            Message = "branch financial years created successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
-                            Message = $"Following Branch Financial years '{string.Join(", ", repoResult.Records)}' Already Exist",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            Data = repoResult.Records,
+                            Message = "Branch financialYear already exist",
+                            ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -210,12 +212,12 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branch FinancialYear Updated Successfully",
+                            Message = "Branch financialYear updated successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
                         {
-                            Message = $"BranchFinancialYearId '{data.BranchFinancialYearId}' Not Found",
+                            Message = $"BranchFinancialYearId '{data.BranchFinancialYearId}' not found",
                             ResponseCode = (int)ResponseCode.Status.NotFound,
                         },
                     };
@@ -255,12 +257,13 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branch Financial years Updated Successfully",
+                            Message = "Branch financial years updated successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
                         {
-                            Message = $"Following BranchfinancialyearIds '{string.Join(", ", repoResult.Ids)}' Not Found",
+                            Data = repoResult.Records,
+                            Message = $"Some  records not found",
                             ResponseCode = (int)ResponseCode.Status.NotFound,
                         },
                     };
@@ -296,12 +299,12 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYear Removed Successfully",
+                        Message = "Branch financialYear removed successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' Not Found",
+                        Message = $"BranchFinancialYearId '{Id}' not found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -317,24 +320,24 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRemoveBranchFinancialYear(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRemoveBranchFinancialYear(List<BranchFinancialYearUpdateModel> dataList, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.BulkRemoveBranchFinancialYear(Ids, user);
+                var repoResult = await _branchFinancialYearRepo.BulkRemoveBranchFinancialYear(dataList, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Financial Years Removed Successfully",
+                        Message = $"{repoResult.Count} removed , {dataList.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Following Branch Financial Years  '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = $"Failed to  remove branch financial years",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }
@@ -366,8 +369,8 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        Message = "No record exist",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -393,13 +396,13 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYear Recovered Successfully",
+                        Message = "Branch financialYear recovered successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"BranchFinancialYearId '{Id}' not found",
+                        ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -414,6 +417,38 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
             }
             return Obj;
         }
+        public async Task<SvcsBase> BulkRecoverBranchFinancialYear(List<BranchFinancialYearUpdateModel> dataList, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _branchFinancialYearRepo.BulkRecoverBranchFinancialYear(dataList, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = $"{repoResult.Count} recovered , {dataList.Count - repoResult.Count} failed",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "Failed to recover branch financial years",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllBranchFinancialYear", _Exception.ToString());
+            }
+            return Obj;
+        }
         public async Task<SvcsBase> DeleteBranchFinancialYear(Guid Id, AppUser user)
         {
             SvcsBase Obj;
@@ -425,12 +460,12 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Financial Year Deleted Successfully",
+                        Message = "Branch financial Year deleted successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' Not Found",
+                        Message = $"BranchFinancialYearId '{Id}' not found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -446,39 +481,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverBranchFinancialYear(List<string> Ids, AppUser user)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var repoResult = await _branchFinancialYearRepo.BulkRecoverBranchFinancialYear(Ids, user);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        Message = "Branch FinancialYears Recovered Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = "Failed To Recover Branch FinancialYears",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllBranchFinancialYear", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> BulkDeleteBranchFinancialYear(List<string> Ids, AppUser user)
+        public async Task<SvcsBase> BulkDeleteBranchFinancialYear(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
@@ -489,13 +492,13 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch FinancialYears Deleted Successfully",
+                        Message = $"{repoResult.Count} deleted, {Ids.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Branch Financial Years",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = "Failed To delete branch financial years",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }

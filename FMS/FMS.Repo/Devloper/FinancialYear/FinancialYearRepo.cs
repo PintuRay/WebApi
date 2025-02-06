@@ -124,7 +124,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Id = newFinancialYear.FinancialYearId.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("FinancialYears");
                     }
@@ -159,7 +159,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Ids = newFinancialYears.Select(b => b.FinancialYearId.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
                         _cache.Remove("FinancialYears");
@@ -193,7 +193,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Id = data.FinancialYearId.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("FinancialYears");
                     }
@@ -229,7 +229,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Ids = financialYearIds.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
                         _cache.Remove("FinancialYears");
@@ -264,7 +264,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("FinancialYears");
                     }
@@ -297,7 +297,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
                         _cache.Remove("FinancialYears");
@@ -386,7 +386,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("FinancialYears");
                     }
@@ -419,7 +419,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
                         _cache.Remove("FinancialYears");
@@ -451,7 +451,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("FinancialYears");
                     }
@@ -480,7 +480,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                     if (Count > 0)
                     {
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         await transaction.CommitAsync();
                         _cache.Remove("FinancialYears");

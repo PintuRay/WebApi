@@ -5,8 +5,8 @@
         public string Id { get; set; }
         public List<string> Ids { get; set; } = [];
         public object Records { get; set; } = null;
-        public string Count { get; set; }
+        public int Count { get; set; }
         public bool IsSucess { get; set; }
-     
+        public int ResponseCode { get; set; }
     }
 }

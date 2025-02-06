@@ -142,8 +142,9 @@ namespace FMS.Svcs.Devloper.Branch
                         },
                         false => new()
                         {
-                            Message = $"Following Branches '{string.Join(", ", repoResult.Records)}' Already Exist",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            Data = repoResult.Records,
+                            Message = "Branch already exist",
+                            ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -181,12 +182,12 @@ namespace FMS.Svcs.Devloper.Branch
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branch Updated Successfully",
+                            Message = "Branch updated successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
                         {
-                            Message = $"BranchId '{data.BranchId}' Not Found",
+                            Message = $"BranchId '{data.BranchId}' not found",
                             ResponseCode = (int)ResponseCode.Status.NotFound,
                         },
                     };
@@ -232,7 +233,8 @@ namespace FMS.Svcs.Devloper.Branch
                         },
                         false => new()
                         {
-                            Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
+                            Data = repoResult.Records,
+                            Message = $"Some  records not found",
                             ResponseCode = (int)ResponseCode.Status.NotFound,
                         },
                     };
@@ -268,12 +270,12 @@ namespace FMS.Svcs.Devloper.Branch
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Removed Successfully",
+                        Message = "Branch removed successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
+                        Message = $"BranchId '{Id}' not found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -289,24 +291,24 @@ namespace FMS.Svcs.Devloper.Branch
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRemoveBranch(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRemoveBranch(List<BranchUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.BulkRemoveBranch(Ids, user);
+                var repoResult = await _branchRepo.BulkRemoveBranch(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branches Removed Successfully",
+                        Message = $"{repoResult.Count} removed , {listdata.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = $"Failed to  remove branch",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }
@@ -338,7 +340,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message = "No Record Found",
+                        Message = "No record exist",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -365,13 +367,13 @@ namespace FMS.Svcs.Devloper.Branch
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch Recovered Successfully",
+                        Message = "Branch recovered successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchId '{Id}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"BranchId '{Id}' not found",
+                        ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -386,24 +388,24 @@ namespace FMS.Svcs.Devloper.Branch
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverBranch(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRecoverBranch(List<BranchUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchRepo.BulkRecoverBranch(Ids, user);
+                var repoResult = await _branchRepo.BulkRecoverBranch(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branches Recovered Successfully",
+                        Message = $"{repoResult.Count} recovered , {listdata.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = "Failed to recover branch",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }
@@ -461,13 +463,13 @@ namespace FMS.Svcs.Devloper.Branch
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branches Deleted Successfully",
+                        Message = $"{repoResult.Count} deleted, {Ids.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = "Failed To delete branch financial years",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }

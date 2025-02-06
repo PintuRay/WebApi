@@ -18,7 +18,7 @@ namespace FMS.Server.Controllers.Devloper
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _branchFinancialYearSvcs.GetBranchFinancialYears();
+            var result = await _branchFinancialYearSvcs.GetAllBranchFinancialYears();
             return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
         }
         [HttpGet]
@@ -102,17 +102,17 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPut, Authorize(policy: "Delete")]
-        public async Task<IActionResult> BulkRemove([FromBody] List<Guid> Ids)
+        public async Task<IActionResult> BulkRemove([FromBody] List<BranchFinancialYearUpdateModel> listdata)
         {
-            if (Ids.Count != 0)
+            if (listdata.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _branchFinancialYearSvcs.BulkRemoveBranchFinancialYear(Ids, user);
+                var result = await _branchFinancialYearSvcs.BulkRemoveBranchFinancialYear(listdata, user);
                 return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
             }
             else
             {
-                return BadRequest("Invalid Ids");
+                return BadRequest("Invalid data");
             }
         }
         #endregion
@@ -146,11 +146,18 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> BulkRecover(List<string> Ids)
+        public async Task<IActionResult> BulkRecover([FromBody] List<BranchFinancialYearUpdateModel> listdata)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _branchFinancialYearSvcs.BulkRecoverBranchFinancialYear(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            if (listdata.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchFinancialYearSvcs.BulkRecoverBranchFinancialYear(listdata, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Plz Provide Valid Data");
+            }
         }
         [HttpDelete("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> Delete([FromRoute] Guid Id)
@@ -167,11 +174,18 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpDelete, Authorize(policy: "Delete")]
-        public async Task<IActionResult> BulkDelete(List<string> Ids)
+        public async Task<IActionResult> BulkDelete(List<Guid> Ids)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var result = await _branchFinancialYearSvcs.BulkDeleteBranchFinancialYear(Ids, user);
-            return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            if (Ids.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _branchFinancialYearSvcs.BulkDeleteBranchFinancialYear(Ids, user);
+                return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                return BadRequest("Invalid Ids");
+            }
         }
         #endregion
     }

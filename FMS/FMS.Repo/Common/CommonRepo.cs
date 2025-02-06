@@ -69,7 +69,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = newCountry.CountryId.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
                     }
@@ -97,7 +97,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = data.CountryId.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
                     }
@@ -126,7 +126,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
                     }
@@ -217,7 +217,7 @@ namespace FMS.Repo.Common
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
                     }
@@ -245,7 +245,7 @@ namespace FMS.Repo.Common
                 {
                     _ctx.Countries.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
+                    _Result.Count = Count;
                     if (Count > 0)
                     {
                         _Result.IsSucess = true;
@@ -277,7 +277,7 @@ namespace FMS.Repo.Common
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Country");
                     }
@@ -391,7 +391,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.IsSucess = true;
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -419,7 +419,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.IsSucess = true;
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -499,7 +499,7 @@ namespace FMS.Repo.Common
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"State_");
                     }
@@ -534,7 +534,7 @@ namespace FMS.Repo.Common
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.IsSucess = true;
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -569,7 +569,7 @@ namespace FMS.Repo.Common
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.IsSucess = true;
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -656,7 +656,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = newDist.DistId.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }
@@ -684,7 +684,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = data.DistId.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }
@@ -713,7 +713,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }
@@ -772,7 +772,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }
@@ -798,7 +798,7 @@ namespace FMS.Repo.Common
                     if (Count > 0)
                     {
                         _Result.Id = Id.ToString();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }
@@ -832,7 +832,7 @@ namespace FMS.Repo.Common
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }
@@ -867,7 +867,7 @@ namespace FMS.Repo.Common
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }

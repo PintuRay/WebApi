@@ -140,12 +140,12 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPut, Authorize(policy: "Delete")]
-        public async Task<IActionResult> BulkRemove([FromBody] List<Guid> Ids)
+        public async Task<IActionResult> BulkRemove([FromBody] List<BranchUpdateModel> listdata)
         {
-            if (Ids.Count != 0)
+            if (listdata.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _branchSvcs.BulkRemoveBranch(Ids, user);
+                var result = await _branchSvcs.BulkRemoveBranch(listdata, user);
                 return result.ResponseCode switch
                 {
                     404 => StatusCode(404, result),
@@ -191,12 +191,12 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> BulkRecover([FromBody] List<Guid> Ids)
+        public async Task<IActionResult> BulkRecover([FromBody] List<BranchUpdateModel> listdata)
         {
-            if (Ids.Count != 0)
+            if (listdata.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _branchSvcs.BulkRecoverBranch(Ids, user);
+                var result = await _branchSvcs.BulkRecoverBranch(listdata, user);
                 return result.ResponseCode switch
                 {
                     404 => StatusCode(404, result),

@@ -26,7 +26,7 @@ namespace FMS.Repo.Admin.Token
                     var regToken = _mapper.Map<RegisterToken>(model);
                     await _ctx.RegisterTokens.AddAsync(regToken);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count.ToString();
+                    _Result.Count = Count;
                     if (Count > 0)
                     {
                         _Result.Id = regToken.TokenId.ToString();
