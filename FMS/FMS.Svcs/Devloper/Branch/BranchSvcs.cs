@@ -31,7 +31,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message ="No Record Found",
+                        Message = "No Record Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -109,7 +109,7 @@ namespace FMS.Svcs.Devloper.Branch
                         Data = validationResult.Errors.ToArray(),
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     };
-                }   
+                }
             }
             catch (Exception _Exception)
             {
@@ -137,14 +137,14 @@ namespace FMS.Svcs.Devloper.Branch
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branchs Created Successfully",
+                            Message = "Branches Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
                             Data = repoResult.Records,
-                            Message = "Branch already exist",
-                            ResponseCode = (int)ResponseCode.Status.Found,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "Branch already exist",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -200,7 +200,7 @@ namespace FMS.Svcs.Devloper.Branch
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     };
                 }
-               
+
             }
             catch (Exception _Exception)
             {
@@ -234,8 +234,8 @@ namespace FMS.Svcs.Devloper.Branch
                         false => new()
                         {
                             Data = repoResult.Records,
-                            Message = $"Some  records not found",
-                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some  records not found",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.NotFound,
                         },
                     };
                 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace FMS.Db.Entity
 {
     public class BranchModel
@@ -9,16 +10,18 @@ namespace FMS.Db.Entity
         [Required]
         public string BranchName { get; set; }
         [Required]
-        public string BranchAddress { get; set; }
-        [Required]
         public string ContactNumber { get; set; }
         [Required]
         public string BranchCode { get; set; }
+        [NotMapped]
+        public AddressModel Address { get; set; }
     }
     public class BranchUpdateModel : BranchModel
     {
         [Required]
         public Guid BranchId { get; set; }
+        [NotMapped]
+        public new AddressUpdateModel Address { get; set; }
     }
     public class BranchValidator : AbstractValidator<BranchModel>
     {
@@ -38,8 +41,8 @@ namespace FMS.Db.Entity
     }
     public class BranchDto: BranchUpdateModel
     {
+        public new Address Address { get; set; }
         public ICollection<BranchFinancialYear> BranchFinancialYears { get; set; }
-        public ICollection<Company> Companies { get; set; }
         public ICollection<UserBranch> UserBranch { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
         public ICollection<LedgerSubGroup> LedgerSubGroup { get; set; }
@@ -88,7 +91,6 @@ namespace FMS.Db.Entity
             builder.HasKey(e => e.BranchId);
             builder.Property(e => e.BranchId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.BranchName).HasMaxLength(100).IsRequired(true);
-            builder.Property(e => e.BranchAddress).HasMaxLength(500).IsRequired(true);
             builder.Property(e => e.BranchCode).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.ContactNumber).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
@@ -96,6 +98,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+
         }
     }
 }

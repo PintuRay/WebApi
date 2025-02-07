@@ -6,11 +6,15 @@ namespace FMS.Repo
     {
         public MappingProfile()
         {
-           CreateMap<UserModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore()).ReverseMap();
-           CreateMap<UserUpdateModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore()).ReverseMap();
+            CreateMap<AppUser, UserModel>();
+            CreateMap<UserModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
+            CreateMap<AppUser, UserUpdateModel>();
+            CreateMap<UserUpdateModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
             /*--------------------------------------------Devloper---------------------------------------------------*/
             CreateMap<Branch, BranchModel>().ReverseMap();
+            CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
             CreateMap<Branch, BranchUpdateModel>().ReverseMap();
+            CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
             CreateMap<FinancialYear, FinancialYearModel>().ReverseMap()
                 .ForMember(dest => dest.StartDate, opt =>
                     opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
@@ -32,7 +36,7 @@ namespace FMS.Repo
             CreateMap<UserBranch, UserBranchUpdateModel>().ReverseMap();
             CreateMap<ProductGroup, ProductGroupModel>().ReverseMap();
             CreateMap<ProductGroup, ProductGroupUpdateModel>().ReverseMap();
-            CreateMap<ProductSubGroup,ProductSubGroup>().ReverseMap();
+            CreateMap<ProductSubGroup, ProductSubGroup>().ReverseMap();
             CreateMap<Unit, UnitModel>().ReverseMap();
             CreateMap<Unit, UnitUpdateModel>().ReverseMap();
             CreateMap<AlternateUnit, AlternateUnitModel>().ReverseMap();
@@ -56,8 +60,9 @@ namespace FMS.Repo
             CreateMap<Ledger, LedgerModel>().ReverseMap();
             CreateMap<Ledger, LedgerUpdateModel>().ReverseMap();
             /*-----------------------------------------Common----------------------------------------------*/
-            CreateMap<Address , AddressModel>().ReverseMap();
-            CreateMap<Address, AddressUpdateModel>().ReverseMap();
+            CreateMap<Address, AddressModel>().ReverseMap();
+
+            CreateMap<AddressUpdateModel, Address>().ReverseMap();
             CreateMap<Country, CountryModel>().ReverseMap();
             CreateMap<Country, CountryUpdateModel>().ReverseMap();
             CreateMap<State, StateModel>().ReverseMap();

@@ -52,6 +52,7 @@ namespace FMS.Server.Controllers.Devloper
                 return result.ResponseCode switch
                 {
                     201 => StatusCode(201, result),
+                    302 => StatusCode(302, result),
                     _ => BadRequest(result)
                 };
             }
@@ -71,6 +72,7 @@ namespace FMS.Server.Controllers.Devloper
                 return result.ResponseCode switch
                 {
                     201 => StatusCode(201, result),
+                    302 => StatusCode(302, result),
                     _ => BadRequest(result)
                 };
             }
@@ -148,7 +150,6 @@ namespace FMS.Server.Controllers.Devloper
                 var result = await _branchSvcs.BulkRemoveBranch(listdata, user);
                 return result.ResponseCode switch
                 {
-                    404 => StatusCode(404, result),
                     200 => StatusCode(200, result),
                     _ => BadRequest(result)
                 };
@@ -199,7 +200,6 @@ namespace FMS.Server.Controllers.Devloper
                 var result = await _branchSvcs.BulkRecoverBranch(listdata, user);
                 return result.ResponseCode switch
                 {
-                    404 => StatusCode(404, result),
                     200 => StatusCode(200, result),
                     _ => BadRequest(result)
                 };

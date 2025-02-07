@@ -17,21 +17,14 @@ namespace FMS.Db.Entity
         public string PhoneNo { get; set; }
         [Required]
         public string GSTIN { get; set; }
-        [Required]
-        [NotMapped]
+        [Required] [NotMapped]
         public IFormFile Logo { get; set; }
         public string LogoPath { get; set; }
-        [Required]
-        public Guid Fk_BranchId { get; set; }
-        [NotMapped]
-        public AddressModel Address { get; set; }
     }
     public class CompanyUpdateModel : CompanyModel
     {
         [Required]
         public Guid CompanyId { get; set; }
-        [NotMapped]
-        public new AddressUpdateModel Address { get; set; }
     }
     public class CompanyValidator : AbstractValidator<CompanyModel>
     {
@@ -42,8 +35,7 @@ namespace FMS.Db.Entity
     }
     public class CompanyDto: CompanyUpdateModel
     {
-        public new Address Address { get; set; }
-        public Branch Branch { get; set; }
+
     }
     public class Company : CompanyDto
     {
@@ -61,7 +53,6 @@ namespace FMS.Db.Entity
             builder.HasKey(e => e.CompanyId);
             builder.Property(e => e.CompanyId).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.CompanyName).HasColumnType("text").HasMaxLength(200).IsRequired(true);
-            builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.LogoPath).IsRequired(true);
             builder.Property(e => e.GSTIN).IsRequired(true);
             builder.Property(e => e.Email).IsRequired(true);
@@ -71,7 +62,6 @@ namespace FMS.Db.Entity
             builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
-            builder.HasOne(s => s.Branch).WithMany(e => e.Companies).HasForeignKey(e => e.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

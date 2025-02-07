@@ -5,6 +5,7 @@ using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Linq;
 using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -16,7 +17,7 @@ namespace FMS.Repo.Devloper.Branch
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
         private readonly IRedisCache _cache = cache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
         #region Branch
         #region Crud
@@ -37,7 +38,7 @@ namespace FMS.Repo.Devloper.Branch
                               BranchName = s.BranchName,
                               BranchCode = s.BranchCode,
                               ContactNumber = s.ContactNumber,
-                              BranchAddress = s.BranchAddress
+                              Address = s.Address
                           })
                           .OrderBy(s => s.BranchCode)
                           .ToListAsync();
@@ -79,7 +80,7 @@ namespace FMS.Repo.Devloper.Branch
                             BranchName = s.BranchName,
                             BranchCode = s.BranchCode,
                             ContactNumber = s.ContactNumber,
-                            BranchAddress = s.BranchAddress
+                            Address = s.Address
                         })
                         .OrderBy(s => s.BranchCode)
                         .Skip(skip)
@@ -97,7 +98,7 @@ namespace FMS.Repo.Devloper.Branch
                             BranchName = s.BranchName,
                             BranchCode = s.BranchCode,
                             ContactNumber = s.ContactNumber,
-                            BranchAddress = s.BranchAddress
+                            Address = s.Address
                         }).OrderBy(s => s.BranchCode)
                         .ToListAsync();
                     Count = Query.Count();
@@ -118,6 +119,7 @@ namespace FMS.Repo.Devloper.Branch
         public async Task<RepoBase> CreateBranch(BranchModel data, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
@@ -125,12 +127,18 @@ namespace FMS.Repo.Devloper.Branch
                 if (Query == null)
                 {
                     var newBranch = _mapper.Map<Db.Entity.Branch>(data);
+                    newBranch.BranchId = Guid.NewGuid();
                     newBranch.CreatedDate = DateTime.UtcNow;
                     newBranch.CreatedBy = user.Name;
+                    newBranch.Address.Fk_BranchId = newBranch.BranchId;
+                    newBranch.Address.Fk_UserId = null;
+                    newBranch.Address.CreatedDate = DateTime.UtcNow;
+                    newBranch.Address.CreatedBy = user.Name;
                     await _ctx.Branches.AddAsync(newBranch);
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
+                        await transaction.CommitAsync();
                         _Result.Records = newBranch;
                         _Result.Count = Count;
                         _Result.IsSucess = true;
@@ -140,6 +148,7 @@ namespace FMS.Repo.Devloper.Branch
             }
             catch
             {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
@@ -151,27 +160,50 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranch = await _ctx.Branches.Where(b => b.IsActive == true && dataList.Any(br => br.BranchName == b.BranchName))
-                    .Select(b => new BranchDto()
-                    {
-                        BranchId = b.BranchId,
-                        BranchName = b.BranchName,
-                        BranchCode = b.BranchCode,
-                        ContactNumber = b.ContactNumber,
-                        BranchAddress = b.BranchAddress
-                    }).ToListAsync();
+                var existingBranch = await _ctx.Branches.Where(b => b.IsActive == true && dataList.Select(br => br.BranchName).Contains(b.BranchName)).ToListAsync();
                 if (existingBranch.Count == 0)
                 {
                     var newBranches = _mapper.Map<List<Db.Entity.Branch>>(dataList);
-                    newBranches.ForEach(data => { data.CreatedDate = DateTime.UtcNow; data.CreatedBy = user.Name; });
-                    var response = await _ctx.BulkInsert(newBranches);
-                    if (response.IsSuccess)
+                    newBranches.ForEach(branch =>
                     {
-                        await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
-                        _Result.IsSucess = true;
-                        _Result.Records = newBranches;
-                        _cache.Remove("Branches");
+                        branch.BranchId = Guid.NewGuid();
+                        branch.CreatedDate = DateTime.UtcNow;
+                        branch.CreatedBy = user.Name;
+                    });
+                    var branchResponse = await _ctx.BulkInsert(newBranches);
+                    if (branchResponse.IsSuccess)
+                    {
+                        var addresses = new List<Address>();
+                        newBranches.ForEach(branch =>
+                        {
+                            var address = branch.Address;
+                            address.Fk_BranchId = branch.BranchId;
+                            address.Fk_UserId = null;
+                            address.CreatedDate = DateTime.UtcNow;
+                            address.CreatedBy = user.Name;
+                            addresses.Add(address);
+                        });
+                        var addressResponse = await _ctx.BulkInsert(addresses);
+                        if (addressResponse.IsSuccess)
+                        {
+                            await transaction.CommitAsync();
+                            _Result.Count = branchResponse.AffectedRows;
+                            _Result.IsSucess = true;
+                            _Result.Records = newBranches;
+                            _cache.Remove("Branches");
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            _Result.ResponseCode = 400;
+                            _Result.Message = "Failed to create address";
+                        }
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        _Result.ResponseCode = 400;
+                        _Result.Message = "Failed to create branches";
                     }
                 }
                 else
@@ -195,9 +227,11 @@ namespace FMS.Repo.Devloper.Branch
                 var Query = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchId == data.BranchId && s.IsActive == true);
                 if (Query != null)
                 {
-                    _mapper.Map(data, Query);
+                    var branchesToUpdate = _mapper.Map(data, Query);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
+                    Query.Address.ModifyDate = DateTime.UtcNow;
+                    Query.Address.ModifyBy = user.Name;
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
@@ -221,20 +255,50 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranches = await _ctx.Branches.Where(b => b.IsActive == true && listdata.Any(br => br.BranchId == b.BranchId)).ToListAsync();
-                var notFoundBranches = listdata.Except(existingBranches).ToList();
+                var existingBranches = await _ctx.Branches.Where(b => b.IsActive == true && listdata.Select(br => br.BranchId).Contains(b.BranchId)).ToListAsync(); ;
+                var notFoundBranches = listdata.Where(br => !existingBranches.Any(b => b.BranchId == br.BranchId)).ToList();
                 if (notFoundBranches.Count == 0)
                 {
                     var branchesToUpdate = _mapper.Map(listdata, existingBranches);
-                    branchesToUpdate.ForEach(data => { data.ModifyDate = DateTime.UtcNow; data.ModifyBy = user.Name; });
-                    var response = await _ctx.BulkUpdate(branchesToUpdate);
-                    if (response.IsSuccess)
+                    branchesToUpdate.ForEach(data =>
                     {
-                        await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
-                        _Result.Records = branchesToUpdate;
-                        _Result.IsSucess = true;
-                        _cache.Remove("Branches");
+                        data.ModifyDate = DateTime.UtcNow;
+                        data.ModifyBy = user.Name;
+                    });
+                    var branchResponse = await _ctx.BulkUpdate(branchesToUpdate);
+                    if (branchResponse.IsSuccess)
+                    {
+                        var existingAddresses = await _ctx.Addresses.Where(a => existingBranches.Select(b => b.BranchId).Contains(a.Fk_BranchId.Value)) .ToListAsync();
+                        var addresses = new List<Address>();
+                        branchesToUpdate.ForEach(branch =>
+                        {
+                            var address = branch.Address;
+                            address.CreatedDate = DateTime.UtcNow;
+                            address.CreatedBy = user.Name;
+                            addresses.Add(address);
+                        });
+                        var addressToUpdate = _mapper.Map(addresses, existingAddresses);
+                        var addressResponse = await _ctx.BulkUpdate(branchesToUpdate);
+                        if (addressResponse.IsSuccess)
+                        {
+                            await transaction.CommitAsync();
+                            _Result.Count = branchResponse.AffectedRows;
+                            _Result.Records = branchesToUpdate;
+                            _Result.IsSucess = true;
+                            _cache.Remove("Branches");
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            _Result.ResponseCode = 400;
+                            _Result.Message = "Failed to update address";
+                        }
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        _Result.ResponseCode = 400;
+                        _Result.Message = "Failed to update branch";
                     }
                 }
                 else
@@ -342,7 +406,7 @@ namespace FMS.Repo.Devloper.Branch
                              BranchName = s.BranchName,
                              BranchCode = s.BranchCode,
                              ContactNumber = s.ContactNumber,
-                             BranchAddress = s.BranchAddress
+                             Address = s.Address
                          })
                          .OrderBy(s => s.BranchCode)
                          .Skip(skip)
@@ -360,7 +424,7 @@ namespace FMS.Repo.Devloper.Branch
                              BranchName = s.BranchName,
                              BranchCode = s.BranchCode,
                              ContactNumber = s.ContactNumber,
-                             BranchAddress = s.BranchAddress
+                             Address = s.Address
                          }).OrderBy(s => s.BranchCode)
                          .ToListAsync();
                     Count = Query.Count();
@@ -389,7 +453,7 @@ namespace FMS.Repo.Devloper.Branch
                 if (Query != null)
                 {
                     var isActiveRecordExist = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchName == Query.BranchName && s.IsActive == true);
-                    if(isActiveRecordExist == null)
+                    if (isActiveRecordExist == null)
                     {
                         var IsActiveStatus = UpdateStatus(Query, true);
                         Query.ModifyDate = DateTime.UtcNow;
@@ -409,7 +473,7 @@ namespace FMS.Repo.Devloper.Branch
                     {
                         _Result.ResponseCode = 302;
                     }
-               
+
                 }
             }
             catch
@@ -447,13 +511,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
+                        _Result.Records = recoverBranchFinancialYear;
                         _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _cache.Remove("Branches");
                     }
                 }
-              
+
             }
             catch
             {
@@ -521,7 +585,6 @@ namespace FMS.Repo.Devloper.Branch
         {
             var Query = await _ctx.Branches
                    .Include(s => s.BranchFinancialYears)
-                   .Include(s => s.Companies)
                    .Include(s => s.UserBranch)
                    .Include(s => s.LabourRates)
                    .Include(s => s.LedgerSubGroup)
@@ -560,7 +623,6 @@ namespace FMS.Repo.Devloper.Branch
         {
             var Query = await _ctx.Branches.
                 Include(s => s.BranchFinancialYears)
-                .Include(s => s.Companies)
                 .Include(s => s.UserBranch)
                 .Include(s => s.LabourRates)
                 .Include(s => s.LedgerSubGroup)
@@ -600,7 +662,6 @@ namespace FMS.Repo.Devloper.Branch
             var allRelatedData = new Dictionary<string, IList>
             {
                 ["BranchFinancialYears"] = branch.BranchFinancialYears?.ToList() ?? [],
-                ["Companies"] = branch.Companies?.ToList() ?? [],
                 ["UserBranch"] = branch.UserBranch?.ToList() ?? [],
                 ["LabourRates"] = branch.LabourRates?.ToList() ?? [],
                 ["LedgerSubGroup"] = branch.LedgerSubGroup?.ToList() ?? [],
