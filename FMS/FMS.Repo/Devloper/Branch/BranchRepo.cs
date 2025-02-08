@@ -5,9 +5,6 @@ using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
-using System.Linq;
-using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FMS.Repo.Devloper.Branch
 {
@@ -323,10 +320,13 @@ namespace FMS.Repo.Devloper.Branch
                 var Query = await GetBranchWithRelatedEntity(Id, true);
                 if (Query != null)
                 {
-                    var IsActiveStatus = UpdateStatus(Query, false);
+                    var IsActiveStatus = UpdateStatus(Query, user, false);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
+                    Query.Address.ModifyDate = DateTime.UtcNow;
+                    Query.Address.ModifyBy = user.Name;
+                    Query.Address.IsActive = false;
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
@@ -335,6 +335,10 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Branches");
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
                     }
                 }
             }
@@ -358,7 +362,7 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     foreach (var branch in existingBranches)
                     {
-                        var IsActiveStatus = UpdateStatus(branch, false);
+                        var IsActiveStatus = UpdateStatus(branch, user, false);
                         await _ctx.BulkUpdateMultiple(IsActiveStatus);
                     }
                     existingBranches.ForEach(branch =>
@@ -370,11 +374,32 @@ namespace FMS.Repo.Devloper.Branch
                     var response = await _ctx.BulkUpdate(existingBranches);
                     if (response.IsSuccess)
                     {
-                        await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
-                        _Result.IsSucess = true;
-                        _Result.Records = existingBranches;
-                        _cache.Remove("Branches");
+                        var addresses = new List<Address>();
+                        existingBranches.ForEach(branch =>
+                        {
+                            var address = branch.Address;
+                            branch.Address.ModifyDate = DateTime.UtcNow;
+                            branch.Address.ModifyBy = user.Name;
+                            branch.Address.IsActive = false;
+                            addresses.Add(address);
+                        });
+                        var addressResponse = await _ctx.BulkUpdate(addresses);
+                        if (addressResponse.IsSuccess)
+                        {
+                            await transaction.CommitAsync();
+                            _Result.Count = response.AffectedRows;
+                            _Result.IsSucess = true;
+                            _Result.Records = existingBranches;
+                            _cache.Remove("Branches");
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                        }
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
                     }
                 }
             }
@@ -455,10 +480,13 @@ namespace FMS.Repo.Devloper.Branch
                     var isActiveRecordExist = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchName == Query.BranchName && s.IsActive == true);
                     if (isActiveRecordExist == null)
                     {
-                        var IsActiveStatus = UpdateStatus(Query, true);
+                        var IsActiveStatus = UpdateStatus(Query, user, true);
                         Query.ModifyDate = DateTime.UtcNow;
                         Query.ModifyBy = user.Name;
                         Query.IsActive = true;
+                        Query.Address.IsActive = true;
+                        Query.Address.ModifyDate = DateTime.UtcNow;
+                        Query.Address.ModifyBy = user.Name;
                         int Count = await _ctx.SaveChangesAsync();
                         if (Count > 0)
                         {
@@ -471,6 +499,7 @@ namespace FMS.Repo.Devloper.Branch
                     }
                     else
                     {
+                        _Result.Records = isActiveRecordExist;
                         _Result.ResponseCode = 302;
                     }
 
@@ -494,11 +523,12 @@ namespace FMS.Repo.Devloper.Branch
                 var existingBranches = await GetBranchesWithRelatedEntity(Ids, false);
                 if (existingBranches.Count != 0)
                 {
-                    var isActiveRecordsExist = await _ctx.Branches.Where(s => s.IsActive == true && listdata.Any(fy => fy.BranchName == s.BranchName)).ToListAsync();
+                    var branchNames = listdata.Select(fy => fy.BranchName).ToList();
+                    var isActiveRecordsExist = await _ctx.Branches.Where(s => s.IsActive == true && branchNames.Contains(s.BranchName)).ToListAsync();
                     var recoverBranchFinancialYear = existingBranches.Except(isActiveRecordsExist).ToList();
                     foreach (var branch in recoverBranchFinancialYear)
                     {
-                        var IsActiveStatus = UpdateStatus(branch, true);
+                        var IsActiveStatus = UpdateStatus(branch, user, true);
                         await _ctx.BulkUpdateMultiple(IsActiveStatus);
                     }
                     recoverBranchFinancialYear.ForEach(branch =>
@@ -507,17 +537,37 @@ namespace FMS.Repo.Devloper.Branch
                         branch.ModifyBy = user.Name;
                         branch.IsActive = true;
                     });
-                    var response = await _ctx.BulkUpdate(existingBranches);
-                    if (response.IsSuccess)
+                    var branchResponse = await _ctx.BulkUpdate(existingBranches);
+                    if (branchResponse.IsSuccess)
                     {
-                        await transaction.CommitAsync();
-                        _Result.Records = recoverBranchFinancialYear;
-                        _Result.Count = response.AffectedRows;
-                        _Result.IsSucess = true;
-                        _cache.Remove("Branches");
+                        var addresses = new List<Address>();
+                        recoverBranchFinancialYear.ForEach(branch =>
+                        {
+                            var address = branch.Address;
+                            branch.Address.ModifyDate = DateTime.UtcNow;
+                            branch.Address.ModifyBy = user.Name;
+                            branch.Address.IsActive = true;
+                            addresses.Add(address);
+                        });
+                        var addressResponse = await _ctx.BulkUpdate(addresses);
+                        if (addressResponse.IsSuccess)
+                        {
+                            await transaction.CommitAsync();
+                            _Result.Records = recoverBranchFinancialYear;
+                            _Result.Count = branchResponse.AffectedRows;
+                            _Result.IsSucess = true;
+                            _cache.Remove("Branches");
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                        }
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
                     }
                 }
-
             }
             catch
             {
@@ -584,6 +634,7 @@ namespace FMS.Repo.Devloper.Branch
         private async Task<Db.Entity.Branch> GetBranchWithRelatedEntity(Guid id, bool IsActive)
         {
             var Query = await _ctx.Branches
+                   .Include(s=>s.Address)
                    .Include(s => s.BranchFinancialYears)
                    .Include(s => s.UserBranch)
                    .Include(s => s.LabourRates)
@@ -621,8 +672,9 @@ namespace FMS.Repo.Devloper.Branch
         }
         private async Task<List<Db.Entity.Branch>> GetBranchesWithRelatedEntity(List<Guid> ids, bool IsActive)
         {
-            var Query = await _ctx.Branches.
-                Include(s => s.BranchFinancialYears)
+            var Query = await _ctx.Branches
+                .Include(s => s.Address)
+                .Include(s => s.BranchFinancialYears)
                 .Include(s => s.UserBranch)
                 .Include(s => s.LabourRates)
                 .Include(s => s.LedgerSubGroup)
@@ -657,42 +709,42 @@ namespace FMS.Repo.Devloper.Branch
                 .Where(b => b.IsActive == IsActive && ids.Contains(b.BranchId)).ToListAsync();
             return Query;
         }
-        private Dictionary<string, IList> UpdateStatus(Db.Entity.Branch branch, bool IsActive)
+        private Dictionary<string, IList> UpdateStatus(Db.Entity.Branch branch, AppUser user, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>
             {
-                ["BranchFinancialYears"] = branch.BranchFinancialYears?.ToList() ?? [],
-                ["UserBranch"] = branch.UserBranch?.ToList() ?? [],
-                ["LabourRates"] = branch.LabourRates?.ToList() ?? [],
-                ["LedgerSubGroup"] = branch.LedgerSubGroup?.ToList() ?? [],
-                ["LedgerSubGroupDev"] = branch.LedgerSubGroupDev?.ToList() ?? [],
-                ["Stocks"] = branch.Stocks?.ToList() ?? [],
-                ["Labours"] = branch.Labours?.ToList() ?? [],
-                ["LedgerBalances"] = branch.LedgerBalances?.ToList() ?? [],
-                ["SubLedgers"] = branch.SubLedgers?.ToList() ?? [],
-                ["SubLedgerBalances"] = branch.SubLedgerBalances?.ToList() ?? [],
-                ["InwardSupplyOrders"] = branch.InwardSupplyOrders?.ToList() ?? [],
-                ["InwardSupplyTransactions"] = branch.InwardSupplyTransactions?.ToList() ?? [],
-                ["OutwardSupplyOrders"] = branch.OutwardSupplyOrders?.ToList() ?? [],
-                ["OutwardSupplyTransactions"] = branch.OutwardSupplyTransactions?.ToList() ?? [],
-                ["ProductionOrders"] = branch.ProductionOrders?.ToList() ?? [],
-                ["ProductionTransactions"] = branch.ProductionTransactions?.ToList() ?? [],
-                ["DamageOrders"] = branch.DamageOrders?.ToList() ?? [],
-                ["DamageTransactions"] = branch.DamageTransactions?.ToList() ?? [],
-                ["PurchaseOrders"] = branch.PurchaseOrders?.ToList() ?? [],
-                ["PurchaseTransactions"] = branch.PurchaseTransactions?.ToList() ?? [],
-                ["PurchaseReturnOrders"] = branch.PurchaseReturnOrders?.ToList() ?? [],
-                ["PurchaseReturnTransactions"] = branch.PurchaseReturnTransactions?.ToList() ?? [],
-                ["SalesOrders"] = branch.SalesOrders?.ToList() ?? [],
-                ["SalesTransactions"] = branch.SalesTransactions?.ToList() ?? [],
-                ["SalesReturnOrders"] = branch.SalesReturnOrders?.ToList() ?? [],
-                ["SalesReturnTransactions"] = branch.SalesReturnTransactions?.ToList() ?? [],
-                ["JournalOrders"] = branch.JournalOrders?.ToList() ?? [],
-                ["JournalTransactions"] = branch.JournalTransactions?.ToList() ?? [],
-                ["PaymentOrders"] = branch.PaymentOrders?.ToList() ?? [],
-                ["PaymentTransactions"] = branch.PaymentTransactions?.ToList() ?? [],
-                ["ReceiptOrders"] = branch.ReceiptOrders?.ToList() ?? [],
-                ["ReceiptTransactions"] = branch.ReceiptTransactions?.ToList() ?? []
+                ["BranchFinancialYears"] = branch.BranchFinancialYears?.ToList() ?? null,
+                ["UserBranch"] = branch.UserBranch?.ToList() ?? null,
+                ["LabourRates"] = branch.LabourRates?.ToList() ?? null,
+                ["LedgerSubGroup"] = branch.LedgerSubGroup?.ToList() ?? null,
+                ["LedgerSubGroupDev"] = branch.LedgerSubGroupDev?.ToList() ?? null,
+                ["Stocks"] = branch.Stocks?.ToList() ?? null,
+                ["Labours"] = branch.Labours?.ToList() ?? null,
+                ["LedgerBalances"] = branch.LedgerBalances?.ToList() ?? null,
+                ["SubLedgers"] = branch.SubLedgers?.ToList() ?? null,
+                ["SubLedgerBalances"] = branch.SubLedgerBalances?.ToList() ?? null,
+                ["InwardSupplyOrders"] = branch.InwardSupplyOrders?.ToList() ?? null,
+                ["InwardSupplyTransactions"] = branch.InwardSupplyTransactions?.ToList() ?? null,
+                ["OutwardSupplyOrders"] = branch.OutwardSupplyOrders?.ToList() ?? null,
+                ["OutwardSupplyTransactions"] = branch.OutwardSupplyTransactions?.ToList() ?? null,
+                ["ProductionOrders"] = branch.ProductionOrders?.ToList() ?? null,
+                ["ProductionTransactions"] = branch.ProductionTransactions?.ToList() ?? null,
+                ["DamageOrders"] = branch.DamageOrders?.ToList() ?? null,
+                ["DamageTransactions"] = branch.DamageTransactions?.ToList() ?? null,
+                ["PurchaseOrders"] = branch.PurchaseOrders?.ToList() ?? null,
+                ["PurchaseTransactions"] = branch.PurchaseTransactions?.ToList() ?? null,
+                ["PurchaseReturnOrders"] = branch.PurchaseReturnOrders?.ToList() ?? null,
+                ["PurchaseReturnTransactions"] = branch.PurchaseReturnTransactions?.ToList() ?? null,
+                ["SalesOrders"] = branch.SalesOrders?.ToList() ?? null,
+                ["SalesTransactions"] = branch.SalesTransactions?.ToList() ?? null,
+                ["SalesReturnOrders"] = branch.SalesReturnOrders?.ToList() ?? null,
+                ["SalesReturnTransactions"] = branch.SalesReturnTransactions?.ToList() ?? null,
+                ["JournalOrders"] = branch.JournalOrders?.ToList() ?? null,
+                ["JournalTransactions"] = branch.JournalTransactions?.ToList() ?? null,
+                ["PaymentOrders"] = branch.PaymentOrders?.ToList() ?? null,
+                ["PaymentTransactions"] = branch.PaymentTransactions?.ToList() ?? null,
+                ["ReceiptOrders"] = branch.ReceiptOrders?.ToList() ?? null,
+                ["ReceiptTransactions"] = branch.ReceiptTransactions?.ToList() ?? null
             };
             foreach (var group in allRelatedData)
             {
@@ -700,10 +752,20 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     foreach (var entity in group.Value)
                     {
-                        var propertyInfo = entity.GetType().GetProperty("IsActive");
-                        if (propertyInfo != null && propertyInfo.PropertyType == typeof(bool?))
+                        var isActiveProperty = entity.GetType().GetProperty("IsActive");
+                        var modifyDateProperty = entity.GetType().GetProperty("ModifyDate");
+                        var modifyByProperty = entity.GetType().GetProperty("ModifyBy");
+                        if (isActiveProperty.PropertyType == typeof(bool?))
                         {
-                            propertyInfo.SetValue(entity, IsActive);
+                            isActiveProperty.SetValue(entity, IsActive);
+                        }
+                        if (modifyDateProperty.PropertyType == typeof(DateTime?))
+                        {
+                            modifyDateProperty.SetValue(entity, DateTime.UtcNow);
+                        }
+                        if (modifyByProperty.PropertyType == typeof(string))
+                        {
+                            modifyByProperty.SetValue(entity, user.UserName);
                         }
                     }
                 }

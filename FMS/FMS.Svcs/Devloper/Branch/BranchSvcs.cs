@@ -372,6 +372,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
+                        Data = repoResult.Records,
                         Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"BranchId '{Id}' not found",
                         ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
