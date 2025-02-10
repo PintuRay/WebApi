@@ -1,9 +1,7 @@
-﻿using FluentValidation.Results;
-using FMS.Db.Entity;
+﻿using FMS.Db.Entity;
 using FMS.Model;
 using FMS.Repo.Devloper.Branch;
 using FMS.Svcs.Email;
-using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Svcs.Devloper.Branch
 {
@@ -98,7 +96,7 @@ namespace FMS.Svcs.Devloper.Branch
                         false => new()
                         {
                             Message = $"Branch '{data.BranchName}' Already Exist",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -234,7 +232,7 @@ namespace FMS.Svcs.Devloper.Branch
                         false => new()
                         {
                             Data = repoResult.Records,
-                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some  records not found",
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some records not found",
                             ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.NotFound,
                         },
                     };

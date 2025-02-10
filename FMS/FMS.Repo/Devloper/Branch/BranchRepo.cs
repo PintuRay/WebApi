@@ -232,7 +232,7 @@ namespace FMS.Repo.Devloper.Branch
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Id = data.BranchId.ToString();
+                        _Result.Records = Query;
                         _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Branches");
@@ -336,10 +336,6 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.IsSucess = true;
                         _cache.Remove("Branches");
                     }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                    }
                 }
             }
             catch
@@ -392,14 +388,6 @@ namespace FMS.Repo.Devloper.Branch
                             _Result.Records = existingBranches;
                             _cache.Remove("Branches");
                         }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                        }
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
                     }
                 }
             }
@@ -558,14 +546,6 @@ namespace FMS.Repo.Devloper.Branch
                             _Result.IsSucess = true;
                             _cache.Remove("Branches");
                         }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                        }
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
                     }
                 }
             }

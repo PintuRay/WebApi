@@ -182,6 +182,7 @@ namespace FMS.Server.Controllers.Devloper
                 return result.ResponseCode switch
                 {
                     404 => StatusCode(404, result),
+                    302 => StatusCode(302, result),
                     200 => StatusCode(200, result),
                     _ => BadRequest(result)
                 };
@@ -237,7 +238,6 @@ namespace FMS.Server.Controllers.Devloper
                 var result = await _branchSvcs.BulkDeleteBranch(Ids, user);
                 return result.ResponseCode switch
                 {
-                    404 => StatusCode(404, result),
                     200 => StatusCode(200, result),
                     _ => BadRequest(result)
                 };
