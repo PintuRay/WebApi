@@ -25,9 +25,6 @@ namespace FMS.Repo
                    opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
                .ForMember(dest => dest.EndDate, opt =>
                    opt.MapFrom(src => DateTime.SpecifyKind(src.EndDate, DateTimeKind.Utc)));
-            CreateMap<BranchFinancialYear, BranchFinancialYearModel>().ReverseMap();
-            CreateMap<BranchFinancialYear, BranchFinancialYearUpdateModel>().ReverseMap();
-            CreateMap<BranchFinancialYear, BranchFinancialYearDto>().ReverseMap();
             /*-----------------------------------------Admin----------------------------------------------*/
             CreateMap<RegisterToken, RegisterTokenModel>().ReverseMap();
             CreateMap<Company, CompanyModel>().ReverseMap();

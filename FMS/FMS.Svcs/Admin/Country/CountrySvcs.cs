@@ -1,26 +1,25 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Repo.Devloper.BranchFinancialYear;
+using FMS.Repo.Admin.Country;
 using FMS.Svcs.Email;
-using Twilio.TwiML.Messaging;
 
-namespace FMS.Svcs.Devloper.BranchFinancialYear
+namespace FMS.Svcs.Admin.Country
 {
-    public class BranchFinancialYearSvcs(IBranchFinancialYearRepo branchFinancialYearRepo, BranchFinancialYearValidator branchFinancialYearValidator, IEmailSvcs emailSvc) : IBranchFinancialYearSvcs
+    public class CountrySvcs(ICountryRepo countryRepo, IEmailSvcs emailSvc, CountryValidator countryValidator) : ICountrySvcs
     {
         #region Dependancy
-        private readonly IBranchFinancialYearRepo _branchFinancialYearRepo = branchFinancialYearRepo;
-        private readonly BranchFinancialYearValidator _branchFinancialYearValidator = branchFinancialYearValidator;
+        private readonly ICountryRepo _countryRepo = countryRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
+        private readonly CountryValidator _countryValidator = countryValidator;
         #endregion
-        #region Branch Financial Year
+        #region Country
         #region Crud
-        public async Task<SvcsBase> GetAllBranchFinancialYears()
+        public async Task<SvcsBase> GetAllCountries()
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.GetAllBranchFinancialYears();
+                var repoResult = await _countryRepo.GetAllCountries();
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -30,7 +29,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
+                        Message = "No Record Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -42,16 +41,16 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetAllCountries", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> GetBranchFinancialYears(Guid BranchId)
+        public async Task<SvcsBase> GetCountries(PaginationParams pagination)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.GetBranchFinancialYears(BranchId);
+                var repoResult = await _countryRepo.GetCountries(pagination);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -61,7 +60,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     },
                     false => new()
                     {
-                        Message = "No Record Exist",
+                        Message = "No Record Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -73,61 +72,30 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetCountries", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> GetBranchFinancialYears(PaginationParams pagination)
+        public async Task<SvcsBase> CreateCountry(CountryModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.GetBranchFinancialYears(pagination);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetBranchFinancialYears", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> CreateBranchFinancialYear(BranchFinancialYearModel data, AppUser user)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var validationResult = await _branchFinancialYearValidator.ValidateAsync(data);
+                var validationResult = await _countryValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _branchFinancialYearRepo.CreateBranchFinancialYear(data, user);
+                    var repoResult = await _countryRepo.CreateCountry(data, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branch FinancialYear Created Successfully",
+                            Message = "Branch Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
-                            Message = $"Branch FinancialYear Already Exist",
+                            Message = $"Branch '{data.CountryName}' Already Exist",
                             ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
@@ -148,33 +116,33 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkCreateBranchFinancialYear(List<BranchFinancialYearModel> dataList, AppUser user)
+        public async Task<SvcsBase> BulkCreateCountry(List<CountryModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationTasks = dataList.Select(b => _branchFinancialYearValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _countryValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _branchFinancialYearRepo.BulkCreateBranchFinancialYear(dataList, user);
+                    var repoResult = await _countryRepo.BulkCreateCountry(listdata, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "branch financial years created successfully",
+                            Message = "Country Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
                             Data = repoResult.Records,
-                            Message = "Branch financialYear already exist",
-                            ResponseCode = (int)ResponseCode.Status.Found,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "Country already exist",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -194,30 +162,30 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateBranchFinancialYear(BranchFinancialYearUpdateModel data, AppUser user)
+        public async Task<SvcsBase> UpdateCountry(CountryUpdateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationResult = await _branchFinancialYearValidator.ValidateAsync(data);
+                var validationResult = await _countryValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _branchFinancialYearRepo.UpdateBranchFinancialYear(data, user);
+                    var repoResult = await _countryRepo.UpdateCountry(data, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branch financialYear updated successfully",
+                            Message = "Country Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
                         {
-                            Message = $"BranchFinancialYearId '{data.BranchFinancialYearId}' not found",
+                            Message = $"CountryId '{data.CountryId}' Not Found",
                             ResponseCode = (int)ResponseCode.Status.NotFound,
                         },
                     };
@@ -230,6 +198,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     };
                 }
+
             }
             catch (Exception _Exception)
             {
@@ -238,33 +207,33 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkUpdateBranchFinancialYear(List<BranchFinancialYearUpdateModel> dataList, AppUser user)
+        public async Task<SvcsBase> BulkUpdateCountry(List<CountryUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationTasks = dataList.Select(b => _branchFinancialYearValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _countryValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _branchFinancialYearRepo.BulkUpdateBranchFinancialYear(dataList, user);
+                    var repoResult = await _countryRepo.BulkUpdateCountry(listdata, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branch financial years updated successfully",
+                            Message = "Countries Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
                         {
                             Data = repoResult.Records,
-                            Message = $"Some  records not found",
-                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some records not found",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.NotFound,
                         },
                     };
                 }
@@ -284,27 +253,27 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveCountry(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.RemoveBranchFinancialYear(Id, user);
+                var repoResult = await _countryRepo.RemoveCountry(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch financialYear removed successfully",
+                        Message = "Country Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' not found",
+                        Message = $"CountryId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -316,27 +285,27 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRemoveBranchFinancialYear(List<BranchFinancialYearUpdateModel> dataList, AppUser user)
+        public async Task<SvcsBase> BulkRemoveCountry(List<CountryUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.BulkRemoveBranchFinancialYear(dataList, user);
+                var repoResult = await _countryRepo.BulkRemoveCountry(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = $"{repoResult.Count} removed , {dataList.Count - repoResult.Count} failed",
+                        Message = $"{repoResult.Count} removed , {listdata.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Failed to  remove branch financial years",
+                        Message = $"Failed to  remove country",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -348,18 +317,18 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkRemoveBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkRemoveCountry", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedBranchFinancialYears(PaginationParams pagination)
+        public async Task<SvcsBase> GetRemovedCountries(PaginationParams pagination)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.GetRemovedBranchFinancialYears(pagination);
+                var repoResult = await _countryRepo.GetRemovedCountries(pagination);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -369,7 +338,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     },
                     false => new()
                     {
-                        Message = "No record exist",
+                        Message = "No Record Exist",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -381,27 +350,28 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedBranchFinancialYears", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedCountries", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverCountry(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.RecoverBranchFinancialYear(Id, user);
+                var repoResult = await _countryRepo.RecoverCountry(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch financialYear recovered successfully",
+                        Message = "Branch recovered successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"BranchFinancialYearId '{Id}' not found",
+                        Data = repoResult.Records,
+                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"countryId '{Id}' not found",
                         ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -413,27 +383,27 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverBranchFinancialYear(List<BranchFinancialYearUpdateModel> dataList, AppUser user)
+        public async Task<SvcsBase> BulkRecoverCountry(List<CountryUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.BulkRecoverBranchFinancialYear(dataList, user);
+                var repoResult = await _countryRepo.BulkRecoverCountry(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = $"{repoResult.Count} recovered , {dataList.Count - repoResult.Count} failed",
+                        Message = $"{repoResult.Count} recovered , {listdata.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed to recover branch financial years",
+                        Message = "Failed to recover country",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -445,27 +415,27 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteBranchFinancialYear(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteCountry(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.DeleteBranchFinancialYear(Id, user);
+                var repoResult = await _countryRepo.DeleteCountry(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch financial Year deleted successfully",
+                        Message = "Country Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"BranchFinancialYearId '{Id}' not found",
+                        Message = $"CountryId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -477,16 +447,16 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteCountry", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkDeleteBranchFinancialYear(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkDeleteCountry(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _branchFinancialYearRepo.BulkDeleteBranchFinancialYear(Ids, user);
+                var repoResult = await _countryRepo.BulkDeleteCountry(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -497,7 +467,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     },
                     false => new()
                     {
-                        Message = "Failed To delete branch financial years",
+                        Message = "Failed To delete county",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -509,7 +479,7 @@ namespace FMS.Svcs.Devloper.BranchFinancialYear
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllBranchFinancialYear", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllCountry", _Exception.ToString());
             }
             return Obj;
         }

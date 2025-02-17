@@ -33,11 +33,8 @@ namespace FMS.Repo.Devloper.Branch
                           {
                               BranchId = s.BranchId,
                               BranchName = s.BranchName,
-                              BranchCode = s.BranchCode,
-                              ContactNumber = s.ContactNumber,
-                              Address = s.Address
                           })
-                          .OrderBy(s => s.BranchCode)
+                          .OrderBy(s => s.BranchName)
                           .ToListAsync();
                     if (Query.Count > 0)
                     {
@@ -141,6 +138,10 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.IsSucess = true;
                         _cache.Remove("Branches");
                     }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                    }
                 }
             }
             catch
@@ -160,13 +161,14 @@ namespace FMS.Repo.Devloper.Branch
                 var existingBranch = await _ctx.Branches.Where(b => b.IsActive == true && dataList.Select(br => br.BranchName).Contains(b.BranchName)).ToListAsync();
                 if (existingBranch.Count == 0)
                 {
-                    var newBranches = _mapper.Map<List<Db.Entity.Branch>>(dataList);
-                    newBranches.ForEach(branch =>
+                    var newBranches = dataList.Select(b =>
                     {
+                        var branch = _mapper.Map<Db.Entity.Branch>(dataList);
                         branch.BranchId = Guid.NewGuid();
                         branch.CreatedDate = DateTime.UtcNow;
                         branch.CreatedBy = user.Name;
-                    });
+                        return branch;
+                    }).ToList();
                     var branchResponse = await _ctx.BulkInsert(newBranches);
                     if (branchResponse.IsSuccess)
                     {
@@ -265,7 +267,7 @@ namespace FMS.Repo.Devloper.Branch
                     var branchResponse = await _ctx.BulkUpdate(branchesToUpdate);
                     if (branchResponse.IsSuccess)
                     {
-                        var existingAddresses = await _ctx.Addresses.Where(a => existingBranches.Select(b => b.BranchId).Contains(a.Fk_BranchId.Value)) .ToListAsync();
+                        var existingAddresses = await _ctx.Addresses.Where(a => existingBranches.Select(b => b.BranchId).Contains(a.Fk_BranchId.Value)).ToListAsync();
                         var addresses = new List<Address>();
                         branchesToUpdate.ForEach(branch =>
                         {
@@ -353,25 +355,21 @@ namespace FMS.Repo.Devloper.Branch
             {
                 _Result.IsSucess = false;
                 var Ids = listdata.Select(s => s.BranchId).ToList();
-                var existingBranches = await GetBranchesWithRelatedEntity(Ids, true);
-                if (existingBranches.Count != 0)
+                var Query = await GetBranchesWithRelatedEntity(Ids, true);
+                if (Query.Count != 0)
                 {
-                    foreach (var branch in existingBranches)
-                    {
-                        var IsActiveStatus = UpdateStatus(branch, user, false);
-                        await _ctx.BulkUpdateMultiple(IsActiveStatus);
-                    }
-                    existingBranches.ForEach(branch =>
+                    var IsActiveStatus = BulkUpdateStatus(Query, user, false);
+                    Query.ForEach(branch =>
                     {
                         branch.ModifyDate = DateTime.UtcNow;
                         branch.ModifyBy = user.Name;
                         branch.IsActive = false;
                     });
-                    var response = await _ctx.BulkUpdate(existingBranches);
+                    var response = await _ctx.BulkUpdate(Query);
                     if (response.IsSuccess)
                     {
                         var addresses = new List<Address>();
-                        existingBranches.ForEach(branch =>
+                        Query.ForEach(branch =>
                         {
                             var address = branch.Address;
                             branch.Address.ModifyDate = DateTime.UtcNow;
@@ -385,7 +383,7 @@ namespace FMS.Repo.Devloper.Branch
                             await transaction.CommitAsync();
                             _Result.Count = response.AffectedRows;
                             _Result.IsSucess = true;
-                            _Result.Records = existingBranches;
+                            _Result.Records = Query;
                             _cache.Remove("Branches");
                         }
                     }
@@ -508,28 +506,23 @@ namespace FMS.Repo.Devloper.Branch
             {
                 _Result.IsSucess = false;
                 var Ids = listdata.Select(s => s.BranchId).ToList();
-                var existingBranches = await GetBranchesWithRelatedEntity(Ids, false);
-                if (existingBranches.Count != 0)
+                var removedBranches = await GetBranchesWithRelatedEntity(Ids, false);
+                if (removedBranches.Count != 0)
                 {
-                    var branchNames = listdata.Select(fy => fy.BranchName).ToList();
-                    var isActiveRecordsExist = await _ctx.Branches.Where(s => s.IsActive == true && branchNames.Contains(s.BranchName)).ToListAsync();
-                    var recoverBranchFinancialYear = existingBranches.Except(isActiveRecordsExist).ToList();
-                    foreach (var branch in recoverBranchFinancialYear)
-                    {
-                        var IsActiveStatus = UpdateStatus(branch, user, true);
-                        await _ctx.BulkUpdateMultiple(IsActiveStatus);
-                    }
-                    recoverBranchFinancialYear.ForEach(branch =>
+                    var isActiveRecordsExist = await _ctx.Branches.Where(s => s.IsActive == true && removedBranches.Any(b => b.BranchName == s.BranchName)).ToListAsync();
+                    var recoverBranch = removedBranches.Except(isActiveRecordsExist).ToList();
+                    var IsActiveStatus = BulkUpdateStatus(recoverBranch, user, true);
+                    recoverBranch.ForEach(branch =>
                     {
                         branch.ModifyDate = DateTime.UtcNow;
                         branch.ModifyBy = user.Name;
                         branch.IsActive = true;
                     });
-                    var branchResponse = await _ctx.BulkUpdate(existingBranches);
+                    var branchResponse = await _ctx.BulkUpdate(recoverBranch);
                     if (branchResponse.IsSuccess)
                     {
                         var addresses = new List<Address>();
-                        recoverBranchFinancialYear.ForEach(branch =>
+                        recoverBranch.ForEach(branch =>
                         {
                             var address = branch.Address;
                             branch.Address.ModifyDate = DateTime.UtcNow;
@@ -541,7 +534,7 @@ namespace FMS.Repo.Devloper.Branch
                         if (addressResponse.IsSuccess)
                         {
                             await transaction.CommitAsync();
-                            _Result.Records = recoverBranchFinancialYear;
+                            _Result.Records = recoverBranch;
                             _Result.Count = branchResponse.AffectedRows;
                             _Result.IsSucess = true;
                             _cache.Remove("Branches");
@@ -614,8 +607,8 @@ namespace FMS.Repo.Devloper.Branch
         private async Task<Db.Entity.Branch> GetBranchWithRelatedEntity(Guid id, bool IsActive)
         {
             var Query = await _ctx.Branches
-                   .Include(s=>s.Address)
-                   .Include(s => s.BranchFinancialYears)
+                   .Include(s => s.Address)
+                   .Include(s => s.FinancialYears)
                    .Include(s => s.UserBranch)
                    .Include(s => s.LabourRates)
                    .Include(s => s.LedgerSubGroup)
@@ -654,7 +647,7 @@ namespace FMS.Repo.Devloper.Branch
         {
             var Query = await _ctx.Branches
                 .Include(s => s.Address)
-                .Include(s => s.BranchFinancialYears)
+                .Include(s => s.FinancialYears)
                 .Include(s => s.UserBranch)
                 .Include(s => s.LabourRates)
                 .Include(s => s.LedgerSubGroup)
@@ -689,11 +682,32 @@ namespace FMS.Repo.Devloper.Branch
                 .Where(b => b.IsActive == IsActive && ids.Contains(b.BranchId)).ToListAsync();
             return Query;
         }
-        private Dictionary<string, IList> UpdateStatus(Db.Entity.Branch branch, AppUser user, bool IsActive)
+        private void UpdateEntityProperties(object entity, AppUser user, bool IsActive)
+        {
+            var isActiveProperty = entity.GetType().GetProperty("IsActive");
+            var modifyDateProperty = entity.GetType().GetProperty("ModifyDate");
+            var modifyByProperty = entity.GetType().GetProperty("ModifyBy");
+
+            if (isActiveProperty != null && isActiveProperty.PropertyType == typeof(bool?))
+            {
+                isActiveProperty.SetValue(entity, IsActive);
+            }
+
+            if (modifyDateProperty != null && modifyDateProperty.PropertyType == typeof(DateTime?))
+            {
+                modifyDateProperty.SetValue(entity, DateTime.UtcNow);
+            }
+
+            if (modifyByProperty != null && modifyByProperty.PropertyType == typeof(string))
+            {
+                modifyByProperty.SetValue(entity, user.UserName);
+            }
+        }
+        private async Task UpdateStatus(Db.Entity.Branch branch, AppUser user, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>
             {
-                ["BranchFinancialYears"] = branch.BranchFinancialYears?.ToList() ?? null,
+                ["FinancialYears"] = branch.FinancialYears?.ToList() ?? null,
                 ["UserBranch"] = branch.UserBranch?.ToList() ?? null,
                 ["LabourRates"] = branch.LabourRates?.ToList() ?? null,
                 ["LedgerSubGroup"] = branch.LedgerSubGroup?.ToList() ?? null,
@@ -732,25 +746,34 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     foreach (var entity in group.Value)
                     {
-                        var isActiveProperty = entity.GetType().GetProperty("IsActive");
-                        var modifyDateProperty = entity.GetType().GetProperty("ModifyDate");
-                        var modifyByProperty = entity.GetType().GetProperty("ModifyBy");
-                        if (isActiveProperty.PropertyType == typeof(bool?))
-                        {
-                            isActiveProperty.SetValue(entity, IsActive);
-                        }
-                        if (modifyDateProperty.PropertyType == typeof(DateTime?))
-                        {
-                            modifyDateProperty.SetValue(entity, DateTime.UtcNow);
-                        }
-                        if (modifyByProperty.PropertyType == typeof(string))
-                        {
-                            modifyByProperty.SetValue(entity, user.UserName);
-                        }
+                        UpdateEntityProperties(entity, user, IsActive);
                     }
                 }
             }
-            return allRelatedData;
+            if (allRelatedData.Count > 0)
+            {
+                await _ctx.BulkUpdateMultiple(allRelatedData);
+            }
+        }
+        private async Task BulkUpdateStatus(List<Db.Entity.Branch> branches, AppUser user, bool IsActive)
+        {
+            var allRelatedData = new Dictionary<string, IList>();
+
+            foreach (var branch in branches)
+            {
+                if (branch.FinancialYears != null && branch.FinancialYears.Count > 0)
+                {
+                    foreach (var FinancialYear in branch.FinancialYears)
+                    {
+                        UpdateEntityProperties(FinancialYear, user, IsActive);
+                    }
+                    allRelatedData["FinancialYears"] = branch.FinancialYears.ToList();
+                }
+            }
+            if (allRelatedData.Count > 0)
+            {
+                await _ctx.BulkUpdateMultiple(allRelatedData);
+            }
         }
         #endregion
     }

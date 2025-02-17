@@ -42,7 +42,7 @@ namespace FMS.Db.Entity
     public class BranchDto: BranchUpdateModel
     {
         public new Address Address { get; set; }
-        public ICollection<BranchFinancialYear> BranchFinancialYears { get; set; }
+        public ICollection<FinancialYear> FinancialYears { get; set; }
         public ICollection<UserBranch> UserBranch { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
         public ICollection<LedgerSubGroup> LedgerSubGroup { get; set; }

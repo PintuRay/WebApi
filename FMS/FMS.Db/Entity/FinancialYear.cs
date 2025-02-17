@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
 namespace FMS.Db.Entity
 {
-  
     public class FinancialYearModel
     {
+        [Required]
+        public Guid Fk_BranchId { get; set; }
         [Required]
         public string Financial_Year { get; set; }
         [Required]
@@ -28,7 +29,7 @@ namespace FMS.Db.Entity
     }
     public class FinancialYearDto: FinancialYearUpdateModel
     {
-        public ICollection<BranchFinancialYear> BranchFinancialYears { get; set; }
+        public Branch Branch { get; set; }
         public ICollection<Stock> Stocks { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
         public ICollection<LedgerBalance> LedgerBalances { get; set; }
@@ -71,6 +72,7 @@ namespace FMS.Db.Entity
             builder.ToTable("FinancialYears", "public");
             builder.HasKey(e => e.FinancialYearId);
             builder.Property(e => e.FinancialYearId).HasDefaultValueSql("gen_random_uuid()");
+            builder.Property(e => e.Fk_BranchId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Financial_Year).IsRequired(true);
             builder.Property(e => e.StartDate).IsRequired(true).HasColumnType("timestamptz");
             builder.Property(e => e.EndDate).IsRequired(true).HasColumnType("timestamptz");
@@ -78,7 +80,8 @@ namespace FMS.Db.Entity
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
             builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+            builder.HasOne(p => p.Branch).WithMany(po => po.FinancialYears).HasForeignKey(po => po.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

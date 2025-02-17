@@ -14,12 +14,12 @@ namespace FMS.Svcs.Devloper.FinancialYear
         #endregion
         #region Financial Year
         #region Crud
-        public async Task<SvcsBase> GetFinancialYears()
+        public async Task<SvcsBase> GetFinancialYears(Guid BranchId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.GetFinancialYears();
+                var repoResult = await _financialYearRepo.GetFinancialYears(BranchId);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -287,12 +287,12 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRemoveFinancialYear(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRemoveFinancialYear(List<FinancialYearUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(Ids, user);
+                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -416,12 +416,12 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverFinancialYear(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkRecoverFinancialYear(List<FinancialYearUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(Ids, user);
+                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()

@@ -1,26 +1,24 @@
-﻿using FluentValidation;
-using FMS.Db.Entity;
+﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Svcs.Devloper.FinancialYear;
+using FMS.Svcs.Admin.Country;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FMS.Server.Controllers.Devloper
+namespace FMS.Server.Controllers.Admin
 {
-    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper")]
-    public class FinancialYearController(IFinancialYearSvcs financialYearSvcs, UserManager<AppUser> userManager) : ControllerBase
+    [Produces("application/json")]
+    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
+    public class CountryController(UserManager<AppUser> userManager, ICountrySvcs countrySvcs) : ControllerBase
     {
-        #region Dependancy
-        private readonly IFinancialYearSvcs _financialYearSvcs = financialYearSvcs;
+        private readonly ICountrySvcs _countrySvcs = countrySvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
-        #endregion
+        #region Country
         #region Crud
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
-           
-            var result = await _financialYearSvcs.GetFinancialYears(pagination);
+            var result = await _countrySvcs.GetCountries(pagination);
             return result.ResponseCode switch
             {
                 404 => NotFound(result),
@@ -29,15 +27,16 @@ namespace FMS.Server.Controllers.Devloper
             };
         }
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> Create([FromBody] FinancialYearModel model)
+        public async Task<IActionResult> Create([FromBody] CountryModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.CreateFinancialYear(model, user);
+                var result = await _countrySvcs.CreateCountry(model, user);
                 return result.ResponseCode switch
                 {
                     201 => Created(nameof(Create), result),
+                    302 => StatusCode(302, result),
                     _ => BadRequest(result)
                 };
             }
@@ -48,15 +47,16 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPost, Authorize(policy: "Create")]
-        public async Task<IActionResult> BulkCreate([FromBody] List<FinancialYearModel> listdata)
+        public async Task<IActionResult> BulkCreate([FromBody] List<CountryModel> listdata)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.BulkCreateFinancialYear(listdata, user);
+                var result = await _countrySvcs.BulkCreateCountry(listdata, user);
                 return result.ResponseCode switch
                 {
                     201 => Created(nameof(BulkCreate), result),
+                    302 => StatusCode(302, result),
                     _ => BadRequest(result)
                 };
             }
@@ -67,12 +67,12 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> Update([FromBody] FinancialYearUpdateModel model)
+        public async Task<IActionResult> Update([FromBody] CountryUpdateModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.UpdateFinancialYear(model, user);
+                var result = await _countrySvcs.UpdateCountry(model, user);
                 return result.ResponseCode switch
                 {
                     404 => NotFound(result),
@@ -87,12 +87,12 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPatch, Authorize(policy: "Update")]
-        public async Task<IActionResult> BulkUpdate([FromBody] List<FinancialYearUpdateModel> listdata)
+        public async Task<IActionResult> BulkUpdate([FromBody] List<CountryUpdateModel> listdata)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.BulkUpdateFinancialYear(listdata, user);
+                var result = await _countrySvcs.BulkUpdateCountry(listdata, user);
                 return result.ResponseCode switch
                 {
                     404 => NotFound(result),
@@ -106,13 +106,13 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest(errors);
             }
         }
-        [HttpPut("{id}"), Authorize(policy: "Delete")]
+        [HttpPut("remove/{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.RemoveFinancialYear(id, user);
+                var result = await _countrySvcs.RemoveCountry(id, user);
                 return result.ResponseCode switch
                 {
                     404 => NotFound(result),
@@ -126,22 +126,21 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPut, Authorize(policy: "Delete")]
-        public async Task<IActionResult> BulkRemove([FromBody] List<FinancialYearUpdateModel> datalist)
+        public async Task<IActionResult> BulkRemove([FromBody] List<CountryUpdateModel> listdata)
         {
-            if (datalist.Count != 0)
+            if (listdata.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.BulkRemoveFinancialYear(datalist, user);
+                var result = await _countrySvcs.BulkRemoveCountry(listdata, user);
                 return result.ResponseCode switch
                 {
-                    404 => NotFound(result),
                     200 => Ok(result),
                     _ => BadRequest(result)
                 };
             }
             else
             {
-                return BadRequest("Invalid Ids");
+                return BadRequest("Invalid data");
             }
         }
         #endregion
@@ -149,7 +148,7 @@ namespace FMS.Server.Controllers.Devloper
         [HttpGet]
         public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
-            var result = await _financialYearSvcs.GetRemovedFinancialYears(pagination);
+            var result = await _countrySvcs.GetRemovedCountries(pagination);
             return result.ResponseCode switch
             {
                 404 => NotFound(result),
@@ -157,16 +156,17 @@ namespace FMS.Server.Controllers.Devloper
                 _ => BadRequest(result)
             };
         }
-        [HttpPut("{id}"), Authorize(policy: "Update")]
-        public async Task<IActionResult> Recover([FromRoute] Guid Id)
+        [HttpPut("Recover/{id}"), Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
-            if (Id != Guid.Empty)
+            if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.RecoverFinancialYear(Id, user);
+                var result = await _countrySvcs.RecoverCountry(id, user);
                 return result.ResponseCode switch
                 {
                     404 => NotFound(result),
+                    302 => StatusCode(302, result),
                     200 => Ok(result),
                     _ => BadRequest(result)
                 };
@@ -177,31 +177,30 @@ namespace FMS.Server.Controllers.Devloper
             }
         }
         [HttpPut, Authorize(policy: "Update")]
-        public async Task<IActionResult> BulkRecover([FromBody] List<FinancialYearUpdateModel> datalist)
+        public async Task<IActionResult> BulkRecover([FromBody] List<CountryUpdateModel> listdata)
         {
-            if (datalist.Count != 0)
+            if (listdata.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.BulkRecoverFinancialYear(datalist, user);
+                var result = await _countrySvcs.BulkRecoverCountry(listdata, user);
                 return result.ResponseCode switch
                 {
-                    404 => NotFound(result),
                     200 => Ok(result),
                     _ => BadRequest(result)
                 };
             }
             else
             {
-                return BadRequest("Invalid Ids");
+                return BadRequest("Invalid data");
             }
         }
         [HttpDelete("{id}"), Authorize(policy: "Delete")]
-        public async Task<IActionResult> Delete([FromRoute] Guid Id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            if (Id != Guid.Empty)
+            if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.DeleteFinancialYear(Id, user);
+                var result = await _countrySvcs.DeleteCountry(id, user);
                 return result.ResponseCode switch
                 {
                     404 => NotFound(result),
@@ -220,10 +219,9 @@ namespace FMS.Server.Controllers.Devloper
             if (Ids.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _financialYearSvcs.BulkDeleteFinancialYear(Ids, user);
+                var result = await _countrySvcs.BulkDeleteCountry(Ids, user);
                 return result.ResponseCode switch
                 {
-                    404 => NotFound(result),
                     200 => Ok(result),
                     _ => BadRequest(result)
                 };
@@ -233,6 +231,7 @@ namespace FMS.Server.Controllers.Devloper
                 return BadRequest("Invalid Ids");
             }
         }
+        #endregion
         #endregion
     }
 }
