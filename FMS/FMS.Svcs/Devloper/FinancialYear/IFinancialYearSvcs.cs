@@ -6,9 +6,8 @@ namespace FMS.Svcs.Devloper.FinancialYear
 {
     public interface IFinancialYearSvcs
     {
-        #region Financial Year
         #region Crud
-        Task<SvcsBase> GetFinancialYears( Guid BranchId );
+        Task<SvcsBase> GetFinancialYears(Guid BranchId);
         Task<SvcsBase> GetFinancialYears(PaginationParams pagination);
         Task<SvcsBase> CreateFinancialYear(FinancialYearModel data, AppUser user);
         Task<SvcsBase> BulkCreateFinancialYear(List<FinancialYearModel> dataList, AppUser user);
@@ -23,7 +22,6 @@ namespace FMS.Svcs.Devloper.FinancialYear
         Task<SvcsBase> BulkRecoverFinancialYear(List<FinancialYearUpdateModel> dataList, AppUser user);
         Task<SvcsBase> DeleteFinancialYear(Guid Id, AppUser user);
         Task<SvcsBase> BulkDeleteFinancialYear(List<Guid> Ids, AppUser user);
-        #endregion
         #endregion
     }
 }

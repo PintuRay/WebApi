@@ -44,6 +44,9 @@ namespace FMS.Db.Entity
         public Labour Labour { get; set; } = null;
         public Party Party { get; set; } = null;
         public Branch Branch { get; set; } = null;
+        public Country Country { get; set; } = null;
+        public State State { get; set; } = null;
+        public Dist Dist { get; set; } = null;
     }
     public class Address : AddressDto
     {
@@ -81,6 +84,10 @@ namespace FMS.Db.Entity
             builder.HasOne(d => d.Labour).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_LabourId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.Party).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_PartyId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(d => d.Branch).WithOne(p => p.Address).HasForeignKey<Address>(d => d.Fk_BranchId).OnDelete(DeleteBehavior.Cascade);
+            //One-To-Many Relationship
+            builder.HasOne(d => d.Country).WithMany(p=>p.Addresses).HasForeignKey(d => d.Fk_CountryId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.State).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_StateId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Dist).WithMany(p => p.Addresses).HasForeignKey(d => d.Fk_DistId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
               new Address
               {

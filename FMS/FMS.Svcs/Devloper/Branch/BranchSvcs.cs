@@ -12,7 +12,6 @@ namespace FMS.Svcs.Devloper.Branch
         private readonly BranchValidator _branchValidator = branchValidator;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
-        #region Branch
         #region Crud
         public async Task<SvcsBase> GetAllBranch()
         {
@@ -467,7 +466,7 @@ namespace FMS.Svcs.Devloper.Branch
                     },
                     false => new()
                     {
-                        Message = "Failed To delete branch financial years",
+                        Message = "Failed To delete branch",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -483,7 +482,6 @@ namespace FMS.Svcs.Devloper.Branch
             }
             return Obj;
         }
-        #endregion
         #endregion
     }
 }

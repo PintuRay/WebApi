@@ -5,7 +5,6 @@ namespace FMS.Svcs.Devloper.Branch
 {
     public interface IBranchSvcs
     {
-        #region Branch
         #region Crud
         public Task<SvcsBase> GetAllBranch();
         public Task<SvcsBase> GetAllBranch(PaginationParams pagination);
@@ -22,7 +21,6 @@ namespace FMS.Svcs.Devloper.Branch
         Task<SvcsBase> BulkRecoverBranch(List<BranchUpdateModel> listdata, AppUser user);
         Task<SvcsBase> DeleteBranch(Guid Id, AppUser user);
         Task<SvcsBase> BulkDeleteBranch(List<Guid> Ids, AppUser user);
-        #endregion
         #endregion
     }
 }

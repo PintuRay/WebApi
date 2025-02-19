@@ -6,7 +6,7 @@ namespace FMS.Svcs.Admin.Country
     public interface ICountrySvcs
     {
         #region Crud
-        Task<SvcsBase> GetAllCountries();
+        Task<SvcsBase> GetCountries();
         Task<SvcsBase> GetCountries(PaginationParams pagination);
         Task<SvcsBase> CreateCountry(CountryModel data, AppUser user);
         Task<SvcsBase> BulkCreateCountry(List<CountryModel> listdata, AppUser user);

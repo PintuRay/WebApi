@@ -220,13 +220,13 @@ namespace FMS.Repo.Devloper.FinancialYear
                 var notFoundFinancialYears = dataList.Where(fy => !existingFinancialYears.Any(b => b.FinancialYearId == fy.FinancialYearId)).ToList();
                 if (notFoundFinancialYears.Count == 0)
                 {
-                    var financialYearsToUpdate = existingFinancialYears.Select(financialYear =>
+                    var financialYearsToUpdate = existingFinancialYears.Select(s =>
                     {
-                        var updateData = dataList.First(u => u.FinancialYearId == financialYear.FinancialYearId);
-                        _mapper.Map(updateData, financialYear);
-                        financialYear.ModifyDate = DateTime.UtcNow; 
-                        financialYear.ModifyBy = user.Name;
-                        return financialYear;
+                        var updateData = dataList.First(u => u.FinancialYearId == s.FinancialYearId);
+                        _mapper.Map(updateData, s);
+                        s.ModifyDate = DateTime.UtcNow; 
+                        s.ModifyBy = user.Name;
+                        return s;
                     }).ToList();
                     var response = await _ctx.BulkUpdate(financialYearsToUpdate);
                     if (response.IsSuccess)
@@ -329,8 +329,8 @@ namespace FMS.Repo.Devloper.FinancialYear
             {
                 _Result.IsSucess = false;
                 int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
-                {
+                    if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
+                    {
                     Query = await _ctx.FinancialYears.Where(s => s.IsActive == false).Select(s =>
                                new FinancialYearDto()
                                {
@@ -355,6 +355,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                                   StartDate = s.StartDate,
                                   EndDate = s.EndDate,
                               }).ToListAsync();
+                    Count = Query.Count();
                 }
                 if (Query.Count > 0)
                 {
@@ -416,6 +417,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
+                _Result.IsSucess = false;
                 var Ids = listdata.Select(s => s.FinancialYearId).ToList();
                 var removedFinancialYears = await GetFinancialYearsWithRelatedEntity(Ids, false);
                 if (removedFinancialYears.Count != 0)
@@ -636,16 +638,45 @@ namespace FMS.Repo.Devloper.FinancialYear
         private async Task BulkUpdateStatus(List<Db.Entity.FinancialYear> financialYears, AppUser user, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>();
-
-            foreach (var financialYear in financialYears)
-            {
-                if (financialYear.Stocks != null && financialYear.Stocks.Count > 0)
+            var collections = new Dictionary<string, ICollection>
                 {
-                    foreach (var stock in financialYear.Stocks)
+                    { "Stocks", financialYears.SelectMany(fy => fy.Stocks).ToList() },
+                    { "LabourRates", financialYears.SelectMany(fy => fy.LabourRates).ToList() },
+                    { "LedgerBalances", financialYears.SelectMany(fy => fy.LedgerBalances).ToList() },
+                    { "SubLedgerBalances", financialYears.SelectMany(fy => fy.SubLedgerBalances).ToList() },
+                    { "InwardSupplyOrders", financialYears.SelectMany(fy => fy.InwardSupplyOrders).ToList() },
+                    { "InwardSupplyTransactions", financialYears.SelectMany(fy => fy.InwardSupplyTransactions).ToList() },
+                    { "OutwardSupplyOrders", financialYears.SelectMany(fy => fy.OutwardSupplyOrders).ToList() },
+                    { "OutwardSupplyTransactions", financialYears.SelectMany(fy => fy.OutwardSupplyTransactions).ToList() },
+                    { "ProductionOrders", financialYears.SelectMany(fy => fy.ProductionOrders).ToList() },
+                    { "ProductionTransactions", financialYears.SelectMany(fy => fy.ProductionTransactions).ToList() },
+                    { "DamageOrders", financialYears.SelectMany(fy => fy.DamageOrders).ToList() },
+                    { "DamageTransactions", financialYears.SelectMany(fy => fy.DamageTransactions).ToList() },
+                    { "PurchaseOrders", financialYears.SelectMany(fy => fy.PurchaseOrders).ToList() },
+                    { "PurchaseTransactions", financialYears.SelectMany(fy => fy.PurchaseTransactions).ToList() },
+                    { "PurchaseReturnOrders", financialYears.SelectMany(fy => fy.PurchaseReturnOrders).ToList() },
+                    { "PurchaseReturnTransactions", financialYears.SelectMany(fy => fy.PurchaseReturnTransactions).ToList() },
+                    { "SalesOrders", financialYears.SelectMany(fy => fy.SalesOrders).ToList() },
+                    { "SalesTransactions", financialYears.SelectMany(fy => fy.SalesTransactions).ToList() },
+                    { "SalesReturnOrders", financialYears.SelectMany(fy => fy.SalesReturnOrders).ToList() },
+                    { "SalesReturnTransactions", financialYears.SelectMany(fy => fy.SalesReturnTransactions).ToList() },
+                    { "JournalOrders", financialYears.SelectMany(fy => fy.JournalOrders).ToList() },
+                    { "JournalTransactions", financialYears.SelectMany(fy => fy.JournalTransactions).ToList() },
+                    { "PaymentOrders", financialYears.SelectMany(fy => fy.PaymentOrders).ToList() },
+                    { "PaymentTransactions", financialYears.SelectMany(fy => fy.PaymentTransactions).ToList() },
+                    { "ReceiptOrders", financialYears.SelectMany(fy => fy.ReceiptOrders).ToList() },
+                    { "ReceiptTransactions", financialYears.SelectMany(fy => fy.ReceiptTransactions).ToList() },
+                };
+
+            foreach (var collection in collections)
+            {
+                if (collection.Value != null && collection.Value.Count > 0)
+                {
+                    foreach (var entity in collection.Value)
                     {
-                        UpdateEntityProperties(stock, user, IsActive);
+                        UpdateEntityProperties(entity, user, IsActive);
                     }
-                    allRelatedData["Stocks"] = financialYear.Stocks.ToList();
+                    allRelatedData[collection.Key] = collection.Value.Cast<object>().ToList(); // Ensure it's a List
                 }
             }
             if (allRelatedData.Count > 0)

@@ -13,7 +13,6 @@ namespace FMS.Server.Controllers.Admin
     {
         private readonly ICountrySvcs _countrySvcs = countrySvcs;
         private readonly UserManager<AppUser> _userManager = userManager;
-        #region Country
         #region Crud
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
@@ -106,7 +105,7 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest(errors);
             }
         }
-        [HttpPut("remove/{id}"), Authorize(policy: "Delete")]
+        [HttpPut("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -156,7 +155,7 @@ namespace FMS.Server.Controllers.Admin
                 _ => BadRequest(result)
             };
         }
-        [HttpPut("Recover/{id}"), Authorize(policy: "Update")]
+        [HttpPut("{id}"), Authorize(policy: "Update")]
         public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
@@ -231,7 +230,6 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest("Invalid Ids");
             }
         }
-        #endregion
-        #endregion
+        #endregion 
     }
 }

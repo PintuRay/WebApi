@@ -53,7 +53,7 @@ namespace FMS.Server.Controllers.Common
         [HttpGet("Country/Get"), AllowAnonymous]
         public async Task<IActionResult> GetCountries()
         {
-            var result = await _countrySvcs.GetAllCountries();
+            var result = await _countrySvcs.GetCountries();
             return result.ResponseCode switch
             {
                 404 => NotFound(result),

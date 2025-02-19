@@ -117,8 +117,8 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchName == data.BranchName && s.IsActive == true);
-                if (Query == null)
+                var existingBranch = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchName == data.BranchName && s.IsActive == true);
+                if (existingBranch == null)
                 {
                     var newBranch = _mapper.Map<Db.Entity.Branch>(data);
                     newBranch.BranchId = Guid.NewGuid();
@@ -158,8 +158,8 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranch = await _ctx.Branches.Where(b => b.IsActive == true && dataList.Select(br => br.BranchName).Contains(b.BranchName)).ToListAsync();
-                if (existingBranch.Count == 0)
+                var existingBranches = await _ctx.Branches.Where(b => b.IsActive == true && dataList.Select(br => br.BranchName).Contains(b.BranchName)).ToListAsync();
+                if (existingBranches.Count == 0)
                 {
                     var newBranches = dataList.Select(b =>
                     {
@@ -207,7 +207,7 @@ namespace FMS.Repo.Devloper.Branch
                 }
                 else
                 {
-                    _Result.Records = existingBranch;
+                    _Result.Records = existingBranches;
                 }
             }
             catch
@@ -223,18 +223,18 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchId == data.BranchId && s.IsActive == true);
-                if (Query != null)
+                var existingBranch = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchId == data.BranchId && s.IsActive == true);
+                if (existingBranch != null)
                 {
-                    var branchesToUpdate = _mapper.Map(data, Query);
-                    Query.ModifyDate = DateTime.UtcNow;
-                    Query.ModifyBy = user.Name;
-                    Query.Address.ModifyDate = DateTime.UtcNow;
-                    Query.Address.ModifyBy = user.Name;
+                    var branchesToUpdate = _mapper.Map(data, existingBranch);
+                    existingBranch.ModifyDate = DateTime.UtcNow;
+                    existingBranch.ModifyBy = user.Name;
+                    existingBranch.Address.ModifyDate = DateTime.UtcNow;
+                    existingBranch.Address.ModifyBy = user.Name;
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = Query;
+                        _Result.Records = existingBranch;
                         _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.Remove("Branches");
@@ -758,16 +758,50 @@ namespace FMS.Repo.Devloper.Branch
         private async Task BulkUpdateStatus(List<Db.Entity.Branch> branches, AppUser user, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>();
-
-            foreach (var branch in branches)
+            var collections = new Dictionary<string, ICollection>
             {
-                if (branch.FinancialYears != null && branch.FinancialYears.Count > 0)
+                { "FinancialYears", branches.SelectMany(b => b.FinancialYears).ToList() },
+                { "UserBranch", branches.SelectMany(b => b.UserBranch).ToList() },
+                { "LabourRates", branches.SelectMany(b => b.LabourRates).ToList() },
+                { "LedgerSubGroup", branches.SelectMany(b => b.LedgerSubGroup).ToList() },
+                { "LedgerSubGroupDev", branches.SelectMany(b => b.LedgerSubGroupDev).ToList() },
+                { "Stocks", branches.SelectMany(b => b.Stocks).ToList() },
+                { "Labours", branches.SelectMany(b => b.Labours).ToList() },
+                { "LedgerBalances", branches.SelectMany(b => b.LedgerBalances).ToList() },
+                { "SubLedgers", branches.SelectMany(b => b.SubLedgers).ToList() },
+                { "SubLedgerBalances", branches.SelectMany(b => b.SubLedgerBalances).ToList() },
+                { "InwardSupplyOrders", branches.SelectMany(b => b.InwardSupplyOrders).ToList() },
+                { "InwardSupplyTransactions", branches.SelectMany(b => b.InwardSupplyTransactions).ToList() },
+                { "OutwardSupplyOrders", branches.SelectMany(b => b.OutwardSupplyOrders).ToList() },
+                { "OutwardSupplyTransactions", branches.SelectMany(b => b.OutwardSupplyTransactions).ToList() },
+                { "ProductionOrders", branches.SelectMany(b => b.ProductionOrders).ToList() },
+                { "ProductionTransactions", branches.SelectMany(b => b.ProductionTransactions).ToList() },
+                { "DamageOrders", branches.SelectMany(b => b.DamageOrders).ToList() },
+                { "DamageTransactions", branches.SelectMany(b => b.DamageTransactions).ToList() },
+                { "PurchaseOrders", branches.SelectMany(b => b.PurchaseOrders).ToList() },
+                { "PurchaseTransactions", branches.SelectMany(b => b.PurchaseTransactions).ToList() },
+                { "PurchaseReturnOrders", branches.SelectMany(b => b.PurchaseReturnOrders).ToList() },
+                { "PurchaseReturnTransactions", branches.SelectMany(b => b.PurchaseReturnTransactions).ToList() },
+                { "SalesOrders", branches.SelectMany(b => b.SalesOrders).ToList() },
+                { "SalesTransactions", branches.SelectMany(b => b.SalesTransactions).ToList() },
+                { "SalesReturnOrders", branches.SelectMany(b => b.SalesReturnOrders).ToList() },
+                { "SalesReturnTransactions", branches.SelectMany(b => b.SalesReturnTransactions).ToList() },
+                { "JournalOrders", branches.SelectMany(b => b.JournalOrders).ToList() },
+                { "JournalTransactions", branches.SelectMany(b => b.JournalTransactions).ToList() },
+                { "PaymentOrders", branches.SelectMany(b => b.PaymentOrders).ToList() },
+                { "PaymentTransactions", branches.SelectMany(b => b.PaymentTransactions).ToList() },
+                { "ReceiptOrders", branches.SelectMany(b => b.ReceiptOrders).ToList() },
+                { "ReceiptTransactions", branches.SelectMany(b => b.ReceiptTransactions).ToList() },
+            };
+            foreach (var collection in collections)
+            {
+                if (collection.Value != null && collection.Value.Count > 0)
                 {
-                    foreach (var FinancialYear in branch.FinancialYears)
+                    foreach (var entity in collection.Value)
                     {
-                        UpdateEntityProperties(FinancialYear, user, IsActive);
+                        UpdateEntityProperties(entity, user, IsActive);
                     }
-                    allRelatedData["FinancialYears"] = branch.FinancialYears.ToList();
+                    allRelatedData[collection.Key] = collection.Value.Cast<object>().ToList();
                 }
             }
             if (allRelatedData.Count > 0)
@@ -775,6 +809,7 @@ namespace FMS.Repo.Devloper.Branch
                 await _ctx.BulkUpdateMultiple(allRelatedData);
             }
         }
-        #endregion
     }
+    #endregion
 }
+

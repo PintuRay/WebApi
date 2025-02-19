@@ -570,35 +570,23 @@ namespace FMS.Repo.Admin.Country
         private async Task BulkUpdateStatus(List<Db.Entity.Country> countries, AppUser user, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>();
-
-            foreach (var country in countries)
+            var collections = new Dictionary<string, ICollection>
             {
-                if (country.Addresses != null && country.Addresses.Count > 0)
+                 { "Addresses", countries.SelectMany(fy => fy.Addresses).ToList() },
+                 { "States", countries.SelectMany(fy => fy.States).ToList() },
+                 { "Dists", countries.SelectMany(fy => fy.Dists).ToList() },
+            };
+            foreach (var collection in collections)
+            {
+                if (collection.Value != null && collection.Value.Count > 0)
                 {
-                    foreach (var address in country.Addresses)
+                    foreach (var entity in collection.Value)
                     {
-                        UpdateEntityProperties(address, user, IsActive);
+                        UpdateEntityProperties(entity, user, IsActive);
                     }
-                    allRelatedData["Addresses"] = country.Addresses.ToList();
-                }
-                if (country.States != null && country.States.Count > 0)
-                {
-                    foreach (var state in country.States)
-                    {
-                        UpdateEntityProperties(state, user, IsActive);
-                    }
-                    allRelatedData["States"] = country.States.ToList();
-                }
-                if (country.Dists != null && country.Dists.Count > 0)
-                {
-                    foreach (var district in country.Dists)
-                    {
-                        UpdateEntityProperties(district, user, IsActive);
-                    }
-                    allRelatedData["Dists"] = country.Dists.ToList();
+                    allRelatedData[collection.Key] = collection.Value.Cast<object>().ToList(); // Ensure it's a List
                 }
             }
-
             if (allRelatedData.Count > 0)
             {
                 await _ctx.BulkUpdateMultiple(allRelatedData);

@@ -12,9 +12,8 @@ namespace FMS.Svcs.Admin.Country
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         private readonly CountryValidator _countryValidator = countryValidator;
         #endregion
-        #region Country
         #region Crud
-        public async Task<SvcsBase> GetAllCountries()
+        public async Task<SvcsBase> GetCountries()
         {
             SvcsBase Obj;
             try
@@ -415,7 +414,7 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkRecoverCountry", _Exception.ToString());
             }
             return Obj;
         }
@@ -479,11 +478,10 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkDeleteCountry", _Exception.ToString());
             }
             return Obj;
         }
-        #endregion
         #endregion
     }
 }

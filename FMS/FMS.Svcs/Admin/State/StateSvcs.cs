@@ -1,4 +1,5 @@
 ﻿using FMS.Db.Entity;
+using FMS.Model;
 using FMS.Repo.Admin.State;
 using FMS.Svcs.Email;
 
@@ -28,7 +29,38 @@ namespace FMS.Svcs.Admin.State
                     false => new()
                     {
                         Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetStates", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> GetStates(PaginationParams pagination)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _stateRepo.GetStates(pagination);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "No Record Found",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -48,21 +80,33 @@ namespace FMS.Svcs.Admin.State
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.CreateState(data, user);
-                Obj = repoResult.IsSucess switch
+                var validationResult = await _stateValidator.ValidateAsync(data);
+                if (validationResult.IsValid)
                 {
-                    true => new()
+                    var repoResult = await _stateRepo.CreateState(data, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "State Created Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Created,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "State Created Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Created,
+                        },
+                        false => new()
+                        {
+                            Message = $"State '{data.StateName}' Already Exist",
+                            ResponseCode = (int)ResponseCode.Status.Found,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"State '{data.StateName}' Already Exist",
+                        Data = validationResult.Errors.ToArray(),
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    },
-                };
+                    };
+                }
             }
             catch (Exception _Exception)
             {
@@ -75,26 +119,84 @@ namespace FMS.Svcs.Admin.State
             }
             return Obj;
         }
+        public async Task<SvcsBase> BulkCreateState(List<StateModel> listdata, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var validationTasks = listdata.Select(b => _stateValidator.ValidateAsync(b));
+                var validationResults = await Task.WhenAll(validationTasks);
+                if (validationResults.All(r => r.IsValid))
+                {
+                    var repoResult = await _stateRepo.BulkCreateState(listdata, user);
+                    Obj = repoResult.IsSucess switch
+                    {
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "State Created Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Created,
+                        },
+                        false => new()
+                        {
+                            Data = repoResult.Records,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "State already exist",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Data = validationResults.SelectMany(r => r.Errors).ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateState", _Exception.ToString());
+            }
+            return Obj;
+        }
         public async Task<SvcsBase> UpdateState(StateUpdateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.UpdateState(data, user);
-                Obj = repoResult.IsSucess switch
+                var validationResult = await _stateValidator.ValidateAsync(data);
+                if (validationResult.IsValid)
                 {
-                    true => new()
+                    var repoResult = await _stateRepo.UpdateState(data, user);
+                    Obj = repoResult.IsSucess switch
                     {
-                        Data = repoResult,
-                        Message = "State Updated Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "State Updated Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        },
+                        false => new()
+                        {
+                            Message = $"StateId '{data.StateId}' Not Found",
+                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
                     {
-                        Message = $"StateId '{data.StateId}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
+                        Data = validationResult.Errors.ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
             }
             catch (Exception _Exception)
             {
@@ -104,6 +206,52 @@ namespace FMS.Svcs.Admin.State
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateState", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> BulkUpdateState(List<StateUpdateModel> listdata, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var validationTasks = listdata.Select(b => _stateValidator.ValidateAsync(b));
+                var validationResults = await Task.WhenAll(validationTasks);
+                if (validationResults.All(r => r.IsValid))
+                {
+                    var repoResult = await _stateRepo.BulkUpdateState(listdata, user);
+                    Obj = repoResult.IsSucess switch
+                    {
+                        true => new()
+                        {
+                            Data = repoResult,
+                            Message = "States Updated Successfully",
+                            ResponseCode = (int)ResponseCode.Status.Ok,
+                        },
+                        false => new()
+                        {
+                            Data = repoResult.Records,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some records not found",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.NotFound,
+                        },
+                    };
+                }
+                else
+                {
+                    Obj = new()
+                    {
+                        Data = validationResults.SelectMany(r => r.Errors).ToArray(),
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    };
+                }
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateState", _Exception.ToString());
             }
             return Obj;
         }
@@ -139,14 +287,46 @@ namespace FMS.Svcs.Admin.State
             }
             return Obj;
         }
-        #endregion
-        #region Recover
-        public async Task<SvcsBase> GetRemovedStates()
+        public async Task<SvcsBase> BulkRemoveState(List<StateUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.GetRemovedStates();
+                var repoResult = await _stateRepo.BulkRemoveState(listdata, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = $"{repoResult.Count} removed , {listdata.Count - repoResult.Count} failed",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = $"Failed to  remove States",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveBranch", _Exception.ToString());
+            }
+            return Obj;
+        }
+        #endregion
+        #region Recover
+        public async Task<SvcsBase> GetRemovedStates(PaginationParams pagination)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _stateRepo.GetRemovedStates(pagination);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -157,7 +337,7 @@ namespace FMS.Svcs.Admin.State
                     false => new()
                     {
                         Message = "No Record Exist",
-                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -188,8 +368,9 @@ namespace FMS.Svcs.Admin.State
                     },
                     false => new()
                     {
-                        Message = $"StateId '{Id}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Data = repoResult.Records,
+                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"StateId '{Id}' not found",
+                        ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -201,6 +382,38 @@ namespace FMS.Svcs.Admin.State
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverState", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> BulkRecoverStates(List<StateUpdateModel> listdata, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _stateRepo.BulkRecoverStates(listdata, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = $"{repoResult.Count} recovered , {listdata.Count - repoResult.Count} failed",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "Failed To Recover States",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllStates", _Exception.ToString());
             }
             return Obj;
         }
@@ -236,38 +449,6 @@ namespace FMS.Svcs.Admin.State
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverStates(List<Guid> Ids, AppUser user)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var repoResult = await _stateRepo.BulkRecoverStates(Ids, user);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        Message = "States Recovered Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = $"Following StateIds '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllStates", _Exception.ToString());
-            }
-            return Obj;
-        }
         public async Task<SvcsBase> BulkDeleteStates(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
@@ -279,13 +460,13 @@ namespace FMS.Svcs.Admin.State
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "States Deleted Successfully",
+                        Message = $"{repoResult.Count} deleted, {Ids.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Following StateIds '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = "Failed To delete States",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }

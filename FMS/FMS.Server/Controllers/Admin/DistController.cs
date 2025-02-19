@@ -1,4 +1,5 @@
 ﻿using FMS.Db.Entity;
+using FMS.Model;
 using FMS.Svcs.Admin.Dist;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -6,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FMS.Server.Controllers.Admin
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Produces("application/json")]
+    [ApiController, Route("[controller]/[action]"), Authorize(Roles = "Devloper,Admin")]
     public class DistController(IDistSvcs distSvcs, UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
@@ -15,30 +16,30 @@ namespace FMS.Server.Controllers.Admin
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
-        [HttpGet, Route("Dist/Get/{StateId}"), AllowAnonymous]
-        public async Task<IActionResult> GetDists([FromRoute] Guid StateId)
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] PaginationParams pagination)
         {
-            var result = await _distSvcs.GetDists(StateId);
-            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+            var result = await _distSvcs.GetDists(pagination);
+            return result.ResponseCode switch
+            {
+                404 => NotFound(result),
+                200 => Ok(result),
+                _ => BadRequest(result)
+            };
         }
-        [HttpPost, Route("Dist/Create"), Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Create")]
-        public async Task<IActionResult> CreateDist([FromBody] DistModel model)
+        [HttpPost, Authorize(policy: "Create")]
+        public async Task<IActionResult> Create([FromBody] DistModel model)
         {
             if (ModelState.IsValid)
             {
-                var validator = new DistValidator();
-                var validationResult = validator.Validate(model);
-                if (validationResult.IsValid)
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _distSvcs.CreateDist(model, user);
+                return result.ResponseCode switch
                 {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _distSvcs.CreateDist(model, user);
-                    return result.ResponseCode == 201 ? Created(nameof(CreateDist), result) : BadRequest(result);
-                }
-                else
-                {
-                    var errors = validationResult.Errors.ToArray();
-                    return BadRequest(errors);
-                }
+                    201 => Created(nameof(Create), result),
+                    302 => StatusCode(302, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -46,24 +47,19 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest(errors);
             }
         }
-        [HttpPatch("Dist/Update"), Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
-        public async Task<IActionResult> UpdateDist([FromBody] DistUpdateModel model)
+        [HttpPost, Authorize(policy: "Create")]
+        public async Task<IActionResult> BulkCreate([FromBody] List<DistModel> listdata)
         {
             if (ModelState.IsValid)
             {
-                var validator = new DistValidator();
-                var validationResult = validator.Validate(model);
-                if (validationResult.IsValid)
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _distSvcs.BulkCreateDist(listdata, user);
+                return result.ResponseCode switch
                 {
-                    var user = await _userManager.GetUserAsync(User);
-                    var result = await _distSvcs.UpdateDist(model, user);
-                    return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
-                }
-                else
-                {
-                    var errors = validationResult.Errors.ToArray();
-                    return BadRequest(errors);
-                }
+                    201 => Created(nameof(BulkCreate), result),
+                    302 => StatusCode(302, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
@@ -71,78 +67,165 @@ namespace FMS.Server.Controllers.Admin
                 return BadRequest(errors);
             }
         }
-        [HttpPut, Route("Dist/Remove/{id}"), Authorize(policy: "Delete")]
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> Update([FromBody] DistUpdateModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _distSvcs.UpdateDist(model, user);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
+            }
+            else
+            {
+                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return BadRequest(errors);
+            }
+        }
+        [HttpPatch, Authorize(policy: "Update")]
+        public async Task<IActionResult> BulkUpdate([FromBody] List<DistUpdateModel> listdata)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _distSvcs.BulkUpdateDist(listdata, user);
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
+            }
+            else
+            {
+                var errors = ModelState.Where(x => x.Value.Errors.Any()).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return BadRequest(errors);
+            }
+        }
+        [HttpPut("Remove/{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> RemoveDist([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _distSvcs.RemoveDist(id, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
                 return BadRequest("Invalid Id");
             }
         }
+        [HttpPut, Authorize(policy: "Delete")]
+        public async Task<IActionResult> BulkRemove([FromBody] List<DistUpdateModel> listdata)
+        {
+            if (listdata.Count != 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var result = await _distSvcs.BulkRemoveDist(listdata, user);
+                return result.ResponseCode switch
+                {
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
+            }
+            else
+            {
+                return BadRequest("Invalid data");
+            }
+        }
         #endregion
         #region Recover
-        [HttpGet("Dist/GetRemoved"), Authorize(Roles = "Admin,Devloper"),]
-        public async Task<IActionResult> GetRemovedDists()
+        [HttpGet]
+        public async Task<IActionResult> GetRemoved([FromQuery] PaginationParams pagination)
         {
-            var result = await _distSvcs.GetRemovedDists();
-            return result.ResponseCode == 204 ? NoContent() : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+            var result = await _distSvcs.GetRemovedDists(pagination);
+            return result.ResponseCode switch
+            {
+                404 => NotFound(result),
+                200 => Ok(result),
+                _ => BadRequest(result)
+            };
         }
-        [HttpPut("Dist/Recover/{id}"), Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
-        public async Task<IActionResult> RecoverDist([FromRoute] Guid id)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> Recover([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _distSvcs.RecoverDist(id, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => NotFound(result),
+                    200 => Ok(result),
+                    302 => StatusCode(302, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
                 return BadRequest("Plz Provide Valid Id");
             }
         }
-        [HttpPut("Dist/BulkRecover"), Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Update")]
-        public async Task<IActionResult> BulkRecoverDists([FromBody] List<Guid> Ids)
+        [HttpPut, Authorize(policy: "Update")]
+        public async Task<IActionResult> BulkRecover([FromBody] List<DistUpdateModel> listdata)
         {
-            if (Ids.Count != 0)
+            if (listdata.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var result = await _distSvcs.BulkRecoverDists(Ids, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                var result = await _distSvcs.BulkRecoverDists(listdata, user);
+                return result.ResponseCode switch
+                {
+                    200 => Ok(result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
-                return BadRequest("Invalid Ids");
+                return BadRequest("Invalid data");
             }
         }
-        [HttpDelete("Dist/Delete/{id}"), Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
+        [HttpDelete("{id}"), Authorize(policy: "Delete")]
         public async Task<IActionResult> DeleteDist([FromRoute] Guid id)
         {
             if (id != Guid.Empty)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _distSvcs.DeleteDist(id, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    404 => StatusCode(404, result),
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {
                 return BadRequest("Invalid Id");
             }
         }
-        [HttpDelete("Dist/BulkDelete"), Authorize(Roles = "Admin,Devloper"), Authorize(policy: "Delete")]
+        [HttpDelete, Authorize(policy: "Delete")]
         public async Task<IActionResult> BulkDeleteDists([FromBody] List<Guid> Ids)
         {
             if (Ids.Count != 0)
             {
                 var user = await _userManager.GetUserAsync(User);
                 var result = await _distSvcs.BulkDeleteDists(Ids, user);
-                return result.ResponseCode == 404 ? NotFound(result) : (result.ResponseCode == 200 ? Ok(result) : BadRequest(result));
+                return result.ResponseCode switch
+                {
+                    200 => StatusCode(200, result),
+                    _ => BadRequest(result)
+                };
             }
             else
             {

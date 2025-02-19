@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using FMS.Db;
 using FMS.Db.Entity;
+using FMS.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace FMS.Repo.Admin.Dist
 {
@@ -50,6 +52,56 @@ namespace FMS.Repo.Admin.Dist
             }
             return _Result;
         }
+        public async Task<RepoBase> GetDists(PaginationParams pagination)
+        {
+            RepoBase _Result = new();
+            List<DistDto> Query = [];
+            int Count = 0;
+            try
+            {
+                _Result.IsSucess = false;
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                int skip = pagination.PageNumber * effectivePageSize;
+                if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
+                {
+                    Query = await (from s in _ctx.Dists
+                                   where s.IsActive == true
+                                   select new DistDto()
+                                   {
+                                       DistId = s.DistId,
+                                       DistName = s.DistName
+                                   }).OrderBy(s => s.DistName)
+                       .Skip(skip)
+                       .Take(effectivePageSize)
+                       .ToListAsync();
+                    Count = _ctx.Dists.Where(s => s.IsActive == true).Count();
+                }
+                else
+                {
+                    string searchTerm = pagination.SearchTerm.Trim().ToLower();
+                    Query = await (from s in _ctx.Dists
+                                   where s.IsActive == true && s.DistName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                                   select new DistDto()
+                                   {
+                                       DistId = s.DistId,
+                                       DistName = s.DistName
+                                   })
+                                   .OrderBy(s => s.DistName)
+                                   .ToListAsync();
+                }
+                if (Query.Count > 0)
+                {
+                    _Result.Records = Query;
+                    _Result.Count = Count;
+                    _Result.IsSucess = true;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return _Result;
+        }
         public async Task<RepoBase> CreateDist(DistModel data, AppUser user)
         {
             RepoBase _Result = new();
@@ -75,6 +127,51 @@ namespace FMS.Repo.Admin.Dist
             }
             catch
             {
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> BulkCreateDist(List<DistModel> dataList, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var existingDists = await _ctx.Dists.Where(b => b.IsActive == true && dataList.Any(br => br.Fk_StateId == b.Fk_StateId && br.DistName == b.DistName)).ToListAsync();
+                if (existingDists.Count == 0)
+                {
+                    var newDists = dataList.Select(b =>
+                    {
+                        var dist = _mapper.Map<Db.Entity.Dist>(b);
+                        dist.CreatedDate = DateTime.UtcNow;
+                        dist.CreatedBy = user.Name;
+                        return dist;
+                    }).ToList();
+                    var response = await _ctx.BulkInsert(newDists);
+                    if (response.IsSuccess)
+                    {
+                        await transaction.CommitAsync();
+                        _Result.Count = response.AffectedRows;
+                        _Result.IsSucess = true;
+                        _Result.Records = newDists;
+                        _cache.RemoveByPrefix($"Dist_");
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        _Result.ResponseCode = 400;
+                        _Result.Message = "Failed to create Dists";
+                    }
+                }
+                else
+                {
+                    _Result.Records = existingDists;
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
@@ -107,23 +204,66 @@ namespace FMS.Repo.Admin.Dist
             }
             return _Result;
         }
-        public async Task<RepoBase> RemoveDist(Guid Id, AppUser user)
+        public async Task<RepoBase> BulkUpdateDist(List<DistUpdateModel> dataList, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.Dists.SingleOrDefaultAsync(x => x.DistId == Id && x.IsActive == true);
+                var existingDists = await _ctx.Dists.Where(b => b.IsActive == true && dataList.Any(f => f.Fk_StateId == b.Fk_StateId && f.DistName == b.DistName)).ToListAsync();
+                var notFoundDists = dataList.Where(fy => !existingDists.Any(b => b.DistId == fy.DistId)).ToList();
+                if (notFoundDists.Count == 0)
+                {
+                    var distsToUpdate = existingDists.Select(s =>
+                    {
+                        var updateDist = dataList.First(u => u.DistId == s.DistId);
+                        _mapper.Map(updateDist, s);
+                        s.ModifyDate = DateTime.UtcNow;
+                        s.ModifyBy = user.Name;
+                        return s;
+                    }).ToList();
+                    var response = await _ctx.BulkUpdate(distsToUpdate);
+                    if (response.IsSuccess)
+                    {
+                        await transaction.CommitAsync();
+                        _Result.Count = response.AffectedRows;
+                        _Result.Records = distsToUpdate;
+                        _Result.IsSucess = true;
+                        _cache.RemoveByPrefix($"Dist_");
+                    }
+                }
+                else
+                {
+                    _Result.Records = notFoundDists;
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> RemoveDist(Guid Id, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var Query = await GetDistRelatedEntity(Id, true);
                 if (Query != null)
                 {
-                    await UpdateDistRelatedEntity(Id, false);
+                    var IsActiveStatus = UpdateStatus(Query, user, false);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Id = Id.ToString();
+                        await transaction.CommitAsync();
+                        _Result.Records = Query;
                         _Result.Count = Count;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
@@ -132,27 +272,85 @@ namespace FMS.Repo.Admin.Dist
             }
             catch
             {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> BulkRemoveDist(List<DistUpdateModel> dataList, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var Ids = dataList.Select(s => s.DistId).ToList();
+                var Query = await GetDistsWithRelatedEntity(Ids, true);
+                if (Query.Count != 0)
+                {
+                    var IsActiveStatus = BulkUpdateStatus(Query, user, false);
+                    Query.ForEach(fy =>
+                    {
+                        fy.ModifyDate = DateTime.UtcNow;
+                        fy.ModifyBy = user.Name;
+                        fy.IsActive = false;
+                    });
+                    var response = await _ctx.BulkUpdate(Query);
+                    if (response.IsSuccess)
+                    {
+                        await transaction.CommitAsync();
+                        _Result.Count = response.AffectedRows;
+                        _Result.IsSucess = true;
+                        _Result.Records = Query;
+                        _cache.RemoveByPrefix($"State_");
+                    }
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
         }
         #endregion
         #region Recover
-        public async Task<RepoBase> GetRemovedDists()
+        public async Task<RepoBase> GetRemovedDists(PaginationParams pagination)
         {
             RepoBase _Result = new();
+            List<DistDto> Query = [];
+            int Count = 0;
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.Dists
+                int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
+                if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
+                {
+                    Query = await (from s in _ctx.Dists
                                    where s.IsActive == false
                                    select new DistDto()
                                    {
                                        DistId = s.DistId,
-                                       Fk_StateId = s.Fk_StateId,
-                                       Fk_CountryId = s.Fk_CountryId,
                                        DistName = s.DistName
-                                   }).OrderBy(s => s.DistName).ToListAsync();
+                                   }).OrderByDescending(s => s.DistName)
+                               .Skip(pagination.PageNumber * effectivePageSize)
+                               .Take(effectivePageSize)
+                               .ToListAsync();
+                    Count = _ctx.Dists.Where(s => s.IsActive == false).Count();
+                }
+                else
+                {
+                    string searchTerm = pagination.SearchTerm.Trim().ToLower();
+                    Query = await (from s in _ctx.Dists
+                                   where s.IsActive == false && s.DistName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                                   select new DistDto()
+                                   {
+                                       DistId = s.DistId,
+                                       DistName = s.DistName
+                                   })
+                            .ToListAsync();
+                    Count = Query.Count();
+                }
                 if (Query.Count > 0)
                 {
                     _Result.Records = Query;
@@ -169,28 +367,79 @@ namespace FMS.Repo.Admin.Dist
         public async Task<RepoBase> RecoverDist(Guid Id, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.Dists.SingleOrDefaultAsync(x => x.DistId == Id && x.IsActive == false);
+                var Query = await GetDistRelatedEntity(Id, false);
                 if (Query != null)
                 {
-                    await UpdateDistRelatedEntity(Id, true);
-                    Query.ModifyDate = DateTime.UtcNow;
-                    Query.ModifyBy = user.Name;
-                    Query.IsActive = true;
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
+                    var isActiveRecordExist = await _ctx.Dists.SingleOrDefaultAsync(s => s.Fk_StateId == Query.Fk_StateId && s.DistName == Query.DistName && s.IsActive == true);
+                    if (isActiveRecordExist == null)
                     {
-                        _Result.Id = Id.ToString();
-                        _Result.Count = Count;
+                        var IsActiveStatus = UpdateStatus(Query, user, true);
+                        Query.ModifyDate = DateTime.UtcNow;
+                        Query.ModifyBy = user.Name;
+                        Query.IsActive = true;
+                        int Count = await _ctx.SaveChangesAsync();
+                        if (Count > 0)
+                        {
+                            await transaction.CommitAsync();
+                            _Result.Records = Query;
+                            _Result.Count = Count;
+                            _Result.IsSucess = true;
+                            _cache.RemoveByPrefix($"Dist_");
+                        }
+                    }
+                    else
+                    {
+                        _Result.Records = isActiveRecordExist;
+                        _Result.ResponseCode = 302;
+                    }
+
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> BulkRecoverDists(List<DistUpdateModel> listdata, AppUser user)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var Ids = listdata.Select(s => s.DistId).ToList();
+                var removedDists= await GetDistsWithRelatedEntity(Ids, false);
+                if (removedDists.Count != 0)
+                {
+                    var isActiveRecordsExist = await _ctx.Dists.Where(s => s.IsActive == true && removedDists.Any(b => b.Fk_StateId == s.Fk_StateId && b.DistName == s.DistName)).ToListAsync();
+                    var recoverDists = removedDists.Except(isActiveRecordsExist).ToList();
+                    var IsActiveStatus = BulkUpdateStatus(recoverDists, user, true);
+                    recoverDists.ForEach(s =>
+                    {
+                        s.ModifyDate = DateTime.UtcNow;
+                        s.ModifyBy = user.Name;
+                        s.IsActive = true;
+                    });
+                    var response = await _ctx.BulkUpdate(recoverDists);
+                    if (response.IsSuccess)
+                    {
+                        await transaction.CommitAsync();
+                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
+                        _Result.Records = recoverDists;
                         _cache.RemoveByPrefix($"Dist_");
                     }
                 }
             }
             catch
             {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
@@ -201,7 +450,7 @@ namespace FMS.Repo.Admin.Dist
             try
             {
                 _Result.IsSucess = false;
-                var Query = await _ctx.Dists.SingleOrDefaultAsync(x => x.DistId == Id && x.IsActive == false);
+                var Query = await GetDistRelatedEntity(Id, false);
                 if (Query != null)
                 {
                     _ctx.Dists.Remove(Query);
@@ -221,45 +470,6 @@ namespace FMS.Repo.Admin.Dist
             }
             return _Result;
         }
-        public async Task<RepoBase> BulkRecoverDists(List<Guid> Ids, AppUser user)
-        {
-            RepoBase _Result = new();
-            using var transaction = await _ctx.Database.BeginTransactionAsync();
-            try
-            {
-                _Result.IsSucess = false;
-                var existingDistIds = await _ctx.Dists.Where(b => b.IsActive == false && Ids.Contains(b.DistId)).Select(b => b.DistId).ToListAsync();
-                var notFoundDistIds = Ids.Except(existingDistIds).ToList();
-                if (notFoundDistIds.Count == 0)
-                {
-                    await UpdateDistsRelatedEntity(Ids, true);
-                    int Count = await _ctx.Dists.Where(x => Ids.Contains(x.DistId) && x.IsActive == false)
-                             .ExecuteUpdateAsync(s => s
-                                 .SetProperty(p => p.ModifyDate, DateTime.UtcNow)
-                                 .SetProperty(p => p.ModifyBy, user.Name)
-                                 .SetProperty(p => p.IsActive, true)
-                             );
-                    if (Count > 0)
-                    {
-                        await transaction.CommitAsync();
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count;
-                        _Result.IsSucess = true;
-                        _cache.RemoveByPrefix($"Dist_");
-                    }
-                }
-                else
-                {
-                    _Result.Ids = notFoundDistIds.Select(id => id.ToString()).ToList();
-                }
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-            return _Result;
-        }
         public async Task<RepoBase> BulkDeleteDists(List<Guid> Ids, AppUser user)
         {
             RepoBase _Result = new();
@@ -267,25 +477,18 @@ namespace FMS.Repo.Admin.Dist
             try
             {
                 _Result.IsSucess = false;
-                var existingDistIds = await _ctx.Dists.Where(b => b.IsActive == false && Ids.Contains(b.DistId)).Select(b => b.DistId).ToListAsync();
-                var notFoundDistIds = Ids.Except(existingDistIds).ToList();
-                if (notFoundDistIds.Count == 0)
+                var existingDists= await GetDistsWithRelatedEntity(Ids, false);
+                if (existingDists.Count != 0)
                 {
-                    var distToDelete = await _ctx.Dists.Where(x => Ids.Contains(x.DistId) && x.IsActive == false).ToListAsync();
-                    _ctx.Dists.RemoveRange(distToDelete);
-                    int Count = await _ctx.SaveChangesAsync();
-                    if (Count > 0)
+                    var response = await _ctx.BulkDelete(existingDists);
+                    if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = Count;
+                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _cache.RemoveByPrefix($"Dist_");
                     }
-                }
-                else
-                {
-                    _Result.Ids = notFoundDistIds.Select(id => id.ToString()).ToList();
                 }
             }
             catch
@@ -296,13 +499,84 @@ namespace FMS.Repo.Admin.Dist
             return _Result;
         }
         #endregion
-        private async Task UpdateDistRelatedEntity(Guid id, bool IsActive)
+        private async Task<Db.Entity.Dist> GetDistRelatedEntity(Guid id, bool IsActive)
         {
-            await _ctx.Addresses.Where(s => s.Fk_CountryId == id).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            var Query = await _ctx.Dists
+                   .Include(s => s.Addresses)
+                  .SingleOrDefaultAsync(x => x.DistId == id && x.IsActive == IsActive);
+            return Query;
         }
-        private async Task UpdateDistsRelatedEntity(List<Guid> Ids, bool IsActive)
+        private async Task<List<Db.Entity.Dist>> GetDistsWithRelatedEntity(List<Guid> ids, bool IsActive)
         {
-            await _ctx.Addresses.Where(s => Ids.Contains(s.Fk_CountryId)).ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, IsActive));
+            var Query = await _ctx.Dists
+                   .Include(s => s.Addresses)
+                .Where(b => b.IsActive == IsActive && ids.Contains(b.DistId)).ToListAsync();
+            return Query;
+        }
+        private void UpdateEntityProperties(object entity, AppUser user, bool IsActive)
+        {
+            var isActiveProperty = entity.GetType().GetProperty("IsActive");
+            var modifyDateProperty = entity.GetType().GetProperty("ModifyDate");
+            var modifyByProperty = entity.GetType().GetProperty("ModifyBy");
+
+            if (isActiveProperty != null && isActiveProperty.PropertyType == typeof(bool?))
+            {
+                isActiveProperty.SetValue(entity, IsActive);
+            }
+
+            if (modifyDateProperty != null && modifyDateProperty.PropertyType == typeof(DateTime?))
+            {
+                modifyDateProperty.SetValue(entity, DateTime.UtcNow);
+            }
+
+            if (modifyByProperty != null && modifyByProperty.PropertyType == typeof(string))
+            {
+                modifyByProperty.SetValue(entity, user.UserName);
+            }
+        }
+        private async Task UpdateStatus(Db.Entity.Dist dist, AppUser user, bool IsActive)
+        {
+            var allRelatedData = new Dictionary<string, IList>
+            {
+                ["Addresses"] = dist.Addresses?.ToList() ?? null,
+            };
+            foreach (var group in allRelatedData)
+            {
+                if (group.Value.Count != 0)
+                {
+                    foreach (var entity in group.Value)
+                    {
+                        UpdateEntityProperties(entity, user, IsActive);
+                    }
+                }
+            }
+            if (allRelatedData.Count > 0)
+            {
+                await _ctx.BulkUpdateMultiple(allRelatedData);
+            }
+        }
+        private async Task BulkUpdateStatus(List<Db.Entity.Dist> dists, AppUser user, bool IsActive)
+        {
+            var allRelatedData = new Dictionary<string, IList>();
+            var collections = new Dictionary<string, ICollection>
+            {
+                 { "Addresses", dists.SelectMany(fy => fy.Addresses).ToList() },
+            };
+            foreach (var collection in collections)
+            {
+                if (collection.Value != null && collection.Value.Count > 0)
+                {
+                    foreach (var entity in collection.Value)
+                    {
+                        UpdateEntityProperties(entity, user, IsActive);
+                    }
+                    allRelatedData[collection.Key] = collection.Value.Cast<object>().ToList(); // Ensure it's a List
+                }
+            }
+            if (allRelatedData.Count > 0)
+            {
+                await _ctx.BulkUpdateMultiple(allRelatedData);
+            }
         }
     }
 }

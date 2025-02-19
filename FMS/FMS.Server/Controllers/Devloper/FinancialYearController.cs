@@ -38,6 +38,7 @@ namespace FMS.Server.Controllers.Devloper
                 return result.ResponseCode switch
                 {
                     201 => Created(nameof(Create), result),
+                    302 => StatusCode(302, result),
                     _ => BadRequest(result)
                 };
             }
@@ -57,6 +58,7 @@ namespace FMS.Server.Controllers.Devloper
                 return result.ResponseCode switch
                 {
                     201 => Created(nameof(BulkCreate), result),
+                    302 => StatusCode(302, result),
                     _ => BadRequest(result)
                 };
             }
@@ -134,7 +136,6 @@ namespace FMS.Server.Controllers.Devloper
                 var result = await _financialYearSvcs.BulkRemoveFinancialYear(datalist, user);
                 return result.ResponseCode switch
                 {
-                    404 => NotFound(result),
                     200 => Ok(result),
                     _ => BadRequest(result)
                 };
@@ -168,6 +169,7 @@ namespace FMS.Server.Controllers.Devloper
                 {
                     404 => NotFound(result),
                     200 => Ok(result),
+                    302 => StatusCode(302, result),
                     _ => BadRequest(result)
                 };
             }
@@ -185,14 +187,13 @@ namespace FMS.Server.Controllers.Devloper
                 var result = await _financialYearSvcs.BulkRecoverFinancialYear(datalist, user);
                 return result.ResponseCode switch
                 {
-                    404 => NotFound(result),
                     200 => Ok(result),
                     _ => BadRequest(result)
                 };
             }
             else
             {
-                return BadRequest("Invalid Ids");
+                return BadRequest("Invalid data");
             }
         }
         [HttpDelete("{id}"), Authorize(policy: "Delete")]
@@ -223,7 +224,6 @@ namespace FMS.Server.Controllers.Devloper
                 var result = await _financialYearSvcs.BulkDeleteFinancialYear(Ids, user);
                 return result.ResponseCode switch
                 {
-                    404 => NotFound(result),
                     200 => Ok(result),
                     _ => BadRequest(result)
                 };

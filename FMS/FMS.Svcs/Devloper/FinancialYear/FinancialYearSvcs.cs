@@ -12,7 +12,6 @@ namespace FMS.Svcs.Devloper.FinancialYear
         private readonly FinancialYearValidator _financialYearValidator = financialYearValidator;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
-        #region Financial Year
         #region Crud
         public async Task<SvcsBase> GetFinancialYears(Guid BranchId)
         {
@@ -96,7 +95,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                         false => new()
                         {
                             Message = $"Financial Year {data.Financial_Year} Already Exist",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -108,7 +107,6 @@ namespace FMS.Svcs.Devloper.FinancialYear
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     };
                 }
-
             }
             catch (Exception _Exception)
             {
@@ -141,8 +139,9 @@ namespace FMS.Svcs.Devloper.FinancialYear
                         },
                         false => new()
                         {
-                            Message = $"Following Financial years '{string.Join(", ", repoResult.Records)}' Already Exist",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            Data = repoResult.Records,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "financial Years already exist",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
                         },
                     };
                 }
@@ -230,8 +229,9 @@ namespace FMS.Svcs.Devloper.FinancialYear
                         },
                         false => new()
                         {
-                            Message = $"Following BranchIds '{string.Join(", ", repoResult.Ids)}' Not Found",
-                            ResponseCode = (int)ResponseCode.Status.NotFound,
+                            Data = repoResult.Records,
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some records not found",
+                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.NotFound,
                         },
                     };
                 }
@@ -298,13 +298,13 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Years Removed Successfully",
+                        Message = $"{repoResult.Count} removed , {listdata.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"Following Financial Years  '{string.Join(", ", repoResult.Ids)}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = $"Failed to  remove Financial Years",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }
@@ -368,8 +368,9 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     },
                     false => new()
                     {
-                        Message = $"FinancialYear Id '{Id}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Data = repoResult.Records,
+                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"FinancialYearId '{Id}' not found",
+                        ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
                 };
             }
@@ -381,6 +382,38 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
                 await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverFinancialYear", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> BulkRecoverFinancialYear(List<FinancialYearUpdateModel> listdata, AppUser user)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(listdata, user);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        Message = $"{repoResult.Count} recovered , {listdata.Count - repoResult.Count} failed",
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "Failed To Recover Financial Years",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllFinancialYear", _Exception.ToString());
             }
             return Obj;
         }
@@ -400,7 +433,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Financial Year",
+                        Message = $"FinancialYearId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -416,38 +449,6 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverFinancialYear(List<FinancialYearUpdateModel> listdata, AppUser user)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(listdata, user);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        Message = "Financial Years Recovered Successfully",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = "Failed To Recover Financial Years",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllFinancialYear", _Exception.ToString());
-            }
-            return Obj;
-        }
         public async Task<SvcsBase> BulkDeleteFinancialYear(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
@@ -459,13 +460,13 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Financial Years Deleted Successfully",
+                        Message = $"{repoResult.Count} deleted, {Ids.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = "Failed To Delete Financial Years",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                        Message = "Failed To delete  financial years",
+                        ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
             }
@@ -480,7 +481,6 @@ namespace FMS.Svcs.Devloper.FinancialYear
             }
             return Obj;
         }
-        #endregion
         #endregion
     }
 }
