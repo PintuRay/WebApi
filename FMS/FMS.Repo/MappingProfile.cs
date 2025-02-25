@@ -12,9 +12,9 @@ namespace FMS.Repo
             CreateMap<UserUpdateModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
             /*--------------------------------------------Devloper---------------------------------------------------*/
             CreateMap<Branch, BranchModel>().ReverseMap();
-            CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+            //CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
             CreateMap<Branch, BranchUpdateModel>().ReverseMap();
-            CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+            //CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
             CreateMap<FinancialYear, FinancialYearModel>().ReverseMap()
                 .ForMember(dest => dest.StartDate, opt =>
                     opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
@@ -58,7 +58,6 @@ namespace FMS.Repo
             CreateMap<Ledger, LedgerUpdateModel>().ReverseMap();
             /*-----------------------------------------Common----------------------------------------------*/
             CreateMap<Address, AddressModel>().ReverseMap();
-
             CreateMap<AddressUpdateModel, Address>().ReverseMap();
             CreateMap<Country, CountryModel>().ReverseMap();
             CreateMap<Country, CountryUpdateModel>().ReverseMap();

@@ -13,9 +13,9 @@ namespace FMS.Repo.Account.Authentication
         private readonly IMapper _mapper = mapper;
         #endregion
         #region  SignUp Token
-        public async Task<Result<RegisterToken>> ValidateToken(string data)
+        public async Task<RepoBase> ValidateToken(string data)
         {
-            Result<RegisterToken> _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -30,7 +30,7 @@ namespace FMS.Repo.Account.Authentication
                                    }).SingleOrDefaultAsync();
                 if (Query != null)
                 {
-                    _Result.SingleObjData = Query;
+                    _Result.Records = Query;
                     _Result.IsSucess = true;
                 }
             }
@@ -42,7 +42,6 @@ namespace FMS.Repo.Account.Authentication
         }
         public async Task<bool> IsPhoneNumberInUse(string PhoneNumber)
         {
-            Result<bool> _Result = new();
             try
             {
                 var Query = await _ctx.AppUsers.Where(s => s.PhoneNumber == PhoneNumber).Select(s => s.PhoneNumber).SingleOrDefaultAsync();
@@ -59,7 +58,6 @@ namespace FMS.Repo.Account.Authentication
         }
         public async Task<bool> IsUserNameExist(string userName)
         {
-            Result<bool> _Result = new();
             try
             {
                 var Query = await _ctx.AppUsers.Where(s => s.UserName == userName).Select(s => s.UserName).SingleOrDefaultAsync();

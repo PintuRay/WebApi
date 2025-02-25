@@ -3,7 +3,11 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Collections;
+using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FMS.Repo.Admin.Country
 {
@@ -23,7 +27,7 @@ namespace FMS.Repo.Admin.Country
             {
                 _Result.IsSucess = false;
                 var cacheKey = "Country";
-                var cacheData = _cache.Get<RepoBase>(cacheKey);
+                var cacheData = await _cache.GetAsync<RepoBase>(cacheKey);
                 if (cacheData == null)
                 {
                     var Query = await (from s in _ctx.Countries
@@ -39,12 +43,14 @@ namespace FMS.Repo.Admin.Country
                         _Result.Records = Query;
                         _Result.Count = Query.Count;
                         _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                        await _cache.SetAsync(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
                 {
-                    _Result = cacheData;
+                    _Result.Records = JsonConvert.DeserializeObject<List<CountryDto>>(cacheData.Records.ToString()) ;
+                    _Result.Count = cacheData.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -213,7 +219,7 @@ namespace FMS.Repo.Admin.Country
             try
             {
                 _Result.IsSucess = false;
-                var existingCountries = await _ctx.Countries.Where(b => b.IsActive == true && listdata.Select(br => br.CountryId).Contains(b.CountryId)).ToListAsync(); ;
+                var existingCountries = await _ctx.Countries.Where(b => b.IsActive == true && listdata.Select(br => br.CountryId).Contains(b.CountryId)).ToListAsync() ;
                 var notFoundCountries = listdata.Where(br => !existingCountries.Any(b => b.CountryId == br.CountryId)).ToList();
                 if (notFoundCountries.Count == 0)
                 {
@@ -263,7 +269,7 @@ namespace FMS.Repo.Admin.Country
                 var Query = await GetCountryWithRelatedEntity(Id, true);
                 if (Query != null)
                 {
-                    var IsActiveStatus = UpdateStatus(Query, user, false);
+                    await UpdateStatus(Query, user, false);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
@@ -387,7 +393,7 @@ namespace FMS.Repo.Admin.Country
                     var isActiveRecordExist = await _ctx.Countries.SingleOrDefaultAsync(s => s.CountryName == Query.CountryName && s.IsActive == true);
                     if (isActiveRecordExist == null)
                     {
-                        var IsActiveStatus = UpdateStatus(Query, user, true);
+                        await UpdateStatus(Query, user, true);
                         Query.ModifyDate = DateTime.UtcNow;
                         Query.ModifyBy = user.Name;
                         Query.IsActive = true;
@@ -424,9 +430,9 @@ namespace FMS.Repo.Admin.Country
                 var removedCountries = await GetCountriesWithRelatedEntity(Ids, false);
                 if (removedCountries.Count != 0)
                 {
-                    var isActiveRecordsExist = await _ctx.Countries.Where(s => s.IsActive == true && removedCountries.Any(c => c.CountryName == s.CountryName)).ToListAsync();
+                    var isActiveRecordsExist = await _ctx.Countries.Where(s => s.IsActive == true && removedCountries.Select(c => c.CountryName).Contains(s.CountryName)).ToListAsync();
                     var recoverCountries = removedCountries.Except(isActiveRecordsExist).ToList();
-                    var IsActiveStatus = BulkUpdateStatus(recoverCountries, user, true);
+                    await BulkUpdateStatus(recoverCountries, user, true);
                     recoverCountries.ForEach(country =>
                     {
                         country.ModifyDate = DateTime.UtcNow;

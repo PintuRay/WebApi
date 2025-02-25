@@ -29,7 +29,7 @@ namespace FMS.Repo.Admin.Token
                     _Result.Count = Count;
                     if (Count > 0)
                     {
-                        _Result.Id = regToken.TokenId.ToString();
+                        _Result.Records = regToken;
                         _Result.IsSucess = true;
                     }
                 }

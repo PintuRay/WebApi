@@ -3,6 +3,7 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections;
 
 namespace FMS.Repo.Admin.Dist
@@ -23,7 +24,7 @@ namespace FMS.Repo.Admin.Dist
             {
                 _Result.IsSucess = false;
                 var cacheKey = $"Dist_{StateId}";
-                var cacheData = _cache.Get<RepoBase>(cacheKey);
+                var cacheData = await _cache.GetAsync<RepoBase>(cacheKey);
                 if (cacheData == null)
                 {
                     var Query = await (from s in _ctx.Dists
@@ -38,12 +39,14 @@ namespace FMS.Repo.Admin.Dist
                         _Result.Records = Query;
                         _Result.Count = Query.Count;
                         _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                        await _cache.SetAsync(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
                 {
-                    _Result = cacheData;
+                    _Result.Records = JsonConvert.DeserializeObject<List<DistDto>>(cacheData.Records.ToString());
+                    _Result.Count = cacheData.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch

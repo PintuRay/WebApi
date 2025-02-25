@@ -301,8 +301,8 @@ namespace FMS.Svcs.Account.Authentication
                                     var tokenTimeCacheKey = $"TokenGenerationTime_{code}";
                                     _cache.Remove(tokenCacheKey);
                                     _cache.Remove(tokenTimeCacheKey);
-                                    _cache.Set(tokenCacheKey, code);
-                                    _cache.Set(tokenTimeCacheKey, tokenGenerationTime);
+                                    await _cache.SetAsync(tokenCacheKey, code);
+                                    await _cache.SetAsync(tokenTimeCacheKey, tokenGenerationTime);
                                     #endregion
                                     Obj = new()
                                     {
@@ -380,8 +380,8 @@ namespace FMS.Svcs.Account.Authentication
                 {
                     var tokenCacheKey = $"TwoFactorToken_{model.OTP}";
                     var tokenTimeCacheKey = $"TokenGenerationTime_{model.OTP}";
-                    var tokenGenerationTime = _cache.Get<DateTime>(tokenTimeCacheKey);
-                    var tokenValue = _cache.Get<string>(tokenCacheKey);
+                    var tokenGenerationTime = await _cache.GetAsync<DateTime>(tokenTimeCacheKey);
+                    var tokenValue = await _cache.GetAsync<string>(tokenCacheKey);
                     if (tokenGenerationTime.AddMinutes(3) > DateTime.UtcNow && tokenValue == model.OTP)
                     {
                         _cache.Remove(tokenCacheKey);
@@ -503,8 +503,8 @@ namespace FMS.Svcs.Account.Authentication
                         var tokenTimeCacheKey = $"TokenGenerationTime_{code}";
                         _cache.Remove(tokenCacheKey);
                         _cache.Remove(tokenTimeCacheKey);
-                        _cache.Set(tokenCacheKey, code);
-                        _cache.Set(tokenTimeCacheKey, tokenGenerationTime);
+                        await _cache.SetAsync(tokenCacheKey, code);
+                        await _cache.SetAsync(tokenTimeCacheKey, tokenGenerationTime);
                         #endregion
                         Obj = new()
                         {

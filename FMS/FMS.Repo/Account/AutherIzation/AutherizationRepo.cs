@@ -15,9 +15,9 @@ namespace FMS.Repo.Account.AutherIzation
     {
         private readonly Context _ctx = ctx;
 
-        public async Task<Result<UserDto>> GetUserById(string Id)
+        public async Task<RepoBase> GetUserById(string Id)
         {
-            Result<UserDto> _Result = new();
+            RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
@@ -47,7 +47,7 @@ namespace FMS.Repo.Account.AutherIzation
                       }).SingleOrDefaultAsync(s => s.Id == Id);
                 if (Query != null)
                 {
-                    _Result.SingleObjData = Query;
+                    _Result.Records = Query;
                     _Result.IsSucess = true;
                 }
             }

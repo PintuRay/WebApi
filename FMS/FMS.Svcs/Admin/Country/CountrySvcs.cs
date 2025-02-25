@@ -364,7 +364,7 @@ namespace FMS.Svcs.Admin.Country
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Branch recovered successfully",
+                        Message = "Country recovered successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()

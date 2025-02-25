@@ -54,7 +54,7 @@ namespace FMS.Server.Controllers.Common
         public async Task<IActionResult> GetCountries()
         {
             var result = await _countrySvcs.GetCountries();
-            return result.ResponseCode switch
+            return  result.ResponseCode switch
             {
                 404 => NotFound(result),
                 200 => Ok(result),

@@ -4,6 +4,7 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections;
 
 namespace FMS.Repo.Devloper.Branch
@@ -25,7 +26,7 @@ namespace FMS.Repo.Devloper.Branch
             {
                 _Result.IsSucess = false;
                 string cacheKey = $"Branches";
-                var cacheData = _cache.Get<RepoBase>(cacheKey);
+                var cacheData = await _cache.GetAsync<RepoBase>(cacheKey);
                 if (cacheData == null)
                 {
                     var Query = await _ctx.Branches.Where(s => s.IsActive == true)
@@ -41,12 +42,14 @@ namespace FMS.Repo.Devloper.Branch
                         _Result.Records = Query;
                         _Result.Count = Query.Count();
                         _Result.IsSucess = true;
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                        await _cache.SetAsync(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
                 {
-                    _Result = cacheData;
+                    _Result.Records = JsonConvert.DeserializeObject<List<BranchDto>>(cacheData.Records.ToString());
+                    _Result.Count = cacheData.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -74,7 +77,20 @@ namespace FMS.Repo.Devloper.Branch
                             BranchName = s.BranchName,
                             BranchCode = s.BranchCode,
                             ContactNumber = s.ContactNumber,
-                            Address = s.Address
+                            Address =  new Address()
+                            {
+                                AddressId =s.Address.AddressId,
+                                Fk_CountryId = s.Address.Fk_CountryId,
+                                Fk_StateId =s.Address.Fk_StateId,
+                                Fk_DistId=s.Address.Fk_DistId,
+                                CountryName =  s.Address.Country.CountryName,
+                                StateName =s.Address.State.StateName,
+                                DistName = s.Address.Dist.DistName,
+                                At= s.Address.At,
+                                Post =s.Address.Post,
+                                PinCode =s.Address.PinCode,
+                                City = s.Address.City
+                            }
                         })
                         .OrderBy(s => s.BranchCode)
                         .Skip(skip)
@@ -163,7 +179,7 @@ namespace FMS.Repo.Devloper.Branch
                 {
                     var newBranches = dataList.Select(b =>
                     {
-                        var branch = _mapper.Map<Db.Entity.Branch>(dataList);
+                        var branch = _mapper.Map<Db.Entity.Branch>(b);
                         branch.BranchId = Guid.NewGuid();
                         branch.CreatedDate = DateTime.UtcNow;
                         branch.CreatedBy = user.Name;
@@ -254,7 +270,7 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranches = await _ctx.Branches.Where(b => b.IsActive == true && listdata.Select(br => br.BranchId).Contains(b.BranchId)).ToListAsync(); ;
+                var existingBranches = await _ctx.Branches.Where(b => b.IsActive == true && listdata.Select(br => br.BranchId).Contains(b.BranchId)).ToListAsync();
                 var notFoundBranches = listdata.Where(br => !existingBranches.Any(b => b.BranchId == br.BranchId)).ToList();
                 if (notFoundBranches.Count == 0)
                 {
@@ -277,7 +293,7 @@ namespace FMS.Repo.Devloper.Branch
                             addresses.Add(address);
                         });
                         var addressToUpdate = _mapper.Map(addresses, existingAddresses);
-                        var addressResponse = await _ctx.BulkUpdate(branchesToUpdate);
+                        var addressResponse = await _ctx.BulkUpdate(addressToUpdate);
                         if (addressResponse.IsSuccess)
                         {
                             await transaction.CommitAsync();

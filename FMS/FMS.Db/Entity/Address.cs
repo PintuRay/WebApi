@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -40,6 +41,12 @@ namespace FMS.Db.Entity
     }
     public class AddressDto: AddressUpdateModel
     {
+        [NotMapped]
+        public string CountryName { get; set; }
+        [NotMapped]
+        public string StateName { get; set; }
+        [NotMapped]
+        public string DistName { get; set; }
         public AppUser User { get; set; } = null;
         public Labour Labour { get; set; } = null;
         public Party Party { get; set; } = null;

@@ -3,6 +3,7 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Data;
 
@@ -25,7 +26,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             {
                 _Result.IsSucess = false;
                 string cacheKey = $"FinancialYears_{BranchId}";
-                var cacheData = _cache.Get<RepoBase>(cacheKey);
+                var cacheData = await _cache.GetAsync<RepoBase>(cacheKey);
                 if (cacheData == null)
                 {
                     var Query = await _ctx.FinancialYears.Where(s => s.IsActive == true && s.Fk_BranchId == BranchId).
@@ -40,12 +41,14 @@ namespace FMS.Repo.Devloper.FinancialYear
                         _Result.Records = Query;
                         _Result.IsSucess = true;
                         _Result.Count = Query.Count();
-                        _cache.Set(cacheKey, _Result, _cacheExpiration);
+                        await _cache.SetAsync(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
                 {
-                    _Result = cacheData;
+                    _Result.Records = JsonConvert.DeserializeObject<List<FinancialYearDto>>(cacheData.Records.ToString());
+                    _Result.Count = cacheData.Count;
+                    _Result.IsSucess = true;
                 }
             }
             catch

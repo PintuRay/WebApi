@@ -10,9 +10,9 @@ namespace FMS.Db.Entity
     public class DistModel
     {
         [Required]
-        public Guid Fk_CountryId { get; set; }
+        public Guid Fk_CountryId { get; set; } 
         [Required]
-        public Guid Fk_StateId { get; set; }
+        public Guid Fk_StateId { get; set; } 
         [Required]
         public string DistName { get; set; }
     }
