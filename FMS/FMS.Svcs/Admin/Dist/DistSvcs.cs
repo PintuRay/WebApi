@@ -5,12 +5,13 @@ using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Admin.Dist
 {
-    public class DistSvcs(IDistRepo distRepo, IEmailSvcs emailSvc, DistValidator distValidator) : IDistSvcs
+    public class DistSvcs(IDistRepo distRepo, IEmailSvcs emailSvc, DistValidator distValidator, DistUpdateValidator distUpdateValidator) : IDistSvcs
     {
         #region Dependancy
         private readonly IDistRepo _distRepo = distRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         private readonly DistValidator _distValidator = distValidator;
+        private readonly DistUpdateValidator _distUpdateValidator = distUpdateValidator;
         #endregion
         #region Crud
         public async Task<SvcsBase> GetDists(Guid Id)
@@ -170,7 +171,7 @@ namespace FMS.Svcs.Admin.Dist
             SvcsBase Obj;
             try
             {
-                var validationResult = await _distValidator.ValidateAsync(data);
+                var validationResult = await _distUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
                     var repoResult = await _distRepo.UpdateDist(data, user);
@@ -214,7 +215,7 @@ namespace FMS.Svcs.Admin.Dist
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _distValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _distUpdateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {

@@ -24,11 +24,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class OutwardSupplyTransactionUpdateModel : OutwardSupplyTransactionModel
-    {
-        [Required]
-        public Guid OutwardSupplyTransactionId { get; set; }
-    }
     public class OutwardSupplyTransactionValidator : AbstractValidator<OutwardSupplyTransactionModel>
     {
         public OutwardSupplyTransactionValidator()
@@ -36,21 +31,67 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class OutwardSupplyTransactionDto : OutwardSupplyTransactionUpdateModel
+    public class OutwardSupplyTransactionUpdateModel
     {
-        public OutwardSupplyOrder OutwardSupplyOrder { get; set; }
-        public Product Product { get; set; }
-        public Unit Unit { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [Required]
+        public Guid OutwardSupplyTransactionId { get; set; }
+        [Required]
+        public Guid Fk_OutwardSupplyOrderId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Quantity { get; set; }
+        [Required]
+        public Guid Fk_UnitId { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
     }
-    public class OutwardSupplyTransaction : OutwardSupplyTransactionDto
+    public class OutwardSupplyTransactionUpdateValidator : AbstractValidator<OutwardSupplyTransactionUpdateModel>
     {
+        public OutwardSupplyTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class OutwardSupplyTransactionDto
+    {
+        public Guid OutwardSupplyTransactionId { get; set; }
+        public Guid Fk_OutwardSupplyOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_UnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
+    }
+    public class OutwardSupplyTransaction
+    {
+        public Guid OutwardSupplyTransactionId { get; set; }
+        public Guid Fk_OutwardSupplyOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_UnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public OutwardSupplyOrder OutwardSupplyOrder { get; set; }
+        public Product Product { get; set; }
+        public Unit Unit { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
     }
     internal class OutwardSupplyTransactionConfig : IEntityTypeConfiguration<OutwardSupplyTransaction>
     {

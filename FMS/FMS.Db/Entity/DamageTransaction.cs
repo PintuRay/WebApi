@@ -24,11 +24,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class DamageTransactionUpdateModel : DamageTransactionModel
-    {
-        [Required]
-        public Guid DamageTransactionId { get; set; }
-    }
     public class DamageTransactionValidator : AbstractValidator<DamageTransactionModel>
     {
         public DamageTransactionValidator()
@@ -36,21 +31,67 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class DamageTransactionDto: DamageTransactionUpdateModel
+    public class DamageTransactionUpdateModel
     {
-        public DamageOrder DamageOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [Required]
+        public Guid DamageTransactionId { get; set; }
+        [Required]
+        public Guid Fk_DamageOrderId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Quantity { get; set; }
+        [Required]
+        public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
     }
-    public class DamageTransaction : DamageTransactionDto
+    public class DamageTransactionUpdateValidator : AbstractValidator<DamageTransactionModel>
     {
+        public DamageTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class DamageTransactionDto
+    {
+        public Guid DamageTransactionId { get; set; }
+        public Guid Fk_DamageOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
+    }
+    public class DamageTransaction 
+    {
+        public Guid DamageTransactionId { get; set; }
+        public Guid Fk_DamageOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public DamageOrder DamageOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
     }
     internal class DamageTransactionConfig : IEntityTypeConfiguration<DamageTransaction>
     {

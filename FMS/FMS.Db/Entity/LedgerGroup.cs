@@ -11,13 +11,31 @@ namespace FMS.Db.Entity
         [Required]
         public string GroupAlias { get; set; }
     }
-    public class LedgerGroupUpdateModel : LedgerGroupModel
+    public class LedgerGroupUpdateModel
     {
         [Required]
         public Guid LedgerGroupId { get; set; }
+        [Required]
+        public string GroupName { get; set; }
+        [Required]
+        public string GroupAlias { get; set; }
     }
-    public class LedgerGroupDto : LedgerGroupUpdateModel
+    public class LedgerGroupDto
     {
+        public Guid LedgerGroupId { get; set; }
+        public string GroupName { get; set; }
+        public string GroupAlias { get; set; }
+    }
+    public class LedgerGroup 
+    {
+        public Guid LedgerGroupId { get; set; }
+        public string GroupName { get; set; }
+        public string GroupAlias { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public ICollection<LedgerSubGroup> LedgerSubGroups { get; set; }
         public ICollection<LedgerSubGroupDev> LedgerSubGroupsDev { get; set; }
         public ICollection<Ledger> Ledgers { get; set; }
@@ -25,14 +43,6 @@ namespace FMS.Db.Entity
         public ICollection<JournalTransaction> JournalTransactions { get; set; }
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
-    }
-    public class LedgerGroup : LedgerGroupDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
 
     }
     public class LedgerGroupConfig : IEntityTypeConfiguration<LedgerGroup>

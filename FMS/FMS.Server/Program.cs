@@ -189,6 +189,7 @@ builder.Services.AddScoped<UserValidator>();
 builder.Services.AddScoped<AddressValidator>();
 builder.Services.AddScoped<AlternateUnitValidator>();
 builder.Services.AddScoped<BranchValidator>();
+builder.Services.AddScoped<BranchUpdateValidator>();
 builder.Services.AddScoped<CompanyValidator>();
 builder.Services.AddScoped<CountryValidator>();
 builder.Services.AddScoped<DamageOrderValidator>();
@@ -231,7 +232,6 @@ builder.Services.AddScoped<StateValidator>();
 builder.Services.AddScoped<StockValidator>();
 builder.Services.AddScoped<SubLedgerBalanceValidator>();
 builder.Services.AddScoped<UnitValidator>();
-builder.Services.AddScoped<UserBranchValidator>();
 //*****************************************************AutoMapper*****************************************//
 var automapper = new MapperConfiguration(option => option.AddProfile(new MappingProfile()));
 IMapper mapper = automapper.CreateMapper();

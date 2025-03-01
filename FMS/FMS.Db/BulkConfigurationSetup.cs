@@ -19,16 +19,18 @@ namespace FMS.Db
             SetOutputIdentity = true,
             PreserveInsertOrder = true,
             BatchSize = 1000,
+            IncludeGraph = false
         };
     }
     public static class BulkExtensions
     {
-        public static async Task<BulkOperationResult> BulkInsert<T>(this DbContext context, IList<T> entities) where T : class
+        public static async Task<BulkOperationResult> BulkInsert<T>(this DbContext context, IList<T> entities, bool includeGraph = false) where T : class
         {
             var result = new BulkOperationResult();
             var startTime = DateTime.UtcNow;
             try
             {
+                BulkConfigurationSetup.DefaultConfig.IncludeGraph = includeGraph;
                 await context.BulkInsertAsync(entities, BulkConfigurationSetup.DefaultConfig);
                 result.AffectedRows = entities.Count;
                 result.IsSuccess = true;
@@ -44,12 +46,13 @@ namespace FMS.Db
             }
             return result;
         }
-        public static async Task<BulkOperationResult> BulkUpdate<T>(this DbContext context, IList<T> entities) where T : class
+        public static async Task<BulkOperationResult> BulkUpdate<T>(this DbContext context, IList<T> entities, bool includeGraph = false) where T : class
         {
             var result = new BulkOperationResult();
             var startTime = DateTime.UtcNow;
             try
             {
+                BulkConfigurationSetup.DefaultConfig.IncludeGraph = includeGraph;
                 await context.BulkUpdateAsync(entities, BulkConfigurationSetup.DefaultConfig);
                 result.AffectedRows = entities.Count;
                 result.IsSuccess = true;
@@ -65,92 +68,7 @@ namespace FMS.Db
             }
             return result;
         }
-        public static async Task<BulkOperationResult> BulkDelete<T>(this DbContext context, IList<T> entities) where T : class
-        {
-            var result = new BulkOperationResult();
-            var startTime = DateTime.UtcNow;
-            try
-            {
-                await context.BulkDeleteAsync(entities, BulkConfigurationSetup.DefaultConfig);
-                result.AffectedRows = entities.Count;
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ErrorMessage = ex.Message;
-            }
-            finally
-            {
-                result.ExecutionTime = DateTime.UtcNow - startTime;
-            }
-
-            return result;
-        }
-        public static async Task<BulkOperationResult> BulkRead<T>(this DbContext context, IEnumerable<T> entities) where T : class
-        {
-            var result = new BulkOperationResult();
-            var startTime = DateTime.UtcNow;
-            try
-            {
-                await DbContextBulkExtensions.BulkReadAsync(context, entities);
-                result.AffectedRows = entities.Count();
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ErrorMessage = ex.Message;
-            }
-            finally
-            {
-                result.ExecutionTime = DateTime.UtcNow - startTime;
-            }
-            return result;
-        }
-        public static async Task<BulkOperationResult> Truncate<T>(this DbContext context) where T : class
-        {
-            var result = new BulkOperationResult();
-            var startTime = DateTime.UtcNow;
-            try
-            {
-                await DbContextBulkExtensions.TruncateAsync<T>(context);
-                result.AffectedRows = 0;
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ErrorMessage = ex.Message;
-            }
-            finally
-            {
-                result.ExecutionTime = DateTime.UtcNow - startTime;
-            }
-            return result;
-        }
-        public static async Task<BulkOperationResult> BulkSaveChangesAsync(this DbContext context)
-        {
-            var result = new BulkOperationResult();
-            var startTime = DateTime.UtcNow;
-            try
-            {
-                await DbContextBulkExtensions.BulkSaveChangesAsync(context, BulkConfigurationSetup.DefaultConfig);
-                result.AffectedRows = 0;
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.ErrorMessage = ex.Message;
-            }
-            finally
-            {
-                result.ExecutionTime = DateTime.UtcNow - startTime;
-            }
-            return result;
-        }
-        public static async Task<BulkOperationResult> BulkUpdateMultiple(this DbContext context, IDictionary<string, IList> entityGroups)
+        public static async Task<BulkOperationResult> BulkUpdateCollection(this DbContext context, IDictionary<string, IList> entityGroups)
         {
             var result = new BulkOperationResult();
             var startTime = DateTime.UtcNow;
@@ -160,7 +78,7 @@ namespace FMS.Db
                 {
                     if (group.Value.Count != 0)
                     {
-                        var entityType = group.Value.GetType().GetGenericArguments()[0]; 
+                        var entityType = group.Value.GetType().GetGenericArguments()[0];
                         var method = typeof(DbContextBulkExtensions).GetMethods().FirstOrDefault(m => m.Name == "BulkUpdateAsync" && m.GetParameters().Length == 6 && m.GetParameters()[0].ParameterType == typeof(DbContext)) ?? throw new InvalidOperationException("Method 'BulkUpdateAsync' not found.");
                         var genericMethod = method.MakeGenericMethod(entityType);
                         var task = (Task)genericMethod.Invoke(null, new object[] { context, group.Value, BulkConfigurationSetup.DefaultConfig, null, null, CancellationToken.None });
@@ -181,7 +99,30 @@ namespace FMS.Db
             }
             return result;
         }
-        public static async Task<BulkOperationResult> BulkUDeleteMultiple(this DbContext context, IDictionary<string, IList> entityGroups)
+        public static async Task<BulkOperationResult> BulkDelete<T>(this DbContext context, IList<T> entities, bool includeGraph = false) where T : class
+        {
+            var result = new BulkOperationResult();
+            var startTime = DateTime.UtcNow;
+            try
+            {
+                BulkConfigurationSetup.DefaultConfig.IncludeGraph = includeGraph;
+                await context.BulkDeleteAsync(entities, BulkConfigurationSetup.DefaultConfig);
+                result.AffectedRows = entities.Count;
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                result.ExecutionTime = DateTime.UtcNow - startTime;
+            }
+
+            return result;
+        }
+        public static async Task<BulkOperationResult> BulkUDeleteCollecion(this DbContext context, IDictionary<string, IList> entityGroups)
         {
             var result = new BulkOperationResult();
             var startTime = DateTime.UtcNow;

@@ -17,13 +17,43 @@ namespace FMS.Db.Entity
         [Required]
         public Guid? Fk_LedgerSubGroupId { get; set; }
     }
-    public class LedgerDevUpdateModel: LedgerDevModel
+    public class LedgerDevUpdateModel
     {
         [Required]
         public Guid LedgerId { get; set; }
+        [Required]
+        public string LedgerName { get; set; }
+        [Required]
+        public string LedgerType { get; set; }
+        [Required]
+        public string HasSubLedger { get; set; }
+        [Required]
+        public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
+        public Guid? Fk_LedgerSubGroupId { get; set; }
     }
-    public class LedgerDevDto : LedgerDevUpdateModel
+    public class LedgerDevDto 
     {
+        public Guid LedgerId { get; set; }
+        public string LedgerName { get; set; }
+        public string LedgerType { get; set; }
+        public string HasSubLedger { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid? Fk_LedgerSubGroupId { get; set; }
+    }
+    public class LedgerDev
+    {
+        public Guid LedgerId { get; set; }
+        public string LedgerName { get; set; }
+        public string LedgerType { get; set; }
+        public string HasSubLedger { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid? Fk_LedgerSubGroupId { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public LedgerGroup LedgerGroup { get; set; }
         public LedgerSubGroupDev LedgerSubGroup { get; set; } = null;
         public ICollection<SubLedger> SubLedgers { get; set; }
@@ -34,14 +64,6 @@ namespace FMS.Db.Entity
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
-    }
-    public class LedgerDev: LedgerDevDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     internal class LedgersDevConfig : IEntityTypeConfiguration<LedgerDev>
     {

@@ -23,11 +23,6 @@ namespace FMS.Db.Entity
         [Required]
         public string DrCr { get; set; }
     }
-    public class PaymentTransactionUpdateModel : PaymentTransactionModel
-    {
-        [Required]
-        public Guid PaymentTransactionId { get; set; }
-    }
     public class PaymentTransactionValidator : AbstractValidator<PaymentTransactionModel>
     {
         public PaymentTransactionValidator()
@@ -35,8 +30,61 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class PaymentTransactionDto : PaymentTransactionUpdateModel
+    public class PaymentTransactionUpdateModel
     {
+        [Required]
+        public Guid PaymentTransactionId { get; set; }
+        [Required]
+        public Guid Fk_PaymentOrderId { get; set; }
+        [Required]
+        public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+        [Required]
+        public string DrCr { get; set; }
+    }
+    public class PaymentTransactionUpdateValidator : AbstractValidator<PaymentTransactionUpdateModel>
+    {
+        public PaymentTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class PaymentTransactionDto
+    {
+        public Guid PaymentTransactionId { get; set; }
+        public Guid Fk_PaymentOrderId { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Amount { get; set; }
+        public string DrCr { get; set; }
+    }
+    public class PaymentTransaction
+    {
+        public Guid PaymentTransactionId { get; set; }
+        public Guid Fk_PaymentOrderId { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Amount { get; set; }
+        public string DrCr { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public LedgerGroup LedgerGroup { get; set; }
         public Ledger Ledger { get; set; }
         public LedgerDev LedgerDev { get; set; }
@@ -44,14 +92,6 @@ namespace FMS.Db.Entity
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
         public PaymentOrder PaymentOrder { get; set; }
-    }
-    public class PaymentTransaction : PaymentTransactionDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     internal class PaymentTransactionConfig : IEntityTypeConfiguration<PaymentTransaction>
     {

@@ -1,12 +1,70 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
     public class JournalTransactionModel
     {
-        public string TransactionNo { get; set; } = null;
+        [Required]
+        public string TransactionNo { get; set; }
+        [Required]
+        public Guid Fk_JournalOrderId { get; set; }
+        [Required]
+        public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+        [Required]
+        public string DrCr { get; set; }
+    }
+    public class JournalTransactionValidator : AbstractValidator<JournalTransactionModel>
+    {
+        public JournalTransactionValidator()
+        {
+
+        }
+    }
+    public class JournalTransactionUpdateModel
+    {
+        [Required]
+        public Guid TransactionId { get; set; }
+        [Required]
+        public string TransactionNo { get; set; }
+        [Required]
+        public Guid Fk_JournalOrderId { get; set; }
+        [Required]
+        public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+        [Required]
+        public string DrCr { get; set; }
+    }
+    public class JournalTransactionUpdateValidator : AbstractValidator<JournalTransactionUpdateModel>
+    {
+        public JournalTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class JournalTransactionDto
+    {
+        public Guid TransactionId { get; set; }
+        public string TransactionNo { get; set; }
         public Guid Fk_JournalOrderId { get; set; }
         public Guid Fk_LedgerGroupId { get; set; }
         public Guid Fk_LedgerId { get; set; }
@@ -16,19 +74,23 @@ namespace FMS.Db.Entity
         public decimal Amount { get; set; }
         public string DrCr { get; set; }
     }
-    public class JournalTransactionUpdateModel : JournalTransactionModel
+    public class JournalTransaction 
     {
         public Guid TransactionId { get; set; }
-    }
-    public class JournalTransactionValidator : AbstractValidator<JournalTransactionModel>
-    {
-        public JournalTransactionValidator()
-        {
-
-        }
-    }
-    public class JournalTransactionDto: JournalTransactionUpdateModel
-    {
+        public string TransactionNo { get; set; }
+        public Guid Fk_JournalOrderId { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Amount { get; set; }
+        public string DrCr { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public LedgerGroup LedgerGroup { get; set; }
         public Ledger Ledger { get; set; }
         public LedgerDev LedgerDev { get; set; }
@@ -36,14 +98,6 @@ namespace FMS.Db.Entity
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
         public JournalOrder JournalOrder { get; set; }
-    }
-    public class JournalTransaction : JournalTransactionDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     internal class JournalTransactionConfig : IEntityTypeConfiguration<JournalTransaction>
     {

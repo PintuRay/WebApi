@@ -32,11 +32,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class SalesTransactionUpdateModel : SalesTransactionModel
-    {
-        [Required]
-        public Guid SalesId { get; }
-    }
     public class SalesTransactionValidator : AbstractValidator<SalesTransactionModel>
     {
         public SalesTransactionValidator()
@@ -44,21 +39,83 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class SalesTransactionDto : SalesTransactionUpdateModel
+    public class SalesTransactionUpdateModel
     {
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public SalesOrder SalesOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
+        [Required]
+        public Guid SalesId { get; }
+        [Required]
+        public Guid Fk_SalesOrderId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Quantity { get; set; }
+        [Required]
+        public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Discount { get; set; }
+        [Required]
+        public decimal DiscountAmount { get; set; }
+        [Required]
+        public decimal Gst { get; set; }
+        [Required]
+        public decimal GstAmount { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
     }
-    public class SalesTransaction : SalesTransactionDto
+    public class SalesTransactionUpdateValidator : AbstractValidator<SalesTransactionUpdateModel>
     {
+        public SalesTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class SalesTransactionDto
+    {
+        public Guid SalesId { get; }
+        public Guid Fk_SalesOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
+    }
+    public class SalesTransaction
+    {
+        public Guid SalesId { get; }
+        public Guid Fk_SalesOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public SalesOrder SalesOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
     }
     internal class SalesTransactionConfig : IEntityTypeConfiguration<SalesTransaction>
     {

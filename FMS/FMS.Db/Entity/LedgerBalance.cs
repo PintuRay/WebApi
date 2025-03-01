@@ -22,11 +22,6 @@ namespace FMS.Db.Entity
         [Required]
         public string RunningBalanceType { get; set; }
     }
-    public class LedgerBalanceUpdateModel : LedgerBalanceModel
-    {
-        [Required]
-        public Guid LedgerBalanceId { get; set; }
-    }
     public class LedgerBalanceValidator : AbstractValidator<LedgerBalanceModel>
     {
         public LedgerBalanceValidator()
@@ -34,21 +29,63 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class LedgerBalanceDto: LedgerBalanceUpdateModel
+    public class LedgerBalanceUpdateModel
     {
-        public Ledger Ledger { get; set; }
-        public LedgerDev LedgerDev { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public ICollection<SubLedgerBalance> SubLedgerBalances {  get; set; }
+        [Required]
+        public Guid LedgerBalanceId { get; set; }
+        [Required]
+        public Guid Fk_LedgerId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal OpeningBalance { get; set; }
+        [Required]
+        public string OpeningBalanceType { get; set; }
+        [Required]
+        public decimal RunningBalance { get; set; }
+        [Required]
+        public string RunningBalanceType { get; set; }
     }
-    public class LedgerBalance: LedgerBalanceDto
+    public class LedgerBalanceUpdateValidator : AbstractValidator<LedgerBalanceUpdateModel>
     {
+        public LedgerBalanceUpdateValidator()
+        {
+
+        }
+    }
+    public class LedgerBalanceDto
+    {
+        public Guid LedgerBalanceId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal OpeningBalance { get; set; }
+        public string OpeningBalanceType { get; set; }
+        public decimal RunningBalance { get; set; }
+        public string RunningBalanceType { get; set; }
+    }
+    public class LedgerBalance
+    {
+        public Guid LedgerBalanceId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal OpeningBalance { get; set; }
+        public string OpeningBalanceType { get; set; }
+        public decimal RunningBalance { get; set; }
+        public string RunningBalanceType { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Ledger Ledger { get; set; }
+        public LedgerDev LedgerDev { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public ICollection<SubLedgerBalance> SubLedgerBalances { get; set; }
     }
     internal class LedgerBalanceConfig : IEntityTypeConfiguration<LedgerBalance>
     {

@@ -29,13 +29,6 @@ namespace FMS.Db.Entity
         [NotMapped]
         public List<PaymentTransactionModel> PaymentTransactions { get; set; }
     }
-    public class PaymentOrderUpdateModel : PaymentOrderModel
-    {
-        [Required]
-        public Guid PaymentOrderId { get; set; }
-        [NotMapped]
-        public new List<PaymentTransactionUpdateModel> PaymentTransactions { get; set; }
-    }
     public class PaymentOrderValidator : AbstractValidator<PaymentOrderModel>
     {
         public PaymentOrderValidator()
@@ -43,20 +36,74 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class PaymentOrderDto : PaymentOrderUpdateModel
+    public class PaymentOrderUpdateModel
     {
-        public LedgerDev LedgerDev { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public new ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+        [Required]
+        public Guid PaymentOrderId { get; set; }
+        [Required]
+        public string VouvherNo { get; set; }
+        [Required]
+        public DateTime VoucherDate { get; set; }
+        [Required]
+        public Guid Fk_CashBankLedgerId { get; set; }
+        public string ChequeNo { get; set; } = null;
+        public DateTime? ChequeDate { get; set; }
+        [Required]
+        public string Narration { get; set; }
+        [Required]
+        public string DrCr { get; set; }
+        [Required]
+        public decimal TotalAmount { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        public List<PaymentTransactionUpdateModel> PaymentTransactions { get; set; }
     }
-    public class PaymentOrder : PaymentOrderDto
+    public class PaymentOrderUpdatValidator : AbstractValidator<PaymentOrderUpdateModel>
     {
+        public PaymentOrderUpdatValidator()
+        {
+
+        }
+    }
+    public class PaymentOrderDto
+    {
+        public Guid PaymentOrderId { get; set; }
+        public string VouvherNo { get; set; }
+        public DateTime VoucherDate { get; set; }
+        public Guid Fk_CashBankLedgerId { get; set; }
+        public string ChequeNo { get; set; } = null;
+        public DateTime? ChequeDate { get; set; }
+        public string Narration { get; set; }
+        public string DrCr { get; set; }
+        public decimal TotalAmount { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public List<PaymentTransactionDto> PaymentTransactions { get; set; }
+    }
+    public class PaymentOrder
+    {
+        public Guid PaymentOrderId { get; set; }
+        public string VouvherNo { get; set; }
+        public DateTime VoucherDate { get; set; }
+        public Guid Fk_CashBankLedgerId { get; set; }
+        public string ChequeNo { get; set; } = null;
+        public DateTime? ChequeDate { get; set; }
+        public string Narration { get; set; }
+        public string DrCr { get; set; }
+        public decimal TotalAmount { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public LedgerDev LedgerDev { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
     }
     internal class PaymentOrderConfig : IEntityTypeConfiguration<PaymentOrder>
     {

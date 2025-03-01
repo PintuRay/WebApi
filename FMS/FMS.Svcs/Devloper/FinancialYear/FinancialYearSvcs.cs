@@ -5,11 +5,12 @@ using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Devloper.FinancialYear
 {
-    public class FinancialYearSvcs(IFinancialYearRepo financialYearRepo, FinancialYearValidator financialYearValidator, IEmailSvcs emailSvc) : IFinancialYearSvcs
+    public class FinancialYearSvcs(IFinancialYearRepo financialYearRepo, FinancialYearValidator financialYearValidator, FinancialYearUpdateValidator financialYearUpdateValidator, IEmailSvcs emailSvc) : IFinancialYearSvcs
     {
         #region Dependancy
         private readonly IFinancialYearRepo _financialYearRepo = financialYearRepo;
         private readonly FinancialYearValidator _financialYearValidator = financialYearValidator;
+        private readonly FinancialYearUpdateValidator _financialYearUpdateValidator = financialYearUpdateValidator;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
         #region Crud
@@ -170,7 +171,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
             SvcsBase Obj;
             try
             {
-                var validationResult = await _financialYearValidator.ValidateAsync(data);
+                var validationResult = await _financialYearUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
                     var repoResult = await _financialYearRepo.UpdateFinancialYear(data, user);
@@ -214,7 +215,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
             SvcsBase Obj;
             try
             {
-                var validationTasks = dataList.Select(b => _financialYearValidator.ValidateAsync(b));
+                var validationTasks = dataList.Select(b => _financialYearUpdateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {

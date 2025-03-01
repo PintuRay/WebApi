@@ -5,12 +5,13 @@ using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Admin.State
 {
-    public class StateSvcs(IStateRepo stateRepo, IEmailSvcs emailSvc, StateValidator stateValidator) : IStateSvcs
+    public class StateSvcs(IStateRepo stateRepo, IEmailSvcs emailSvc, StateValidator stateValidator, StateUpdateValidator stateUpdateValidator) : IStateSvcs
     {
         #region Dependancy
         private readonly IStateRepo _stateRepo = stateRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         private readonly StateValidator _stateValidator = stateValidator;
+        private readonly StateUpdateValidator _stateUpdateValidator = stateUpdateValidator;
         #endregion
         #region Crud
         public async Task<SvcsBase> GetStates(Guid CountryId)
@@ -170,7 +171,7 @@ namespace FMS.Svcs.Admin.State
             SvcsBase Obj;
             try
             {
-                var validationResult = await _stateValidator.ValidateAsync(data);
+                var validationResult = await _stateUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
                     var repoResult = await _stateRepo.UpdateState(data, user);
@@ -214,7 +215,7 @@ namespace FMS.Svcs.Admin.State
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _stateValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _stateUpdateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {

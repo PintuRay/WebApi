@@ -24,13 +24,6 @@ namespace FMS.Db.Entity
         public Guid Fk_ProductGroupId { get; set; }
         [Required]
         public Guid? Fk_ProductSubGroupId { get; set; }
-        [NotMapped]
-        public decimal Price { get; set; }
-    }
-    public class ProductUpdateModel : ProductModel
-    {
-        [Required]
-        public Guid ProductId { get; set; }
     }
     public class ProductValidator : AbstractValidator<ProductModel>
     {
@@ -39,8 +32,62 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class ProductDto : ProductUpdateModel
+    public class ProductUpdateModel
     {
+        [Required]
+        public Guid ProductId { get; set; }
+        [Required]
+        public string ProductName { get; set; }
+        [Required]
+        public decimal RetailPrice { get; set; }
+        [Required]
+        public decimal WholeSalePrice { get; set; }
+        [Required]
+        public decimal GST { get; set; }
+        [Required]
+        public Guid Fk_ProductTypeId { get; set; }
+        [Required]
+        public Guid Fk_ProductStockUnitId { get; set; }
+        [Required]
+        public Guid Fk_ProductGroupId { get; set; }
+        [Required]
+        public Guid? Fk_ProductSubGroupId { get; set; }
+    }
+    public class ProductUpdateValidator : AbstractValidator<ProductUpdateModel>
+    {
+        public ProductUpdateValidator()
+        {
+
+        }
+    }
+    public class ProductDto 
+    {
+        public Guid ProductId { get; set; }
+        public string ProductName { get; set; }
+        public decimal RetailPrice { get; set; }
+        public decimal WholeSalePrice { get; set; }
+        public decimal GST { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid Fk_ProductStockUnitId { get; set; }
+        public Guid Fk_ProductGroupId { get; set; }
+        public Guid? Fk_ProductSubGroupId { get; set; }
+    }
+    public class Product
+    {
+        public Guid ProductId { get; set; }
+        public string ProductName { get; set; }
+        public decimal RetailPrice { get; set; }
+        public decimal WholeSalePrice { get; set; }
+        public decimal GST { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid Fk_ProductStockUnitId { get; set; }
+        public Guid Fk_ProductGroupId { get; set; }
+        public Guid? Fk_ProductSubGroupId { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public ProductType ProductType { get; set; }
         public ProductGroup ProductGroup { get; set; }
         public ProductSubGroup ProductSubGroup { get; set; }
@@ -60,14 +107,6 @@ namespace FMS.Db.Entity
         public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
         public ICollection<SalesTransaction> SalesTransactions { get; set; }
         public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
-    }
-    public class Product : ProductDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     internal class ProductConfig : IEntityTypeConfiguration<Product>
     {

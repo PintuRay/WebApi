@@ -23,11 +23,6 @@ namespace FMS.Db.Entity
         [Required]
         public string DrCr { get; set; }
     }
-    public class ReceiptTransactionUpdateModel : ReceiptTransactionModel
-    {
-        [Required]
-        public Guid ReceiptTransactiontId { get; set; }
-    }
     public class ReceiptTransactionValidator : AbstractValidator<ReceiptTransactionModel>
     {
         public ReceiptTransactionValidator()
@@ -35,8 +30,61 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class ReceiptTransactionDto : ReceiptTransactionUpdateModel
+    public class ReceiptTransactionUpdateModel
     {
+        [Required]
+        public Guid ReceiptTransactiontId { get; set; }
+        [Required]
+        public Guid Fk_ReceiptOrderId { get; set; }
+        [Required]
+        public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+        [Required]
+        public string DrCr { get; set; }
+    }
+    public class ReceiptTransactionUpdateValidator : AbstractValidator<ReceiptTransactionUpdateModel>
+    {
+        public ReceiptTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class ReceiptTransactionDto
+    {
+        public Guid ReceiptTransactiontId { get; set; }
+        public Guid Fk_ReceiptOrderId { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Amount { get; set; }
+        public string DrCr { get; set; }
+    }
+    public class ReceiptTransaction
+    {
+        public Guid ReceiptTransactiontId { get; set; }
+        public Guid Fk_ReceiptOrderId { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_SubLedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Amount { get; set; }
+        public string DrCr { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public LedgerGroup LedgerGroup { get; set; }
         public Ledger Ledger { get; set; }
         public LedgerDev LedgerDev { get; set; }
@@ -45,15 +93,6 @@ namespace FMS.Db.Entity
         public FinancialYear FinancialYear { get; set; }
         public ReceiptOrder ReceiptOrder { get; set; }
     }
-    public class ReceiptTransaction : ReceiptTransactionDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-    }
-
     internal class ReceiptTransactionConfig : IEntityTypeConfiguration<ReceiptTransaction>
     {
         public void Configure(EntityTypeBuilder<ReceiptTransaction> builder)

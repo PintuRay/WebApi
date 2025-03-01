@@ -2,11 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
-   
     public class JournalOrderModel
     {
         [Required]
@@ -23,15 +21,7 @@ namespace FMS.Db.Entity
         public Guid Fk_BranchId { get; set; }
         [Required]
         public Guid Fk_FinancialYearId { get; set; }
-        [NotMapped]
         public List<JournalTransactionModel> JournalTransactions { get; set; }
-    }
-    public class JournalOrderUpdateModel : JournalOrderModel
-    {
-        [Required]
-        public Guid JournalOrderId { get; set; }
-        [NotMapped]
-        public new List<JournalTransactionUpdateModel> JournalTransactions { get; set; }
     }
     public class JournalOrderValidator : AbstractValidator<JournalOrderModel>
     {
@@ -40,19 +30,63 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class JournalOrderDto: JournalOrderUpdateModel
+    public class JournalOrderUpdateModel
     {
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public new ICollection<JournalTransaction> JournalTransactions { get; set; }
+        [Required]
+        public Guid JournalOrderId { get; set; }
+        [Required]
+        public string VouvherNo { get; set; }
+        [Required]
+        public DateTime VoucherDate { get; set; }
+        [Required]
+        public string Narration { get; set; }
+        [Required]
+        public decimal TotalAmount { get; set; }
+        [Required]
+        public string DrCr { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        public List<JournalTransactionUpdateModel> JournalTransactions { get; set; }
     }
-    public class JournalOrder : JournalOrderDto
+    public class JournalOrderUpdateValidator : AbstractValidator<JournalOrderUpdateModel>
     {
+        public JournalOrderUpdateValidator()
+        {
+
+        }
+    }
+    public class JournalOrderDto
+    {
+        public Guid JournalOrderId { get; set; }
+        public string VouvherNo { get; set; }
+        public DateTime VoucherDate { get; set; }
+        public string Narration { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string DrCr { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public List<JournalTransactionDto> JournalTransactions { get; set; }
+    }
+    public class JournalOrder
+    {
+        public Guid JournalOrderId { get; set; }
+        public string VouvherNo { get; set; }
+        public DateTime VoucherDate { get; set; }
+        public string Narration { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string DrCr { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public  ICollection<JournalTransaction> JournalTransactions { get; set; }
     }
     internal class JournalOrderConfig : IEntityTypeConfiguration<JournalOrder>
     {

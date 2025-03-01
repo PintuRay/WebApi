@@ -24,11 +24,6 @@ namespace FMS.Db.Entity
         [Required]
         public string RunningBalanceType { get; set; }
     }
-    public class SubLedgerBalanceUpdateModel : SubLedgerBalanceModel
-    {
-        [Required]
-        public Guid SubLedgerBalanceId { get; set; }
-    }
     public class SubLedgerBalanceValidator : AbstractValidator<SubLedgerBalanceModel>
     {
         public SubLedgerBalanceValidator()
@@ -36,20 +31,66 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class SubLedgerBalanceDto : SubLedgerBalanceUpdateModel
+    public class SubLedgerBalanceUpdateModel
     {
-        public SubLedger SubLedger { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public LedgerBalance LedgerBalance { get; set; }
+        [Required]
+        public Guid SubLedgerBalanceId { get; set; }
+        [Required]
+        public Guid Fk_LedgerBalanceId { get; set; }
+        [Required]
+        public Guid Fk_SubLedgerId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal OpeningBalance { get; set; }
+        [Required]
+        public string OpeningBalanceType { get; set; }
+        [Required]
+        public decimal RunningBalance { get; set; }
+        [Required]
+        public string RunningBalanceType { get; set; }
     }
-        public class SubLedgerBalance : SubLedgerBalanceDto
+    public class SubLedgerBalanceUpdateValidator : AbstractValidator<SubLedgerBalanceUpdateModel>
     {
+        public SubLedgerBalanceUpdateValidator()
+        {
+
+        }
+    }
+    public class SubLedgerBalanceDto
+    {
+        public Guid SubLedgerBalanceId { get; set; }
+        public Guid Fk_LedgerBalanceId { get; set; }
+        public Guid Fk_SubLedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal OpeningBalance { get; set; }
+        public string OpeningBalanceType { get; set; }
+        public decimal RunningBalance { get; set; }
+        public string RunningBalanceType { get; set; }
+    }
+    public class SubLedgerBalance
+    {
+        public Guid SubLedgerBalanceId { get; set; }
+        public Guid Fk_LedgerBalanceId { get; set; }
+        public Guid Fk_SubLedgerId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal OpeningBalance { get; set; }
+        public string OpeningBalanceType { get; set; }
+        public decimal RunningBalance { get; set; }
+        public string RunningBalanceType { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public SubLedger SubLedger { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public LedgerBalance LedgerBalance { get; set; }
     }
     internal class SubLedgerBalanceConfig : IEntityTypeConfiguration<SubLedgerBalance>
     {

@@ -12,11 +12,6 @@ namespace FMS.Db.Entity
         [Required]
         public Guid Fk_ProductTypeId { get; set; }
     }
-    public class ProductGroupUpdateModel : ProductGroupModel
-    {
-        [Required]
-        public Guid ProductGroupId { get; set; }
-    }
     public class ProductGroupValidator : AbstractValidator<ProductGroupModel>
     {
         public ProductGroupValidator()
@@ -24,19 +19,41 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class ProductGroupDto : ProductGroupUpdateModel
+    public class ProductGroupUpdateModel
     {
-        public ProductType ProductType { get; set; }
-        public ICollection<ProductSubGroup> ProductSubGroups { get; set; }
-        public ICollection<Product> Products { get; set; }
+        [Required]
+        public Guid ProductGroupId { get; set; }
+        [Required]
+        public string ProductGroupName { get; set; }
+        [Required]
+        public Guid Fk_ProductTypeId { get; set; }
     }
-    public class ProductGroup : ProductGroupDto
+    public class ProductGroupUpdateValidator : AbstractValidator<ProductGroupUpdateModel>
     {
+        public ProductGroupUpdateValidator()
+        {
+
+        }
+    }
+    public class ProductGroupDto
+    {
+        public Guid ProductGroupId { get; set; }
+        public string ProductGroupName { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+    }
+    public class ProductGroup
+    {
+        public Guid ProductGroupId { get; set; }
+        public string ProductGroupName { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public ProductType ProductType { get; set; }
+        public ICollection<ProductSubGroup> ProductSubGroups { get; set; }
+        public ICollection<Product> Products { get; set; }
     }
     internal class ProductGroupConfig : IEntityTypeConfiguration<ProductGroup>
     {

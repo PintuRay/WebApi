@@ -15,11 +15,6 @@ namespace FMS.Db.Entity
         [Required]
         public DateTime EndDate { get; set; }
     }
-    public class FinancialYearUpdateModel : FinancialYearModel
-    {
-        [Required]
-        public Guid FinancialYearId { get; set; }
-    }
     public class FinancialYearValidator : AbstractValidator<FinancialYearModel>
     {
         public FinancialYearValidator()
@@ -27,8 +22,46 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class FinancialYearDto: FinancialYearUpdateModel
+    public class FinancialYearUpdateModel
     {
+        [Required]
+        public Guid FinancialYearId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public string Financial_Year { get; set; }
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
+    }
+    public class FinancialYearUpdateValidator : AbstractValidator<FinancialYearUpdateModel>
+    {
+        public FinancialYearUpdateValidator()
+        {
+
+        }
+    }
+    public class FinancialYearDto
+    {
+        public Guid FinancialYearId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public string Financial_Year { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+    public class FinancialYear
+    {
+        public Guid FinancialYearId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public string Financial_Year { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifyBy { get; set; }
         public Branch Branch { get; set; }
         public ICollection<Stock> Stocks { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
@@ -56,14 +89,6 @@ namespace FMS.Db.Entity
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
-    }
-    public class FinancialYear : FinancialYearDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifyBy { get; set; }
     }
     internal class FinancialYearConfig : IEntityTypeConfiguration<FinancialYear>
     {

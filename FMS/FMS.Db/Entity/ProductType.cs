@@ -9,13 +9,27 @@ namespace FMS.Db.Entity
         [Required]
         public string Product_Type { get; set; }
     }
-    public class ProductTypeUpdateModel: ProductTypeModel
+    public class ProductTypeUpdateModel
     {
         [Required]
         public Guid ProductTypeId { get; set; }
+        [Required]
+        public string Product_Type { get; set; }
     }
-    public class ProductTypeDto: ProductTypeUpdateModel
+    public class ProductTypeDto
     {
+        public Guid ProductTypeId { get; set; }
+        public string Product_Type { get; set; }
+    }
+    public class ProductType
+    {
+        public Guid ProductTypeId { get; set; }
+        public string Product_Type { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public ICollection<ProductGroup> ProductGroups { get; set; }
         public ICollection<Product> Products { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
@@ -24,14 +38,6 @@ namespace FMS.Db.Entity
         public ICollection<DamageOrder> DamageOrders { get; set; }
         public ICollection<PurchaseOrder> PurchaseOrders { get; set; }
         public ICollection<PurchaseReturnOrder> PurchaseReturnOrders { get; set; }
-    }
-    public class ProductType : ProductTypeDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     internal class ProductTypeConfig : IEntityTypeConfiguration<ProductType>
     {

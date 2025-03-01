@@ -72,7 +72,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                                Select(s => new FinancialYearDto()
                                {
                                    FinancialYearId = s.FinancialYearId,
-                                   Branch = s.Branch,
+                                   Fk_BranchId = s.Fk_BranchId,
                                    Financial_Year = s.Financial_Year,
                                    StartDate = s.StartDate,
                                    EndDate = s.EndDate,
@@ -89,7 +89,7 @@ namespace FMS.Repo.Devloper.FinancialYear
                                Select(s => new FinancialYearDto()
                                {
                                    FinancialYearId = s.FinancialYearId,
-                                   Branch = s.Branch,
+                                   Fk_BranchId = s.Fk_BranchId,
                                    Financial_Year = s.Financial_Year,
                                    StartDate = s.StartDate,
                                    EndDate = s.EndDate,
@@ -635,7 +635,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
         private async Task BulkUpdateStatus(List<Db.Entity.FinancialYear> financialYears, AppUser user, bool IsActive)
@@ -684,7 +684,7 @@ namespace FMS.Repo.Devloper.FinancialYear
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
         #endregion

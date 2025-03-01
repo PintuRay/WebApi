@@ -32,11 +32,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class PurchaseTransactionUpdateModel : PurchaseTransactionModel
-    {
-        [Required]
-        public Guid PurchaseId { get; }
-    }
     public class PurchaseTransactionValidator : AbstractValidator<PurchaseTransactionModel>
     {
         public PurchaseTransactionValidator()
@@ -44,23 +39,84 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class PurchaseTransactionDto : PurchaseTransactionUpdateModel
+    public class PurchaseTransactionUpdateModel
     {
+        [Required]
+        public Guid PurchaseId { get; }
+        [Required]
+        public Guid Fk_PurchaseOrderId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Quantity { get; set; }
+        [Required]
+        public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Discount { get; set; }
+        [Required]
+        public decimal DiscountAmount { get; set; }
+        [Required]
+        public decimal Gst { get; set; }
+        [Required]
+        public decimal GstAmount { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+    }
+    public class PurchaseTransactionUpdateValidator : AbstractValidator<PurchaseTransactionUpdateModel>
+    {
+        public PurchaseTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class PurchaseTransactionDto
+    {
+        public Guid PurchaseId { get; }
+        public Guid Fk_PurchaseOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
+    }
+    public class PurchaseTransaction
+    {
+        public Guid PurchaseId { get; }
+        public Guid Fk_PurchaseOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public Branch Branch { get; set; }
         public FinancialYear FinancialYear { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
         public Product Product { get; set; }
         public AlternateUnit AlternateUnit { get; set; }
     }
-        public class PurchaseTransaction : PurchaseTransactionDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-    }
-
     internal class PurchaseTransactionConfig : IEntityTypeConfiguration<PurchaseTransaction>
     {
         public void Configure(EntityTypeBuilder<PurchaseTransaction> builder)

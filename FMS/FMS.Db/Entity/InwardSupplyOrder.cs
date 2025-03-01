@@ -2,10 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 namespace FMS.Db.Entity
 {
-    
     public class InwardSupplyOrderModel
     {
         [Required] 
@@ -22,14 +20,7 @@ namespace FMS.Db.Entity
         public Guid Fk_FinancialYearId { get; set; }
         [Required]
         public decimal TotalAmount { get; set; }
-        [NotMapped]
         public List<InwardSupplyTransactionModel> InwardSupplyTransactions { get; set; }
-    }
-    public class InwardSupplyOrderUpdateModel : InwardSupplyOrderModel
-    {
-        public Guid InwardSupplyOrderId { get; set; }
-        [NotMapped]
-        public new List<InwardSupplyTransactionUpdateModel> InwardSupplyTransactions { get; set; }
     }
     public class InwardSupplyOrderValidator : AbstractValidator<InwardSupplyOrderModel>
     {
@@ -38,20 +29,64 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class InwardSupplyOrderDto: InwardSupplyOrderUpdateModel
+    public class InwardSupplyOrderUpdateModel 
     {
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public ProductType ProductType { get; set; }
-        public new ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
+        [Required]
+        public Guid InwardSupplyOrderId { get; set; }
+        [Required]
+        public string TransactionNo { get; set; }
+        [Required]
+        public DateTime TransactionDate { get; set; }
+        [Required]
+        public Guid FromBranch { get; set; }
+        [Required]
+        public Guid Fk_ProductTypeId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal TotalAmount { get; set; }
+        public  List<InwardSupplyTransactionUpdateModel> InwardSupplyTransactions { get; set; }
     }
-    public class InwardSupplyOrder : InwardSupplyOrderDto
+    public class InwardSupplyOrderUpdateValidator : AbstractValidator<InwardSupplyOrderUpdateModel>
     {
+        public InwardSupplyOrderUpdateValidator()
+        {
+
+        }
+    }
+    public class InwardSupplyOrderDto
+    {
+        public Guid InwardSupplyOrderId { get; set; }
+        public string TransactionNo { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public Guid FromBranch { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal TotalAmount { get; set; }
+        public List<InwardSupplyTransactionDto> InwardSupplyTransactions { get; set; }
+    }
+    public class InwardSupplyOrder
+    {
+        public Guid InwardSupplyOrderId { get; set; }
+        public string TransactionNo { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public Guid FromBranch { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal TotalAmount { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public ProductType ProductType { get; set; }
+        public ICollection<InwardSupplyTransaction> InwardSupplyTransactions { get; set; }
     }
     internal class InwardSupplyOrderConfig : IEntityTypeConfiguration<InwardSupplyOrder>
     {

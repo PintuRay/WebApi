@@ -12,11 +12,6 @@ namespace FMS.Db.Entity
         [Required]
         public string CountryName { get; set; }
     }
-    public class CountryUpdateModel : CountryModel
-    {
-        [Required]
-        public Guid CountryId { get; set; }
-    }
     public class CountryValidator : AbstractValidator<CountryModel>
     {
         public CountryValidator()
@@ -24,19 +19,41 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class CountryDto : CountryUpdateModel
+    public class CountryUpdateModel
     {
-        public ICollection<State> States { get; set; }
-        public ICollection<Dist> Dists { get; set; }
-        public ICollection<Address> Addresses { get; set; }
+        [Required]
+        public Guid CountryId { get; set; }
+        [Required]
+        public string CountryCode { get; set; }
+        [Required]
+        public string CountryName { get; set; }
     }
-    public class Country : CountryDto
+    public class CountryUpdateValidator : AbstractValidator<CountryUpdateModel>
     {
+        public CountryUpdateValidator()
+        {
+
+        }
+    }
+    public class CountryDto 
+    {
+        public Guid CountryId { get; set; }
+        public string CountryCode { get; set; }
+        public string CountryName { get; set; }
+    }
+    public class Country
+    {
+        public Guid CountryId { get; set; }
+        public string CountryCode { get; set; }
+        public string CountryName { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public ICollection<State> States { get; set; }
+        public ICollection<Dist> Dists { get; set; }
+        public ICollection<Address> Addresses { get; set; }
     }
     internal class CountryConfig : IEntityTypeConfiguration<Country>
     {

@@ -26,11 +26,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal AvilableStock { get; set; }
     }
-    public class StockUpdateModel : StockModel
-    {
-        [Required]
-        public Guid StockId { get; set; }
-    }
     public class StockValidator : AbstractValidator<StockModel>
     {
         public StockValidator()
@@ -38,19 +33,69 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class StockDto : StockUpdateModel
+    public class StockUpdateModel
     {
-        public Branch Branch { get; set; }
-        public Product Product { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [Required]
+        public Guid StockId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public int MinQty { get; set; }
+        [Required]
+        public int MaxQty { get; set; }
+        [Required]
+        public decimal OpeningStock { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+        [Required]
+        public decimal AvilableStock { get; set; }
     }
-    public class Stock : StockDto
+    public class StockUpdateValidator : AbstractValidator<StockUpdateModel>
     {
+        public StockUpdateValidator()
+        {
+
+        }
+    }
+    public class StockDto 
+    {
+        public Guid StockId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public int MinQty { get; set; }
+        public int MaxQty { get; set; }
+        public decimal OpeningStock { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
+        public decimal AvilableStock { get; set; }
+    }
+    public class Stock
+    {
+        public Guid StockId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public int MinQty { get; set; }
+        public int MaxQty { get; set; }
+        public decimal OpeningStock { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
+        public decimal AvilableStock { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Branch Branch { get; set; }
+        public Product Product { get; set; }
+        public FinancialYear FinancialYear { get; set; }
     }
     internal class StockConfig : IEntityTypeConfiguration<Stock>
     {

@@ -34,11 +34,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class PurchaseReturnTransactionUpdateModel : PurchaseReturnTransactionModel
-    {
-        [Required]
-        public Guid PurchaseReturnId { get; }
-    }
     public class PurchaseReturnTransactionValidator : AbstractValidator<PurchaseReturnTransactionModel>
     {
         public PurchaseReturnTransactionValidator()
@@ -46,21 +41,87 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class PurchaseReturnTransactionDto : PurchaseReturnTransactionUpdateModel
+    public class PurchaseReturnTransactionUpdateModel
     {
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public PurchaseReturnOrder PurchaseReturnOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
+        [Required]
+        public Guid PurchaseReturnId { get; }
+        [Required]
+        public Guid Fk_PurchaseReturnOrderId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal AlternateQuantity { get; set; }
+        [Required]
+        public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
+        public decimal UnitQuantity { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Discount { get; set; }
+        [Required]
+        public decimal DiscountAmount { get; set; }
+        [Required]
+        public decimal Gst { get; set; }
+        [Required]
+        public decimal GstAmount { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
     }
-    public class PurchaseReturnTransaction : PurchaseReturnTransactionDto
+    public class PurchaseReturnTransactionUpdateValidator : AbstractValidator<PurchaseReturnTransactionUpdateModel>
     {
+        public PurchaseReturnTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class PurchaseReturnTransactionDto
+    {
+        public Guid PurchaseReturnId { get; }
+        public Guid Fk_PurchaseReturnOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal AlternateQuantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal UnitQuantity { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
+    }
+    public class PurchaseReturnTransaction
+    {
+        public Guid PurchaseReturnId { get; }
+        public Guid Fk_PurchaseReturnOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal AlternateQuantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal UnitQuantity { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public PurchaseReturnOrder PurchaseReturnOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
     }
 
     internal class PurchaseReturnTransactionConfig : IEntityTypeConfiguration<PurchaseReturnTransaction>

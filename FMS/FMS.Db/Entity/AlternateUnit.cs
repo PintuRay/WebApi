@@ -18,11 +18,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal AlternateQuantity { get; set; }
     }
-    public class AlternateUnitUpdateModel : AlternateUnitModel
-    {
-        [Required]
-        public Guid AlternateUnitId { get; set; }
-    }
     public class AlternateUnitValidator : AbstractValidator<AlternateUnitModel>
     {
         public AlternateUnitValidator()
@@ -30,8 +25,50 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class AlternateUnitDto: AlternateUnitUpdateModel
+    public class AlternateUnitUpdateModel 
     {
+        [Required]
+        public Guid AlternateUnitId { get; set; }
+        [Required]
+        public Guid FK_ProductId { get; set; }
+        [Required]
+        public string AlternateUnitName { get; set; }
+        [Required]
+        public Guid Fk_UnitId { get; set; }
+        [Required]
+        public decimal UnitQuantity { get; set; }
+        [Required]
+        public decimal AlternateQuantity { get; set; }
+    }
+    public class AlternateUnitUpdateValidator : AbstractValidator<AlternateUnitModel>
+    {
+        public AlternateUnitUpdateValidator()
+        {
+
+        }
+    }
+    public class AlternateUnitDto
+    {
+        public Guid AlternateUnitId { get; set; }
+        public Guid FK_ProductId { get; set; }
+        public string AlternateUnitName { get; set; }
+        public Guid Fk_UnitId { get; set; }
+        public decimal UnitQuantity { get; set; }
+        public decimal AlternateQuantity { get; set; }
+    }
+    public class AlternateUnit 
+    {
+        public Guid AlternateUnitId { get; set; }
+        public Guid FK_ProductId { get; set; }
+        public string AlternateUnitName { get; set; }
+        public Guid Fk_UnitId { get; set; }
+        public decimal UnitQuantity { get; set; }
+        public decimal AlternateQuantity { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public Product Product { get; set; }
         public Unit Unit { get; set; }
         public ICollection<ProductionTransactionSetup> ProductionTransactionSetups { get; set; }
@@ -42,14 +79,6 @@ namespace FMS.Db.Entity
         public ICollection<PurchaseReturnTransaction> PurchaseReturnTransactions { get; set; }
         public ICollection<SalesTransaction> SalesTransactions { get; set; }
         public ICollection<SalesReturnTransaction> SalesReturnTransactions { get; set; }
-    }
-    public class AlternateUnit : AlternateUnitDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     internal class AlternateUnitConfig : IEntityTypeConfiguration<AlternateUnit>
     {

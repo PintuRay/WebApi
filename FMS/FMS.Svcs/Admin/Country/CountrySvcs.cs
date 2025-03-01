@@ -5,12 +5,13 @@ using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Admin.Country
 {
-    public class CountrySvcs(ICountryRepo countryRepo, IEmailSvcs emailSvc, CountryValidator countryValidator) : ICountrySvcs
+    public class CountrySvcs(ICountryRepo countryRepo, IEmailSvcs emailSvc, CountryValidator countryValidator, CountryUpdateValidator countryUpdateValidator) : ICountrySvcs
     {
         #region Dependancy
         private readonly ICountryRepo _countryRepo = countryRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         private readonly CountryValidator _countryValidator = countryValidator;
+        private readonly CountryUpdateValidator _countryUpdateValidator = countryUpdateValidator;
         #endregion
         #region Crud
         public async Task<SvcsBase> GetCountries()
@@ -170,7 +171,7 @@ namespace FMS.Svcs.Admin.Country
             SvcsBase Obj;
             try
             {
-                var validationResult = await _countryValidator.ValidateAsync(data);
+                var validationResult = await _countryUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
                     var repoResult = await _countryRepo.UpdateCountry(data, user);
@@ -215,7 +216,7 @@ namespace FMS.Svcs.Admin.Country
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _countryValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _countryUpdateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {

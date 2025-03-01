@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -9,30 +8,34 @@ namespace FMS.Db.Entity
     {
         [Required]
         public Guid Fk_FinishedGoodId { get; set; }
-        [NotMapped]
         public List<ProductionTransactionSetUpModel> ProductionTransactionSetups { get; set; }
     }
-    public class ProductionOrderSetupUpdateModel : ProductionOrderSetupModel
+    public class ProductionOrderSetupUpdateModel
     {
         [Required]
         public Guid ProductionOrderSetupId { get; set; }
-        [NotMapped]
-        public new ICollection<ProductionTransactionSetUpUpdateModel> ProductionTransactionSetups { get; set; }
+        [Required]
+        public Guid Fk_FinishedGoodId { get; set; }
+        public List<ProductionTransactionSetUpUpdateModel> ProductionTransactionSetups { get; set; }
     }
-    public class ProductionOrderSetupDto : ProductionOrderSetupUpdateModel
+    public class ProductionOrderSetupDto
     {
-        [NotMapped]
+        public Guid ProductionOrderSetupId { get; set; }
+        public Guid Fk_FinishedGoodId { get; set; }
         public string FinishedGoodName { get; set; }
-        public Product Product { get; set; }
-        public new ICollection<ProductionTransactionSetup> ProductionTransactionSetups { get; set; }
+        public List<ProductionTransactionSetupDto> ProductionTransactionSetups { get; set; }
     }
-        public class ProductionOrderSetup : ProductionOrderSetupDto
+    public class ProductionOrderSetup
     {
+        public Guid ProductionOrderSetupId { get; set; }
+        public Guid Fk_FinishedGoodId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Product Product { get; set; }
+        public ICollection<ProductionTransactionSetup> ProductionTransactionSetups { get; set; }
     }
     internal class ProductionOrderSetupConfig : IEntityTypeConfiguration<ProductionOrderSetup>
     {
@@ -44,7 +47,7 @@ namespace FMS.Db.Entity
             builder.Property(e => e.Fk_FinishedGoodId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.IsActive).HasDefaultValueSql("true");
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
-            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
+            builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
             builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
             builder.HasOne(e => e.Product).WithMany(s => s.ProductionOrderSetups).HasForeignKey(e => e.Fk_FinishedGoodId).OnDelete(DeleteBehavior.Cascade);

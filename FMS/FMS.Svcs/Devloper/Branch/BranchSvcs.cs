@@ -5,11 +5,12 @@ using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Devloper.Branch
 {
-    public class BranchSvcs(IBranchRepo branchRepo, BranchValidator branchValidator, IEmailSvcs emailSvc) : IBranchSvcs
+    public class BranchSvcs(IBranchRepo branchRepo, BranchValidator branchValidator, BranchUpdateValidator branchUpdateValidator, IEmailSvcs emailSvc) : IBranchSvcs
     {
         #region Dependancy
         private readonly IBranchRepo _branchRepo = branchRepo;
         private readonly BranchValidator _branchValidator = branchValidator;
+        private readonly BranchUpdateValidator _branchUpdateValidator = branchUpdateValidator;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
         #endregion
         #region Crud
@@ -170,7 +171,7 @@ namespace FMS.Svcs.Devloper.Branch
             SvcsBase Obj;
             try
             {
-                var validationResult = await _branchValidator.ValidateAsync(data);
+                var validationResult = await _branchUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
                     var repoResult = await _branchRepo.UpdateBranch(data, user);
@@ -215,7 +216,7 @@ namespace FMS.Svcs.Devloper.Branch
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _branchValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _branchUpdateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {

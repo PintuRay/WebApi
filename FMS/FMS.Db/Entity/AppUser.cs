@@ -10,16 +10,15 @@ namespace FMS.Db.Entity
     public class AppUser : IdentityUser
     {
         public Guid Fk_TokenId { get; set; }
+        public Guid Fk_AdressId { get; set; }
         public string Name { get; set; }
         public DateTime BirthDate { get; set; }
         public string MaratialStatus { get; set; }
         public string Gender { get; set; }
         public string PhotoPath { get; set; }
         public bool? TermCondition { get; set; }
-        //Reference Navigation Property
         public RegisterToken Token { get; set; }
         public Address Address { get; set; }
-        //collection Navigation Property
         public ICollection<UserBranch> UserBranch { get; set; }
     }
     internal class AppUserConfig : IEntityTypeConfiguration<AppUser>
@@ -27,6 +26,7 @@ namespace FMS.Db.Entity
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.Property(e => e.Fk_TokenId).HasColumnType("uuid").IsRequired(true);
+            builder.Property(e => e.Fk_AdressId).HasColumnType("uuid").IsRequired(true);
             builder.Property(e => e.Name).HasMaxLength(50).IsRequired(true);
             builder.Property(e => e.BirthDate).HasColumnType("timestamptz").IsRequired(true);
             builder.Property(e => e.MaratialStatus).HasMaxLength(10).IsRequired(true);
@@ -35,11 +35,13 @@ namespace FMS.Db.Entity
             builder.Property(e => e.TermCondition).HasDefaultValueSql("true");
             //One-To-One Relationship
             builder.HasOne(d => d.Token).WithOne(p => p.User).HasForeignKey<AppUser>(d => d.Fk_TokenId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(d => d.Address).WithOne(p => p.User).HasForeignKey<AppUser>(d => d.Fk_AdressId).OnDelete(DeleteBehavior.Cascade);
             builder.HasData(
             new AppUser
             {
                 Id = "4431f16a-6bc7-4e9b-bada-c491fcc81a58",
                 Fk_TokenId = Guid.Parse("3f7c3a85-1e6f-4c2a-8f5e-1234567890ab"),
+                Fk_AdressId= Guid.Parse("c9b62c55-1b06-485d-a71b-d92fee4f4428"),
                 Name = "Pintu Ray",
                 Gender = "male",
                 MaratialStatus = "unmarred",
@@ -92,13 +94,6 @@ namespace FMS.Db.Entity
         public string RouteUls { get; set; }
         public IFormFile ProfilePhoto { get; set; }
         public AddressModel Address { get; set; }
-    }
-    public class UserUpdateModel : UserBase
-    {
-        [Required]
-        public string Id { get; set; }
-        public IFormFile ProfilePhoto { get; set; }
-        public AddressUpdateModel Address { get; set; }
     }
     public class UserValidator : AbstractValidator<UserModel>
     {
@@ -162,6 +157,13 @@ namespace FMS.Db.Entity
             RuleFor(user => user.ConfirmPassword)
                 .Equal(user => user.Password).WithMessage("The password and confirmation password do not match.");
         }
+    }
+    public class UserUpdateModel : UserBase
+    {
+        [Required]
+        public string Id { get; set; }
+        public IFormFile ProfilePhoto { get; set; }
+        public AddressUpdateModel Address { get; set; }
     }
     public class UserDto : UserBase
     {

@@ -12,30 +12,33 @@ namespace FMS.Db.Entity
         [Required]
         public Guid Fk_BranchId { get; set; }
     }
-    public class UserBranchUpdateModel : UserBranchModel
+    public class UserBranchUpdateModel
     {
         [Required]
         public Guid Id { get; set; }
+        [Required]
+        public string Fk_UserId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
     }
-    public class UserBranchValidator : AbstractValidator<UserBranchModel>
+    public class UserBranchDto
     {
-        public UserBranchValidator()
-        {
-
-        }
+        public Guid Id { get; set; }
+        public string Fk_UserId { get; set; }
+        public Guid Fk_BranchId { get; set; }
     }
-    public class UserBranchDto : UserBranchUpdateModel
+    public class UserBranch 
     {
-        public AppUser User { get; set; }
-        public Branch Branch { get; set; }
-    }
-    public class UserBranch : UserBranchDto
-    {
+        public Guid Id { get; set; }
+        public string Fk_UserId { get; set; }
+        public Guid Fk_BranchId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public AppUser User { get; set; }
+        public Branch Branch { get; set; }
     }
 
     internal class UserBranchConfig : IEntityTypeConfiguration<UserBranch>

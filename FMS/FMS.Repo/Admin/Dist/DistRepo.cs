@@ -555,7 +555,7 @@ namespace FMS.Repo.Admin.Dist
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
         private async Task BulkUpdateStatus(List<Db.Entity.Dist> dists, AppUser user, bool IsActive)
@@ -578,7 +578,7 @@ namespace FMS.Repo.Admin.Dist
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
     }

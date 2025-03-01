@@ -32,11 +32,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class SalesReturnTransactionUpdateModel : SalesReturnTransactionModel
-    {
-        [Required]
-        public Guid SalesReturnId { get; }
-    }
     public class SalesReturnTransactionValidator : AbstractValidator<SalesReturnTransactionModel>
     {
         public SalesReturnTransactionValidator()
@@ -44,21 +39,83 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class SalesReturnTransactionDto : SalesReturnTransactionUpdateModel
+    public class SalesReturnTransactionUpdateModel
     {
-        public SalesReturnOrder SalesReturnOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [Required]
+        public Guid SalesReturnId { get; }
+        [Required]
+        public Guid Fk_SalesReturnOrderId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal Quantity { get; set; }
+        [Required]
+        public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Discount { get; set; }
+        [Required]
+        public decimal DiscountAmount { get; set; }
+        [Required]
+        public decimal Gst { get; set; }
+        [Required]
+        public decimal GstAmount { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
     }
-        public class SalesReturnTransaction : SalesReturnTransactionDto
+    public class SalesReturnTransactionUpdateValidator : AbstractValidator<SalesReturnTransactionUpdateModel>
     {
+        public SalesReturnTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class SalesReturnTransactionDto 
+    {
+        public Guid SalesReturnId { get; }
+        public Guid Fk_SalesReturnOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
+    }
+        public class SalesReturnTransaction
+    {
+        public Guid SalesReturnId { get; }
+        public Guid Fk_SalesReturnOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Gst { get; set; }
+        public decimal GstAmount { get; set; }
+        public decimal Amount { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public SalesReturnOrder SalesReturnOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
     }
 
     internal class SalesReturnTransactionConfig : IEntityTypeConfiguration<SalesReturnTransaction>

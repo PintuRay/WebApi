@@ -24,11 +24,6 @@ namespace FMS.Db.Entity
         [Required]
         public Guid Fk_FinancialYearId { get; set; }
     }
-    public class ProductionTransactionUpdateModel : ProductionTransactionModel
-    {
-        [Required]
-        public Guid ProductionTransactionId { get; set; }
-    }
     public class ProductionTransactionValidator : AbstractValidator<ProductionTransactionModel>
     {
         public ProductionTransactionValidator()
@@ -36,21 +31,68 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class ProductionTransactionDto : ProductionTransactionUpdateModel
+    public class ProductionTransactionUpdateModel
     {
-        public ProductionOrder ProductionOrder { get; set; }
-        public Product Product { get; set; }
-        public AlternateUnit AlternateUnit { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public Branch Branch { get; set; }
+        [Required]
+        public Guid ProductionTransactionId { get; set; }
+        [Required]
+        public Guid Fk_ProductionOrderId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public decimal Quantity { get; set; }
+        [Required]
+        public Guid Fk_AlternateUnitId { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
     }
-    public class ProductionTransaction : ProductionTransactionDto
+    public class ProductionTransactionUpdateValidator : AbstractValidator<ProductionTransactionUpdateModel>
     {
+        public ProductionTransactionUpdateValidator()
+        {
+
+        }
+    }
+    public class ProductionTransactionDto 
+    {
+        public Guid ProductionTransactionId { get; set; }
+        public Guid Fk_ProductionOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+       
+    }
+    public class ProductionTransaction
+    {
+        public Guid ProductionTransactionId { get; set; }
+        public Guid Fk_ProductionOrderId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public decimal Quantity { get; set; }
+        public Guid Fk_AlternateUnitId { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Amount { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public ProductionOrder ProductionOrder { get; set; }
+        public Product Product { get; set; }
+        public AlternateUnit AlternateUnit { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public Branch Branch { get; set; }
     }
     internal class LabourTransactionConfig : IEntityTypeConfiguration<ProductionTransaction>
     {

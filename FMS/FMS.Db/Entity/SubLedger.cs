@@ -13,13 +13,34 @@ namespace FMS.Db.Entity
         [Required]
         public string SubLedgerName { get; set; }
     }
-    public class SubLedgerUpdateModel : SubLedgerModel
+    public class SubLedgerUpdateModel
     {
         [Required]
         public Guid SubLedgerId { get; set; }
+        [Required]
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_BranchId { get; set; }
+        [Required]
+        public string SubLedgerName { get; set; }
     }
-    public class SubLedgerDto : SubLedgerUpdateModel
+    public class SubLedgerDto
     {
+        public Guid SubLedgerId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_BranchId { get; set; }
+        public string SubLedgerName { get; set; }
+    }
+        public class SubLedger
+    {
+        public Guid SubLedgerId { get; set; }
+        public Guid Fk_LedgerId { get; set; }
+        public Guid? Fk_BranchId { get; set; }
+        public string SubLedgerName { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public Ledger Ledger { get; set; }
         public LedgerDev LedgerDev { get; set; }
         public Branch Branch { get; set; }
@@ -33,14 +54,6 @@ namespace FMS.Db.Entity
         public ICollection<JournalTransaction> JournalTransactions { get; set; }
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
-    }
-        public class SubLedger : SubLedgerDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     public class SubLedgerValidator : AbstractValidator<SubLedgerModel>
     {

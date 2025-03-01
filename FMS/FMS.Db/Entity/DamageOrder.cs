@@ -22,14 +22,7 @@ namespace FMS.Db.Entity
         [Required]
         public decimal TotalAmount { get; set; }
         public string Reason { get; set; } = null;
-        [NotMapped]
         public List<DamageTransactionModel> DamageTransactions { get; set; }
-    }
-    public class DamageOrderUpdateModel : DamageOrderModel
-    {
-        public Guid DamageOrderId { get; set; }
-        [NotMapped]
-        public new List<DamageTransactionUpdateModel> DamageTransactions { get; set; }
     }
     public class DamageOrderValidator : AbstractValidator<DamageOrderModel>
     {
@@ -38,21 +31,67 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class DamageOrderDto: DamageOrderUpdateModel
+    public class DamageOrderUpdateModel
     {
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
-        public ProductType ProductType { get; set; }
-        public Labour Labour { get; set; }
-        public new ICollection<DamageTransaction> DamageTransactions { get; set; }
+        [Required]
+        public Guid DamageOrderId { get; set; }
+        [Required]
+        public string TransactionNo { get; set; }
+        [Required]
+        public DateTime TransactionDate { get; set; }
+        [Required]
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid? Fk_LabourId { get; set; }
+        [Required]
+        public Guid Fk_BranchId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public decimal TotalAmount { get; set; }
+        public string Reason { get; set; } = null;
+        public List<DamageTransactionUpdateModel> DamageTransactions { get; set; }
     }
-    public class DamageOrder: DamageOrderDto
+    public class DamageOrderUpdateValidator : AbstractValidator<DamageOrderModel>
     {
+        public DamageOrderUpdateValidator()
+        {
+
+        }
+    }
+    public class DamageOrderDto
+    {
+        public Guid DamageOrderId { get; set; }
+        public string TransactionNo { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid? Fk_LabourId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string Reason { get; set; } = null;
+        public List<DamageTransactionDto> DamageTransactions { get; set; }
+    }
+    public class DamageOrder
+    {
+        public Guid DamageOrderId { get; set; }
+        public string TransactionNo { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid? Fk_LabourId { get; set; }
+        public Guid Fk_BranchId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string Reason { get; set; } = null;
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
+        public ProductType ProductType { get; set; }
+        public Labour Labour { get; set; }
+        public ICollection<DamageTransaction> DamageTransactions { get; set; }
     }
     internal class DamageOrderConfig : IEntityTypeConfiguration<DamageOrder>
     {

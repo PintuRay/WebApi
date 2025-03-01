@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -9,30 +8,34 @@ namespace FMS.Db.Entity
     {
         [Required]
         public Guid Fk_FinishedGoodId { get; set; }
-        [NotMapped]
         public List<SalesTransactionSetupModel> SalesTransactionSetups { get; set; }
     }
-    public class SalesOrderSetupUpdateModel : SalesOrderSetupModel
+    public class SalesOrderSetupUpdateModel
     {
         [Required]
         public Guid SalesOrderSetupId { get; set; }
-        [NotMapped]
-        public new List<SalesTransactionSetupUpdateModel> SalesTransactionSetups { get; set; }
+        [Required]
+        public Guid Fk_FinishedGoodId { get; set; }
+        public  List<SalesTransactionSetupUpdateModel> SalesTransactionSetups { get; set; }
     }
-    public class SalesOrderSetupDto : SalesOrderSetupUpdateModel
+    public class SalesOrderSetupDto
     {
-        [NotMapped]
+        public Guid SalesOrderSetupId { get; set; }
+        public Guid Fk_FinishedGoodId { get; set; }
         public string FinishedGoodName { get; set; }
-        public Product Product { get; set; }
-        public new ICollection<SalesTransactionSetup> SalesTransactionSetups { get; set; }
+        public List<SalesTransactionSetupDto> SalesTransactionSetups { get; set; } 
     }
-    public class SalesOrderSetup : SalesOrderSetupDto
+    public class SalesOrderSetup
     {
+        public Guid SalesOrderSetupId { get; set; }
+        public Guid Fk_FinishedGoodId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Product Product { get; set; }
+        public  ICollection<SalesTransactionSetup> SalesTransactionSetups { get; set; }
     }
     public class SalesOrderSetupConfig : IEntityTypeConfiguration<SalesOrderSetup>
     {

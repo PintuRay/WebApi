@@ -11,10 +11,9 @@ namespace FMS.Repo
             CreateMap<AppUser, UserUpdateModel>();
             CreateMap<UserUpdateModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
             /*--------------------------------------------Devloper---------------------------------------------------*/
-            CreateMap<Branch, BranchModel>().ReverseMap();
-            //CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-            CreateMap<Branch, BranchUpdateModel>().ReverseMap();
-            //CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+            CreateMap<BranchDto,Branch>().ReverseMap();
+            CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address)).ReverseMap();
+            CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address)).ReverseMap();
             CreateMap<FinancialYear, FinancialYearModel>().ReverseMap()
                 .ForMember(dest => dest.StartDate, opt =>
                     opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
@@ -57,8 +56,13 @@ namespace FMS.Repo
             CreateMap<Ledger, LedgerModel>().ReverseMap();
             CreateMap<Ledger, LedgerUpdateModel>().ReverseMap();
             /*-----------------------------------------Common----------------------------------------------*/
+            CreateMap<Address, AddressDto>()
+                .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.CountryName))
+                .ForMember(dest => dest.StateName, opt => opt.MapFrom(src => src.State.StateName))
+                .ForMember(dest => dest.DistName, opt => opt.MapFrom(src => src.Dist.DistName))
+                .ReverseMap();
             CreateMap<Address, AddressModel>().ReverseMap();
-            CreateMap<AddressUpdateModel, Address>().ReverseMap();
+            CreateMap<Address, AddressUpdateModel>().ReverseMap();
             CreateMap<Country, CountryModel>().ReverseMap();
             CreateMap<Country, CountryUpdateModel>().ReverseMap();
             CreateMap<State, StateModel>().ReverseMap();

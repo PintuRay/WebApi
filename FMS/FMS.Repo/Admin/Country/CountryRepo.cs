@@ -570,7 +570,7 @@ namespace FMS.Repo.Admin.Country
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
         private async Task BulkUpdateStatus(List<Db.Entity.Country> countries, AppUser user, bool IsActive)
@@ -595,7 +595,7 @@ namespace FMS.Repo.Admin.Country
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
 

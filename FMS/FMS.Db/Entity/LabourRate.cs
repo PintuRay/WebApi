@@ -20,12 +20,6 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Rate { get; set; }
     }
-
-    public class LabourRateUpdateModel : LabourRateModel
-    {
-        [Required]
-        public Guid LabourRateId { get; set; }
-    }
     public class LabourRateValidator : AbstractValidator<LabourRateModel>
     {
         public LabourRateValidator()
@@ -33,22 +27,60 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class LabourRateDto : LabourRateUpdateModel
+    public class LabourRateUpdateModel
     {
-        public ProductType ProductType { get; set; }
-        public Product Product { get; set; }
-        public Branch Branch { get; set; }
-        public FinancialYear FinancialYear { get; set; }
+        [Required]
+        public Guid LabourRateId { get; set; }
+        [Required]
+        public Guid Fk_FinancialYearId { get; set; }
+        [Required]
+        public DateTime Date { get; set; }
+        [Required]
+        public Guid Fk_ProductTypeId { get; set; }
+        [Required]
+        public Guid Fk_ProductId { get; set; }
+        [Required]
+        public Guid? Fk_BranchId { get; set; }
+        [Required]
+        public decimal Rate { get; set; }
     }
-    public class LabourRate : LabourRateDto
+    public class LabourRateUpdateValidator : AbstractValidator<LabourRateUpdateModel>
     {
+        public LabourRateUpdateValidator()
+        {
+
+        }
+    }
+    public class LabourRateDto
+    {
+        public Guid LabourRateId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public DateTime Date { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid? Fk_BranchId { get; set; }
+        public decimal Rate { get; set; }
+       
+    }
+    public class LabourRate
+    {
+        public Guid LabourRateId { get; set; }
+        public Guid Fk_FinancialYearId { get; set; }
+        public DateTime Date { get; set; }
+        public Guid Fk_ProductTypeId { get; set; }
+        public Guid Fk_ProductId { get; set; }
+        public Guid? Fk_BranchId { get; set; }
+        public decimal Rate { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public ProductType ProductType { get; set; }
+        public Product Product { get; set; }
+        public Branch Branch { get; set; }
+        public FinancialYear FinancialYear { get; set; }
     }
-
     internal class LabourRateConfig : IEntityTypeConfiguration<LabourRate>
     {
         public void Configure(EntityTypeBuilder<LabourRate> builder)

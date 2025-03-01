@@ -335,7 +335,6 @@ namespace FMS.Repo.Admin.State
                                    select new StateDto()
                                    {
                                        StateId = s.StateId,
-                                       Fk_CountryId = s.Fk_CountryId,
                                        StateName = s.StateName
                                    }).OrderByDescending(s => s.StateName)
                                .Skip(pagination.PageNumber * effectivePageSize)
@@ -351,7 +350,6 @@ namespace FMS.Repo.Admin.State
                                    select new StateDto()
                                    {
                                        StateId = s.StateId,
-                                       Fk_CountryId = s.Fk_CountryId,
                                        StateName = s.StateName
                                    }).ToListAsync();
                     Count = Query.Count();
@@ -559,7 +557,7 @@ namespace FMS.Repo.Admin.State
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
         private async Task BulkUpdateStatus(List<Db.Entity.State> states, AppUser user, bool IsActive)
@@ -583,7 +581,7 @@ namespace FMS.Repo.Admin.State
             }
             if (allRelatedData.Count > 0)
             {
-                await _ctx.BulkUpdateMultiple(allRelatedData);
+                await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
     }

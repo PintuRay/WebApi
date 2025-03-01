@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 namespace FMS.Db.Entity
 {
     public class BranchModel
@@ -13,15 +12,8 @@ namespace FMS.Db.Entity
         public string ContactNumber { get; set; }
         [Required]
         public string BranchCode { get; set; }
-        [NotMapped]
+        public Guid Fk_AdressId { get; set; }
         public AddressModel Address { get; set; }
-    }
-    public class BranchUpdateModel : BranchModel
-    {
-        [Required]
-        public Guid BranchId { get; set; }
-        [NotMapped]
-        public new AddressUpdateModel Address { get; set; }
     }
     public class BranchValidator : AbstractValidator<BranchModel>
     {
@@ -30,18 +22,66 @@ namespace FMS.Db.Entity
             RuleFor(branch => branch.BranchName)
             .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
             .Matches(@"^[A-Z\s]+$").WithMessage("BranchName should only contain uppercase letter and spaces.");
-            
+
             RuleFor(branch => branch.ContactNumber)
             .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")
             .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
-            
+
             RuleFor(branch => branch.BranchCode)
             .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a upper case letter and followed by a combination of letters and numbers.");
         }
     }
-    public class BranchDto: BranchUpdateModel
+    public class BranchUpdateModel 
     {
-        public new Address Address { get; set; }
+        [Required]
+        public Guid BranchId { get; set; }
+        [Required]
+        public string BranchName { get; set; }
+        [Required]
+        public string ContactNumber { get; set; }
+        [Required]
+        public string BranchCode { get; set; }
+        public Guid Fk_AdressId { get; set; }
+        public AddressUpdateModel Address { get; set; }
+    }
+    public class BranchUpdateValidator : AbstractValidator<BranchUpdateModel>
+    {
+        public BranchUpdateValidator()
+        {
+            RuleFor(branch => branch.BranchName)
+                .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
+                .Matches(@"^[A-Z\s]+$").WithMessage("BranchName should only contain uppercase letter and spaces.");
+
+            RuleFor(branch => branch.ContactNumber)
+                .Matches(@"^\d{10}$").WithMessage("ContactNumber should have exactly 10 digits.")
+                .Length(10).WithMessage("ContactNumber should have exactly 10 digits.");
+
+            RuleFor(branch => branch.BranchCode)
+                .Matches(@"^[A-Z][A-Za-z0-9]*$").WithMessage("BranchCode should start with a upper case letter and followed by a combination of letters and numbers.");
+        }
+    }
+    public class BranchDto
+    {
+        public Guid BranchId { get; set; }
+        public string BranchName { get; set; }
+        public string ContactNumber { get; set; }
+        public string BranchCode { get; set; }
+        public Guid Fk_AdressId { get; set; }
+        public AddressDto Address { get; set; }
+    }
+    public class Branch 
+    {
+        public Guid BranchId { get; set; }
+        public string BranchName { get; set; }
+        public string ContactNumber { get; set; }
+        public string BranchCode { get; set; }
+        public Guid Fk_AdressId { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifyBy { get; set; }
+        public Address Address { get; set; }
         public ICollection<FinancialYear> FinancialYears { get; set; }
         public ICollection<UserBranch> UserBranch { get; set; }
         public ICollection<LabourRate> LabourRates { get; set; }
@@ -75,14 +115,6 @@ namespace FMS.Db.Entity
         public ICollection<ReceiptOrder> ReceiptOrders { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
     }
-    public class Branch : BranchDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string ModifyBy { get; set; }
-    }
     internal class BranchConfig : IEntityTypeConfiguration<Branch>
     {
         public void Configure(EntityTypeBuilder<Branch> builder)
@@ -97,8 +129,9 @@ namespace FMS.Db.Entity
             builder.Property(e => e.CreatedBy).HasMaxLength(100);
             builder.Property(e => e.CreatedDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
             builder.Property(e => e.ModifyBy).HasMaxLength(100);
-            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'"); 
-
+            builder.Property(e => e.ModifyDate).HasColumnType("timestamptz").HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
+            //One-To-One Relationship
+            builder.HasOne(d => d.Address).WithOne(p => p.Branch).HasForeignKey<Branch>(d => d.Fk_AdressId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

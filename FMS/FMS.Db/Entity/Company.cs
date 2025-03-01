@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -17,14 +16,9 @@ namespace FMS.Db.Entity
         public string PhoneNo { get; set; }
         [Required]
         public string GSTIN { get; set; }
-        [Required] [NotMapped]
+        [Required]
         public IFormFile Logo { get; set; }
         public string LogoPath { get; set; }
-    }
-    public class CompanyUpdateModel : CompanyModel
-    {
-        [Required]
-        public Guid CompanyId { get; set; }
     }
     public class CompanyValidator : AbstractValidator<CompanyModel>
     {
@@ -33,12 +27,46 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class CompanyDto: CompanyUpdateModel
+    public class CompanyUpdateModel
     {
-
+        [Required]
+        public Guid CompanyId { get; set; }
+        [Required]
+        public string CompanyName { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string PhoneNo { get; set; }
+        [Required]
+        public string GSTIN { get; set; }
+        [Required]
+        public IFormFile Logo { get; set; }
+        public string LogoPath { get; set; }
     }
-    public class Company : CompanyDto
+    public class CompanyUpdateValidator : AbstractValidator<CompanyModel>
     {
+        public CompanyUpdateValidator()
+        {
+
+        }
+    }
+    public class CompanyDto
+    {
+        public Guid CompanyId { get; set; }
+        public string CompanyName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNo { get; set; }
+        public string GSTIN { get; set; }
+        public string LogoPath { get; set; }
+    }
+    public class Company
+    {
+        public Guid CompanyId { get; set; }
+        public string CompanyName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNo { get; set; }
+        public string GSTIN { get; set; }
+        public string LogoPath { get; set; }
         public bool? IsActive { get; set; } = true;
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }

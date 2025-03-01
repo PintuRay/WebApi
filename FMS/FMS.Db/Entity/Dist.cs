@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FMS.Db.Entity
 {
@@ -16,11 +14,6 @@ namespace FMS.Db.Entity
         [Required]
         public string DistName { get; set; }
     }
-    public class DistUpdateModel : DistModel
-    {
-        [Required]
-        public Guid DistId { get; set; }
-    }
     public class DistValidator : AbstractValidator<DistModel>
     {
         public DistValidator()
@@ -28,23 +21,43 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class DistDto : DistUpdateModel
+    public class DistUpdateModel
     {
-        [NotMapped]
-        public string CountryName { get; set; }
-        [NotMapped]
-        public string StateName { get; set; }
-        public Country Country { get; set; }
-        public State State { get; set; }
-        public ICollection<Address> Addresses { get; set; }
+        [Required]
+        public Guid DistId { get; set; }
+        [Required]
+        public Guid Fk_CountryId { get; set; }
+        [Required]
+        public Guid Fk_StateId { get; set; }
+        [Required]
+        public string DistName { get; set; }
     }
-    public class Dist : DistDto
+    public class DistUpdateValidator : AbstractValidator<DistUpdateModel>
     {
+        public DistUpdateValidator()
+        {
+
+        }
+    }
+    public class DistDto 
+    {
+        public Guid DistId { get; set; }
+        public string DistName { get; set; } 
+    }
+    public class Dist 
+    {
+        public Guid DistId { get; set; }
+        public Guid Fk_CountryId { get; set; }
+        public Guid Fk_StateId { get; set; }
+        public string DistName { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Country Country { get; set; }
+        public State State { get; set; }
+        public ICollection<Address> Addresses { get; set; }
     }
     internal class DistConfig : IEntityTypeConfiguration<Dist>
     {

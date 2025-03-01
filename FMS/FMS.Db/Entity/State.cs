@@ -5,18 +5,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Db.Entity
 {
-
     public class StateModel 
     {
         [Required]
         public Guid Fk_CountryId { get; set; }
         [Required]
         public string StateName { get; set; }
-    }
-    public class StateUpdateModel : StateModel 
-    {
-        [Required]
-        public Guid StateId { get; set; }
     }
     public class StateValidator : AbstractValidator<StateModel>
     {
@@ -25,19 +19,40 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class StateDto : StateUpdateModel
+    public class StateUpdateModel 
     {
-        public Country Country { get; set; }
-        public ICollection<Address> Addresses { get; set; }
-        public ICollection<Dist> Dists { get; set; }
+        [Required]
+        public Guid StateId { get; set; }
+        [Required]
+        public Guid Fk_CountryId { get; set; }
+        [Required]
+        public string StateName { get; set; }
     }
-    public class State : StateDto
+    public class StateUpdateValidator : AbstractValidator<StateUpdateModel>
     {
+        public StateUpdateValidator()
+        {
+
+        }
+    }
+    public class StateDto
+    {
+        public Guid StateId { get; set; }
+        public string StateName { get; set; }
+    }
+    public class State
+    {
+        public Guid StateId { get; set; }
+        public string StateName { get; set; }
+        public Guid Fk_CountryId { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public Country Country { get; set; }
+        public ICollection<Address> Addresses { get; set; }
+        public ICollection<Dist> Dists { get; set; }
     }
     internal class StateConfig : IEntityTypeConfiguration<State>
     {

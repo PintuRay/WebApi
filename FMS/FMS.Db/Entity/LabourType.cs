@@ -9,22 +9,28 @@ namespace FMS.Db.Entity
         [Required]
         public string Labour_Type { get; set; }
     }
-    public class LabourTypeUpdateMdel : LabourTypeModel
+    public class LabourTypeUpdateMdel 
     {
         [Required]
         public Guid LabourTypeId { get; set; }
+        [Required]
+        public string Labour_Type { get; set; }
     }
-    public class LabourTypeDto : LabourTypeUpdateMdel
+    public class LabourTypeDto
     {
-        public ICollection<Labour> Labours { get; set; }
+        public Guid LabourTypeId { get; set; }
+        public string Labour_Type { get; set; }
     }
-    public class LabourType: LabourTypeDto
+    public class LabourType
     {
+        public Guid LabourTypeId { get; set; }
+        public string Labour_Type { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public ICollection<Labour> Labours { get; set; }
     }
     public class LabourTypeConfig : IEntityTypeConfiguration<LabourType>
     {

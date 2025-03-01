@@ -12,31 +12,48 @@ namespace FMS.Db.Entity
         [Required]
         public string SubGroupName { get; set; }
     }
-    public class LedgerSubGroupDevUpdateModel : LedgerSubGroupDevModel
-    {
-        [Required]
-        public Guid LedgerSubGroupId { get; set; }
-    }
-    public class LedgerSubGroupDevDto : LedgerSubGroupDevUpdateModel
-    {
-        public LedgerGroup LedgerGroup { get; set; }
-        public Branch Branch { get; set; }
-        public ICollection<LedgerDev> LedgersDev { get; set; }
-    }
-    public class LedgerSubGroupDev : LedgerSubGroupDevDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
-    }
     public class LedgerSubGroupDevValidator : AbstractValidator<LedgerSubGroupDevModel>
     {
         public LedgerSubGroupDevValidator()
         {
 
         }
+    }
+    public class LedgerSubGroupDevUpdateModel
+    {
+        [Required]
+        public Guid LedgerSubGroupId { get; set; }
+        [Required]
+        public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
+        public string SubGroupName { get; set; }
+    }
+    public class LedgerSubGroupDevUpdateValidator : AbstractValidator<LedgerSubGroupDevUpdateModel>
+    {
+        public LedgerSubGroupDevUpdateValidator()
+        {
+
+        }
+    }
+    public class LedgerSubGroupDevDto 
+    {
+        public Guid LedgerSubGroupId { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public string SubGroupName { get; set; }
+    }
+    public class LedgerSubGroupDev
+    {
+        public Guid LedgerSubGroupId { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public string SubGroupName { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
+        public LedgerGroup LedgerGroup { get; set; }
+        public Branch Branch { get; set; }
+        public ICollection<LedgerDev> LedgersDev { get; set; }
     }
     internal class LedgerSubGroupDevConfig : IEntityTypeConfiguration<LedgerSubGroupDev>
     {

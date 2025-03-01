@@ -18,11 +18,6 @@ namespace FMS.Db.Entity
         [Required]
         public Guid? Fk_LedgerSubGroupId { get; set; }
     }
-    public class LedgerUpdateModel : LedgerModel
-    {
-        [Required]
-        public Guid LedgerId { get; set; }
-    }
     public class LedgerValidator : AbstractValidator<LedgerModel>
     {
         public LedgerValidator()
@@ -30,8 +25,50 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class LedgerDto : LedgerUpdateModel
+    public class LedgerUpdateModel
     {
+        [Required]
+        public Guid LedgerId { get; set; }
+        [Required]
+        public string LedgerName { get; set; }
+        [Required]
+        public string LedgerType { get; set; }
+        [Required]
+        public string HasSubLedger { get; set; }
+        [Required]
+        public Guid Fk_LedgerGroupId { get; set; }
+        [Required]
+        public Guid? Fk_LedgerSubGroupId { get; set; }
+    }
+    public class LedgerUpdateValidator : AbstractValidator<LedgerUpdateModel>
+    {
+        public LedgerUpdateValidator()
+        {
+
+        }
+    }
+    public class LedgerDto
+    {
+        public Guid LedgerId { get; set; }
+        public string LedgerName { get; set; }
+        public string LedgerType { get; set; }
+        public string HasSubLedger { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid? Fk_LedgerSubGroupId { get; set; }
+    }
+    public class Ledger 
+    {
+        public Guid LedgerId { get; set; }
+        public string LedgerName { get; set; }
+        public string LedgerType { get; set; }
+        public string HasSubLedger { get; set; }
+        public Guid Fk_LedgerGroupId { get; set; }
+        public Guid? Fk_LedgerSubGroupId { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
+        public string CreatedBy { get; set; } = null;
+        public string ModifyBy { get; set; } = null;
         public LedgerGroup LedgerGroup { get; set; }
         public LedgerSubGroup LedgerSubGroup { get; set; }
         public ICollection<LedgerBalance> LedgerBalances { get; set; }
@@ -39,14 +76,6 @@ namespace FMS.Db.Entity
         public ICollection<JournalTransaction> JournalTransactions { get; set; }
         public ICollection<PaymentTransaction> PaymentTransactions { get; set; }
         public ICollection<ReceiptTransaction> ReceiptTransactions { get; set; }
-    }
-    public class Ledger : LedgerDto
-    {
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifyDate { get; set; }
-        public string CreatedBy { get; set; } = null;
-        public string ModifyBy { get; set; } = null;
     }
     internal class LedgerConfig : IEntityTypeConfiguration<Ledger>
     {

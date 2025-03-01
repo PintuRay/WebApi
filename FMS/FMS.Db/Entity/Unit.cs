@@ -10,11 +10,6 @@ namespace FMS.Db.Entity
         [Required]
         public string UnitName { get; set; }
     }
-    public class UnitUpdateModel : UnitModel
-    {
-        [Required]
-        public Guid UnitId { get; set; }
-    }
     public class UnitValidator : AbstractValidator<UnitModel>
     {
         public UnitValidator()
@@ -22,18 +17,36 @@ namespace FMS.Db.Entity
 
         }
     }
-    public class UnitDto : UnitUpdateModel
+    public class UnitUpdateModel
     {
-        public ICollection<Product> Products { get; set; }
-        public ICollection<AlternateUnit> AlternateUnits { get; set; }
+        [Required]
+        public Guid UnitId { get; set; }
+        [Required]
+        public string UnitName { get; set; }
     }
-    public class Unit : UnitDto
+    public class UnitUpdateValidator : AbstractValidator<UnitUpdateModel>
     {
+        public UnitUpdateValidator()
+        {
+
+        }
+    }
+    public class UnitDto
+    {
+        public Guid UnitId { get; set; }
+        public string UnitName { get; set; }
+    }
+    public class Unit
+    {
+        public Guid UnitId { get; set; }
+        public string UnitName { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public string CreatedBy { get; set; } = null;
         public string ModifyBy { get; set; } = null;
+        public ICollection<Product> Products { get; set; }
+        public ICollection<AlternateUnit> AlternateUnits { get; set; }
 
     }
     internal class UnitConfig : IEntityTypeConfiguration<Unit>
