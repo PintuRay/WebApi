@@ -38,9 +38,9 @@ namespace FMS.Db.Entity
         [Required]
         public Guid Fk_AlternateUnitId { get; set; }
     }
-    public class ProductionTransactionSetupUpUpdateValidator : AbstractValidator<ProductionTransactionSetUpUpdateModel>
+    public class ProductionTransactionSetupUpdateValidator : AbstractValidator<ProductionTransactionSetUpUpdateModel>
     {
-        public ProductionTransactionSetupUpUpdateValidator(CustomValidation vaidator)
+        public ProductionTransactionSetupUpdateValidator(CustomValidation vaidator)
         {
 
         }

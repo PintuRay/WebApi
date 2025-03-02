@@ -61,9 +61,9 @@ namespace FMS.Db.Entity
         public Guid Fk_FinancialYearId { get; set; }
         public List<PaymentTransactionUpdateModel> PaymentTransactions { get; set; }
     }
-    public class PaymentOrderUpdatValidator : AbstractValidator<PaymentOrderUpdateModel>
+    public class PaymentOrderUpdateValidator : AbstractValidator<PaymentOrderUpdateModel>
     {
-        public PaymentOrderUpdatValidator(CustomValidation vaidator)
+        public PaymentOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }
