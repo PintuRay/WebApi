@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -43,7 +44,7 @@ namespace FMS.Db.Entity
     }
     public class PurchaseReturnOrderValidator : AbstractValidator<PurchaseReturnOrderModel>
     {
-        public PurchaseReturnOrderValidator()
+        public PurchaseReturnOrderValidator(CustomValidation vaidator)
         {
 
         }
@@ -87,7 +88,7 @@ namespace FMS.Db.Entity
     }
     public class PurchaseReturnOrderUpdateValidator : AbstractValidator<PurchaseReturnOrderUpdateModel>
     {
-        public PurchaseReturnOrderUpdateValidator()
+        public PurchaseReturnOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }

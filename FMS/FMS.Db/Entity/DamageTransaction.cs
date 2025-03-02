@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -26,7 +27,7 @@ namespace FMS.Db.Entity
     }
     public class DamageTransactionValidator : AbstractValidator<DamageTransactionModel>
     {
-        public DamageTransactionValidator()
+        public DamageTransactionValidator(CustomValidation vaidator)
         {
 
         }
@@ -52,9 +53,9 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class DamageTransactionUpdateValidator : AbstractValidator<DamageTransactionModel>
+    public class DamageTransactionUpdateValidator : AbstractValidator<DamageTransactionUpdateModel>
     {
-        public DamageTransactionUpdateValidator()
+        public DamageTransactionUpdateValidator(CustomValidation vaidator)
         {
 
         }

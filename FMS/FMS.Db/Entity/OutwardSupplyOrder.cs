@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +26,7 @@ namespace FMS.Db.Entity
     }
     public class OutwardSupplyOrderValidator : AbstractValidator<OutwardSupplyOrderModel>
     {
-        public OutwardSupplyOrderValidator()
+        public OutwardSupplyOrderValidator(CustomValidation vaidator)
         {
 
         }
@@ -52,7 +53,7 @@ namespace FMS.Db.Entity
     }
     public class OutwardSupplyOrderUpdateValidator : AbstractValidator<OutwardSupplyOrderUpdateModel>
     {
-        public OutwardSupplyOrderUpdateValidator()
+        public OutwardSupplyOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }

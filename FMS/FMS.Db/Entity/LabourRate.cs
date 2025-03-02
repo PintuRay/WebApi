@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -22,7 +23,7 @@ namespace FMS.Db.Entity
     }
     public class LabourRateValidator : AbstractValidator<LabourRateModel>
     {
-        public LabourRateValidator()
+        public LabourRateValidator(CustomValidation vaidator)
         {
 
         }
@@ -46,7 +47,7 @@ namespace FMS.Db.Entity
     }
     public class LabourRateUpdateValidator : AbstractValidator<LabourRateUpdateModel>
     {
-        public LabourRateUpdateValidator()
+        public LabourRateUpdateValidator(CustomValidation vaidator)
         {
 
         }

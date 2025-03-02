@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +26,7 @@ namespace FMS.Db.Entity
     }
     public class InwardSupplyTransactionValidator : AbstractValidator<InwardSupplyTransactionModel>
     {
-        public InwardSupplyTransactionValidator()
+        public InwardSupplyTransactionValidator(CustomValidation vaidator)
         {
 
         }
@@ -51,9 +52,9 @@ namespace FMS.Db.Entity
         [Required]
         public decimal Amount { get; set; }
     }
-    public class InwardSupplyTransactionUpdateValidator : AbstractValidator<InwardSupplyTransactionModel>
+    public class InwardSupplyTransactionUpdateValidator : AbstractValidator<InwardSupplyTransactionUpdateModel>
     {
-        public InwardSupplyTransactionUpdateValidator()
+        public InwardSupplyTransactionUpdateValidator(CustomValidation vaidator)
         {
 
         }

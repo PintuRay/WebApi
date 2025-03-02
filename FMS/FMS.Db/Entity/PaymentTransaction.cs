@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +26,7 @@ namespace FMS.Db.Entity
     }
     public class PaymentTransactionValidator : AbstractValidator<PaymentTransactionModel>
     {
-        public PaymentTransactionValidator()
+        public PaymentTransactionValidator(CustomValidation vaidator)
         {
 
         }
@@ -52,7 +53,7 @@ namespace FMS.Db.Entity
     }
     public class PaymentTransactionUpdateValidator : AbstractValidator<PaymentTransactionUpdateModel>
     {
-        public PaymentTransactionUpdateValidator()
+        public PaymentTransactionUpdateValidator(CustomValidation vaidator)
         {
 
         }

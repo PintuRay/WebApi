@@ -21,7 +21,6 @@ namespace FMS.Svcs.Account.Authentication
     public class AuthenticationSvcs(
         UserValidator userValidator,
         IAuthenticationRepo authenticationRepo,
-        SignInManager<AppUser> signInManager,
         UserManager<AppUser> userManager,
         RoleManager<AppRole> roleManager,
         IEmailSvcs emailSvcs,
@@ -37,7 +36,6 @@ namespace FMS.Svcs.Account.Authentication
         private readonly ISmsSvcs _smsSvcs = smsSvcs;
         private readonly IConfiguration _configuration = configuration;
         private readonly IMapper _mapper = mapper;
-        private readonly SignInManager<AppUser> _signInManager = signInManager;
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly RoleManager<AppRole> _roleManager = roleManager;
         private readonly IRedisCache _cache = cache;

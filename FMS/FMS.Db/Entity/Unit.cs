@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,7 @@ namespace FMS.Db.Entity
     }
     public class UnitValidator : AbstractValidator<UnitModel>
     {
-        public UnitValidator()
+        public UnitValidator(CustomValidation vaidator)
         {
 
         }
@@ -26,7 +27,7 @@ namespace FMS.Db.Entity
     }
     public class UnitUpdateValidator : AbstractValidator<UnitUpdateModel>
     {
-        public UnitUpdateValidator()
+        public UnitUpdateValidator(CustomValidation vaidator)
         {
 
         }

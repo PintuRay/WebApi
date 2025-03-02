@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +15,7 @@ namespace FMS.Db.Entity
     }
     public class CountryValidator : AbstractValidator<CountryModel>
     {
-        public CountryValidator()
+        public CountryValidator(CustomValidation vaidator)
         {
 
         }
@@ -30,7 +31,7 @@ namespace FMS.Db.Entity
     }
     public class CountryUpdateValidator : AbstractValidator<CountryUpdateModel>
     {
-        public CountryUpdateValidator()
+        public CountryUpdateValidator(CustomValidation vaidator)
         {
 
         }

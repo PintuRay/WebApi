@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -22,7 +23,7 @@ namespace FMS.Db.Entity
     }
     public class CompanyValidator : AbstractValidator<CompanyModel>
     {
-        public CompanyValidator()
+        public CompanyValidator(CustomValidation vaidator)
         {
 
         }
@@ -43,9 +44,9 @@ namespace FMS.Db.Entity
         public IFormFile Logo { get; set; }
         public string LogoPath { get; set; }
     }
-    public class CompanyUpdateValidator : AbstractValidator<CompanyModel>
+    public class CompanyUpdateValidator : AbstractValidator<CompanyUpdateModel>
     {
-        public CompanyUpdateValidator()
+        public CompanyUpdateValidator(CustomValidation vaidator)
         {
 
         }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -34,7 +35,7 @@ namespace FMS.Db.Entity
     }
     public class SalesTransactionValidator : AbstractValidator<SalesTransactionModel>
     {
-        public SalesTransactionValidator()
+        public SalesTransactionValidator(CustomValidation vaidator)
         {
 
         }
@@ -70,7 +71,7 @@ namespace FMS.Db.Entity
     }
     public class SalesTransactionUpdateValidator : AbstractValidator<SalesTransactionUpdateModel>
     {
-        public SalesTransactionUpdateValidator()
+        public SalesTransactionUpdateValidator(CustomValidation vaidator)
         {
 
         }

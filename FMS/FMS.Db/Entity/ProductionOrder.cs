@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -28,7 +29,7 @@ namespace FMS.Db.Entity
     }
     public class ProductionOrderValidator : AbstractValidator<ProductionOrderModel>
     {
-        public ProductionOrderValidator()
+        public ProductionOrderValidator(CustomValidation vaidator)
         {
 
         }
@@ -57,7 +58,7 @@ namespace FMS.Db.Entity
     }
     public class ProductionOrderUpdateValidator : AbstractValidator<ProductionOrderUpdateModel>
     {
-        public ProductionOrderUpdateValidator()
+        public ProductionOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }

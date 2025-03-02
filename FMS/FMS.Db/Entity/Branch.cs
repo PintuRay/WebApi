@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,7 @@ namespace FMS.Db.Entity
     }
     public class BranchValidator : AbstractValidator<BranchModel>
     {
-        public BranchValidator()
+        public BranchValidator(CustomValidation vaidator)
         {
             RuleFor(branch => branch.BranchName)
             .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")
@@ -46,7 +47,7 @@ namespace FMS.Db.Entity
     }
     public class BranchUpdateValidator : AbstractValidator<BranchUpdateModel>
     {
-        public BranchUpdateValidator()
+        public BranchUpdateValidator(CustomValidation vaidator)
         {
             RuleFor(branch => branch.BranchName)
                 .MinimumLength(3).WithMessage("BranchName should be at least 3 characters long.")

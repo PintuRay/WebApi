@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -30,7 +31,7 @@ namespace FMS.Db.Entity
     }
     public class ReceiptOrderValidator : AbstractValidator<ReceiptOrderModel>
     {
-        public ReceiptOrderValidator()
+        public ReceiptOrderValidator(CustomValidation vaidator)
         {
 
         }
@@ -61,7 +62,7 @@ namespace FMS.Db.Entity
     }
     public class ReceiptOrderUpdateValidator : AbstractValidator<ReceiptOrderUpdateModel>
     {
-        public ReceiptOrderUpdateValidator()
+        public ReceiptOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }

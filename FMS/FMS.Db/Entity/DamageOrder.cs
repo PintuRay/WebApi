@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -26,7 +27,7 @@ namespace FMS.Db.Entity
     }
     public class DamageOrderValidator : AbstractValidator<DamageOrderModel>
     {
-        public DamageOrderValidator()
+        public DamageOrderValidator(CustomValidation vaidator)
         {
 
         }
@@ -51,9 +52,9 @@ namespace FMS.Db.Entity
         public string Reason { get; set; } = null;
         public List<DamageTransactionUpdateModel> DamageTransactions { get; set; }
     }
-    public class DamageOrderUpdateValidator : AbstractValidator<DamageOrderModel>
+    public class DamageOrderUpdateValidator : AbstractValidator<DamageOrderUpdateModel>
     {
-        public DamageOrderUpdateValidator()
+        public DamageOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }

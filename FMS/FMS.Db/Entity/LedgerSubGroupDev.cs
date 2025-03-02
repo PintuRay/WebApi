@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +15,7 @@ namespace FMS.Db.Entity
     }
     public class LedgerSubGroupDevValidator : AbstractValidator<LedgerSubGroupDevModel>
     {
-        public LedgerSubGroupDevValidator()
+        public LedgerSubGroupDevValidator(CustomValidation vaidator)
         {
 
         }
@@ -30,7 +31,7 @@ namespace FMS.Db.Entity
     }
     public class LedgerSubGroupDevUpdateValidator : AbstractValidator<LedgerSubGroupDevUpdateModel>
     {
-        public LedgerSubGroupDevUpdateValidator()
+        public LedgerSubGroupDevUpdateValidator(CustomValidation vaidator)
         {
 
         }

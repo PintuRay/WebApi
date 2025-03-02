@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -19,7 +20,7 @@ namespace FMS.Db.Entity
     }
     public class ProductionTransactionSetupValidator : AbstractValidator<ProductionTransactionSetUpModel>
     {
-        public ProductionTransactionSetupValidator()
+        public ProductionTransactionSetupValidator(CustomValidation vaidator)
         {
 
         }
@@ -39,7 +40,7 @@ namespace FMS.Db.Entity
     }
     public class ProductionTransactionSetupUpUpdateValidator : AbstractValidator<ProductionTransactionSetUpUpdateModel>
     {
-        public ProductionTransactionSetupUpUpdateValidator()
+        public ProductionTransactionSetupUpUpdateValidator(CustomValidation vaidator)
         {
 
         }

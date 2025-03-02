@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +24,7 @@ namespace FMS.Db.Entity
     }
     public class LabourValidator : AbstractValidator<LabourModel>
     {
-        public LabourValidator()
+        public LabourValidator(CustomValidation vaidator)
         {
 
         }
@@ -46,9 +47,9 @@ namespace FMS.Db.Entity
         public Guid Fk_AdressId { get; set; }
         public AddressUpdateModel Address { get; set; }
     }
-    public class LabourUpdateValidator : AbstractValidator<LabourModel>
+    public class LabourUpdateValidator : AbstractValidator<LabourUpdateModel>
     {
-        public LabourUpdateValidator()
+        public LabourUpdateValidator(CustomValidation vaidator)
         {
 
         }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -20,7 +21,7 @@ namespace FMS.Db.Entity
     }
     public class AlternateUnitValidator : AbstractValidator<AlternateUnitModel>
     {
-        public AlternateUnitValidator()
+        public AlternateUnitValidator(CustomValidation vaidator)
         {
 
         }
@@ -40,9 +41,9 @@ namespace FMS.Db.Entity
         [Required]
         public decimal AlternateQuantity { get; set; }
     }
-    public class AlternateUnitUpdateValidator : AbstractValidator<AlternateUnitModel>
+    public class AlternateUnitUpdateValidator : AbstractValidator<AlternateUnitUpdateModel>
     {
-        public AlternateUnitUpdateValidator()
+        public AlternateUnitUpdateValidator(CustomValidation vaidator)
         {
 
         }

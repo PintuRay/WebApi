@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -12,6 +13,13 @@ namespace FMS.Db.Entity
         [Required]
         public string ProductSubGroupName { get; set; }
     }
+    public class ProductSubGroupValidator : AbstractValidator<ProductSubGroupModel>
+    {
+        public ProductSubGroupValidator(CustomValidation vaidator)
+        {
+
+        }
+    }
     public class ProductSubGroupUpdateModel
     {
         [Required]
@@ -21,9 +29,9 @@ namespace FMS.Db.Entity
         [Required]
         public string ProductSubGroupName { get; set; }
     }
-    public class ProductSubGroupValidator : AbstractValidator<ProductSubGroupModel>
+    public class ProductSubGroupUpdateValidator : AbstractValidator<ProductSubGroupUpdateModel>
     {
-        public ProductSubGroupValidator()
+        public ProductSubGroupUpdateValidator(CustomValidation vaidator)
         {
 
         }

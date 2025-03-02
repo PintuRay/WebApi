@@ -186,6 +186,7 @@ builder.Services.AddScoped<CustomValidation>();
 // Register Validators
 builder.Services.AddScoped<RegisterTokenValidator>();
 builder.Services.AddScoped<UserValidator>();
+builder.Services.AddScoped<UserUpdateValidator>();
 builder.Services.AddScoped<AddressValidator>();
 builder.Services.AddScoped<AlternateUnitValidator>();
 builder.Services.AddScoped<BranchValidator>();

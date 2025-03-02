@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +26,7 @@ namespace FMS.Db.Entity
     }
     public class AddressValidator : AbstractValidator<AddressModel>
     {
-        public AddressValidator()
+        public AddressValidator(CustomValidation vaidator)
         {
 
         }
@@ -52,7 +53,7 @@ namespace FMS.Db.Entity
     }
     public class AddressUpdateValidator : AbstractValidator<AddressUpdateModel>
     {
-        public AddressUpdateValidator()
+        public AddressUpdateValidator(CustomValidation vaidator)
         {
 
         }

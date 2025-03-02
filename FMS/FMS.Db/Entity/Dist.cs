@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +17,7 @@ namespace FMS.Db.Entity
     }
     public class DistValidator : AbstractValidator<DistModel>
     {
-        public DistValidator()
+        public DistValidator(CustomValidation vaidator)
         {
 
         }
@@ -34,7 +35,7 @@ namespace FMS.Db.Entity
     }
     public class DistUpdateValidator : AbstractValidator<DistUpdateModel>
     {
-        public DistUpdateValidator()
+        public DistUpdateValidator(CustomValidation vaidator)
         {
 
         }

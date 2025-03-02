@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -27,7 +28,7 @@ namespace FMS.Db.Entity
     }
     public class JournalTransactionValidator : AbstractValidator<JournalTransactionModel>
     {
-        public JournalTransactionValidator()
+        public JournalTransactionValidator(CustomValidation vaidator)
         {
 
         }
@@ -56,7 +57,7 @@ namespace FMS.Db.Entity
     }
     public class JournalTransactionUpdateValidator : AbstractValidator<JournalTransactionUpdateModel>
     {
-        public JournalTransactionUpdateValidator()
+        public JournalTransactionUpdateValidator(CustomValidation vaidator)
         {
 
         }

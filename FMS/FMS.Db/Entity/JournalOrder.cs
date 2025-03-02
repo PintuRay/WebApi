@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +26,7 @@ namespace FMS.Db.Entity
     }
     public class JournalOrderValidator : AbstractValidator<JournalOrderModel>
     {
-        public JournalOrderValidator()
+        public JournalOrderValidator(CustomValidation vaidator)
         {
 
         }
@@ -52,7 +53,7 @@ namespace FMS.Db.Entity
     }
     public class JournalOrderUpdateValidator : AbstractValidator<JournalOrderUpdateModel>
     {
-        public JournalOrderUpdateValidator()
+        public JournalOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }

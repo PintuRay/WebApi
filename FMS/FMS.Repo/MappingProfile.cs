@@ -6,128 +6,277 @@ namespace FMS.Repo
     {
         public MappingProfile()
         {
+            #region User
+            CreateMap<UserDto, AppUser>().ReverseMap();
             CreateMap<AppUser, UserModel>();
             CreateMap<UserModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
             CreateMap<AppUser, UserUpdateModel>();
             CreateMap<UserUpdateModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
+            #endregion
             /*--------------------------------------------Devloper---------------------------------------------------*/
-            CreateMap<BranchDto,Branch>().ReverseMap();
-            CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address)).ReverseMap();
-            CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address)).ReverseMap();
-            CreateMap<FinancialYear, FinancialYearModel>().ReverseMap()
+            #region Branch
+            CreateMap<BranchDto, Branch>().ReverseMap();
+            CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+            CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+            #endregion
+            #region FinancialYear
+            CreateMap<FinancialYear, FinancialYearDto>().ReverseMap();
+            CreateMap<FinancialYearModel, FinancialYear>()
                 .ForMember(dest => dest.StartDate, opt =>
                     opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
                 .ForMember(dest => dest.EndDate, opt =>
                     opt.MapFrom(src => DateTime.SpecifyKind(src.EndDate, DateTimeKind.Utc)));
-            CreateMap<FinancialYear, FinancialYearUpdateModel>().ReverseMap()
+            CreateMap<FinancialYearUpdateModel, FinancialYear>()
                .ForMember(dest => dest.StartDate, opt =>
                    opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
                .ForMember(dest => dest.EndDate, opt =>
                    opt.MapFrom(src => DateTime.SpecifyKind(src.EndDate, DateTimeKind.Utc)));
+            #endregion
             /*-----------------------------------------Admin----------------------------------------------*/
             CreateMap<RegisterToken, RegisterTokenModel>().ReverseMap();
-            CreateMap<Company, CompanyModel>().ReverseMap();
-            CreateMap<Company, CompanyUpdateModel>().ReverseMap();
-            CreateMap<UserBranch, UserBranchModel>().ReverseMap();
-            CreateMap<UserBranch, UserBranchUpdateModel>().ReverseMap();
-            CreateMap<ProductGroup, ProductGroupModel>().ReverseMap();
-            CreateMap<ProductGroup, ProductGroupUpdateModel>().ReverseMap();
-            CreateMap<ProductSubGroup, ProductSubGroup>().ReverseMap();
-            CreateMap<Unit, UnitModel>().ReverseMap();
-            CreateMap<Unit, UnitUpdateModel>().ReverseMap();
-            CreateMap<AlternateUnit, AlternateUnitModel>().ReverseMap();
-            CreateMap<AlternateUnit, AlternateUnitUpdateModel>().ReverseMap();
-            CreateMap<Product, ProductModel>().ReverseMap();
-            CreateMap<Product, ProductUpdateModel>().ReverseMap();
-            CreateMap<LabourRate, LabourRateModel>().ReverseMap();
-            CreateMap<LabourRate, LabourRateUpdateModel>().ReverseMap();
-            CreateMap<ProductionOrderSetup, ProductionOrderSetupModel>().ReverseMap();
-            CreateMap<ProductionOrderSetup, ProductionOrderSetupUpdateModel>().ReverseMap();
-            CreateMap<ProductionTransactionSetup, ProductionTransactionSetUpModel>().ReverseMap();
-            CreateMap<ProductionTransactionSetup, ProductionTransactionSetUpUpdateModel>().ReverseMap();
-            CreateMap<SalesOrderSetup, SalesOrderSetupModel>().ReverseMap();
-            CreateMap<SalesOrderSetup, SalesOrderSetupUpdateModel>().ReverseMap();
-            CreateMap<SalesTransactionSetup, SalesTransactionSetupModel>().ReverseMap();
-            CreateMap<SalesTransactionSetup, SalesTransactionSetupUpdateModel>().ReverseMap();
-            CreateMap<LedgerSubGroup, LedgerSubGroupModel>().ReverseMap();
-            CreateMap<LedgerSubGroup, LedgerSubGroupUpdateModel>().ReverseMap();
-            CreateMap<LedgerSubGroupDev, LedgerSubGroupDevModel>().ReverseMap();
-            CreateMap<LedgerSubGroupDev, LedgerSubGroupDevUpdateModel>().ReverseMap();
-            CreateMap<Ledger, LedgerModel>().ReverseMap();
-            CreateMap<Ledger, LedgerUpdateModel>().ReverseMap();
+            #region Company
+            CreateMap<Company, CompanyDto>().ReverseMap();
+            CreateMap<CompanyModel, Company>();
+            CreateMap<CompanyUpdateModel, Company>();
+            #endregion
+            #region UserBranch
+            CreateMap<UserBranch, UserBranchDto>().ReverseMap();
+            CreateMap<UserBranchModel, UserBranch>();
+            CreateMap<UserBranchUpdateModel, UserBranch>();
+            #endregion
+            #region ProductGroup
+            CreateMap<ProductGroup, ProductGroupDto>().ReverseMap();
+            CreateMap<ProductGroupModel, ProductGroup>();
+            CreateMap<ProductGroupUpdateModel, ProductGroup>();
+            #endregion
+            #region ProductSubGroup
+            CreateMap<ProductSubGroup, ProductSubGroupDto>().ReverseMap();
+            CreateMap<ProductSubGroupModel, ProductSubGroup>();
+            CreateMap<ProductSubGroupUpdateModel, ProductSubGroup>();
+            #endregion
+            #region Unit
+            CreateMap<Unit, UnitDto>().ReverseMap();
+            CreateMap<UnitModel, Unit>();
+            CreateMap<UnitUpdateModel, Unit>();
+            #endregion
+            #region AlternateUnit
+            CreateMap<AlternateUnit, AlternateUnitDto>().ReverseMap();
+            CreateMap<AlternateUnitModel, AlternateUnit>();
+            CreateMap<AlternateUnitUpdateModel, AlternateUnit>();
+            #endregion
+            #region Product
+            CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<ProductModel, Product>();
+            CreateMap<ProductUpdateModel, Product>();
+            #endregion
+            #region LabourRate
+            CreateMap<LabourRate, LabourRateDto>().ReverseMap();
+            CreateMap<LabourRateModel, LabourRate>();
+            CreateMap<LabourRateUpdateModel, LabourRate>();
+            #endregion
+            #region ProductionOrderSetup
+            CreateMap<ProductionOrderSetup, ProductionOrderSetupDto>().ReverseMap();
+            CreateMap<ProductionOrderSetupModel, ProductionOrderSetup>();
+            CreateMap<ProductionOrderSetupUpdateModel, ProductionOrderSetup>();
+            #endregion
+            #region ProductionTransactionSetup
+            CreateMap<ProductionTransactionSetup, ProductionTransactionSetupDto>().ReverseMap();
+            CreateMap<ProductionTransactionSetUpUpdateModel, ProductionTransactionSetup>();
+            CreateMap<ProductionTransactionSetUpUpdateModel, ProductionTransactionSetup>();
+            #endregion
+            #region SalesOrderSetup
+            CreateMap<SalesOrderSetup, SalesOrderSetupDto>().ReverseMap();
+            CreateMap<SalesOrderSetupModel, SalesOrderSetup>();
+            CreateMap<SalesOrderSetupUpdateModel, SalesOrderSetup>();
+            #endregion
+            #region SalesTransactionSetup
+            CreateMap<SalesTransactionSetup, SalesTransactionSetupDto>().ReverseMap();
+            CreateMap<SalesTransactionSetupModel, SalesTransactionSetup>();
+            CreateMap<SalesTransactionSetupUpdateModel, SalesTransactionSetup>();
+            #endregion
+            #region LedgerSubGroup
+            CreateMap<LedgerSubGroup, LedgerSubGroupDto>().ReverseMap();
+            CreateMap<LedgerSubGroupModel, LedgerSubGroup>();
+            CreateMap<LedgerSubGroupUpdateModel, LedgerSubGroup>();
+            #endregion
+            #region LedgerSubGroupDev
+            CreateMap<LedgerSubGroupDev, LedgerSubGroupDevDto>().ReverseMap();
+            CreateMap<LedgerSubGroupDevModel, LedgerSubGroupDev>();
+            CreateMap<LedgerSubGroupDevUpdateModel, LedgerSubGroupDev>();
+            #endregion
+            #region Ledger
+            CreateMap<Ledger, LedgerDto>().ReverseMap();
+            CreateMap<LedgerModel, Ledger>().ReverseMap();
+            CreateMap<LedgerUpdateModel, Ledger>().ReverseMap();
+            #endregion
             /*-----------------------------------------Common----------------------------------------------*/
+            #region Address
+            CreateMap<AddressModel, Address>().ReverseMap();
+            CreateMap<AddressUpdateModel, Address>();
             CreateMap<Address, AddressDto>()
-                .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.CountryName))
-                .ForMember(dest => dest.StateName, opt => opt.MapFrom(src => src.State.StateName))
-                .ForMember(dest => dest.DistName, opt => opt.MapFrom(src => src.Dist.DistName))
-                .ReverseMap();
-            CreateMap<Address, AddressModel>().ReverseMap();
-            CreateMap<Address, AddressUpdateModel>().ReverseMap();
-            CreateMap<Country, CountryModel>().ReverseMap();
-            CreateMap<Country, CountryUpdateModel>().ReverseMap();
-            CreateMap<State, StateModel>().ReverseMap();
-            CreateMap<State, StateUpdateModel>().ReverseMap();
-            CreateMap<Dist, DistModel>().ReverseMap();
-            CreateMap<Dist, DistUpdateModel>().ReverseMap();
+               .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.CountryName))
+               .ForMember(dest => dest.StateName, opt => opt.MapFrom(src => src.State.StateName))
+               .ForMember(dest => dest.DistName, opt => opt.MapFrom(src => src.Dist.DistName))
+               .ReverseMap();
+            #endregion
+            #region Country
+            CreateMap<Country,CountryDto>().ReverseMap();
+            CreateMap<CountryModel, Country>();
+            CreateMap<CountryUpdateModel, Country>();
+            #endregion
+            #region State
+            CreateMap<State, StateDto>().ReverseMap();
+            CreateMap<StateModel, State>();
+            CreateMap<StateUpdateModel, State>();
+            #endregion
+            #region Dist
+            CreateMap<Dist, DistDto>().ReverseMap();
+            CreateMap<DistModel, Dist>();
+            CreateMap<DistUpdateModel, Dist>();
+            #endregion
             /*-----------------------------------------Master----------------------------------------------*/
-            CreateMap<Stock, StockModel>().ReverseMap();
-            CreateMap<Stock, StockUpdateModel>().ReverseMap();
-            CreateMap<Labour, LabourModel>().ReverseMap();
-            CreateMap<Labour, LabourUpdateModel>().ReverseMap();
-            CreateMap<Party, PartyModel>().ReverseMap();
-            CreateMap<Party, PartyUpdateModel>().ReverseMap();
-            CreateMap<LedgerBalance, LedgerBalanceModel>().ReverseMap();
-            CreateMap<LedgerBalance, LedgerBalanceUpdateModel>().ReverseMap();
-            CreateMap<SubLedger, SubLedgerModel>().ReverseMap();
-            CreateMap<SubLedger, SubLedgerUpdateModel>().ReverseMap();
-            CreateMap<SubLedgerBalance, SubLedgerBalanceModel>().ReverseMap();
-            CreateMap<SubLedgerBalance, SubLedgerBalanceUpdateModel>().ReverseMap();
+            #region Stock 
+            CreateMap<StockDto, Stock>().ReverseMap();
+            CreateMap<StockModel, Stock>();
+            CreateMap<StockUpdateModel, Stock>();
+            #endregion
+            #region Labour 
+            CreateMap<LabourDto, Labour>().ReverseMap();
+            CreateMap<LabourModel, Labour>();
+            CreateMap<LabourUpdateModel, Labour>();
+            #endregion
+            #region Party 
+            CreateMap<PartyDto, Party>().ReverseMap();
+            CreateMap<PartyModel, Party>();
+            CreateMap<PartyUpdateModel, Party>();
+            #endregion
+            #region  LedgerBalance 
+            CreateMap<LedgerBalanceDto, LedgerBalance>().ReverseMap();
+            CreateMap<LedgerBalanceModel, LedgerBalance>();
+            CreateMap<LedgerBalanceUpdateModel, LedgerBalance>();
+            #endregion
+            #region SubLedger
+            CreateMap<SubLedgerDto, SubLedger>().ReverseMap();
+            CreateMap<SubLedgerModel, SubLedger>();
+            CreateMap<SubLedgerUpdateModel, SubLedger>();
+            #endregion
+            #region SubLedgerBalance
+            CreateMap<SubLedgerBalanceDto, SubLedgerBalance>().ReverseMap();
+            CreateMap<SubLedgerBalanceModel, SubLedgerBalance>();
+            CreateMap<SubLedgerBalanceUpdateModel, SubLedgerBalance>();
+            #endregion
             /*-----------------------------------------Transaction----------------------------------------------*/
-            CreateMap<InwardSupplyOrder, InwardSupplyOrderModel>().ReverseMap();
-            CreateMap<InwardSupplyOrder, InwardSupplyOrderUpdateModel>().ReverseMap();
-            CreateMap<InwardSupplyTransaction, InwardSupplyTransactionModel>().ReverseMap();
-            CreateMap<InwardSupplyTransaction, InwardSupplyTransactionUpdateModel>().ReverseMap();
-            CreateMap<OutwardSupplyOrder, OutwardSupplyOrderModel>().ReverseMap();
-            CreateMap<OutwardSupplyOrder, OutwardSupplyOrderUpdateModel>().ReverseMap();
-            CreateMap<OutwardSupplyTransaction, OutwardSupplyTransactionModel>().ReverseMap();
-            CreateMap<OutwardSupplyTransaction, OutwardSupplyTransactionUpdateModel>().ReverseMap();
-            CreateMap<ProductionOrder, ProductionOrderModel>().ReverseMap();
-            CreateMap<ProductionOrder, ProductionOrderUpdateModel>().ReverseMap();
-            CreateMap<ProductionTransaction, ProductionTransactionModel>().ReverseMap();
-            CreateMap<ProductionTransaction, ProductionTransactionUpdateModel>().ReverseMap();
-            CreateMap<DamageOrder, DamageOrderModel>().ReverseMap();
-            CreateMap<DamageOrder, DamageOrderUpdateModel>().ReverseMap();
-            CreateMap<DamageTransaction, DamageTransactionModel>().ReverseMap();
-            CreateMap<DamageTransaction, DamageTransactionUpdateModel>().ReverseMap();
-            CreateMap<PurchaseOrder, PurchaseOrderModel>().ReverseMap();
-            CreateMap<PurchaseOrder, PurchaseOrderUpdateModel>().ReverseMap();
-            CreateMap<PurchaseTransaction, PurchaseTransactionModel>().ReverseMap();
-            CreateMap<PurchaseTransaction, PurchaseTransactionUpdateModel>().ReverseMap();
-            CreateMap<PurchaseReturnOrder, PurchaseReturnOrderModel>().ReverseMap();
-            CreateMap<PurchaseReturnOrder, PurchaseReturnOrderUpdateModel>().ReverseMap();
-            CreateMap<PurchaseReturnTransaction, PurchaseReturnTransactionModel>().ReverseMap();
-            CreateMap<PurchaseReturnTransaction, PurchaseReturnTransactionUpdateModel>().ReverseMap();
-            CreateMap<SalesOrder, SalesOrderModel>().ReverseMap();
-            CreateMap<SalesOrder, SalesOrderUpdateModel>().ReverseMap();
-            CreateMap<SalesTransaction, SalesTransactionModel>().ReverseMap();
-            CreateMap<SalesTransaction, SalesTransactionUpdateModel>().ReverseMap();
-            CreateMap<SalesReturnOrder, SalesReturnOrderModel>().ReverseMap();
-            CreateMap<SalesReturnOrder, SalesReturnOrderUpdateModel>().ReverseMap();
-            CreateMap<SalesReturnTransaction, SalesReturnTransactionModel>().ReverseMap();
-            CreateMap<SalesReturnTransaction, SalesReturnTransactionUpdateModel>().ReverseMap();
+            #region InwardSupplyOrder
+            CreateMap<InwardSupplyOrderDto, InwardSupplyOrder>().ReverseMap();
+            CreateMap<InwardSupplyOrderModel, InwardSupplyOrder>();
+            CreateMap<InwardSupplyOrderUpdateModel, InwardSupplyOrder>();
+            #endregion
+            #region InwardSupplyTransaction
+            CreateMap<InwardSupplyTransactionDto, InwardSupplyTransaction>().ReverseMap();
+            CreateMap<InwardSupplyTransactionModel, InwardSupplyTransaction>();
+            CreateMap<InwardSupplyTransactionUpdateModel, InwardSupplyTransaction>();
+            #endregion
+            #region  OutwardSupplyOrder
+            CreateMap<OutwardSupplyOrderDto, OutwardSupplyOrder>().ReverseMap();
+            CreateMap<OutwardSupplyOrderModel, OutwardSupplyOrder>();
+            CreateMap<OutwardSupplyOrderUpdateModel, OutwardSupplyOrder>();
+            #endregion
+            #region  OutwardSupplyTransaction
+            CreateMap<OutwardSupplyTransactionDto, OutwardSupplyTransaction>().ReverseMap();
+            CreateMap<OutwardSupplyTransactionModel, OutwardSupplyTransaction>();
+            CreateMap<OutwardSupplyTransactionUpdateModel, OutwardSupplyTransaction>();
+            #endregion
+            #region ProductionOrder
+            CreateMap<ProductionOrderDto, ProductionOrder>().ReverseMap();
+            CreateMap<ProductionOrderModel, ProductionOrder>();
+            CreateMap<ProductionOrderUpdateModel, ProductionOrder>();
+            #endregion
+            #region ProductionTransaction
+            CreateMap<ProductionTransactionDto, ProductionTransaction>().ReverseMap();
+            CreateMap<ProductionTransactionModel, ProductionTransaction>();
+            CreateMap<ProductionTransactionUpdateModel, ProductionTransaction>();
+            #endregion
+            #region DamageOrder
+            CreateMap<DamageOrderDto, DamageOrder>().ReverseMap();
+            CreateMap<DamageOrderModel, DamageOrder>();
+            CreateMap<DamageOrderUpdateModel, DamageOrder>();
+            #endregion
+            #region DamageTransaction
+            CreateMap<DamageTransactionDto, DamageTransaction>().ReverseMap();
+            CreateMap<DamageTransactionModel, DamageTransaction>();
+            CreateMap<DamageTransactionUpdateModel, DamageTransaction>();
+            #endregion
+            #region  PurchaseOrder
+            CreateMap<PurchaseOrderDto, PurchaseOrder>().ReverseMap();
+            CreateMap<PurchaseOrderModel, PurchaseOrder>();
+            CreateMap<PurchaseOrderUpdateModel, PurchaseOrder>();
+            #endregion
+            #region  PurchaseTransaction
+            CreateMap<PurchaseTransactionDto, PurchaseTransaction>().ReverseMap();
+            CreateMap<PurchaseTransactionModel, PurchaseTransaction>();
+            CreateMap<PurchaseTransactionUpdateModel, PurchaseTransaction>();
+            #endregion
+            #region PurchaseReturnOrder
+            CreateMap<PurchaseReturnOrderDto, PurchaseReturnOrder>().ReverseMap();
+            CreateMap<PurchaseReturnOrderModel, PurchaseReturnOrder>();
+            CreateMap<PurchaseReturnOrderUpdateModel, PurchaseReturnOrder>();
+            #endregion
+            #region PurchaseReturnTransaction
+            CreateMap<PurchaseReturnTransactionDto, PurchaseReturnTransaction>().ReverseMap();
+            CreateMap<PurchaseReturnTransactionModel, PurchaseReturnTransaction>();
+            CreateMap<PurchaseReturnTransactionUpdateModel, PurchaseReturnTransaction>();
+            #endregion
+            #region SalesOrder
+            CreateMap<SalesOrderDto, SalesOrder>().ReverseMap();
+            CreateMap<SalesOrderModel, SalesOrder>();
+            CreateMap<SalesOrderUpdateModel, SalesOrder>();
+            #endregion
+            #region SalesTransaction
+            CreateMap<SalesTransactionDto, SalesTransaction>().ReverseMap();
+            CreateMap<SalesTransactionModel, SalesTransaction>();
+            CreateMap<SalesTransactionUpdateModel, SalesTransaction>();
+            #endregion
+            #region SalesReturnOrder
+            CreateMap<SalesReturnOrderDto, SalesReturnOrder>().ReverseMap();
+            CreateMap<SalesReturnOrderModel, SalesReturnOrder>();
+            CreateMap<SalesReturnOrderUpdateModel, SalesReturnOrder>();
+            #endregion
+            #region SalesReturnTransaction
+            CreateMap<SalesReturnTransactionDto, SalesReturnTransaction>().ReverseMap();
+            CreateMap<SalesReturnTransactionModel, SalesReturnTransaction>();
+            CreateMap<SalesReturnTransactionUpdateModel, SalesReturnTransaction>();
+            #endregion
             /*-----------------------------------------Accounting----------------------------------------------*/
-            CreateMap<JournalOrder, JournalOrderModel>().ReverseMap();
-            CreateMap<JournalOrder, JournalOrderUpdateModel>().ReverseMap();
-            CreateMap<JournalTransaction, JournalTransactionModel>().ReverseMap();
-            CreateMap<JournalTransaction, JournalTransactionUpdateModel>().ReverseMap();
-            CreateMap<PaymentOrder, PaymentOrderModel>().ReverseMap();
-            CreateMap<PaymentOrder, PaymentOrderUpdateModel>().ReverseMap();
-            CreateMap<PaymentTransaction, PaymentTransactionModel>().ReverseMap();
-            CreateMap<PaymentTransaction, PaymentTransactionUpdateModel>().ReverseMap();
-            CreateMap<ReceiptOrder, ReceiptOrderModel>().ReverseMap();
-            CreateMap<ReceiptOrder, ReceiptOrderUpdateModel>().ReverseMap();
-            CreateMap<ReceiptTransaction, ReceiptTransactionModel>().ReverseMap();
-            CreateMap<ReceiptTransaction, ReceiptTransactionUpdateModel>().ReverseMap();
+            #region JournalOrder 
+            CreateMap<JournalOrderDto, JournalOrder>().ReverseMap();
+            CreateMap<JournalOrderModel, JournalOrder>();
+            CreateMap<JournalOrderUpdateModel, JournalOrder>();
+            #endregion
+            #region JournalTransaction 
+            CreateMap<JournalTransactionDto, JournalTransaction>().ReverseMap();
+            CreateMap<JournalTransactionModel, JournalTransaction>();
+            CreateMap<JournalTransactionUpdateModel, JournalTransaction>();
+            #endregion
+            #region PaymentOrder
+            CreateMap<PaymentOrderDto, PaymentOrder>().ReverseMap();
+            CreateMap<PaymentOrderModel, PaymentOrder>();
+            CreateMap<PaymentOrderUpdateModel, PaymentOrder>();
+            #endregion
+            #region PaymentTransaction
+            CreateMap<PaymentTransactionDto, PaymentTransaction>().ReverseMap();
+            CreateMap<PaymentTransactionModel, PaymentTransaction>();
+            CreateMap<PaymentTransactionUpdateModel, PaymentTransaction>();
+            #endregion
+            #region ReceiptOrder
+            CreateMap<ReceiptOrderDto, ReceiptOrder>().ReverseMap();
+            CreateMap<ReceiptOrderModel, ReceiptOrder>();
+            CreateMap<ReceiptOrderUpdateModel, ReceiptOrder>();
+            #endregion
+            #region ReceiptTransaction
+            CreateMap<ReceiptTransactionDto, ReceiptTransaction>().ReverseMap();
+            CreateMap<ReceiptTransactionModel, ReceiptTransaction>();
+            CreateMap<ReceiptTransactionUpdateModel, ReceiptTransaction>();
+            #endregion
         }
     }
 }

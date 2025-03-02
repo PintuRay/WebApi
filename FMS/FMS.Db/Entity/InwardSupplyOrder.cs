@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +25,7 @@ namespace FMS.Db.Entity
     }
     public class InwardSupplyOrderValidator : AbstractValidator<InwardSupplyOrderModel>
     {
-        public InwardSupplyOrderValidator()
+        public InwardSupplyOrderValidator(CustomValidation vaidator)
         {
 
         }
@@ -51,7 +52,7 @@ namespace FMS.Db.Entity
     }
     public class InwardSupplyOrderUpdateValidator : AbstractValidator<InwardSupplyOrderUpdateModel>
     {
-        public InwardSupplyOrderUpdateValidator()
+        public InwardSupplyOrderUpdateValidator(CustomValidation vaidator)
         {
 
         }

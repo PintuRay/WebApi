@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +25,7 @@ namespace FMS.Db.Entity
     }
     public class LedgerBalanceValidator : AbstractValidator<LedgerBalanceModel>
     {
-        public LedgerBalanceValidator()
+        public LedgerBalanceValidator(CustomValidation vaidator)
         {
 
         }
@@ -50,7 +51,7 @@ namespace FMS.Db.Entity
     }
     public class LedgerBalanceUpdateValidator : AbstractValidator<LedgerBalanceUpdateModel>
     {
-        public LedgerBalanceUpdateValidator()
+        public LedgerBalanceUpdateValidator(CustomValidation vaidator)
         {
 
         }

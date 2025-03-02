@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FMS.Db.CustomVaidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,7 @@ namespace FMS.Db.Entity
     }
     public class FinancialYearValidator : AbstractValidator<FinancialYearModel>
     {
-        public FinancialYearValidator()
+        public FinancialYearValidator(CustomValidation vaidator)
         {
 
         }
@@ -37,7 +38,7 @@ namespace FMS.Db.Entity
     }
     public class FinancialYearUpdateValidator : AbstractValidator<FinancialYearUpdateModel>
     {
-        public FinancialYearUpdateValidator()
+        public FinancialYearUpdateValidator(CustomValidation vaidator)
         {
 
         }
