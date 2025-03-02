@@ -1,6 +1,6 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Svcs.Admin.State;
+using FMS.Svcs.Common.State;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

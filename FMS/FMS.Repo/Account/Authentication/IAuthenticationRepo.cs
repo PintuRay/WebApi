@@ -8,8 +8,5 @@ namespace FMS.Repo.Account.Authentication
         Task<bool> IsPhoneNumberInUse(string phoneNumber);
         Task<bool> IsUserNameExist(string userName);
         #endregion
-        #region Address
-        Task<RepoBase> CreateUserAdress(AddressModel data , AppUser user);
-        #endregion
     }
 }

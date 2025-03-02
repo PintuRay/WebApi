@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 
-namespace FMS.Repo.Admin.State
+namespace FMS.Repo.Common.State
 {
     public interface IStateRepo
     {

@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 
-namespace FMS.Repo.Admin.Country
+namespace FMS.Repo.Common.Country
 {
     public interface ICountryRepo
     {

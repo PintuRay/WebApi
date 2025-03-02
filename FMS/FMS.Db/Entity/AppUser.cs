@@ -79,7 +79,6 @@ namespace FMS.Db.Entity
         [Required]
         public string PhoneNumber { get; set; }
         public string PhotoPath { get; set; }
-       
     }
     public class UserModel : UserBase
     {
@@ -162,6 +161,7 @@ namespace FMS.Db.Entity
     {
         [Required]
         public string Id { get; set; }
+        public Guid Fk_AdressId { get; set; }
         public IFormFile ProfilePhoto { get; set; }
         public AddressUpdateModel Address { get; set; }
     }
@@ -231,6 +231,7 @@ namespace FMS.Db.Entity
     public class UserDto : UserBase
     {
         public string Id { get; set; }
+        public Guid Fk_AdressId { get; set; }
         public AddressDto Address { get; set; }
     }
 }

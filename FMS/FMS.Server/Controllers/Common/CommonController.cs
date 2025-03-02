@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
-using FMS.Svcs.Admin.Country;
-using FMS.Svcs.Admin.Dist;
-using FMS.Svcs.Admin.State;
+using FMS.Svcs.Common.Country;
+using FMS.Svcs.Common.Dist;
+using FMS.Svcs.Common.State;
 using FMS.Svcs.Devloper.Branch;
 using FMS.Svcs.Devloper.FinancialYear;
 using Microsoft.AspNetCore.Authorization;

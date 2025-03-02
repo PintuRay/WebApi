@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 
-namespace FMS.Repo.Admin.Dist
+namespace FMS.Repo.Common.Dist
 {
     public interface IDistRepo
     {
@@ -9,7 +9,7 @@ namespace FMS.Repo.Admin.Dist
         Task<RepoBase> GetDists(Guid StateId);
         Task<RepoBase> GetDists(PaginationParams pagination);
         Task<RepoBase> CreateDist(DistModel data, AppUser user);
-        Task<RepoBase> BulkCreateDist(List<DistModel> datalist , AppUser user);
+        Task<RepoBase> BulkCreateDist(List<DistModel> datalist, AppUser user);
         Task<RepoBase> UpdateDist(DistUpdateModel data, AppUser user);
         Task<RepoBase> BulkUpdateDist(List<DistUpdateModel> datalist, AppUser user);
         Task<RepoBase> RemoveDist(Guid Id, AppUser user);

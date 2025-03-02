@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections;
 
-namespace FMS.Repo.Admin.Dist
+namespace FMS.Repo.Common.Dist
 {
     public class DistRepo(Context ctx, IMapper mapper, IRedisCache cache) : IDistRepo
     {
@@ -417,7 +417,7 @@ namespace FMS.Repo.Admin.Dist
             {
                 _Result.IsSucess = false;
                 var Ids = listdata.Select(s => s.DistId).ToList();
-                var removedDists= await GetDistsWithRelatedEntity(Ids, false);
+                var removedDists = await GetDistsWithRelatedEntity(Ids, false);
                 if (removedDists.Count != 0)
                 {
                     var isActiveRecordsExist = await _ctx.Dists.Where(s => s.IsActive == true && removedDists.Any(b => b.Fk_StateId == s.Fk_StateId && b.DistName == s.DistName)).ToListAsync();
@@ -480,7 +480,7 @@ namespace FMS.Repo.Admin.Dist
             try
             {
                 _Result.IsSucess = false;
-                var existingDists= await GetDistsWithRelatedEntity(Ids, false);
+                var existingDists = await GetDistsWithRelatedEntity(Ids, false);
                 if (existingDists.Count != 0)
                 {
                     var response = await _ctx.BulkDelete(existingDists);

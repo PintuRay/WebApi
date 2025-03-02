@@ -1,25 +1,56 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Repo.Admin.Country;
+using FMS.Repo.Common.State;
 using FMS.Svcs.Email;
 
-namespace FMS.Svcs.Admin.Country
+namespace FMS.Svcs.Common.State
 {
-    public class CountrySvcs(ICountryRepo countryRepo, IEmailSvcs emailSvc, CountryValidator countryValidator, CountryUpdateValidator countryUpdateValidator) : ICountrySvcs
+    public class StateSvcs(IStateRepo stateRepo, IEmailSvcs emailSvc, StateValidator stateValidator, StateUpdateValidator stateUpdateValidator) : IStateSvcs
     {
         #region Dependancy
-        private readonly ICountryRepo _countryRepo = countryRepo;
+        private readonly IStateRepo _stateRepo = stateRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
-        private readonly CountryValidator _countryValidator = countryValidator;
-        private readonly CountryUpdateValidator _countryUpdateValidator = countryUpdateValidator;
+        private readonly StateValidator _stateValidator = stateValidator;
+        private readonly StateUpdateValidator _stateUpdateValidator = stateUpdateValidator;
         #endregion
         #region Crud
-        public async Task<SvcsBase> GetCountries()
+        public async Task<SvcsBase> GetStates(Guid CountryId)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.GetAllCountries();
+                var repoResult = await _stateRepo.GetStates(CountryId);
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "No Record Exist",
+                        ResponseCode = (int)ResponseCode.Status.NotFound,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetStates", _Exception.ToString());
+            }
+            return Obj;
+        }
+        public async Task<SvcsBase> GetStates(PaginationParams pagination)
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _stateRepo.GetStates(pagination);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -41,61 +72,30 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetAllCountries", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetStates", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> GetCountries(PaginationParams pagination)
+        public async Task<SvcsBase> CreateState(StateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.GetCountries(pagination);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = "No Record Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetCountries", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> CreateCountry(CountryModel data, AppUser user)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var validationResult = await _countryValidator.ValidateAsync(data);
+                var validationResult = await _stateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _countryRepo.CreateCountry(data, user);
+                    var repoResult = await _stateRepo.CreateState(data, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Branch Created Successfully",
+                            Message = "State Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
-                            Message = $"Branch '{data.CountryName}' Already Exist",
+                            Message = $"State '{data.StateName}' Already Exist",
                             ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
@@ -116,32 +116,32 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkCreateCountry(List<CountryModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkCreateState(List<StateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _countryValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _stateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _countryRepo.BulkCreateCountry(listdata, user);
+                    var repoResult = await _stateRepo.BulkCreateState(listdata, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Country Created Successfully",
+                            Message = "State Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
                             Data = repoResult.Records,
-                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "Country already exist",
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "State already exist",
                             ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
                         },
                     };
@@ -162,30 +162,30 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateCountry(CountryUpdateModel data, AppUser user)
+        public async Task<SvcsBase> UpdateState(StateUpdateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationResult = await _countryUpdateValidator.ValidateAsync(data);
+                var validationResult = await _stateUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _countryRepo.UpdateCountry(data, user);
+                    var repoResult = await _stateRepo.UpdateState(data, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Country Updated Successfully",
+                            Message = "State Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
                         {
-                            Message = $"CountryId '{data.CountryId}' Not Found",
+                            Message = $"StateId '{data.StateId}' Not Found",
                             ResponseCode = (int)ResponseCode.Status.NotFound,
                         },
                     };
@@ -198,7 +198,6 @@ namespace FMS.Svcs.Admin.Country
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     };
                 }
-
             }
             catch (Exception _Exception)
             {
@@ -207,26 +206,26 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkUpdateCountry(List<CountryUpdateModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkUpdateState(List<StateUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _countryUpdateValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _stateUpdateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _countryRepo.BulkUpdateCountry(listdata, user);
+                    var repoResult = await _stateRepo.BulkUpdateState(listdata, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "Countries Updated Successfully",
+                            Message = "States Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
@@ -253,27 +252,27 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveCountry(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveState(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.RemoveCountry(Id, user);
+                var repoResult = await _stateRepo.RemoveState(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Country Removed Successfully",
+                        Message = "State Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"CountryId '{Id}' Not Found",
+                        Message = $"StateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -285,16 +284,16 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRemoveCountry(List<CountryUpdateModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkRemoveState(List<StateUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.BulkRemoveCountry(listdata, user);
+                var repoResult = await _stateRepo.BulkRemoveState(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -305,7 +304,7 @@ namespace FMS.Svcs.Admin.Country
                     },
                     false => new()
                     {
-                        Message = $"Failed to  remove country",
+                        Message = $"Failed to  remove States",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -317,18 +316,18 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkRemoveCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveBranch", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedCountries(PaginationParams pagination)
+        public async Task<SvcsBase> GetRemovedStates(PaginationParams pagination)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.GetRemovedCountries(pagination);
+                var repoResult = await _stateRepo.GetRemovedStates(pagination);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -350,28 +349,28 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedCountries", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedStates", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverCountry(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverState(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.RecoverCountry(Id, user);
+                var repoResult = await _stateRepo.RecoverState(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Country recovered successfully",
+                        Message = "State Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
                         Data = repoResult.Records,
-                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"countryId '{Id}' not found",
+                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"StateId '{Id}' not found",
                         ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -383,16 +382,16 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverCountry(List<CountryUpdateModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkRecoverStates(List<StateUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.BulkRecoverCountry(listdata, user);
+                var repoResult = await _stateRepo.BulkRecoverStates(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -403,7 +402,7 @@ namespace FMS.Svcs.Admin.Country
                     },
                     false => new()
                     {
-                        Message = "Failed to recover country",
+                        Message = "Failed To Recover States",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -415,27 +414,27 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkRecoverCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllStates", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteCountry(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteState(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.DeleteCountry(Id, user);
+                var repoResult = await _stateRepo.DeleteState(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "Country Deleted Successfully",
+                        Message = "State Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"CountryId '{Id}' Not Found",
+                        Message = $"StateId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -447,16 +446,16 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteState", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkDeleteCountry(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkDeleteStates(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _countryRepo.BulkDeleteCountry(Ids, user);
+                var repoResult = await _stateRepo.BulkDeleteStates(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -467,7 +466,7 @@ namespace FMS.Svcs.Admin.Country
                     },
                     false => new()
                     {
-                        Message = "Failed To delete county",
+                        Message = "Failed To delete States",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -479,7 +478,7 @@ namespace FMS.Svcs.Admin.Country
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkDeleteCountry", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllStates", _Exception.ToString());
             }
             return Obj;
         }

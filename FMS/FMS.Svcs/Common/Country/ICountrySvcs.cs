@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 
-namespace FMS.Svcs.Admin.Country
+namespace FMS.Svcs.Common.Country
 {
     public interface ICountrySvcs
     {

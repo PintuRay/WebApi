@@ -3,15 +3,13 @@ using FMS.Db;
 using FMS.Db.Entity;
 using FMS.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Collections;
-using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static Pipelines.Sockets.Unofficial.SocketConnection;
 
-namespace FMS.Repo.Admin.Country
+namespace FMS.Repo.Common.State
 {
-    public class CountryRepo(Context ctx, IMapper mapper, IRedisCache cache) : ICountryRepo
+    public class StateRepo(Context ctx, IMapper mapper, IRedisCache cache) : IStateRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
@@ -20,24 +18,23 @@ namespace FMS.Repo.Admin.Country
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
         #region Crud
-        public async Task<RepoBase> GetAllCountries()
+        public async Task<RepoBase> GetStates(Guid CountryId)
         {
             RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                var cacheKey = "Country";
+                var cacheKey = $"State_{CountryId}";
                 var cacheData = await _cache.GetAsync<RepoBase>(cacheKey);
                 if (cacheData == null)
                 {
-                    var Query = await (from s in _ctx.Countries
-                                       where s.IsActive == true
-                                       select new CountryDto()
+                    var Query = await (from s in _ctx.States
+                                       where s.Fk_CountryId == CountryId && s.IsActive == true
+                                       select new StateDto()
                                        {
-                                           CountryId = s.CountryId,
-                                           CountryCode = s.CountryCode,
-                                           CountryName = s.CountryName
-                                       }).OrderBy(s => s.CountryName).ToListAsync();
+                                           StateId = s.StateId,
+                                           StateName = s.StateName
+                                       }).OrderBy(s => s.StateName).ToListAsync();
                     if (Query.Count > 0)
                     {
                         _Result.Records = Query;
@@ -48,7 +45,7 @@ namespace FMS.Repo.Admin.Country
                 }
                 else
                 {
-                    _Result.Records = JsonConvert.DeserializeObject<List<CountryDto>>(cacheData.Records.ToString()) ;
+                    _Result.Records = JsonConvert.DeserializeObject<List<StateDto>>(cacheData.Records.ToString());
                     _Result.Count = cacheData.Count;
                     _Result.IsSucess = true;
                 }
@@ -59,10 +56,10 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> GetCountries(PaginationParams pagination)
+        public async Task<RepoBase> GetStates(PaginationParams pagination)
         {
             RepoBase _Result = new();
-            List<CountryDto> Query = [];
+            List<StateDto> Query = [];
             int Count = 0;
             try
             {
@@ -71,31 +68,30 @@ namespace FMS.Repo.Admin.Country
                 int skip = pagination.PageNumber * effectivePageSize;
                 if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                 {
-                    Query = await _ctx.Countries.Where(s => s.IsActive == true)
-                        .Select(s => new CountryDto()
-                        {
-                            CountryId = s.CountryId,
-                            CountryName = s.CountryName,
-                            CountryCode = s.CountryCode
-                        })
-                        .OrderBy(s => s.CountryName)
+                    Query = await (from s in _ctx.States
+                                   where s.IsActive == true
+                                   select new StateDto()
+                                   {
+                                       StateId = s.StateId,
+                                       StateName = s.StateName
+                                   }).OrderBy(s => s.StateName)
                         .Skip(skip)
                         .Take(effectivePageSize)
                         .ToListAsync();
-                    Count = _ctx.Countries.Where(s => s.IsActive == true).Count();
+                    Count = _ctx.States.Where(s => s.IsActive == true).Count();
                 }
                 else
                 {
                     string searchTerm = pagination.SearchTerm.Trim().ToLower();
-                    Query = await _ctx.Countries.Where(s => s.IsActive == true && s.CountryName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || s.CountryCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase))
-                        .Select(s => new CountryDto()
-                        {
-                            CountryId = s.CountryId,
-                            CountryName = s.CountryName,
-                            CountryCode = s.CountryCode
-                        }).OrderBy(s => s.CountryName)
-                        .ToListAsync();
-                    Count = Query.Count();
+                    Query = await (from s in _ctx.States
+                                   where s.IsActive == true && s.StateName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                                   select new StateDto()
+                                   {
+                                       StateId = s.StateId,
+                                       StateName = s.StateName
+                                   })
+                                   .OrderBy(s => s.StateName)
+                                   .ToListAsync();
                 }
                 if (Query.Count > 0)
                 {
@@ -110,26 +106,26 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> CreateCountry(CountryModel data, AppUser user)
+        public async Task<RepoBase> CreateState(StateModel data, AppUser user)
         {
             RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.Countries where s.CountryName == data.CountryName && s.IsActive == true select s).SingleOrDefaultAsync();
-                if (Query == null)
+                var existingState = await (from s in _ctx.States where s.Fk_CountryId == data.Fk_CountryId && s.StateName == data.StateName && s.IsActive == true select s).SingleOrDefaultAsync();
+                if (existingState == null)
                 {
-                    var newCountry = _mapper.Map<Db.Entity.Country>(data);
-                    newCountry.CreatedDate = DateTime.UtcNow;
-                    newCountry.CreatedBy = user.Name;
-                    await _ctx.Countries.AddAsync(newCountry);
+                    var newState = _mapper.Map<Db.Entity.State>(data);
+                    newState.CreatedDate = DateTime.UtcNow;
+                    newState.CreatedBy = user.Name;
+                    await _ctx.States.AddAsync(newState);
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = newCountry;
+                        _Result.Records = newState;
                         _Result.Count = Count;
                         _Result.IsSucess = true;
-                        _cache.Remove("Country");
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
             }
@@ -139,42 +135,42 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> BulkCreateCountry(List<CountryModel> dataList, AppUser user)
+        public async Task<RepoBase> BulkCreateState(List<StateModel> dataList, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var existingCountries = await _ctx.Countries.Where(b => b.IsActive == true && dataList.Select(br => br.CountryName).Contains(b.CountryName)).ToListAsync();
-                if (existingCountries.Count == 0)
+                var existingStates = await _ctx.States.Where(b => b.IsActive == true && dataList.Any(br => br.Fk_CountryId == b.Fk_CountryId && br.StateName == b.StateName)).ToListAsync();
+                if (existingStates.Count == 0)
                 {
-                    var newCountries = dataList.Select(s =>
+                    var newStates = dataList.Select(b =>
                     {
-                        var country = _mapper.Map<Db.Entity.Country>(s);
-                        country.CreatedDate = DateTime.UtcNow;
-                        country.CreatedBy = user.Name;
-                        return country;
+                        var state = _mapper.Map<Db.Entity.State>(b);
+                        state.CreatedDate = DateTime.UtcNow;
+                        state.CreatedBy = user.Name;
+                        return state;
                     }).ToList();
-                    var response = await _ctx.BulkInsert(newCountries);
+                    var response = await _ctx.BulkInsert(newStates);
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
                         _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
-                        _Result.Records = newCountries;
-                        _cache.Remove("Country");
+                        _Result.Records = newStates;
+                        _cache.RemoveByPrefix($"State_");
                     }
                     else
                     {
                         await transaction.RollbackAsync();
                         _Result.ResponseCode = 400;
-                        _Result.Message = "Failed to create  countries";
+                        _Result.Message = "Failed to create Staes";
                     }
                 }
                 else
                 {
-                    _Result.Records = existingCountries;
+                    _Result.Records = existingStates;
                 }
             }
             catch
@@ -184,25 +180,25 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> UpdateCountry(CountryUpdateModel data, AppUser user)
+        public async Task<RepoBase> UpdateState(StateUpdateModel data, AppUser user)
         {
             RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                var Query = await (from s in _ctx.Countries where s.CountryId == data.CountryId && s.IsActive == true select s).SingleOrDefaultAsync();
-                if (Query != null)
+                var existingState = await (from s in _ctx.States where s.StateId == data.StateId && s.IsActive == true select s).SingleOrDefaultAsync();
+                if (existingState != null)
                 {
-                    var updateCountry = _mapper.Map(data, Query);
-                    Query.ModifyDate = DateTime.UtcNow;
-                    Query.ModifyBy = user.Name;
+                    var updateState = _mapper.Map(data, existingState);
+                    existingState.ModifyDate = DateTime.UtcNow;
+                    existingState.ModifyBy = user.Name;
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = Query;
-                        _Result.Count = Count;
+                        _Result.Records = existingState;
                         _Result.IsSucess = true;
-                        _cache.Remove("Country");
+                        _Result.Count = Count;
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
             }
@@ -212,44 +208,38 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> BulkUpdateCountry(List<CountryUpdateModel> listdata, AppUser user)
+        public async Task<RepoBase> BulkUpdateState(List<StateUpdateModel> dataList, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var existingCountries = await _ctx.Countries.Where(b => b.IsActive == true && listdata.Select(br => br.CountryId).Contains(b.CountryId)).ToListAsync() ;
-                var notFoundCountries = listdata.Where(br => !existingCountries.Any(b => b.CountryId == br.CountryId)).ToList();
-                if (notFoundCountries.Count == 0)
+                var existingStates = await _ctx.States.Where(b => b.IsActive == true && dataList.Any(f => f.Fk_CountryId == b.Fk_CountryId && f.StateName == b.StateName)).ToListAsync();
+                var notFoundStates = dataList.Where(fy => !existingStates.Any(b => b.StateId == fy.StateId)).ToList();
+                if (notFoundStates.Count == 0)
                 {
-                    var countriesToUpdate = existingCountries.Select(s =>
+                    var StatesToUpdate = existingStates.Select(s =>
                     {
-                        var updateData = listdata.First(u => u.CountryId == s.CountryId);
-                        _mapper.Map(updateData, s);
+                        var updateState = dataList.First(u => u.StateId == s.StateId);
+                        _mapper.Map(updateState, s);
                         s.ModifyDate = DateTime.UtcNow;
                         s.ModifyBy = user.Name;
                         return s;
                     }).ToList();
-                    var response = await _ctx.BulkUpdate(countriesToUpdate);
+                    var response = await _ctx.BulkUpdate(StatesToUpdate);
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
                         _Result.Count = response.AffectedRows;
-                        _Result.Records = countriesToUpdate;
+                        _Result.Records = StatesToUpdate;
                         _Result.IsSucess = true;
-                        _cache.Remove("Country");
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        _Result.ResponseCode = 400;
-                        _Result.Message = "Failed to update countries";
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
                 else
                 {
-                    _Result.Records = notFoundCountries;
+                    _Result.Records = notFoundStates;
                 }
             }
             catch
@@ -259,17 +249,17 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> RemoveCountry(Guid Id, AppUser user)
+        public async Task<RepoBase> RemoveState(Guid Id, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var Query = await GetCountryWithRelatedEntity(Id, true);
+                var Query = await GetStateRelatedEntity(Id, true);
                 if (Query != null)
                 {
-                    await UpdateStatus(Query, user, false);
+                    var IsActiveStatus = UpdateStatus(Query, user, false);
                     Query.ModifyDate = DateTime.UtcNow;
                     Query.ModifyBy = user.Name;
                     Query.IsActive = false;
@@ -280,7 +270,7 @@ namespace FMS.Repo.Admin.Country
                         _Result.Records = Query;
                         _Result.Count = Count;
                         _Result.IsSucess = true;
-                        _cache.Remove("Country");
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
             }
@@ -291,23 +281,23 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> BulkRemoveCountry(List<CountryUpdateModel> listdata, AppUser user)
+        public async Task<RepoBase> BulkRemoveState(List<StateUpdateModel> dataList, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var Ids = listdata.Select(s => s.CountryId).ToList();
-                var Query = await GetCountriesWithRelatedEntity(Ids, true);
+                var Ids = dataList.Select(s => s.StateId).ToList();
+                var Query = await GetStatesWithRelatedEntity(Ids, true);
                 if (Query.Count != 0)
                 {
-                    await BulkUpdateStatus(Query, user, false);
-                    Query.ForEach(s =>
+                    var IsActiveStatus = BulkUpdateStatus(Query, user, false);
+                    Query.ForEach(fy =>
                     {
-                        s.ModifyDate = DateTime.UtcNow;
-                        s.ModifyBy = user.Name;
-                        s.IsActive = false;
+                        fy.ModifyDate = DateTime.UtcNow;
+                        fy.ModifyBy = user.Name;
+                        fy.IsActive = false;
                     });
                     var response = await _ctx.BulkUpdate(Query);
                     if (response.IsSuccess)
@@ -316,7 +306,7 @@ namespace FMS.Repo.Admin.Country
                         _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _Result.Records = Query;
-                        _cache.Remove("Country");
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
             }
@@ -329,49 +319,45 @@ namespace FMS.Repo.Admin.Country
         }
         #endregion
         #region Recover
-        public async Task<RepoBase> GetRemovedCountries(PaginationParams pagination)
+        public async Task<RepoBase> GetRemovedStates(PaginationParams pagination)
         {
             RepoBase _Result = new();
-            List<CountryDto> Query = [];
+            List<StateDto> Query = [];
             int Count = 0;
             try
             {
                 _Result.IsSucess = false;
                 int effectivePageSize = pagination.PageSize > 0 ? pagination.PageSize : int.MaxValue;
-                int skip = pagination.PageNumber * effectivePageSize;
                 if (string.IsNullOrWhiteSpace(pagination.SearchTerm))
                 {
-                    Query = await (from s in _ctx.Countries
+                    Query = await (from s in _ctx.States
                                    where s.IsActive == false
-                                   select new CountryDto()
+                                   select new StateDto()
                                    {
-                                       CountryId = s.CountryId,
-                                       CountryCode = s.CountryCode,
-                                       CountryName = s.CountryName
-                                   }).OrderBy(s => s.CountryName)
-                        .Skip(skip)
-                        .Take(effectivePageSize)
-                        .ToListAsync();
-                    Count = _ctx.Countries.Where(s => s.IsActive == false).Count();
+                                       StateId = s.StateId,
+                                       StateName = s.StateName
+                                   }).OrderByDescending(s => s.StateName)
+                               .Skip(pagination.PageNumber * effectivePageSize)
+                               .Take(effectivePageSize)
+                               .ToListAsync();
+                    Count = _ctx.States.Where(s => s.IsActive == false).Count();
                 }
                 else
                 {
                     string searchTerm = pagination.SearchTerm.Trim().ToLower();
-                    Query = await _ctx.Countries.Where(s => s.IsActive == false && (s.CountryName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || s.CountryCode.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)))
-                       .Select(s => new CountryDto()
-                       {
-                           CountryId = s.CountryId,
-                           CountryCode = s.CountryCode,
-                           CountryName = s.CountryName
-                       }).OrderBy(s => s.CountryName)
-                       .ToListAsync();
+                    Query = await (from s in _ctx.States
+                                   where s.IsActive == false && s.StateName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                                   select new StateDto()
+                                   {
+                                       StateId = s.StateId,
+                                       StateName = s.StateName
+                                   }).ToListAsync();
                     Count = Query.Count();
                 }
-
                 if (Query.Count > 0)
                 {
                     _Result.Records = Query;
-                    _Result.Count = Query.Count;
+                    _Result.Count = Count;
                     _Result.IsSucess = true;
                 }
             }
@@ -381,29 +367,31 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> RecoverCountry(Guid Id, AppUser user)
+        public async Task<RepoBase> RecoverState(Guid Id, AppUser user)
         {
             RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var Query = await GetCountryWithRelatedEntity(Id, false);
+                var Query = await GetStateRelatedEntity(Id, false);
                 if (Query != null)
                 {
-                    var isActiveRecordExist = await _ctx.Countries.SingleOrDefaultAsync(s => s.CountryName == Query.CountryName && s.IsActive == true);
+                    var isActiveRecordExist = await _ctx.States.SingleOrDefaultAsync(s => s.Fk_CountryId == Query.Fk_CountryId && s.StateName == Query.StateName && s.IsActive == true);
                     if (isActiveRecordExist == null)
                     {
-                        await UpdateStatus(Query, user, true);
+                        var IsActiveStatus = UpdateStatus(Query, user, true);
                         Query.ModifyDate = DateTime.UtcNow;
                         Query.ModifyBy = user.Name;
                         Query.IsActive = true;
                         int Count = await _ctx.SaveChangesAsync();
                         if (Count > 0)
                         {
+                            await transaction.CommitAsync();
                             _Result.Records = Query;
                             _Result.Count = Count;
                             _Result.IsSucess = true;
-                            _cache.Remove("Country");
+                            _cache.RemoveByPrefix($"State_");
                         }
                     }
                     else
@@ -415,38 +403,39 @@ namespace FMS.Repo.Admin.Country
             }
             catch
             {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
         }
-        public async Task<RepoBase> BulkRecoverCountry(List<CountryUpdateModel> listdata, AppUser user)
+        public async Task<RepoBase> BulkRecoverStates(List<StateUpdateModel> listdata, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var Ids = listdata.Select(s => s.CountryId).ToList();
-                var removedCountries = await GetCountriesWithRelatedEntity(Ids, false);
-                if (removedCountries.Count != 0)
+                var Ids = listdata.Select(s => s.StateId).ToList();
+                var removedStates = await GetStatesWithRelatedEntity(Ids, false);
+                if (removedStates.Count != 0)
                 {
-                    var isActiveRecordsExist = await _ctx.Countries.Where(s => s.IsActive == true && removedCountries.Select(c => c.CountryName).Contains(s.CountryName)).ToListAsync();
-                    var recoverCountries = removedCountries.Except(isActiveRecordsExist).ToList();
-                    await BulkUpdateStatus(recoverCountries, user, true);
-                    recoverCountries.ForEach(country =>
+                    var isActiveRecordsExist = await _ctx.States.Where(s => s.IsActive == true && removedStates.Any(b => b.Fk_CountryId == s.Fk_CountryId && b.StateName == s.StateName)).ToListAsync();
+                    var recoverStates = removedStates.Except(isActiveRecordsExist).ToList();
+                    var IsActiveStatus = BulkUpdateStatus(recoverStates, user, true);
+                    recoverStates.ForEach(s =>
                     {
-                        country.ModifyDate = DateTime.UtcNow;
-                        country.ModifyBy = user.Name;
-                        country.IsActive = true;
+                        s.ModifyDate = DateTime.UtcNow;
+                        s.ModifyBy = user.Name;
+                        s.IsActive = true;
                     });
-                    var response = await _ctx.BulkUpdate(recoverCountries);
+                    var response = await _ctx.BulkUpdate(recoverStates);
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = recoverCountries;
                         _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
-                        _cache.Remove("Country");
+                        _Result.Records = recoverStates;
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
             }
@@ -457,22 +446,23 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> DeleteCountry(Guid Id, AppUser user)
+        public async Task<RepoBase> DeleteState(Guid Id, AppUser user)
         {
             RepoBase _Result = new();
             try
             {
                 _Result.IsSucess = false;
-                var Query = await GetCountryWithRelatedEntity(Id, false);
+                var Query = await GetStateRelatedEntity(Id, false);
                 if (Query != null)
                 {
-                    _ctx.Countries.Remove(Query);
+                    _ctx.States.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count;
                     if (Count > 0)
                     {
+                        _Result.Id = Id.ToString();
+                        _Result.Count = Count;
                         _Result.IsSucess = true;
-                        _cache.Remove("Country");
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
             }
@@ -482,24 +472,24 @@ namespace FMS.Repo.Admin.Country
             }
             return _Result;
         }
-        public async Task<RepoBase> BulkDeleteCountry(List<Guid> Ids, AppUser user)
+        public async Task<RepoBase> BulkDeleteStates(List<Guid> Ids, AppUser user)
         {
             RepoBase _Result = new();
             using var transaction = await _ctx.Database.BeginTransactionAsync();
             try
             {
                 _Result.IsSucess = false;
-                var existingCountries = await GetCountriesWithRelatedEntity(Ids, false);
-                if (existingCountries.Count != 0)
+                var existingStates = await GetStatesWithRelatedEntity(Ids, false);
+                if (existingStates.Count != 0)
                 {
-                    var response = await _ctx.BulkDelete(existingCountries);
+                    var response = await _ctx.BulkDelete(existingStates);
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
                         _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
-                        _cache.Remove("Country");
+                        _cache.RemoveByPrefix($"State_");
                     }
                 }
             }
@@ -511,22 +501,20 @@ namespace FMS.Repo.Admin.Country
             return _Result;
         }
         #endregion
-        private async Task<Db.Entity.Country> GetCountryWithRelatedEntity(Guid id, bool IsActive)
+        private async Task<Db.Entity.State> GetStateRelatedEntity(Guid id, bool IsActive)
         {
-            var Query = await _ctx.Countries
-                   .Include(s => s.Addresses)
-                   .Include(s => s.States)
+            var Query = await _ctx.States
                    .Include(s => s.Dists)
-                  .SingleOrDefaultAsync(x => x.CountryId == id && x.IsActive == IsActive);
+                   .Include(s => s.Addresses)
+                  .SingleOrDefaultAsync(x => x.StateId == id && x.IsActive == IsActive);
             return Query;
         }
-        private async Task<List<Db.Entity.Country>> GetCountriesWithRelatedEntity(List<Guid> ids, bool IsActive)
+        private async Task<List<Db.Entity.State>> GetStatesWithRelatedEntity(List<Guid> ids, bool IsActive)
         {
-            var Query = await _ctx.Countries
-                .Include(s => s.Dists)
-                .Include(s => s.States)
-                .Include(s => s.Addresses)
-                .Where(b => b.IsActive == IsActive && ids.Contains(b.CountryId)).ToListAsync();
+            var Query = await _ctx.States
+                   .Include(s => s.Dists)
+                   .Include(s => s.Addresses)
+                .Where(b => b.IsActive == IsActive && ids.Contains(b.StateId)).ToListAsync();
             return Query;
         }
         private void UpdateEntityProperties(object entity, AppUser user, bool IsActive)
@@ -550,13 +538,12 @@ namespace FMS.Repo.Admin.Country
                 modifyByProperty.SetValue(entity, user.UserName);
             }
         }
-        private async Task UpdateStatus(Db.Entity.Country country, AppUser user, bool IsActive)
+        private async Task UpdateStatus(Db.Entity.State state, AppUser user, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>
             {
-                ["Addresses"] = country.Addresses?.ToList() ?? null,
-                ["States"] = country.States?.ToList() ?? null,
-                ["Dists"] = country.Dists?.ToList() ?? null,
+                ["Dists"] = state.Dists?.ToList() ?? null,
+                ["Addresses"] = state.Addresses?.ToList() ?? null,
             };
             foreach (var group in allRelatedData)
             {
@@ -573,14 +560,13 @@ namespace FMS.Repo.Admin.Country
                 await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
-        private async Task BulkUpdateStatus(List<Db.Entity.Country> countries, AppUser user, bool IsActive)
+        private async Task BulkUpdateStatus(List<Db.Entity.State> states, AppUser user, bool IsActive)
         {
             var allRelatedData = new Dictionary<string, IList>();
             var collections = new Dictionary<string, ICollection>
             {
-                 { "Addresses", countries.SelectMany(fy => fy.Addresses).ToList() },
-                 { "States", countries.SelectMany(fy => fy.States).ToList() },
-                 { "Dists", countries.SelectMany(fy => fy.Dists).ToList() },
+                 { "Addresses", states.SelectMany(fy => fy.Addresses).ToList() },
+                 { "Dists", states.SelectMany(fy => fy.Dists).ToList() },
             };
             foreach (var collection in collections)
             {
@@ -598,6 +584,5 @@ namespace FMS.Repo.Admin.Country
                 await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
-
     }
 }

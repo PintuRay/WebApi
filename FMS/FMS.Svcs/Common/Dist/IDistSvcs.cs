@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 
-namespace FMS.Svcs.Admin.Dist
+namespace FMS.Svcs.Common.Dist
 {
     public interface IDistSvcs
     {

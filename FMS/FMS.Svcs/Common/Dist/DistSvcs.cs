@@ -1,25 +1,25 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
-using FMS.Repo.Admin.State;
+using FMS.Repo.Common.Dist;
 using FMS.Svcs.Email;
 
-namespace FMS.Svcs.Admin.State
+namespace FMS.Svcs.Common.Dist
 {
-    public class StateSvcs(IStateRepo stateRepo, IEmailSvcs emailSvc, StateValidator stateValidator, StateUpdateValidator stateUpdateValidator) : IStateSvcs
+    public class DistSvcs(IDistRepo distRepo, IEmailSvcs emailSvc, DistValidator distValidator, DistUpdateValidator distUpdateValidator) : IDistSvcs
     {
         #region Dependancy
-        private readonly IStateRepo _stateRepo = stateRepo;
+        private readonly IDistRepo _distRepo = distRepo;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
-        private readonly StateValidator _stateValidator = stateValidator;
-        private readonly StateUpdateValidator _stateUpdateValidator = stateUpdateValidator;
+        private readonly DistValidator _distValidator = distValidator;
+        private readonly DistUpdateValidator _distUpdateValidator = distUpdateValidator;
         #endregion
         #region Crud
-        public async Task<SvcsBase> GetStates(Guid CountryId)
+        public async Task<SvcsBase> GetDists(Guid Id)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.GetStates(CountryId);
+                var repoResult = await _distRepo.GetDists(Id);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -41,16 +41,16 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetStates", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetDists", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> GetStates(PaginationParams pagination)
+        public async Task<SvcsBase> GetDists(PaginationParams pagination)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.GetStates(pagination);
+                var repoResult = await _distRepo.GetDists(pagination);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -72,30 +72,30 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetStates", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetDists", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> CreateState(StateModel data, AppUser user)
+        public async Task<SvcsBase> CreateDist(DistModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationResult = await _stateValidator.ValidateAsync(data);
+                var validationResult = await _distValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _stateRepo.CreateState(data, user);
+                    var repoResult = await _distRepo.CreateDist(data, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "State Created Successfully",
+                            Message = "Dist Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
-                            Message = $"State '{data.StateName}' Already Exist",
+                            Message = $"Dist '{data.DistName}' Already Exist",
                             ResponseCode = (int)ResponseCode.Status.Found,
                         },
                     };
@@ -116,32 +116,32 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateState", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkCreateState(List<StateModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkCreateDist(List<DistModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _stateValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _distValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _stateRepo.BulkCreateState(listdata, user);
+                    var repoResult = await _distRepo.BulkCreateDist(listdata, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "State Created Successfully",
+                            Message = "Dist Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
                         false => new()
                         {
                             Data = repoResult.Records,
-                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "State already exist",
+                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "Dist already exist",
                             ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
                         },
                     };
@@ -162,30 +162,30 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateState", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> UpdateState(StateUpdateModel data, AppUser user)
+        public async Task<SvcsBase> UpdateDist(DistUpdateModel data, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationResult = await _stateUpdateValidator.ValidateAsync(data);
+                var validationResult = await _distUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _stateRepo.UpdateState(data, user);
+                    var repoResult = await _distRepo.UpdateDist(data, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "State Updated Successfully",
+                            Message = "Dist Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
                         {
-                            Message = $"StateId '{data.StateId}' Not Found",
+                            Message = $"DistId '{data.DistId}' Not Found",
                             ResponseCode = (int)ResponseCode.Status.NotFound,
                         },
                     };
@@ -206,26 +206,26 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateState", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkUpdateState(List<StateUpdateModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkUpdateDist(List<DistUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var validationTasks = listdata.Select(b => _stateUpdateValidator.ValidateAsync(b));
+                var validationTasks = listdata.Select(b => _distUpdateValidator.ValidateAsync(b));
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _stateRepo.BulkUpdateState(listdata, user);
+                    var repoResult = await _distRepo.BulkUpdateDist(listdata, user);
                     Obj = repoResult.IsSucess switch
                     {
                         true => new()
                         {
                             Data = repoResult,
-                            Message = "States Updated Successfully",
+                            Message = "Dists Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
                         false => new()
@@ -252,27 +252,27 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateState", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RemoveState(Guid Id, AppUser user)
+        public async Task<SvcsBase> RemoveDist(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.RemoveState(Id, user);
+                var repoResult = await _distRepo.RemoveDist(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "State Removed Successfully",
+                        Message = "Dist Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"StateId '{Id}' Not Found",
+                        Message = $"DistId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -284,16 +284,16 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveState", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRemoveState(List<StateUpdateModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkRemoveDist(List<DistUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.BulkRemoveState(listdata, user);
+                var repoResult = await _distRepo.BulkRemoveDist(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -304,7 +304,7 @@ namespace FMS.Svcs.Admin.State
                     },
                     false => new()
                     {
-                        Message = $"Failed to  remove States",
+                        Message = $"Failed to  remove branch",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -322,12 +322,12 @@ namespace FMS.Svcs.Admin.State
         }
         #endregion
         #region Recover
-        public async Task<SvcsBase> GetRemovedStates(PaginationParams pagination)
+        public async Task<SvcsBase> GetRemovedDists(PaginationParams pagination)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.GetRemovedStates(pagination);
+                var repoResult = await _distRepo.GetRemovedDists(pagination);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -349,28 +349,28 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedStates", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetRemovedDists", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> RecoverState(Guid Id, AppUser user)
+        public async Task<SvcsBase> RecoverDist(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.RecoverState(Id, user);
+                var repoResult = await _distRepo.RecoverDist(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "State Recovered Successfully",
+                        Message = "Dist Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
                         Data = repoResult.Records,
-                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"StateId '{Id}' not found",
+                        Message = repoResult.ResponseCode == 302 ? $"Unable to recover due to an  active record found" : $"DistId '{Id}' not found",
                         ResponseCode = repoResult.ResponseCode == 302 ? (int)ResponseCode.Status.Found : (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -382,16 +382,16 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverState", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkRecoverStates(List<StateUpdateModel> listdata, AppUser user)
+        public async Task<SvcsBase> BulkRecoverDists(List<DistUpdateModel> listdata, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.BulkRecoverStates(listdata, user);
+                var repoResult = await _distRepo.BulkRecoverDists(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -402,7 +402,7 @@ namespace FMS.Svcs.Admin.State
                     },
                     false => new()
                     {
-                        Message = "Failed To Recover States",
+                        Message = "Failed To Recover Dists",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -414,27 +414,27 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllStates", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RecoverAllDists", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> DeleteState(Guid Id, AppUser user)
+        public async Task<SvcsBase> DeleteDist(Guid Id, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.DeleteState(Id, user);
+                var repoResult = await _distRepo.DeleteDist(Id, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
                         Data = repoResult,
-                        Message = "State Deleted Successfully",
+                        Message = "Dist Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
                     {
-                        Message = $"StateId '{Id}' Not Found",
+                        Message = $"DistId '{Id}' Not Found",
                         ResponseCode = (int)ResponseCode.Status.NotFound,
                     },
                 };
@@ -446,16 +446,16 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteState", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteDist", _Exception.ToString());
             }
             return Obj;
         }
-        public async Task<SvcsBase> BulkDeleteStates(List<Guid> Ids, AppUser user)
+        public async Task<SvcsBase> BulkDeleteDists(List<Guid> Ids, AppUser user)
         {
             SvcsBase Obj;
             try
             {
-                var repoResult = await _stateRepo.BulkDeleteStates(Ids, user);
+                var repoResult = await _distRepo.BulkDeleteDists(Ids, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
@@ -466,7 +466,7 @@ namespace FMS.Svcs.Admin.State
                     },
                     false => new()
                     {
-                        Message = "Failed To delete States",
+                        Message = "Failed To delete Dists",
                         ResponseCode = (int)ResponseCode.Status.BadRequest,
                     },
                 };
@@ -478,10 +478,11 @@ namespace FMS.Svcs.Admin.State
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "DeleteAllStates", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkDeleteDists", _Exception.ToString());
             }
             return Obj;
         }
         #endregion
+
     }
 }

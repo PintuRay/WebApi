@@ -141,6 +141,7 @@ namespace FMS.Svcs.Account.Autherization
                     var repoResult = await _userManager.UpdateAsync(updateUser);
                     if (repoResult.Succeeded)
                     {
+
                         Obj = new()
                         {
                             Data = new { Id = updateUser.Id },

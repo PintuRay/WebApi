@@ -7,6 +7,7 @@ using FMS.Model.Account.Autherization;
 using FMS.Model.Email;
 using FMS.Repo;
 using FMS.Repo.Account.Authentication;
+using FMS.Svcs.Common.Address;
 using FMS.Svcs.Email;
 using FMS.Svcs.SMS;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +22,7 @@ namespace FMS.Svcs.Account.Authentication
     public class AuthenticationSvcs(
         UserValidator userValidator,
         IAuthenticationRepo authenticationRepo,
+        IAddressSvcs addressSvcs,
         UserManager<AppUser> userManager,
         RoleManager<AppRole> roleManager,
         IEmailSvcs emailSvcs,
@@ -32,6 +34,7 @@ namespace FMS.Svcs.Account.Authentication
         #region Dependancy
         private readonly UserValidator _userValidator = userValidator;
         private readonly IAuthenticationRepo _authenticationRepo = authenticationRepo;
+        private readonly IAddressSvcs _addressSvcs = addressSvcs;
         private readonly IEmailSvcs _emailSvcs = emailSvcs;
         private readonly ISmsSvcs _smsSvcs = smsSvcs;
         private readonly IConfiguration _configuration = configuration;
@@ -148,13 +151,14 @@ namespace FMS.Svcs.Account.Authentication
                 var validationResult = await _userValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var user = _mapper.Map<AppUser>(data);
-                    user.UserName = data.Email;
-                    var identity = await _userManager.CreateAsync(user, data.Password);
-                    if (identity.Succeeded)
+                    var svcsResult = await _addressSvcs.CreateAdress(data.Address);
+                    if (svcsResult.ResponseCode == 201)
                     {
-                        var repoResult = await _authenticationRepo.CreateUserAdress(data.Address, user);
-                        if (repoResult.IsSucess)
+                        var user = _mapper.Map<AppUser>(data);
+                        user.UserName = data.Email;
+                        user.Fk_AdressId = Guid.Parse(((RepoBase)svcsResult.Data).Id);
+                        var identity = await _userManager.CreateAsync(user, data.Password);
+                        if (identity.Succeeded)
                         {
                             var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                             if (!string.IsNullOrEmpty(regToken))

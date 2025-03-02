@@ -1,7 +1,7 @@
 ﻿using FMS.Db.Entity;
 using FMS.Model;
 
-namespace FMS.Svcs.Admin.State
+namespace FMS.Svcs.Common.State
 {
     public interface IStateSvcs
     {
