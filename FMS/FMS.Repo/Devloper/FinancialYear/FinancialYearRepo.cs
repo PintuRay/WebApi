@@ -17,7 +17,6 @@ namespace FMS.Repo.Devloper.FinancialYear
         private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
-        #region Financial Year
         #region Crud
         public async Task<RepoBase> GetFinancialYears(Guid BranchId)
         {
@@ -687,6 +686,5 @@ namespace FMS.Repo.Devloper.FinancialYear
                 await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
-        #endregion
     }
 }

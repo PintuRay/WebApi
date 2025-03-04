@@ -8,16 +8,14 @@ namespace FMS.Repo
         {
             #region User
             CreateMap<UserDto, AppUser>().ReverseMap();
-            CreateMap<AppUser, UserModel>();
             CreateMap<UserModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
-            CreateMap<AppUser, UserUpdateModel>();
             CreateMap<UserUpdateModel, AppUser>().ForMember(dest => dest.Address, opt => opt.Ignore());
             #endregion
             /*--------------------------------------------Devloper---------------------------------------------------*/
             #region Branch
             CreateMap<BranchDto, Branch>().ReverseMap();
-            CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-            CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+            CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.Ignore());
+            CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.Ignore());
             #endregion
             #region FinancialYear
             CreateMap<FinancialYear, FinancialYearDto>().ReverseMap();

@@ -1,17 +1,22 @@
-﻿using FMS.Db.Entity;
+﻿using AutoMapper;
+using FMS.Db.Entity;
 using FMS.Model;
+using FMS.Repo;
 using FMS.Repo.Devloper.Branch;
+using FMS.Svcs.Common.Address;
 using FMS.Svcs.Email;
 
 namespace FMS.Svcs.Devloper.Branch
 {
-    public class BranchSvcs(IBranchRepo branchRepo, BranchValidator branchValidator, BranchUpdateValidator branchUpdateValidator, IEmailSvcs emailSvc) : IBranchSvcs
+    public class BranchSvcs(IBranchRepo branchRepo, IAddressSvcs _addressSvcs, IMapper mapper, BranchValidator branchValidator, BranchUpdateValidator branchUpdateValidator, IEmailSvcs emailSvc) : IBranchSvcs
     {
         #region Dependancy
         private readonly IBranchRepo _branchRepo = branchRepo;
+        private readonly IAddressSvcs _addressSvcs = _addressSvcs;
         private readonly BranchValidator _branchValidator = branchValidator;
         private readonly BranchUpdateValidator _branchUpdateValidator = branchUpdateValidator;
         private readonly IEmailSvcs _emailSvcs = emailSvc;
+        private readonly IMapper _mapper = mapper;
         #endregion
         #region Crud
         public async Task<SvcsBase> GetAllBranch()
@@ -84,22 +89,36 @@ namespace FMS.Svcs.Devloper.Branch
                 var validationResult = await _branchValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _branchRepo.CreateBranch(data, user);
-                    Obj = repoResult.IsSucess switch
+                    var svcsResult = await _addressSvcs.CreateAdress(data.Address);
+                    if (svcsResult.ResponseCode == 201)
                     {
-                        true => new()
+                        data.Fk_AdressId = Guid.Parse(((RepoBase)svcsResult.Data).Id);
+                        var repoResult = await _branchRepo.CreateBranch(data, user);
+                        Obj = repoResult.IsSucess switch
                         {
-                            Data = repoResult,
-                            Message = "Branch Created Successfully",
-                            ResponseCode = (int)ResponseCode.Status.Created,
-                        },
-                        false => new()
+                            true => new()
+                            {
+                                Data = repoResult,
+                                Message = "Branch Created Successfully",
+                                ResponseCode = (int)ResponseCode.Status.Created,
+                            },
+                            false => new()
+                            {
+                                Message = $"Branch '{data.BranchName}' Already Exist",
+                                ResponseCode = (int)ResponseCode.Status.Found,
+                            },
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
                         {
-                            Message = $"Branch '{data.BranchName}' Already Exist",
-                            ResponseCode = (int)ResponseCode.Status.Found,
-                        },
-                    };
-                }   
+                            Data = svcsResult.Data,
+                            Message = svcsResult.Message,
+                            ResponseCode = svcsResult.ResponseCode,
+                        };
+                    }
+                }
                 else
                 {
                     Obj = new()
@@ -129,22 +148,55 @@ namespace FMS.Svcs.Devloper.Branch
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _branchRepo.BulkCreateBranch(listdata, user);
-                    Obj = repoResult.IsSucess switch
+                    var addresses = listdata.Select(s => s.Address).ToList();
+                    var svcsResult = await _addressSvcs.BulkCreateAdress(addresses);
+                    if (svcsResult.ResponseCode == 201)
                     {
-                        true => new()
+                        if (svcsResult.Data is RepoBase addressRepoResult && addressRepoResult.Records is List<Db.Entity.Address> createdAddresses)
                         {
-                            Data = repoResult,
-                            Message = "Branches Created Successfully",
-                            ResponseCode = (int)ResponseCode.Status.Created,
-                        },
-                        false => new()
+                            for (int i = 0; i < listdata.Count; i++)
+                            {
+                                if (i < createdAddresses.Count)
+                                {
+                                    listdata[i].Fk_AdressId = createdAddresses[i].AddressId;
+                                    listdata[i].Address = _mapper.Map<AddressModel>(createdAddresses[i]);
+                                }
+                            }
+                            var repoResult = await _branchRepo.BulkCreateBranch(listdata, user);
+                            Obj = repoResult.IsSucess switch
+                            {
+                                true => new()
+                                {
+                                    Data = listdata,
+                                    Message = "Branches Created Successfully",
+                                    ResponseCode = (int)ResponseCode.Status.Created,
+                                },
+                                false => new()
+                                {
+                                    Data = repoResult.Records,
+                                    Message = repoResult.ResponseCode == 400 ? repoResult.Message : "Branch already exist",
+                                    ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
+                                },
+                            };
+                        }
+                        else
                         {
-                            Data = repoResult.Records,
-                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : "Branch already exist",
-                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.Found,
-                        },
-                    };
+                            Obj = new()
+                            {
+                                Message = "Failed to process created addresses",
+                                ResponseCode = (int)ResponseCode.Status.BadRequest,
+                            };
+                        }
+                    }
+                    else
+                    {
+                        Obj = new()
+                        {
+                            Data = svcsResult.Data,
+                            Message = svcsResult.Message,
+                            ResponseCode = svcsResult.ResponseCode,
+                        };
+                    }
                 }
                 else
                 {
@@ -162,7 +214,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "CreateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkCreateBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -174,21 +226,34 @@ namespace FMS.Svcs.Devloper.Branch
                 var validationResult = await _branchUpdateValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var repoResult = await _branchRepo.UpdateBranch(data, user);
-                    Obj = repoResult.IsSucess switch
+                    var svcsResult = await _addressSvcs.UpdateAdress(data.Address);
+                    if (svcsResult.ResponseCode == 200)
                     {
-                        true => new()
+                        var repoResult = await _branchRepo.UpdateBranch(data, user);
+                        Obj = repoResult.IsSucess switch
                         {
-                            Data = repoResult,
-                            Message = "Branch updated successfully",
-                            ResponseCode = (int)ResponseCode.Status.Ok,
-                        },
-                        false => new()
+                            true => new()
+                            {
+                                Data = repoResult,
+                                Message = "Branch updated successfully",
+                                ResponseCode = (int)ResponseCode.Status.Ok,
+                            },
+                            false => new()
+                            {
+                                Message = $"BranchId '{data.BranchId}' not found",
+                                ResponseCode = (int)ResponseCode.Status.NotFound,
+                            },
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
                         {
-                            Message = $"BranchId '{data.BranchId}' not found",
-                            ResponseCode = (int)ResponseCode.Status.NotFound,
-                        },
-                    };
+                            Data = svcsResult.Data,
+                            Message = svcsResult.Message,
+                            ResponseCode = svcsResult.ResponseCode,
+                        };
+                    }
                 }
                 else
                 {
@@ -220,22 +285,36 @@ namespace FMS.Svcs.Devloper.Branch
                 var validationResults = await Task.WhenAll(validationTasks);
                 if (validationResults.All(r => r.IsValid))
                 {
-                    var repoResult = await _branchRepo.BulkUpdateBranch(listdata, user);
-                    Obj = repoResult.IsSucess switch
+                    var addresses = listdata.Select(s => s.Address).ToList();
+                    var svcsResult = await _addressSvcs.BulkUpdateAdress(addresses);
+                    if (svcsResult.ResponseCode == 200)
                     {
-                        true => new()
+                        var repoResult = await _branchRepo.BulkUpdateBranch(listdata, user);
+                        Obj = repoResult.IsSucess switch
                         {
-                            Data = repoResult,
-                            Message = "Branches Updated Successfully",
-                            ResponseCode = (int)ResponseCode.Status.Ok,
-                        },
-                        false => new()
+                            true => new()
+                            {
+                                Data = listdata,
+                                Message = "Branches Updated Successfully",
+                                ResponseCode = (int)ResponseCode.Status.Ok,
+                            },
+                            false => new()
+                            {
+                                Data = repoResult.Records,
+                                Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some records not found",
+                                ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.NotFound,
+                            },
+                        };
+                    }
+                    else
+                    {
+                        Obj = new()
                         {
-                            Data = repoResult.Records,
-                            Message = repoResult.ResponseCode == 400 ? repoResult.Message : $"Some records not found",
-                            ResponseCode = repoResult.ResponseCode == 400 ? (int)ResponseCode.Status.BadRequest : (int)ResponseCode.Status.NotFound,
-                        },
-                    };
+                            Data = svcsResult.Data,
+                            Message = svcsResult.Message,
+                            ResponseCode = svcsResult.ResponseCode,
+                        };
+                    }
                 }
                 else
                 {
@@ -253,7 +332,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "UpdateBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkUpdateBranch", _Exception.ToString());
             }
             return Obj;
         }
@@ -317,7 +396,7 @@ namespace FMS.Svcs.Devloper.Branch
                     Message = _Exception.Message,
                     ResponseCode = (int)ResponseCode.Status.BadRequest,
                 };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "RemoveBranch", _Exception.ToString());
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "BulkRemoveBranch", _Exception.ToString());
             }
             return Obj;
         }

@@ -32,10 +32,10 @@ namespace FMS.Repo.Account.AutherIzation
                           Gender = s.Gender,
                           PhotoPath = s.PhotoPath,
                           PhoneNumber = s.PhoneNumber,
+                          Fk_AdressId = s.Fk_AdressId,
                           Address = new AddressDto()
                           {
                               AddressId = s.Address.AddressId,
-                              //Fk_UserId = s.Address.Fk_UserId,
                               At = s.Address.At,
                               City = s.Address.City,
                               PinCode = s.Address.PinCode,

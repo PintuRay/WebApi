@@ -18,7 +18,6 @@ namespace FMS.Repo.Devloper.Branch
         private readonly IRedisCache _cache = cache;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(3);
         #endregion
-        #region Branch
         #region Crud
         public async Task<RepoBase> GetAllBranch()
         {
@@ -116,12 +115,8 @@ namespace FMS.Repo.Devloper.Branch
                 if (existingBranch == null)
                 {
                     var newBranch = _mapper.Map<Db.Entity.Branch>(data);
-                    newBranch.BranchId = Guid.NewGuid();
                     newBranch.CreatedDate = DateTime.UtcNow;
                     newBranch.CreatedBy = user.Name;
-                    //newBranch.Address.Fk_BranchId = newBranch.BranchId;
-                    newBranch.Address.CreatedDate = DateTime.UtcNow;
-                    newBranch.Address.CreatedBy = user.Name;
                     await _ctx.Branches.AddAsync(newBranch);
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
@@ -158,12 +153,8 @@ namespace FMS.Repo.Devloper.Branch
                     var newBranches = dataList.Select(b =>
                     {
                         var branch = _mapper.Map<Db.Entity.Branch>(b);
-                        branch.BranchId = Guid.NewGuid();
-                        //branch.Address.Fk_BranchId = branch.BranchId;
                         branch.CreatedDate = DateTime.UtcNow;
                         branch.CreatedBy = user.Name;
-                        branch.Address.CreatedDate = DateTime.UtcNow;
-                        branch.Address.CreatedBy = user.Name;
                         return branch;
                     }).ToList();
                     var branchResponse = await _ctx.BulkInsert(newBranches, includeGraph: true);
@@ -201,14 +192,12 @@ namespace FMS.Repo.Devloper.Branch
             try
             {
                 _Result.IsSucess = false;
-                var existingBranch = await _ctx.Branches.Include(s => s.Address).SingleOrDefaultAsync(s => s.BranchId == data.BranchId && s.IsActive == true);
+                var existingBranch = await _ctx.Branches.SingleOrDefaultAsync(s => s.BranchId == data.BranchId && s.IsActive == true);
                 if (existingBranch != null)
                 {
                    var branchesToUpdate = _mapper.Map(data, existingBranch);
                     existingBranch.ModifyDate = DateTime.UtcNow;
                     existingBranch.ModifyBy = user.Name;
-                    existingBranch.Address.ModifyDate = DateTime.UtcNow;
-                    existingBranch.Address.ModifyBy = user.Name;
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
@@ -756,7 +745,6 @@ namespace FMS.Repo.Devloper.Branch
                 await _ctx.BulkUpdateCollection(allRelatedData);
             }
         }
-    }
-    #endregion
+    } 
 }
 

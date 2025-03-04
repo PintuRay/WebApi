@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Repo.Common.Address
 {
-    public class AddressRepo(Context ctx, IMapper mapper): IAddressRepo
+    public class AddressRepo(Context ctx, IMapper mapper) : IAddressRepo
     {
         #region Dependancy
         private readonly Context _ctx = ctx;
         private readonly IMapper _mapper = mapper;
+
         #endregion
         public async Task<RepoBase> CreateAdress(AddressModel data)
         {
@@ -28,6 +29,36 @@ namespace FMS.Repo.Common.Address
             }
             catch
             {
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> BulkCreateAdress(List<AddressModel> datalist)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var newAddresses = datalist.Select(data => _mapper.Map<Db.Entity.Address>(data)).ToList();
+                var response = await _ctx.BulkInsert(newAddresses);
+                if (response.IsSuccess)
+                {
+                    await transaction.CommitAsync();
+                    _Result.Count = response.AffectedRows;
+                    _Result.IsSucess = true;
+                    _Result.Records = newAddresses;
+                }
+                else
+                {
+                    await transaction.RollbackAsync();
+                    _Result.ResponseCode = 400;
+                    _Result.Message = "Failed to create Adresses";
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
@@ -53,6 +84,50 @@ namespace FMS.Repo.Common.Address
             }
             catch
             {
+                throw;
+            }
+            return _Result;
+        }
+        public async Task<RepoBase> BulkUpdateAdress(List<AddressUpdateModel> datalist)
+        {
+            RepoBase _Result = new();
+            using var transaction = await _ctx.Database.BeginTransactionAsync();
+            try
+            {
+                _Result.IsSucess = false;
+                var existingAdresses = await _ctx.Addresses.Where(b => b.IsActive == true && datalist.Select(br => br.AddressId).Contains(b.AddressId)).ToListAsync();
+                var notFoundAdresses= datalist.Where(br => !existingAdresses.Any(b => b.AddressId == br.AddressId)).ToList();
+                if (notFoundAdresses.Count == 0)
+                {
+                    var countriesToUpdate = existingAdresses.Select(s =>
+                    {
+                        var updateData = datalist.First(u => u.AddressId == s.AddressId);
+                        _mapper.Map(updateData, s);
+                        return s;
+                    }).ToList();
+                    var response = await _ctx.BulkUpdate(countriesToUpdate);
+                    if (response.IsSuccess)
+                    {
+                        await transaction.CommitAsync();
+                        _Result.Count = response.AffectedRows;
+                        _Result.Records = countriesToUpdate;
+                        _Result.IsSucess = true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        _Result.ResponseCode = 400;
+                        _Result.Message = "Failed to update adresses";
+                    }
+                }
+                else
+                {
+                    _Result.Records = notFoundAdresses;
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
                 throw;
             }
             return _Result;
