@@ -13,12 +13,15 @@ namespace FMS.Repo
             #endregion
             /*--------------------------------------------Devloper---------------------------------------------------*/
             #region Branch
-            CreateMap<BranchDto, Branch>().ReverseMap();
+            CreateMap<Branch, BranchDto>()
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+            .ReverseMap();
             CreateMap<BranchModel, Branch>().ForMember(dest => dest.Address, opt => opt.Ignore());
             CreateMap<BranchUpdateModel, Branch>().ForMember(dest => dest.Address, opt => opt.Ignore());
             #endregion
             #region FinancialYear
-            CreateMap<FinancialYear, FinancialYearDto>().ReverseMap();
+            CreateMap<FinancialYear, FinancialYearDto>()
+                .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch.BranchName)).ReverseMap();
             CreateMap<FinancialYearModel, FinancialYear>()
                 .ForMember(dest => dest.StartDate, opt =>
                     opt.MapFrom(src => DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
@@ -38,7 +41,8 @@ namespace FMS.Repo
             CreateMap<CompanyUpdateModel, Company>();
             #endregion
             #region UserBranch
-            CreateMap<UserBranch, UserBranchDto>().ReverseMap();
+            CreateMap<UserBranch, UserBranchDto>()
+                .ForMember(dest => dest.BranchName, opt => opt.MapFrom(src => src.Branch.BranchName)).ReverseMap();
             CreateMap<UserBranchModel, UserBranch>();
             CreateMap<UserBranchUpdateModel, UserBranch>();
             #endregion

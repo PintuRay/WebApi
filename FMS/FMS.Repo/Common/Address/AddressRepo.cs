@@ -23,7 +23,7 @@ namespace FMS.Repo.Common.Address
                 int Count = await _ctx.SaveChangesAsync();
                 if (Count > 0)
                 {
-                    _Result.Id = newAddress.AddressId.ToString();
+                    _Result.Records = newAddress;
                     _Result.IsSucess = true;
                 }
             }
@@ -45,7 +45,7 @@ namespace FMS.Repo.Common.Address
                 if (response.IsSuccess)
                 {
                     await transaction.CommitAsync();
-                    _Result.Count = response.AffectedRows;
+                    //_Result.Count = response.AffectedRows;
                     _Result.IsSucess = true;
                     _Result.Records = newAddresses;
                 }
@@ -76,9 +76,10 @@ namespace FMS.Repo.Common.Address
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = existingAddress;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = existingAddress;
+                        //_Result.Count = Count;
+                    
                     }
                 }
             }
@@ -109,9 +110,10 @@ namespace FMS.Repo.Common.Address
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
-                        _Result.Records = countriesToUpdate;
                         _Result.IsSucess = true;
+                        //_Result.Count = response.AffectedRows;
+                        _Result.Records = countriesToUpdate;
+                      
                     }
                     else
                     {

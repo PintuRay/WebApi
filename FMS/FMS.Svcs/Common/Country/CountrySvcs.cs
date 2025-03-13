@@ -24,7 +24,7 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -55,7 +55,8 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
+                        Count = repoResult.Count,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -89,7 +90,7 @@ namespace FMS.Svcs.Common.Country
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Branch Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
@@ -134,7 +135,7 @@ namespace FMS.Svcs.Common.Country
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Country Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
@@ -179,7 +180,7 @@ namespace FMS.Svcs.Common.Country
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Country Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
@@ -225,7 +226,7 @@ namespace FMS.Svcs.Common.Country
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Countries Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
@@ -267,7 +268,7 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         Message = "Country Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -299,8 +300,8 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} removed , {listdata.Count - repoResult.Count} failed",
+                        Data = repoResult.Records,
+                        Message = $"{((List<Db.Entity.CountryDto>)repoResult.Records).Count} removed, {listdata.Count - ((List<Db.Entity.CountryDto>)repoResult.Records).Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -333,7 +334,8 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
+                        Count = repoResult.Count,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -364,7 +366,7 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         Message = "Country recovered successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -397,8 +399,8 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} recovered , {listdata.Count - repoResult.Count} failed",
+                        Data = repoResult.Records,
+                        Message = $"{((List<Db.Entity.CountryDto>)repoResult.Records).Count} recovered, {listdata.Count - ((List<Db.Entity.CountryDto>)repoResult.Records).Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -429,7 +431,7 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Id,
                         Message = "Country Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -461,8 +463,8 @@ namespace FMS.Svcs.Common.Country
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} deleted, {Ids.Count - repoResult.Count} failed",
+                        Data = repoResult.Ids,
+                        Message = $"{repoResult.Ids.Count} deleted, {Ids.Count - repoResult.Ids.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()

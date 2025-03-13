@@ -1,4 +1,5 @@
 ﻿using FMS.Db.Entity;
+using FMS.Model;
 
 namespace FMS.Repo.Admin.UserBranch
 {
@@ -6,17 +7,16 @@ namespace FMS.Repo.Admin.UserBranch
     {
         #region User Branch 
         #region Crud
-        //Task<Result<Db.Entity.UserBranch>> GetUserBranches();
-        //Task<RepoBase> CreateUserBranch(UserBranchModel data, AppUser user);
-        //Task<RepoBase> UpdateUserBranch(Guid Id, UserBranchModel model, AppUser user);
-        //Task<RepoBase> RemoveUserBranch(Guid Id, AppUser user);
+        Task<RepoBase> GetUserBranches(AppUser user);
+        Task<RepoBase> GetUserBranches(PaginationParams pagination);
+        Task<RepoBase> CreateUserBranch(UserBranchModel data, AppUser user);
+        Task<RepoBase> UpdateUserBranch(UserBranchUpdateModel model, AppUser user);
+        Task<RepoBase> RemoveUserBranch(Guid Id, AppUser user);
         #endregion
         #region Recover
-        //Task<Result<Db.Entity.UserBranch>> GetRemovedUserBranches();
-        //Task<RepoBase> RecoverUserBranch(Guid Id, AppUser user);
-        //Task<RepoBase> DeleteUserBranch(Guid Id, AppUser user);
-        //Task<RepoBase> RecoverAllUserBranches(List<string> Ids, AppUser user);
-        //Task<RepoBase> DeleteAllUserBranches(List<string> Ids, AppUser user);
+        Task<RepoBase> GetRemovedUserBranches(PaginationParams pagination);
+        Task<RepoBase> RecoverUserBranch(Guid Id, AppUser user);
+        Task<RepoBase> DeleteUserBranch(Guid Id, AppUser user);
         #endregion
         #endregion
     }

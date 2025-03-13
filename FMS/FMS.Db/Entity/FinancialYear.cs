@@ -47,6 +47,7 @@ namespace FMS.Db.Entity
     {
         public Guid FinancialYearId { get; set; }
         public Guid Fk_BranchId { get; set; }
+        public string BranchName { get; set; }
         public string Financial_Year { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

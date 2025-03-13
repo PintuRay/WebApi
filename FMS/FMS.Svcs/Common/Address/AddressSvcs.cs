@@ -25,7 +25,7 @@ namespace FMS.Svcs.Common.Address
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Address Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
@@ -70,7 +70,7 @@ namespace FMS.Svcs.Common.Address
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Address Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
@@ -115,7 +115,7 @@ namespace FMS.Svcs.Common.Address
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Address updated successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
@@ -161,7 +161,7 @@ namespace FMS.Svcs.Common.Address
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Adresses Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },

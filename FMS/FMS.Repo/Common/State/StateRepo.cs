@@ -37,17 +37,18 @@ namespace FMS.Repo.Common.State
                                        }).OrderBy(s => s.StateName).ToListAsync();
                     if (Query.Count > 0)
                     {
-                        _Result.Records = Query;
-                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
+                        _Result.Records = Query;
+                        // _Result.Count = Query.Count;
                         await _cache.SetAsync(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
                 {
-                    _Result.Records = JsonConvert.DeserializeObject<List<StateDto>>(cacheData.Records.ToString());
-                    _Result.Count = cacheData.Count;
                     _Result.IsSucess = true;
+                    _Result.Records = JsonConvert.DeserializeObject<List<StateDto>>(cacheData.Records.ToString());
+                    // _Result.Count = cacheData.Count;
+                  
                 }
             }
             catch
@@ -95,9 +96,10 @@ namespace FMS.Repo.Common.State
                 }
                 if (Query.Count > 0)
                 {
-                    _Result.Records = Query;
-                    _Result.Count = Count;
                     _Result.IsSucess = true;
+                    _Result.Records = Query;
+                    // _Result.Count = Count;
+                 
                 }
             }
             catch
@@ -122,9 +124,9 @@ namespace FMS.Repo.Common.State
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = newState;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = newState;
+                        // _Result.Count = Count;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -156,7 +158,7 @@ namespace FMS.Repo.Common.State
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
+                        // _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _Result.Records = newStates;
                         _cache.RemoveByPrefix($"State_");
@@ -195,9 +197,9 @@ namespace FMS.Repo.Common.State
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = existingState;
                         _Result.IsSucess = true;
-                        _Result.Count = Count;
+                        _Result.Records = existingState;
+                        // _Result.Count = Count;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -231,9 +233,9 @@ namespace FMS.Repo.Common.State
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
-                        _Result.Records = StatesToUpdate;
+                        // _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
+                        _Result.Records = StatesToUpdate;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -267,9 +269,9 @@ namespace FMS.Repo.Common.State
                     if (Count > 0)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = Query;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = Query;
+                        // _Result.Count = Count;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -303,7 +305,7 @@ namespace FMS.Repo.Common.State
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
+                        // _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _Result.Records = Query;
                         _cache.RemoveByPrefix($"State_");
@@ -356,9 +358,9 @@ namespace FMS.Repo.Common.State
                 }
                 if (Query.Count > 0)
                 {
-                    _Result.Records = Query;
-                    _Result.Count = Count;
                     _Result.IsSucess = true;
+                    _Result.Records = Query;
+                    // _Result.Count = Count;
                 }
             }
             catch
@@ -388,9 +390,9 @@ namespace FMS.Repo.Common.State
                         if (Count > 0)
                         {
                             await transaction.CommitAsync();
-                            _Result.Records = Query;
-                            _Result.Count = Count;
                             _Result.IsSucess = true;
+                            _Result.Records = Query;
+                            // _Result.Count = Count;
                             _cache.RemoveByPrefix($"State_");
                         }
                     }
@@ -432,7 +434,7 @@ namespace FMS.Repo.Common.State
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
+                        // _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _Result.Records = recoverStates;
                         _cache.RemoveByPrefix($"State_");
@@ -459,9 +461,9 @@ namespace FMS.Repo.Common.State
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Id = Id.ToString();
-                        _Result.Count = Count;
+                        // _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Id = Id.ToString();
                         _cache.RemoveByPrefix($"State_");
                     }
                 }
@@ -486,9 +488,9 @@ namespace FMS.Repo.Common.State
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
+                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
+                        // _Result.Count = response.AffectedRows;
                         _cache.RemoveByPrefix($"State_");
                     }
                 }

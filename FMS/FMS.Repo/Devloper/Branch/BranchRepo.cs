@@ -6,7 +6,7 @@ using FMS.Model;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections;
-using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FMS.Repo.Devloper.Branch
 {
@@ -39,17 +39,15 @@ namespace FMS.Repo.Devloper.Branch
                           .ToListAsync();
                     if (Query.Count > 0)
                     {
-                        _Result.Records = Query;
-                        _Result.Count = Query.Count();
                         _Result.IsSucess = true;
+                        _Result.Records = Query;
                         await _cache.SetAsync(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
                 {
-                    _Result.Records = JsonConvert.DeserializeObject<List<BranchDto>>(cacheData.Records.ToString());
-                    _Result.Count = cacheData.Count;
                     _Result.IsSucess = true;
+                    _Result.Records = JsonConvert.DeserializeObject<List<BranchDto>>(cacheData.Records.ToString());
                 }
             }
             catch
@@ -93,9 +91,9 @@ namespace FMS.Repo.Devloper.Branch
 
                 if (Query.Count > 0)
                 {
-                    _Result.Records = Query;
-                    _Result.Count = Count;
                     _Result.IsSucess = true;
+                    _Result.Records = Query;
+                    _Result.Count = Count;  
                 }
             }
             catch
@@ -122,9 +120,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (Count > 0)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = newBranch;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = await _ctx.Branches
+                                        .Where(s =>s.BranchId == newBranch.BranchId)
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).SingleOrDefaultAsync();
                         _cache.Remove("Branches");
                     }
                     else
@@ -161,9 +163,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (branchResponse.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = branchResponse.AffectedRows;
                         _Result.IsSucess = true;
-                        _Result.Records = newBranches;
+                        _Result.Records = await _ctx.Branches
+                                        .Where(s => newBranches.Select(br => br.BranchId).Contains(s.BranchId))
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).ToListAsync();
                         _cache.Remove("Branches");
                     }
                     else
@@ -202,9 +208,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (Count > 0)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = existingBranch;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = await _ctx.Branches
+                                        .Where(s => s.BranchId == existingBranch.BranchId)
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).SingleOrDefaultAsync();
                         _cache.Remove("Branches");
                     }
                 }
@@ -241,9 +251,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (branchResponse.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = branchResponse.AffectedRows;
-                        _Result.Records = existingBranches;
                         _Result.IsSucess = true;
+                        _Result.Records = _Result.Records = await _ctx.Branches
+                                        .Where(s => existingBranches.Select(br => br.BranchId).Contains(s.BranchId))
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).ToListAsync();
                         _cache.Remove("Branches");
                     }
                     else
@@ -289,9 +303,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (Count > 0)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = Query;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = await _ctx.Branches
+                                        .Where(s => s.BranchId == Query.BranchId)
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).SingleOrDefaultAsync();
                         _cache.Remove("Branches");
                     }
                 }
@@ -331,9 +349,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
-                        _Result.Records = Query;
+                        _Result.Records = await _ctx.Branches
+                                        .Where(s => Query.Select(br => br.BranchId).Contains(s.BranchId))
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).ToListAsync();
                         _cache.Remove("Branches");
                     }
                 }
@@ -381,9 +403,9 @@ namespace FMS.Repo.Devloper.Branch
                 }
                 if (Query.Count > 0)
                 {
+                    _Result.IsSucess = true;
                     _Result.Records = Query;
                     _Result.Count = Count;
-                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -419,9 +441,13 @@ namespace FMS.Repo.Devloper.Branch
                         if (Count > 0)
                         {
                             await transaction.CommitAsync();
-                            _Result.Records = Query;
-                            _Result.Count = Count;
                             _Result.IsSucess = true;
+                            _Result.Records = await _ctx.Branches
+                                        .Where(s => s.BranchId == Query.BranchId)
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).SingleOrDefaultAsync();
                             _cache.Remove("Branches");
                         }
                     }
@@ -471,9 +497,13 @@ namespace FMS.Repo.Devloper.Branch
                     if (branchResponse.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = recoverBranch;
-                        _Result.Count = branchResponse.AffectedRows;
                         _Result.IsSucess = true;
+                        _Result.Records = await _ctx.Branches
+                                        .Where(s => recoverBranch.Select(br => br.BranchId).Contains(s.BranchId))
+                                        .Include(s => s.Address).ThenInclude(a => a.Country)
+                                        .Include(s => s.Address).ThenInclude(a => a.State)
+                                        .Include(s => s.Address).ThenInclude(a => a.Dist)
+                                        .Select(s => _mapper.Map<BranchDto>(s)).ToListAsync();
                         _cache.Remove("Branches");
                     }
                 }
@@ -498,9 +528,8 @@ namespace FMS.Repo.Devloper.Branch
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Id = Id.ToString();
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Id = Id.ToString();
                         _cache.Remove("Branches");
                     }
                 }
@@ -521,13 +550,12 @@ namespace FMS.Repo.Devloper.Branch
                 var existingBranches = await GetBranchesWithRelatedEntity(Ids, false);
                 if (existingBranches.Count != 0)
                 {
-                    var response = await _ctx.BulkDelete(existingBranches, true);
+                    var response = await _ctx.BulkDelete(existingBranches);
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
+                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
                         _cache.Remove("Branches");
                     }
                 }

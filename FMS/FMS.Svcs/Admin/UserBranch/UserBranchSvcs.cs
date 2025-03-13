@@ -12,37 +12,37 @@ namespace FMS.Svcs.Admin.UserBranch
         #endregion
         #region User Branch  
         #region Crud
-        //public async Task<SvcsBase> GetUserBranches()
-        //{
-        //    SvcsBase Obj;
-        //    try
-        //    {
-        //        var repoResult = await _userBranchRepo.GetUserBranches();
-        //        Obj = repoResult.IsSucess switch
-        //        {
-        //            true => new()
-        //            {
-        //                Data = repoResult,
-        //                ResponseCode = (int)ResponseCode.Status.Ok,
-        //            },
-        //            false => new()
-        //            {
-        //                Message = "No Record Exist",
-        //                ResponseCode = (int)ResponseCode.Status.NoContent,
-        //            },
-        //        };
-        //    }
-        //    catch (Exception _Exception)
-        //    {
-        //        Obj = new()
-        //        {
-        //            Message = _Exception.Message,
-        //            ResponseCode = (int)ResponseCode.Status.BadRequest,
-        //        };
-        //        await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetUserBranches", _Exception.ToString());
-        //    }
-        //    return Obj;
-        //}
+        public async Task<SvcsBase> GetUserBranches()
+        {
+            SvcsBase Obj;
+            try
+            {
+                var repoResult = await _userBranchRepo.GetUserBranches();
+                Obj = repoResult.IsSucess switch
+                {
+                    true => new()
+                    {
+                        Data = repoResult,
+                        ResponseCode = (int)ResponseCode.Status.Ok,
+                    },
+                    false => new()
+                    {
+                        Message = "No Record Exist",
+                        ResponseCode = (int)ResponseCode.Status.NoContent,
+                    },
+                };
+            }
+            catch (Exception _Exception)
+            {
+                Obj = new()
+                {
+                    Message = _Exception.Message,
+                    ResponseCode = (int)ResponseCode.Status.BadRequest,
+                };
+                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "GetUserBranches", _Exception.ToString());
+            }
+            return Obj;
+        }
         //public async Task<SvcsBase> CreateUserBranch(UserBranchModel data, AppUser user)
         //{
         //    SvcsBase Obj;

@@ -104,12 +104,12 @@ namespace FMS.Svcs.Account.Autherization
             SvcsBase Obj;
             try
             {
-                var repoResult = await _autherizationRepo.GetUserById(Id); // _userManager.FindByIdAsync(Id);
+                var repoResult = await _autherizationRepo.GetUserById(Id);
                 if (repoResult != null)
                 {
                     Obj = new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     };
                 }

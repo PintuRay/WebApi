@@ -16,12 +16,17 @@ namespace FMS.Server.Controllers.Admin
         private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
         #region Crud
-        //[HttpGet]
-        //public async Task<IActionResult> Get()
-        //{
-        //    var result = await _userBranchSvcs.GetUserBranches();
-        //    return result.ResponseCode == 200 ? Ok(result) : BadRequest(result);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var result = await _userBranchSvcs.GetUserBranches();
+            return result.ResponseCode switch
+            {
+                404 => StatusCode(404, result),
+                200 => StatusCode(200, result),
+                _ => BadRequest(result)
+            };
+        }
         //[HttpPost, Authorize(policy: "Create")]
         //public async Task<IActionResult> Create([FromBody] UserBranchModel model)
         //{

@@ -24,7 +24,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -55,7 +55,8 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
+                        Count = repoResult.Count,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -89,7 +90,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Financial Year Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
@@ -134,7 +135,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "financial Years Created Successfully",
                             ResponseCode = (int)ResponseCode.Status.Created,
                         },
@@ -179,7 +180,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Financial Year Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
@@ -224,7 +225,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                     {
                         true => new()
                         {
-                            Data = repoResult,
+                            Data = repoResult.Records,
                             Message = "Financial years Updated Successfully",
                             ResponseCode = (int)ResponseCode.Status.Ok,
                         },
@@ -266,7 +267,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         Message = "Financial Year Removed Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -293,13 +294,13 @@ namespace FMS.Svcs.Devloper.FinancialYear
             SvcsBase Obj;
             try
             {
-                var repoResult = await _financialYearRepo.BulkRecoverFinancialYear(listdata, user);
+                var repoResult = await _financialYearRepo.BulkRemoveFinancialYear(listdata, user);
                 Obj = repoResult.IsSucess switch
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} removed , {listdata.Count - repoResult.Count} failed",
+                        Data = repoResult.Records,
+                        Message = $"{((List<FinancialYearDto>)repoResult.Records).Count} removed, {listdata.Count - ((List<FinancialYearDto>)repoResult.Records).Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -332,7 +333,8 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
+                        Count = repoResult.Count,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -363,7 +365,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         Message = "Financial Year Recovered Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -396,8 +398,8 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} recovered , {listdata.Count - repoResult.Count} failed",
+                        Data = repoResult.Records,
+                        Message = $"{((List<FinancialYearDto>)repoResult.Records).Count} removed, {listdata.Count - ((List<FinancialYearDto>)repoResult.Records).Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -428,7 +430,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Id,
                         Message = "Financial Year Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -460,7 +462,7 @@ namespace FMS.Svcs.Devloper.FinancialYear
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Ids,
                         Message = $"{repoResult.Count} deleted, {Ids.Count - repoResult.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },

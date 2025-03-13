@@ -5,6 +5,7 @@ using FMS.Repo;
 using FMS.Repo.Devloper.Branch;
 using FMS.Svcs.Common.Address;
 using FMS.Svcs.Email;
+using System.Collections.Generic;
 
 namespace FMS.Svcs.Devloper.Branch
 {
@@ -29,7 +30,7 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -60,7 +61,8 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
+                        Count = repoResult.Count,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -89,16 +91,16 @@ namespace FMS.Svcs.Devloper.Branch
                 var validationResult = await _branchValidator.ValidateAsync(data);
                 if (validationResult.IsValid)
                 {
-                    var svcsResult = await _addressSvcs.CreateAdress(data.Address);
-                    if (svcsResult.ResponseCode == 201)
+                    var AddressResult = await _addressSvcs.CreateAdress(data.Address);
+                    if (AddressResult.ResponseCode == 201)
                     {
-                        data.Fk_AdressId = Guid.Parse(((RepoBase)svcsResult.Data).Id);
-                        var repoResult = await _branchRepo.CreateBranch(data, user);
-                        Obj = repoResult.IsSucess switch
+                        data.Fk_AdressId = ((Address)AddressResult.Data).AddressId;
+                        var branchResult = await _branchRepo.CreateBranch(data, user);
+                        Obj = branchResult.IsSucess switch
                         {
                             true => new()
                             {
-                                Data = repoResult,
+                                Data = branchResult.Records,
                                 Message = "Branch Created Successfully",
                                 ResponseCode = (int)ResponseCode.Status.Created,
                             },
@@ -113,9 +115,9 @@ namespace FMS.Svcs.Devloper.Branch
                     {
                         Obj = new()
                         {
-                            Data = svcsResult.Data,
-                            Message = svcsResult.Message,
-                            ResponseCode = svcsResult.ResponseCode,
+                            Data = AddressResult.Data,
+                            Message = AddressResult.Message,
+                            ResponseCode = AddressResult.ResponseCode,
                         };
                     }
                 }
@@ -152,7 +154,7 @@ namespace FMS.Svcs.Devloper.Branch
                     var svcsResult = await _addressSvcs.BulkCreateAdress(addresses);
                     if (svcsResult.ResponseCode == 201)
                     {
-                        if (svcsResult.Data is RepoBase addressRepoResult && addressRepoResult.Records is List<Db.Entity.Address> createdAddresses)
+                        if (svcsResult.Data is List<Db.Entity.Address> createdAddresses)
                         {
                             for (int i = 0; i < listdata.Count; i++)
                             {
@@ -167,7 +169,7 @@ namespace FMS.Svcs.Devloper.Branch
                             {
                                 true => new()
                                 {
-                                    Data = listdata,
+                                    Data = repoResult.Records,
                                     Message = "Branches Created Successfully",
                                     ResponseCode = (int)ResponseCode.Status.Created,
                                 },
@@ -234,7 +236,7 @@ namespace FMS.Svcs.Devloper.Branch
                         {
                             true => new()
                             {
-                                Data = repoResult,
+                                Data = repoResult.Records,
                                 Message = "Branch updated successfully",
                                 ResponseCode = (int)ResponseCode.Status.Ok,
                             },
@@ -294,7 +296,7 @@ namespace FMS.Svcs.Devloper.Branch
                         {
                             true => new()
                             {
-                                Data = listdata,
+                                Data = repoResult.Records,
                                 Message = "Branches Updated Successfully",
                                 ResponseCode = (int)ResponseCode.Status.Ok,
                             },
@@ -346,7 +348,7 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         Message = "Branch removed successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -378,8 +380,8 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} removed , {listdata.Count - repoResult.Count} failed",
+                        Data = repoResult.Records,
+                        Message = $"{((List<BranchDto>)repoResult.Records).Count} removed, {listdata.Count - ((List<BranchDto>)repoResult.Records).Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -412,7 +414,8 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
+                        Count = repoResult.Count,
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -443,7 +446,7 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Records,
                         Message = "Branch recovered successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -476,8 +479,8 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} recovered , {listdata.Count - repoResult.Count} failed",
+                        Data = repoResult.Records,
+                        Message = $"{((List<BranchDto>)repoResult.Records).Count} removed, {listdata.Count - ((List<BranchDto>)repoResult.Records).Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()
@@ -508,7 +511,7 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
+                        Data = repoResult.Id,
                         Message = "Branch Deleted Successfully",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
@@ -540,8 +543,8 @@ namespace FMS.Svcs.Devloper.Branch
                 {
                     true => new()
                     {
-                        Data = repoResult,
-                        Message = $"{repoResult.Count} deleted, {Ids.Count - repoResult.Count} failed",
+                        Data = repoResult.Ids,
+                        Message = $"{repoResult.Ids.Count} deleted, {Ids.Count - repoResult.Ids.Count} failed",
                         ResponseCode = (int)ResponseCode.Status.Ok,
                     },
                     false => new()

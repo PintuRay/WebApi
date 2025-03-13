@@ -6,5 +6,6 @@
         public string Message { get; set; }
         public object Data { get; set; }
         public int ResponseCode { get; set; }
+        public int? Count { get; set; }
     }
 }

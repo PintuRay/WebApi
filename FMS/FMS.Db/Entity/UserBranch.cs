@@ -26,6 +26,8 @@ namespace FMS.Db.Entity
         public Guid Id { get; set; }
         public string Fk_UserId { get; set; }
         public Guid Fk_BranchId { get; set; }
+        public string UserName { get; set; }
+        public string BranchName {  get; set; }
     }
     public class UserBranch 
     {

@@ -99,13 +99,12 @@ namespace FMS.Db
             }
             return result;
         }
-        public static async Task<BulkOperationResult> BulkDelete<T>(this DbContext context, IList<T> entities, bool includeGraph = false) where T : class
+        public static async Task<BulkOperationResult> BulkDelete<T>(this DbContext context, IList<T> entities) where T : class
         {
             var result = new BulkOperationResult();
             var startTime = DateTime.UtcNow;
             try
             {
-                BulkConfigurationSetup.DefaultConfig.IncludeGraph = includeGraph;
                 await context.BulkDeleteAsync(entities, BulkConfigurationSetup.DefaultConfig);
                 result.AffectedRows = entities.Count;
                 result.IsSuccess = true;

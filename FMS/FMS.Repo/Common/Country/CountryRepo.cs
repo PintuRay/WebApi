@@ -40,17 +40,16 @@ namespace FMS.Repo.Common.Country
                                        }).OrderBy(s => s.CountryName).ToListAsync();
                     if (Query.Count > 0)
                     {
-                        _Result.Records = Query;
-                        _Result.Count = Query.Count;
                         _Result.IsSucess = true;
+                        _Result.Records = Query;
                         await _cache.SetAsync(cacheKey, _Result, _cacheExpiration);
                     }
                 }
                 else
                 {
-                    _Result.Records = JsonConvert.DeserializeObject<List<CountryDto>>(cacheData.Records.ToString());
-                    _Result.Count = cacheData.Count;
                     _Result.IsSucess = true;
+                    _Result.Records = JsonConvert.DeserializeObject<List<CountryDto>>(cacheData.Records.ToString());
+                    //_Result.Count = cacheData.Count;
                 }
             }
             catch
@@ -99,9 +98,9 @@ namespace FMS.Repo.Common.Country
                 }
                 if (Query.Count > 0)
                 {
+                    _Result.IsSucess = true;
                     _Result.Records = Query;
                     _Result.Count = Count;
-                    _Result.IsSucess = true;
                 }
             }
             catch
@@ -126,9 +125,8 @@ namespace FMS.Repo.Common.Country
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = newCountry;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = newCountry;
                         _cache.Remove("Country");
                     }
                 }
@@ -160,7 +158,6 @@ namespace FMS.Repo.Common.Country
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _Result.Records = newCountries;
                         _cache.Remove("Country");
@@ -199,9 +196,8 @@ namespace FMS.Repo.Common.Country
                     int Count = await _ctx.SaveChangesAsync();
                     if (Count > 0)
                     {
-                        _Result.Records = Query;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = Query;
                         _cache.Remove("Country");
                     }
                 }
@@ -235,9 +231,8 @@ namespace FMS.Repo.Common.Country
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
-                        _Result.Records = countriesToUpdate;
                         _Result.IsSucess = true;
+                        _Result.Records = countriesToUpdate;
                         _cache.Remove("Country");
                     }
                     else
@@ -277,9 +272,9 @@ namespace FMS.Repo.Common.Country
                     if (Count > 0)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = Query;
-                        _Result.Count = Count;
                         _Result.IsSucess = true;
+                        _Result.Records = Query;
+                        //_Result.Count = Count;
                         _cache.Remove("Country");
                     }
                 }
@@ -313,7 +308,7 @@ namespace FMS.Repo.Common.Country
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Count = response.AffectedRows;
+                        //_Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
                         _Result.Records = Query;
                         _cache.Remove("Country");
@@ -370,9 +365,10 @@ namespace FMS.Repo.Common.Country
 
                 if (Query.Count > 0)
                 {
-                    _Result.Records = Query;
-                    _Result.Count = Query.Count;
                     _Result.IsSucess = true;
+                    _Result.Records = Query;
+                    //_Result.Count = Query.Count;
+        
                 }
             }
             catch
@@ -400,9 +396,9 @@ namespace FMS.Repo.Common.Country
                         int Count = await _ctx.SaveChangesAsync();
                         if (Count > 0)
                         {
-                            _Result.Records = Query;
-                            _Result.Count = Count;
                             _Result.IsSucess = true;
+                            _Result.Records = Query;
+                            //_Result.Count = Count;
                             _cache.Remove("Country");
                         }
                     }
@@ -443,9 +439,9 @@ namespace FMS.Repo.Common.Country
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Records = recoverCountries;
-                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
+                        _Result.Records = recoverCountries;
+                        //_Result.Count = response.AffectedRows;
                         _cache.Remove("Country");
                     }
                 }
@@ -468,10 +464,10 @@ namespace FMS.Repo.Common.Country
                 {
                     _ctx.Countries.Remove(Query);
                     int Count = await _ctx.SaveChangesAsync();
-                    _Result.Count = Count;
                     if (Count > 0)
                     {
                         _Result.IsSucess = true;
+                        _Result.Id = Id.ToString();
                         _cache.Remove("Country");
                     }
                 }
@@ -496,9 +492,9 @@ namespace FMS.Repo.Common.Country
                     if (response.IsSuccess)
                     {
                         await transaction.CommitAsync();
-                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
-                        _Result.Count = response.AffectedRows;
                         _Result.IsSucess = true;
+                        _Result.Ids = Ids.Select(id => id.ToString()).ToList();
+                        //_Result.Count = response.AffectedRows;
                         _cache.Remove("Country");
                     }
                 }
