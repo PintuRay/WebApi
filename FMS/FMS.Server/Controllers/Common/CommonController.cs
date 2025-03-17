@@ -1,10 +1,11 @@
 ﻿using FMS.Db.Entity;
+using FMS.Svcs.Account.User;
+using FMS.Svcs.Admin.UserBranch;
 using FMS.Svcs.Common.Country;
 using FMS.Svcs.Common.Dist;
 using FMS.Svcs.Common.State;
 using FMS.Svcs.Devloper.Branch;
 using FMS.Svcs.Devloper.FinancialYear;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +15,12 @@ namespace FMS.Server.Controllers.Common
     [ApiController, Route("Common")]
     public class CommonController(
         IBranchSvcs branchSvcs,
+        IUserSvcs userSvcs,
         ICountrySvcs countrySvcs ,
         IStateSvcs stateSvcs,
         IDistSvcs distSvcs,
         IFinancialYearSvcs financialYearSvcs,
+        IUserBranchSvcs userBranchSvcs,
         UserManager<AppUser> userManager) : ControllerBase
     {
         #region Dependancy
@@ -26,8 +29,21 @@ namespace FMS.Server.Controllers.Common
         private readonly IStateSvcs _stateSvcs = stateSvcs;
         private readonly IDistSvcs _distSvcs = distSvcs;
         private readonly IFinancialYearSvcs _financialYearSvcs = financialYearSvcs;
-        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly IUserBranchSvcs _userBranchSvcs = userBranchSvcs;
+        private readonly IUserSvcs _userSvcs = userSvcs;
+       private readonly UserManager<AppUser> _userManager = userManager;
         #endregion
+        [HttpGet("Users/Get")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var result = await _userSvcs.GetUsers();
+            return result.ResponseCode switch
+            {
+                404 => StatusCode(404, result),
+                200 => StatusCode(200, result),
+                _ => BadRequest(result)
+            };
+        }
         [HttpGet("Branch/Get")]
         public async Task<IActionResult> GetBranches()
         {
@@ -50,7 +66,19 @@ namespace FMS.Server.Controllers.Common
                 _ => BadRequest(result)
             };
         }
-        [HttpGet("Country/Get"), AllowAnonymous]
+        [HttpGet("UserBranch/Get")]
+        public async Task<IActionResult> GetUserBranches()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var result = await _userBranchSvcs.GetUserBranches(user);
+            return result.ResponseCode switch
+            {
+                404 => StatusCode(404, result),
+                200 => StatusCode(200, result),
+                _ => BadRequest(result)
+            };
+        }
+        [HttpGet("Country/Get")]
         public async Task<IActionResult> GetCountries()
         {
             var result = await _countrySvcs.GetCountries();
@@ -61,7 +89,7 @@ namespace FMS.Server.Controllers.Common
                 _ => BadRequest(result)
             };
         }
-        [HttpGet("State/Get/{CountryId}"), AllowAnonymous]
+        [HttpGet("State/Get/{CountryId}")]
         public async Task<IActionResult> GetStates([FromRoute] Guid CountryId)
         {
             var result = await _stateSvcs.GetStates(CountryId);
@@ -72,7 +100,7 @@ namespace FMS.Server.Controllers.Common
                 _ => BadRequest(result)
             };
         }
-        [HttpGet, Route("Dist/Get/{StateId}"), AllowAnonymous]
+        [HttpGet, Route("Dist/Get/{StateId}")]
         public async Task<IActionResult> GetDists([FromRoute] Guid StateId)
         {
             var result = await _distSvcs.GetDists(StateId);

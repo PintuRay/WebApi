@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using FluentValidation;
-using FMS.Db;
-using FMS.Db.Entity;
+﻿using FMS.Db.Entity;
 using FMS.Model.Account.Authentication;
-using FMS.Model.Account.Autherization;
 using FMS.Model.Email;
 using FMS.Repo;
 using FMS.Repo.Account.Authentication;
-using FMS.Svcs.Common.Address;
 using FMS.Svcs.Email;
 using FMS.Svcs.SMS;
 using Microsoft.AspNetCore.Identity;
@@ -20,247 +15,21 @@ using System.Text;
 namespace FMS.Svcs.Account.Authentication
 {
     public class AuthenticationSvcs(
-        UserValidator userValidator,
+      
         IAuthenticationRepo authenticationRepo,
-        IAddressSvcs addressSvcs,
         UserManager<AppUser> userManager,
-        RoleManager<AppRole> roleManager,
         IEmailSvcs emailSvcs,
         ISmsSvcs smsSvcs,
-         IMapper mapper,
          IRedisCache cache,
         IConfiguration configuration) : IAuthenticationSvcs
     {
         #region Dependancy
-        private readonly UserValidator _userValidator = userValidator;
         private readonly IAuthenticationRepo _authenticationRepo = authenticationRepo;
-        private readonly IAddressSvcs _addressSvcs = addressSvcs;
         private readonly IEmailSvcs _emailSvcs = emailSvcs;
         private readonly ISmsSvcs _smsSvcs = smsSvcs;
         private readonly IConfiguration _configuration = configuration;
-        private readonly IMapper _mapper = mapper;
         private readonly UserManager<AppUser> _userManager = userManager;
-        private readonly RoleManager<AppRole> _roleManager = roleManager;
         private readonly IRedisCache _cache = cache;
-        #endregion
-        #region  SignUp 
-        public async Task<SvcsBase> ValidateToken(string Token)
-        {
-            SvcsBase Obj;
-            try
-            {
-                var repoResult = await _authenticationRepo.ValidateToken(Token);
-                Obj = repoResult.IsSucess switch
-                {
-                    true => new()
-                    {
-                        Data = repoResult,
-                        Message = $"Token '{Token}' Found",
-                        ResponseCode = (int)ResponseCode.Status.Ok,
-                    },
-                    false => new()
-                    {
-                        Message = $"Token '{Token}' Not Found",
-                        ResponseCode = (int)ResponseCode.Status.NotFound,
-                    },
-                };
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "ValidateToken", _Exception.ToString());
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> IsEmailInUse(string email)
-        {
-            SvcsBase Obj;
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user != null)
-            {
-                Obj = new()
-                {
-                    Message = $"Mail '{email}' Already In Use",
-                    ResponseCode = (int)ResponseCode.Status.Found,
-                };
-            }
-            else
-            {
-                Obj = new()
-                {
-                    Message = $"No Such Mail '{email}' Exist",
-                    ResponseCode = (int)ResponseCode.Status.Ok,
-                };
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> IsPhoneNumberInUse(string phoneNumber)
-        {
-            SvcsBase Obj;
-            var isPhoneNuberInUse = await _authenticationRepo.IsPhoneNumberInUse(phoneNumber);
-            if (isPhoneNuberInUse)
-            {
-                Obj = new()
-                {
-                    Message = $"Phone Number '{phoneNumber}' Already In Use",
-                    ResponseCode = (int)ResponseCode.Status.Found,
-                };
-            }
-            else
-            {
-                Obj = new()
-                {
-                    Message = $"No Such Phone Number '{phoneNumber}' Exist",
-                    ResponseCode = (int)ResponseCode.Status.Ok,
-                };
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> IsUserNameExist(string userName)
-        {
-            SvcsBase Obj;
-            var isPhoneNuberInUse = await _authenticationRepo.IsUserNameExist(userName);
-            if (isPhoneNuberInUse)
-            {
-                Obj = new()
-                {
-                    Message = $"user  '{userName}' Already Exist",
-                    ResponseCode = (int)ResponseCode.Status.Found,
-                };
-            }
-            else
-            {
-                Obj = new()
-                {
-                    Message = $"No Such User '{userName}' Exist",
-                    ResponseCode = (int)ResponseCode.Status.Ok,
-                };
-            }
-            return Obj;
-        }
-        public async Task<SvcsBase> SignUp(UserModel data)
-        {
-            bool isMailSend = false;
-            SvcsBase Obj;
-            try
-            {
-                var validationResult = await _userValidator.ValidateAsync(data);
-                if (validationResult.IsValid)
-                {
-                    var svcsResult = await _addressSvcs.CreateAdress(data.Address);
-                    if (svcsResult.ResponseCode == 201)
-                    {
-                        var user = _mapper.Map<AppUser>(data);
-                        user.UserName = data.Email;
-                        user.Fk_AdressId = Guid.Parse(((RepoBase)svcsResult.Data).Id);
-                        var identity = await _userManager.CreateAsync(user, data.Password);
-                        if (identity.Succeeded)
-                        {
-                            var regToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                            if (!string.IsNullOrEmpty(regToken))
-                            {
-                                UserEmailOptions options = new()
-                                {
-                                    ToEmail = data.Email,
-                                    PlaceHolders = new List<KeyValuePair<string, string>>()
-                                {
-                                    new KeyValuePair<string, string>("{{UserName}}", data.Name),
-                                    new KeyValuePair<string, string>("{{Link}}", data.RouteUls.Replace("{uid}", user.Id.ToString()).Replace("{token}", Uri.EscapeDataString(regToken)))
-                                }
-                                };
-                                isMailSend = await _emailSvcs.SendConfirmationEmail(options);
-                                if (isMailSend)
-                                {
-                                    #region Assign Default Role : Devloper to first registrar; rest is user
-                                    if (_userManager.Users.Count() == 1)
-                                    {
-                                        var checkDevloper = await _roleManager.FindByNameAsync("Devloper");
-                                        if (checkDevloper is null)
-                                        {
-                                            await _roleManager.CreateAsync(new AppRole() { Name = "Devloper" });
-                                        }
-                                        await _userManager.AddToRoleAsync(user, "Devloper");
-                                        await _userManager.AddClaimsAsync(user, ClaimsStoreModel.AllClaims);
-                                    }
-                                    else
-                                    {
-                                        var checkUser = await _roleManager.FindByNameAsync("User");
-                                        if (checkUser is null)
-                                        {
-                                            await _roleManager.CreateAsync(new AppRole() { Name = "User" });
-                                        }
-                                        await _userManager.AddToRoleAsync(user, "User");
-                                        await _userManager.AddClaimsAsync(user, ClaimsStoreModel.AllClaims);
-                                    }
-                                    #endregion
-                                    Obj = new()
-                                    {
-                                        Data = new { Id = user.Id },
-                                        Message = "Registraion Successful, We Send A Comfomation Mail To Your Account",
-                                        ResponseCode = (int)ResponseCode.Status.Created
-                                    };
-                                }
-                                else
-                                {
-                                    Obj = new()
-                                    {
-                                        Data = new { Id = user.Id },
-                                        Message = $"Account Created But Failed To Send ConfirmMail To Your Provided Mail {data.Email} ",
-                                        ResponseCode = (int)ResponseCode.Status.Created,
-                                    };
-                                }
-                            }
-                            else
-                            {
-                                Obj = new()
-                                {
-                                    Message = "Failed To Generate Email Conformation Token",
-                                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                                };
-                            }
-                        }
-                        else
-                        {
-                            Obj = new()
-                            {
-                                Message = "Registration Failed",
-                                ResponseCode = (int)ResponseCode.Status.BadRequest,
-                            };
-                        }
-                    }
-                    else
-                    {
-                        Obj = new()
-                        {
-                            Message = "registration failed",
-                            ResponseCode = (int)ResponseCode.Status.BadRequest,
-                        };
-                    }
-                }
-                else
-                {
-                    Obj = new()
-                    {
-                        Data = validationResult.Errors.ToArray(),
-                        ResponseCode = (int)ResponseCode.Status.BadRequest,
-                    };
-                }
-            }
-            catch (Exception _Exception)
-            {
-                Obj = new()
-                {
-                    Message = _Exception.Message,
-                    ResponseCode = (int)ResponseCode.Status.BadRequest,
-                };
-                await _emailSvcs.SendExceptionEmail("raypintu959@gmail.com", "SignUp", _Exception.ToString());
-            }
-            return Obj;
-        }
         #endregion
         #region SignIn
         public async Task<SvcsBase> SignIn(SignInModel data)

@@ -4,10 +4,10 @@ using FMS.Svcs.Account.Autherization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FMS.Server.Controllers.Account.Autherization
+namespace FMS.Server.Controllers.Account
 {
     [ApiController, Authorize(Roles = "Admin, Devloper")]
-    public class RoleClaimController(IAutherizationSvcs autherizationSvcs) : ControllerBase
+    public class AutherizationController(IAutherizationSvcs autherizationSvcs) : ControllerBase
     {
         #region Dependancy
         private readonly IAutherizationSvcs _autherizationSvcs = autherizationSvcs;
@@ -39,7 +39,7 @@ namespace FMS.Server.Controllers.Account.Autherization
             if (Id != null)
             {
                 var result = await _autherizationSvcs.GetRoleById(Id);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
             }
             else
             {
@@ -54,7 +54,7 @@ namespace FMS.Server.Controllers.Account.Autherization
                 if (ModelState.IsValid)
                 {
                     var result = await _autherizationSvcs.UpdateRole(Id, model);
-                    return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                    return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace FMS.Server.Controllers.Account.Autherization
             if (Id != null)
             {
                 var result = await _autherizationSvcs.DeleteRole(Id);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
             }
             else
             {
@@ -86,7 +86,7 @@ namespace FMS.Server.Controllers.Account.Autherization
         public async Task<IActionResult> GetAllUserWithRolesAndClaims()
         {
             var result = await _autherizationSvcs.GetAllUserWithRolesAndClaims();
-            return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+            return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
         }
         [HttpGet, Route("RolesAndClaims/GetById/{UserId}")]
         public async Task<IActionResult> GetUserWithRolesAndClaims([FromRoute] string UserId)
@@ -94,7 +94,7 @@ namespace FMS.Server.Controllers.Account.Autherization
             if (UserId != null)
             {
                 var result = await _autherizationSvcs.GetUserWithRolesAndClaims(UserId);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
             }
             else
             {
@@ -107,7 +107,7 @@ namespace FMS.Server.Controllers.Account.Autherization
             if (ModelState.IsValid)
             {
                 var result = await _autherizationSvcs.UpdateUserRoleAndClaims(model);
-                return result.ResponseCode == 200 ? Ok(result) : (result.ResponseCode == 404 ? NotFound(result) : BadRequest(result));
+                return result.ResponseCode == 200 ? Ok(result) : result.ResponseCode == 404 ? NotFound(result) : BadRequest(result);
             }
             else
             {

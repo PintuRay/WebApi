@@ -8,13 +8,6 @@ namespace FMS.Svcs.Account.Authentication
 {
     public interface IAuthenticationSvcs
     {
-        #region SignUp 
-        Task<SvcsBase> ValidateToken(string Token);
-        Task<SvcsBase> IsEmailInUse(string email);
-        Task<SvcsBase> IsPhoneNumberInUse(string phoneNumber);
-        Task<SvcsBase> IsUserNameExist(string userName);
-        Task<SvcsBase> SignUp(UserModel data);
-        #endregion
         #region SignIn 
         Task<SvcsBase> SignIn(SignInModel data);
         Task<SvcsBase> SignInWithOTP(SignIn2faModel model);
